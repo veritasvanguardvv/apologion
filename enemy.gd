@@ -37,6 +37,10 @@ var fear_label: Label              # "Attack 50% down (3)" above the HP bar
 # attack above. They take turns: verse, attack, verse, attack...
 # (verse first, so you see it early and can try to counter it).
 @export var verses: Array[String] = []   # refs from enemy_verses.gd, e.g. ["Genesis 3:17"]. Empty = basic attack only
+# Lines from the design sheet (data/enemy_lines.json): the sets this enemy
+# says, e.g. ["silver_wolf"]. If set, it says ONLY these lines (plus any refs
+# in "verses" above). See enemy_verses.gd.
+@export var line_sets: Array[String] = []
 @export var verse_every = 2              # recite a verse every Nth turn (1 = every turn, 2 = every other turn)
 @export var verse_read_time = 2.0        # pause after a verse so you can read it (seconds)
 @export var verse_bubble_time = 3.5      # how long a NON-counterable verse bubble stays up
@@ -47,7 +51,7 @@ var turns_taken = 0
 # Universal ("all") attack verses can hurt it.
 var enemy_type = ""
 # The enemy's own sin. "greed" for the Greed level's enemies: they start as
-# Greed type, and Greed verses (data/greed_verses.json) do their Greed %
+# Greed type, and the sheet's Greed verses (data/verses.json) do their Greed %
 # damage to them even if a recited verse changed their type tag.
 @export var base_type = ""
 var counter_refs = []     # player verses that counter what it just recited (only during your next turn)
@@ -121,7 +125,7 @@ func _update_fear_label():
 # Called by TurnManager when it's this enemy's turn in a battle.
 func take_turn():
 	turns_taken += 1
-	if not verses.is_empty() and (turns_taken - 1) % max(verse_every, 1) == 0:
+	if (not verses.is_empty() or not line_sets.is_empty()) and (turns_taken - 1) % max(verse_every, 1) == 0:
 		return recite_verse()
 	var player = get_tree().get_first_node_in_group("player")
 	if can_attack and player and player.has_method("take_damage"):
@@ -155,7 +159,15 @@ func _party_member_to_attack():
 # Recites one of its verses: hurts the player, changes its type and maybe
 # opens a counter chance. Returns how long the battle should wait.
 func recite_verse():
-	var ref = verses.pick_random()
+	# Pick from its verse refs and its sheet lines (each counts once)
+	var lines = EnemyVerses.lines_for(line_sets)
+	var n = verses.size() + lines.size()
+	if n == 0:
+		return null
+	var pick = randi() % n
+	if pick >= verses.size():
+		return say_line(lines[pick - verses.size()])
+	var ref = verses[pick]
 	var v = EnemyVerses.VERSES.get(ref)
 	if v == null:
 		push_warning("%s: unknown enemy verse '%s' (add it to enemy_verses.gd)" % [display_name, ref])
@@ -179,6 +191,43 @@ func recite_verse():
 	print(display_name, " recites ", ref, " for ", dealt, " (counters: ", counter_refs, ")")
 	return verse_read_time
 
+# Says one of its sheet lines (enemy_lines.json): hurts the player, may heal
+# itself, may change its type (the sin of the line's set) and may open a
+# counter chance (the line's "Countered By" refs).
+var last_line = {}
+func say_line(line: Dictionary):
+	last_line = line
+	var player = get_tree().get_first_node_in_group("player")
+	var dealt = 0.0
+	if player and player.has_method("take_damage"):
+		var damage = EnemyVerses.line_damage(line)
+		if fear_rounds_left > 0:
+			damage *= (1.0 - fear_reduction)
+		dealt = player.take_damage(damage)
+	var lang = SaveManager.language
+	var text = line.get(lang, "") if lang != "en" else ""
+	if text == "":
+		text = line.en
+	var title = VerseManager.ref_text(line.title) if line.get("title", "") != "" else ""
+	if line.get("type", "") != "":
+		set_enemy_type(line.type)
+	var heal_pct = float(line.get("heal_pct", 0))
+	if heal_pct > 0:
+		hp = min(hp + max_hp * heal_pct / 100.0, max_hp)
+		hp_bar.value = hp
+	counter_refs = []
+	if player:
+		for ref in line.get("counters", []):
+			if player.get_verse(ref) != null:
+				counter_refs.append(ref)
+	if counter_refs.is_empty():
+		bubble.say(title, text, false, verse_bubble_time)
+	else:
+		bubble.say(title, text, true, 0.0)
+	TurnManager.show_message(tr("%s: -%s HP") % [display_name, str(snapped(dealt, 0.1))])
+	print(display_name, " says [", line.set, "] ", line.en.substr(0, 60), " for ", dealt)
+	return verse_read_time
+
 func set_enemy_type(new_type: String):
 	enemy_type = new_type
 	type_label.visible = enemy_type != ""
@@ -189,11 +238,25 @@ static func type_name(t: String) -> String:
 
 # A Greed enemy (Greed verses do their Greed % to it)
 func is_greed() -> bool:
-	return base_type == "greed" or enemy_type == "greed"
+	return has_sin("greed")
+
+# The sins (types) that count for this enemy: its own (base_type) and what it
+# is right now (enemy_type). Sheet verses do their sin % if it has that sin.
+func enemy_sins() -> Array:
+	var out = []
+	for t in [base_type, enemy_type]:
+		if t != "" and not t in out:
+			out.append(t)
+	return out
+
+func has_sin(sin: String) -> bool:
+	return sin in enemy_sins()
 
 # Can a player attack verse of this type hurt it?
+const SIN_TYPES = ["sloth", "lust", "greed", "wrath", "gluttony", "envy", "pride"]
 func can_be_hurt_by(verse_type: String) -> bool:
-	return enemy_type == "" or verse_type == "all" or verse_type == enemy_type
+	# A type that isn't a sin (e.g. "atheist") doesn't block any attack verse
+	return not enemy_type in SIN_TYPES or verse_type == "all" or verse_type == enemy_type
 
 # Is this verse a counter to what it just recited (during your next turn)?
 func is_countered_by(ref: String) -> bool:

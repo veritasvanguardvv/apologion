@@ -66,6 +66,24 @@ var phone_slot = 0              # 1, 2 or 3 (which phone player this is)
 @export var idle_first_frame = 0       # first idle frame in the sheet (Baana's sheet has idle frames at 3-4)
 @export var walk_first_frame = 0       # first walk frame in the sheet
 
+@export_group("Footsteps")
+# A footstep sound on the walk frames where a hoof lands (Pastor_walk.png: the
+# body dips on frames 1 and 7 of the 12). Only while he's walking on the
+# ground; one player that restarts on each step, so they never stack.
+@export var footsteps_enabled = false      # on for Pastor Ramuel (pastor_ramuel.tscn)
+@export var footstep_frames: Array[int] = [1, 7]
+@export var footstep_volume_db = -8.0
+const FOOTSTEP_SOUNDS = [
+	"res://Sounds/footsteps/footstep_01.wav", "res://Sounds/footsteps/footstep_02.wav",
+	"res://Sounds/footsteps/footstep_03.wav", "res://Sounds/footsteps/footstep_04.wav",
+	"res://Sounds/footsteps/footstep_05.wav", "res://Sounds/footsteps/footstep_06.wav",
+	"res://Sounds/footsteps/footstep_07.wav", "res://Sounds/footsteps/footstep_08.wav",
+	"res://Sounds/footsteps/footstep_09.wav", "res://Sounds/footsteps/footstep_10.wav",
+]
+var footstep_player: AudioStreamPlayer2D
+var last_walk_frame = -1
+var footsteps_played = 0        # (counted for the tests)
+
 # Emitted every time he recites (handy for sound effects later)
 signal recited(verse_ref)
 
@@ -101,7 +119,34 @@ func _ready():
 	bubble.head_offset = Vector2(0, bubble_head_offset)
 	bubble.max_width = bubble_max_width
 	add_child(bubble)
+	if footsteps_enabled:
+		_build_footsteps()
 	_update_animation(0.0)
+
+
+func _build_footsteps():
+	var random = AudioStreamRandomizer.new()
+	random.random_pitch = 1.08
+	random.random_volume_offset_db = 2.0
+	for path in FOOTSTEP_SOUNDS:
+		var stream = load(path)
+		if stream:
+			random.add_stream(-1, stream)
+	footstep_player = AudioStreamPlayer2D.new()
+	footstep_player.name = "Footsteps"
+	footstep_player.stream = random
+	footstep_player.bus = "SFX"            # the SFX volume slider in Settings
+	footstep_player.volume_db = footstep_volume_db
+	footstep_player.max_polyphony = 1      # a new step cuts the last one off
+	add_child(footstep_player)
+
+# Called when the walk frame changes: a step on the landing frames
+func _footstep(frame: int):
+	if footstep_player == null or not is_on_floor():
+		return
+	if frame - walk_first_frame in footstep_frames:
+		footstep_player.play()
+		footsteps_played += 1
 
 
 # Finds the player once it exists (it's in the "player" group).
@@ -198,11 +243,15 @@ func _update_animation(delta):
 	anim_time += delta
 	if walking:
 		walk_sprite.frame = walk_first_frame + int(anim_time * walk_fps) % walk_frame_count
+		if walk_sprite.frame != last_walk_frame:
+			last_walk_frame = walk_sprite.frame
+			_footstep(last_walk_frame)
 		# Mirror the whole Visual node so both sprites flip around his feet
 		var moving_right = velocity.x > 0
 		visual.scale.x = 1 if moving_right == sprite_faces_right else -1
 	else:
 		idle_sprite.frame = idle_first_frame + int(anim_time * idle_fps) % idle_frame_count
+		last_walk_frame = -1     # no steps while he stands still (a step that just landed finishes)
 
 
 # ---------------- Battle turns ----------------

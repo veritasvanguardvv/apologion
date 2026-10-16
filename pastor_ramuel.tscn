@@ -10,6 +10,7 @@ size = Vector2(120, 79)
 [node name="PastorRamuel" type="CharacterBody2D" unique_id=1418823301]
 collision_layer = 0
 script = ExtResource("1_party")
+footsteps_enabled = true
 
 [node name="Visual" type="Node2D" parent="." unique_id=1904415722]
 

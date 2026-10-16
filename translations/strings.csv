@@ -297,3 +297,11 @@ Dropped: %s,Dropped: %s,Soltaste: %s,Upuszczono: %s
 "Click an item (or press 1-9): U = Use, Delete = Drop","Click an item (or press 1-9): U = Use, Delete = Drop","Haz clic en un objeto (o pulsa 1-9): U = Usar, Supr = Soltar","Kliknij przedmiot (lub naciśnij 1-9): U = Użyj, Delete = Upuść"
 Heavy: in some places you can't jump as high while you carry it.,Heavy: in some places you can't jump as high while you carry it.,Pesado: en algunos lugares no puedes saltar tan alto mientras lo llevas.,"Ciężka: w niektórych miejscach nie skoczysz tak wysoko, gdy ją niesiesz."
 Riches make themselves wings and fly away (Proverbs 23:5).,Riches make themselves wings and fly away (Proverbs 23:5).,Las riquezas se hacen alas y se van volando (Proverbios 23:5).,Bogactwo sprawia sobie skrzydła i odlatuje (Przysłów 23:5).
+Wrath,Wrath,Ira,Gniew
+Atheist,Atheist,Ateo,Ateista
+%d%% vs %s,%d%% vs %s,%d%% contra %s,%d%% przeciw: %s
+No effect - this verse only hurts %s-type enemies,No effect - this verse only hurts %s-type enemies,Sin efecto: este versículo solo daña a enemigos de tipo %s,Bez efektu - ten werset rani tylko wrogów typu %s
+%s: -%s HP,%s: -%s HP,%s: -%s PS,%s: -%s PŻ
+Index,Index,Índice,Indeks
+Verse,Verse,Versículo,Werset
+Effects,Effects,Efectos,Efekty

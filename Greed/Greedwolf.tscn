@@ -47,8 +47,8 @@ size = Vector2(181.44, 138.24)
 
 [node name="Greedwolf" type="CharacterBody2D"]
 script = ExtResource("1_e")
+line_sets = Array[String](["silver_wolf"])
 base_type = "greed"
-verses = Array[String](["Hosea 12:8"])
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, 0)
