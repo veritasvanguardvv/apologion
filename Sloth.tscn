@@ -54,7 +54,7 @@ color = Color(0.18359044, 0.18359044, 0.18359044, 1)
 
 [node name="Parallax2D" type="Parallax2D" parent="ColorRect" unique_id=1382825806]
 scroll_scale = Vector2(0.5, 0.5)
-repeat_size = Vector2(3600.0, 0)
+repeat_size = Vector2(3600, 0)
 repeat_times = 4
 
 [node name="Sprite2D" type="Sprite2D" parent="ColorRect/Parallax2D" unique_id=1438546449]
@@ -63,10 +63,9 @@ position = Vector2(899.99994, 376.5)
 scale = Vector2(1.3412815, 1.18625)
 texture = ExtResource("1_2wcv7")
 
-
 [node name="SpriteMirrored" type="Sprite2D" parent="ColorRect/Parallax2D" unique_id=183016617]
 light_mask = 0
-position = Vector2(2700.00, 376.5)
+position = Vector2(2700, 376.5)
 scale = Vector2(1.3412815, 1.18625)
 texture = ExtResource("1_2wcv7")
 flip_h = true
@@ -208,6 +207,7 @@ theme_override_colors/font_placeholder_color = Color(0.8745098, 0.8745098, 0.874
 placeholder_text = "Press 'Enter' or click here to start Scripture recitation"
 
 [node name="NPC" type="Node2D" parent="." unique_id=1836694176]
+visible = false
 
 [node name="Sprite2D" type="Sprite2D" parent="NPC" unique_id=1366669999]
 texture_filter = 1
