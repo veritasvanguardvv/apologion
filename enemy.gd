@@ -125,6 +125,7 @@ func _update_fear_label():
 # Called by TurnManager when it's this enemy's turn in a battle.
 func take_turn():
 	turns_taken += 1
+	play_anim("attack")
 	if (not verses.is_empty() or not line_sets.is_empty()) and (turns_taken - 1) % max(verse_every, 1) == 0:
 		return recite_verse()
 	var player = get_tree().get_first_node_in_group("player")
@@ -302,9 +303,50 @@ func take_damage(amount):
 	hp_bar.value = hp
 	if hp <= 0:
 		_die()
+	elif amount > 0:
+		play_anim("hurt")
 	return amount
 
+# ---------------- Optional animations ----------------
+# If the enemy's AnimatedSprite2D "Sprite" has these animations they're used
+# (the atheist goats have them; enemies without them just keep their idle):
+#   "idle" (looping), "attack" (its turn), "hurt" (hit), "death" (defeated).
+func _anim_sprite() -> AnimatedSprite2D:
+	var s = get_node_or_null("Sprite")
+	return s if s is AnimatedSprite2D else null
+
+func play_anim(anim: String):
+	var s = _anim_sprite()
+	if s == null or s.sprite_frames == null or not s.sprite_frames.has_animation(anim):
+		return
+	s.play(anim)
+	if not s.sprite_frames.get_animation_loop(anim) and s.sprite_frames.has_animation("idle"):
+		if not s.animation_finished.is_connected(_back_to_idle):
+			s.animation_finished.connect(_back_to_idle)
+
+func _back_to_idle():
+	var s = _anim_sprite()
+	if s and s.animation != "death":
+		s.play("idle")
+
+# The death animation plays on a copy left in the level (the enemy itself is
+# removed at once), which then fades out.
+func _death_anim():
+	var s = _anim_sprite()
+	if s == null or s.sprite_frames == null or not s.sprite_frames.has_animation("death"):
+		return
+	var ghost = s.duplicate(0)
+	get_parent().add_child(ghost)
+	ghost.global_transform = s.global_transform
+	ghost.play("death")
+	var t = ghost.create_tween()
+	t.tween_interval(1.4)
+	t.tween_property(ghost, "modulate:a", 0.0, 0.6)
+	t.tween_callback(ghost.queue_free)
+
 func _die():
+	if not _instant:
+		_death_anim()
 	bubble.hide_bubble()
 	SaveManager.mark_enemy_defeated(self)  # remember it for saving
 	queue_free()  # enemy dies
@@ -317,6 +359,7 @@ func is_kind(kind: String) -> bool:
 # Defeated at once by a verse aimed at its kind (character_body_2d.gd
 # INSTANT_KILLS): no defense, no damage numbers. A golden copy of it flashes
 # and fades where it stood, with "Instant defeat!" above.
+var _instant = false   # (the golden flash replaces the death animation)
 func instant_defeat():
 	if hp <= 0 or is_queued_for_deletion():
 		return
@@ -339,4 +382,5 @@ func instant_defeat():
 			break
 	hp = 0
 	hp_bar.value = 0
+	_instant = true
 	_die()

@@ -457,21 +457,30 @@ func verse_damage_against(verse, enemy) -> float:
 	if verse.get("set", "") == "sheet":
 		var dmg = float(verse.get("all_damage", 0))
 		var sins: Dictionary = verse.get("sins", {})
-		var untyped = true    # no sin type yet (atheist goats count as untyped)
+		# What kind of enemy is it? A sin type (e.g. "greed"), an "extra" kind
+		# from the sheet's Dmg-to columns (e.g. "atheist" - the atheist goats),
+		# or nothing yet (untyped).
+		# (An extra kind doesn't block the sin %: an atheist goat has no sin
+		# type, so any attack verse hurts it, and Dmg to Atheists adds on top.)
+		var sin_typed = false
 		if enemy.has_method("enemy_sins"):
 			for t in enemy.enemy_sins():
 				if t in SINS:
-					untyped = false
+					sin_typed = true
 		for sin in sins:
-			# Its sin % vs enemies of that sin; an untyped enemy (no sin yet)
-			# is hurt by any attack verse, like the built-in verses
-			if untyped or (enemy.has_method("has_sin") and enemy.has_sin(sin)):
+			# Its sin % vs enemies of that sin; an untyped enemy is hurt by any
+			# attack verse, like the built-in verses
+			if not sin_typed or (enemy.has_method("has_sin") and enemy.has_sin(sin)):
 				dmg = max(dmg, float(sins[sin]))
+		# The Dmg-to column for its kind comes ON TOP (e.g. 2 Corinthians 6:14:
+		# 45% vs any sin + 50% vs Atheists = 95% against an atheist goat)
 		var extra: Dictionary = verse.get("vs", {})
+		var bonus = 0.0
 		if enemy.has_method("has_sin"):
-			for kind in extra:   # e.g. "atheist" (Dmg to Atheists) vs the atheist goats
+			for kind in extra:
 				if enemy.has_sin(kind):
-					dmg = max(dmg, float(extra[kind]))
+					bonus = max(bonus, float(extra[kind]))
+		dmg += bonus
 		return dmg if dmg > 0 else -1.0
 	if enemy.has_method("can_be_hurt_by") and not enemy.can_be_hurt_by(verse.type):
 		return -1.0
@@ -792,6 +801,8 @@ func verse_power_text(v) -> String:
 			parts.append(tr("%d%% vs %s") % [v.sins[sin], tr(sin.capitalize())])
 		if v.get("all_damage", 0) > 0:
 			parts.append(tr("%d%% vs any sin") % v.all_damage)
+		for kind in v.get("vs", {}):   # e.g. "+50% vs Atheist"
+			parts.append("+" + tr("%d%% vs %s") % [v.vs[kind], tr(kind.capitalize())])
 		if v.get("heal", 0) > 0:
 			parts.append(tr("Heals %d%%") % v.heal)
 		elif v.get("heal", 0) < 0:

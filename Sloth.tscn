@@ -15,6 +15,8 @@
 [ext_resource type="PackedScene" path="res://pastor_ramuel.tscn" id="13_ramuel"]
 [ext_resource type="PackedScene" path="res://umbrid.tscn" id="14_umbrid"]
 [ext_resource type="PackedScene" path="res://item_pickup.tscn" id="15_pickup"]
+[ext_resource type="PackedScene" path="res://atheist_goat.tscn" id="16_goat"]
+[ext_resource type="PackedScene" path="res://atheist_goat_black.tscn" id="17_goatb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b7ju8"]
 size = Vector2(86, 69.5)
@@ -140,6 +142,12 @@ battle_speed = 4
 attack_damage = 4
 defense = 0.6
 verse_every = 3
+
+[node name="AtheistGoat" parent="." unique_id=1129945120 instance=ExtResource("16_goat")]
+position = Vector2(1540, 496.5)
+
+[node name="AtheistGoatBlack" parent="." unique_id=1129945121 instance=ExtResource("17_goatb")]
+position = Vector2(1680, 496.5)
 
 [node name="HealingScroll" parent="." unique_id=1129945109 instance=ExtResource("15_pickup")]
 position = Vector2(-120, 548)
