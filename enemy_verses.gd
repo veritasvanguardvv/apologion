@@ -41,3 +41,41 @@ const VERSES = {
 		"counters": ["Matthew 6:19a"],
 	},
 }
+
+
+# ENEMY LINES from the design sheet (data/enemy_lines.json, made by
+# tools/verses_from_sheet.py). Each line belongs to a set, e.g. "silver_wolf",
+# "bronze_wolf", "atheist_goat", "greed", "umbrid"; an enemy says only the
+# lines of its line_sets (enemy.gd). damage_pct is turned into HP damage with
+# LINE_DAMAGE_SCALE (the sheet's 26% -> about 5 HP, like a basic attack).
+const LINES_PATH = "res://data/enemy_lines.json"
+const LINE_DAMAGE_SCALE = 0.2
+const LINE_DEFAULT_DAMAGE_PCT = 26
+static var _sets = null
+
+static func line_sets() -> Dictionary:
+	if _sets == null:
+		_sets = {}
+		var file = FileAccess.open(LINES_PATH, FileAccess.READ)
+		var data = JSON.parse_string(file.get_as_text()) if file else null
+		if data is Dictionary:
+			for line in data.get("lines", []):
+				if not _sets.has(line.set):
+					_sets[line.set] = []
+				_sets[line.set].append(line)
+		else:
+			push_warning("No enemy lines: " + LINES_PATH)
+	return _sets
+
+static func lines_for(sets: Array) -> Array:
+	var out = []
+	var all = line_sets()
+	for s in sets:
+		out.append_array(all.get(s, []))
+	return out
+
+static func line_damage(line: Dictionary) -> float:
+	var pct = float(line.get("damage_pct", 0))
+	if pct <= 0:
+		pct = LINE_DEFAULT_DAMAGE_PCT
+	return snapped(pct * LINE_DAMAGE_SCALE, 0.1)

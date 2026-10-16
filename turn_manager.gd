@@ -87,27 +87,35 @@ func _ready():
 	turn_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED   # messages come in already translated
 	layer.add_child(turn_label)
 	
-	# Run button, bottom-right next to the verse box. Only shown during battles.
+	# Run button, top-left beside the player's portrait (like the Unity HUD).
+	# Only shown during battles.
 	run_button = Button.new()
 	run_button.text = "Run (R)"
-	run_button.anchor_left = 1.0
-	run_button.anchor_right = 1.0
-	run_button.anchor_top = 1.0
-	run_button.anchor_bottom = 1.0
-	run_button.offset_left = -126
-	run_button.offset_right = -10
-	run_button.offset_top = -56
-	run_button.offset_bottom = -12
+	run_button.position = Vector2(HUD_RUN_POS)
+	run_button.size = Vector2(120, 34)
 	run_button.focus_mode = Control.FOCUS_NONE   # so Enter/Space don't press it by accident
 	run_button.visible = false
 	run_button.pressed.connect(run_away)
 	layer.add_child(run_button)
-	# Skip and Target buttons, stacked above Run
-	skip_button = _make_side_button("Skip (K)", -104, skip_turn)
+	# Skip and Target buttons, bottom-right
+	skip_button = _make_side_button("Skip (K)", -56, skip_turn)
 	layer.add_child(skip_button)
 	# (on a Mac the Alt key is called Option)
-	target_button = _make_side_button("Target (Option)" if OS.get_name() == "macOS" else "Target (Alt)", -152, Targeting.cycle)
+	target_button = _make_side_button("Target (Option)" if OS.get_name() == "macOS" else "Target (Alt)", -104, Targeting.cycle)
 	layer.add_child(target_button)
+	# Enemy name / portrait / HP in the top-right corner during battles
+	enemy_hud = VBoxContainer.new()
+	enemy_hud.name = "EnemyHUD"
+	enemy_hud.anchor_left = 1.0
+	enemy_hud.anchor_right = 1.0
+	enemy_hud.offset_left = -270
+	enemy_hud.offset_right = -10
+	enemy_hud.offset_top = 10
+	enemy_hud.add_theme_constant_override("separation", 6)
+	enemy_hud.visible = false
+	layer.add_child(enemy_hud)
+	battle_started.connect(_build_enemy_hud)
+	battle_ended.connect(func(): enemy_hud.visible = false)
 	
 	# Language switched mid-battle: redo the "your turn" message
 	# (and hide an old message like "Got away safely!" when not in a battle)
@@ -121,7 +129,148 @@ func _ready():
 	add_child(battle_sound)
 
 
-# A button in the bottom-right corner (like Run), "top" pixels from the bottom
+# ---------------- HUD (laid out like the Unity version) ----------------
+# Top-left: the player's portrait, Run beside it, HP under it (see
+# character_body_2d.gd _layout_hud). Top-right during a battle: each enemy's
+# name, portrait and HP.
+const HUD_RUN_POS = Vector2i(74, 14)
+var enemy_hud: VBoxContainer
+var enemy_rows = {}     # enemy -> [row, hp bar, hp label]
+
+func _build_enemy_hud():
+	for c in enemy_hud.get_children():
+		c.queue_free()
+	enemy_rows.clear()
+	for e in battle_enemies:
+		if not is_instance_valid(e):
+			continue
+		var row = HBoxContainer.new()
+		row.add_theme_constant_override("separation", 6)
+		var col = VBoxContainer.new()
+		col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		col.add_theme_constant_override("separation", 2)
+		var name_label = Label.new()
+		name_label.text = tr(e.display_name)
+		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		name_label.add_theme_color_override("font_color", Color(1, 0.55, 0.5))
+		name_label.add_theme_color_override("font_outline_color", Color.BLACK)
+		name_label.add_theme_constant_override("outline_size", 5)
+		col.add_child(name_label)
+		var bar = ProgressBar.new()
+		bar.custom_minimum_size = Vector2(0, 22)
+		bar.show_percentage = false
+		bar.max_value = e.max_hp
+		bar.value = e.hp
+		var fill = StyleBoxFlat.new()
+		fill.bg_color = Color(0.8, 0.12, 0.15)
+		bar.add_theme_stylebox_override("fill", fill)
+		var hp_label = Label.new()
+		hp_label.set_anchors_preset(Control.PRESET_FULL_RECT)
+		hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		hp_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		hp_label.add_theme_font_size_override("font_size", 14)
+		hp_label.add_theme_color_override("font_outline_color", Color.BLACK)
+		hp_label.add_theme_constant_override("outline_size", 4)
+		bar.add_child(hp_label)
+		col.add_child(bar)
+		row.add_child(col)
+		row.add_child(make_portrait(portrait_of(e), Color(0.8, 0.15, 0.15)))
+		enemy_hud.add_child(row)
+		enemy_rows[e] = [row, bar, hp_label]
+	enemy_hud.visible = not enemy_rows.is_empty()
+	_update_enemy_hud()
+
+func _update_enemy_hud():
+	for e in enemy_rows.keys():
+		var r = enemy_rows[e]
+		if not is_instance_valid(e) or e.hp <= 0:
+			if is_instance_valid(r[0]):
+				r[0].modulate.a = 0.35
+			if is_instance_valid(r[1]):
+				r[1].value = 0
+				r[2].text = "0 / %d" % (r[1].max_value)
+			continue
+		r[1].value = e.hp
+		r[2].text = "%d / %d" % [ceil(e.hp), e.max_hp]
+
+func _process(_delta):
+	if enemy_hud and enemy_hud.visible:
+		_update_enemy_hud()
+
+# A small framed portrait (like the Unity HUD's face boxes)
+static func make_portrait(tex: Texture2D, border := Color(0.9, 0.9, 0.9)) -> Control:
+	var frame = Panel.new()
+	frame.custom_minimum_size = Vector2(56, 56)
+	frame.size = Vector2(56, 56)
+	var box = StyleBoxFlat.new()
+	box.bg_color = Color(0.08, 0.08, 0.12, 0.85)
+	box.border_color = border
+	box.set_border_width_all(2)
+	box.set_corner_radius_all(4)
+	frame.add_theme_stylebox_override("panel", box)
+	var pic = TextureRect.new()
+	pic.name = "Picture"
+	pic.texture = tex
+	pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	pic.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	pic.position = Vector2(4, 4)
+	pic.size = Vector2(48, 48)
+	pic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	frame.add_child(pic)
+	return frame
+
+# A still picture of a character for its portrait: one frame of its sprite,
+# cropped to the drawn pixels. frame = -1: the sprite's current frame.
+static func portrait_of(node: Node, frame := -1) -> Texture2D:
+	var sprite = null
+	if node is Sprite2D or node is AnimatedSprite2D:
+		sprite = node
+	else:
+		for c in node.get_children():
+			if (c is Sprite2D or c is AnimatedSprite2D) and c.visible:
+				sprite = c
+				break
+	if sprite == null:
+		return null
+	var tex: Texture2D = null
+	var region = Rect2()
+	if sprite is AnimatedSprite2D:
+		if sprite.sprite_frames == null:
+			return null
+		var f = sprite.frame if frame < 0 else frame
+		tex = sprite.sprite_frames.get_frame_texture(sprite.animation, f)
+	else:
+		tex = sprite.texture
+		if tex == null:
+			return null
+		if sprite.region_enabled:
+			region = sprite.region_rect
+		else:
+			var size = tex.get_size() / Vector2(sprite.hframes, sprite.vframes)
+			var f = sprite.frame if frame < 0 else frame
+			region = Rect2(Vector2(f % sprite.hframes, f / sprite.hframes) * size, size)
+	if tex is AtlasTexture:
+		region = tex.region if region == Rect2() else region
+		tex = tex.atlas
+	if tex == null:
+		return null
+	if region == Rect2():
+		region = Rect2(Vector2.ZERO, tex.get_size())
+	var img = tex.get_image()
+	if img:
+		if img.is_compressed():
+			img.decompress()
+		var used = img.get_region(Rect2i(region)).get_used_rect()
+		if used.size.x > 0:
+			region = Rect2(region.position + Vector2(used.position), Vector2(used.size))
+	var atlas = AtlasTexture.new()
+	atlas.atlas = tex
+	atlas.region = region
+	return atlas
+
+
+# A button in the bottom-right corner, "top" pixels from the bottom
 func _make_side_button(text: String, top: float, action: Callable) -> Button:
 	var button = Button.new()
 	button.text = text

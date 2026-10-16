@@ -9,6 +9,7 @@ size = Vector2(165, 136)
 
 [node name="Umbrid" type="CharacterBody2D" unique_id=2001846573]
 script = ExtResource("1_enemy")
+line_sets = Array[String](["umbrid", "sloth"])
 verses = Array[String](["Genesis 3:17"])
 defense = 0.65
 

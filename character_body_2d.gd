@@ -17,17 +17,18 @@ var language: String:
 		return SaveManager.language
 # Verse box filter (see _build_verse_panel). Four groups of verse types:
 # Pressing a button again cycles through its sub-filters, e.g.
-# Attacks (all) > Sloth > Lust > Greed > Universal > Attacks (all).
+# Attacks (all) > Sloth > Lust > Greed > Wrath > Gluttony > Envy > Pride > Universal > Attacks (all).
+const SINS = ["sloth", "lust", "greed", "wrath", "gluttony", "envy", "pride"]
 const FILTER_GROUPS = {
-	"Attacks": ["sloth", "lust", "greed", "all"], # 1st button ("all" = Universal: hurts any enemy type; "greed" = the Greed verses' attacks)
+	"Attacks": ["sloth", "lust", "greed", "wrath", "gluttony", "envy", "pride", "all"], # 1st button ("all" = Universal: hurts any enemy type)
 	"Status": ["zeal", "guard", "faith", "fear"], # 2nd button
 	"Special": ["light"],                       # 3rd button
-	"Heal": ["heal"],                           # 4th (rightmost) button (includes Greed verses that only heal)
+	"Heal": ["heal"],                           # 4th (rightmost) button (includes sheet verses that heal)
 }
-const ATTACK_TYPES = ["sloth", "lust", "greed", "all"]   # verse types that do damage
-# The Greed verses live in a data file (made from the design table by
-# tools/greed_verses_from_table.py) and are added to all_verses in _ready.
-const GREED_VERSES_PATH = "res://data/greed_verses.json"
+const ATTACK_TYPES = ["sloth", "lust", "greed", "wrath", "gluttony", "envy", "pride", "all"]   # verse types that do damage
+# The verses from the design sheet (every sin) live in a data file made by
+# tools/verses_from_sheet.py and are added to all_verses in _ready.
+const SHEET_VERSES_PATH = "res://data/verses.json"
 var filter_group = "all"   # "all" (Show all), "Attacks", "Status" or "Special"
 var filter_type = "*"      # "*" = the whole group, or one type, e.g. "lust"
 
@@ -193,7 +194,7 @@ func _ready():
 	# If we just loaded a save, move to the saved position
 	SaveManager.apply_pending_player_state(self)
 	
-	_load_greed_verses()
+	_load_sheet_verses()
 	# Tell VerseManager about the verses the player starts with
 	for v in all_verses:
 		if v.discovered:
@@ -211,6 +212,7 @@ func _ready():
 		lamp.energy = lamp_base_energy
 	
 	_build_guard_effect()
+	_layout_hud()
 	_build_status_labels()
 	_build_bubble_and_speaker()
 	_build_ram_bar()
@@ -263,6 +265,20 @@ func _passes_filter(v) -> bool:
 	var type = v.type
 	if filter_group == "all":
 		return true
+	if v.get("set", "") == "sheet":
+		# A sheet verse can attack several sins and heal too
+		var sins: Dictionary = v.get("sins", {})
+		var attacks = not sins.is_empty() or v.get("all_damage", 0) > 0
+		match filter_group:
+			"Attacks":
+				if filter_type == "*":
+					return attacks
+				if filter_type == "all":
+					return v.get("all_damage", 0) > 0
+				return sins.get(filter_type, 0) > 0
+			"Heal":
+				return v.get("heal", 0) > 0
+		return false
 	if filter_type == "*":
 		return type in FILTER_GROUPS[filter_group]
 	return type == filter_type
@@ -380,8 +396,8 @@ func apply_verse_effects(lower: String, damage_scale := 1.0, can_counter := fals
 #   use_choice   = false for party members: they always use the default targets
 #   caster       = who recited it (null = you). A negative heal hurts the caster.
 func cast_verse(verse, damage_scale := 1.0, can_counter := false, use_choice := true, heal_scale := 1.0, caster = null):
-	if verse.get("set", "") == "greed":
-		_cast_greed_verse(verse, damage_scale, can_counter, use_choice, heal_scale, caster)
+	if verse.get("set", "") == "sheet":
+		_cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale, caster)
 		return
 	match verse.type:
 		"sloth", "lust", "all":
@@ -411,12 +427,12 @@ func cast_verse(verse, damage_scale := 1.0, can_counter := false, use_choice := 
 		"zeal":
 			_zeal_boost()
 
-# A verse from the Greed table: it can attack (Greed % against Greed-type
-# enemies, "All Sin" % against any enemy, the higher one counts) AND heal
-# (Heal %, split like the other heal verses). A negative heal costs the
-# caster that much of their max HP.
-func _cast_greed_verse(verse, damage_scale, can_counter, use_choice, heal_scale, caster):
-	if verse.get("greed_damage", 0) > 0 or verse.get("all_damage", 0) > 0:
+# A verse from the design sheet: it can attack (its sin % against enemies of
+# that sin, e.g. Wrath % vs Wrath-type, "All Sin" % against any enemy; the
+# higher one counts) AND heal (Heal %, split like the other heal verses).
+# A negative heal costs the caster that much of their max HP.
+func _cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale, caster):
+	if not verse.get("sins", {}).is_empty() or verse.get("all_damage", 0) > 0:
 		var targets = Targeting.attack_targets(use_choice)
 		for enemy in targets:
 			if is_instance_valid(enemy) and enemy.has_method("take_damage"):
@@ -438,42 +454,72 @@ func _cast_greed_verse(verse, damage_scale, can_counter, use_choice, heal_scale,
 # How much a verse does to this enemy (before Faith / splitting / defense).
 # -1 = no effect.
 func verse_damage_against(verse, enemy) -> float:
-	if verse.get("set", "") == "greed":
+	if verse.get("set", "") == "sheet":
 		var dmg = float(verse.get("all_damage", 0))
-		if enemy.has_method("is_greed") and enemy.is_greed():
-			dmg = max(dmg, float(verse.get("greed_damage", 0)))
+		var sins: Dictionary = verse.get("sins", {})
+		var untyped = true    # no sin type yet (atheist goats count as untyped)
+		if enemy.has_method("enemy_sins"):
+			for t in enemy.enemy_sins():
+				if t in SINS:
+					untyped = false
+		for sin in sins:
+			# Its sin % vs enemies of that sin; an untyped enemy (no sin yet)
+			# is hurt by any attack verse, like the built-in verses
+			if untyped or (enemy.has_method("has_sin") and enemy.has_sin(sin)):
+				dmg = max(dmg, float(sins[sin]))
+		var extra: Dictionary = verse.get("vs", {})
+		if enemy.has_method("has_sin"):
+			for kind in extra:   # e.g. "atheist" (Dmg to Atheists) vs the atheist goats
+				if enemy.has_sin(kind):
+					dmg = max(dmg, float(extra[kind]))
 		return dmg if dmg > 0 else -1.0
 	if enemy.has_method("can_be_hurt_by") and not enemy.can_be_hurt_by(verse.type):
 		return -1.0
 	return float(verse.damage)
 
-# Loads the Greed verses (data/greed_verses.json) into all_verses.
-func _load_greed_verses():
+# Loads the design-sheet verses (data/verses.json, every sin) into all_verses.
+# A built-in verse above with the same reference wins (it has alt wordings).
+# "type" = its strongest sin (for the verse box), "all" if it only has the
+# All Sin %, "heal" if it only heals.
+func _load_sheet_verses():
 	for v in all_verses:
-		if v.get("set", "") == "greed":
+		if v.get("set", "") == "sheet":
 			return   # already loaded
-	var file = FileAccess.open(GREED_VERSES_PATH, FileAccess.READ)
+	var file = FileAccess.open(SHEET_VERSES_PATH, FileAccess.READ)
 	if file == null:
-		push_warning("No Greed verses: " + GREED_VERSES_PATH)
+		push_warning("No sheet verses: " + SHEET_VERSES_PATH)
 		return
 	var data = JSON.parse_string(file.get_as_text())
 	if not (data is Dictionary):
-		push_warning("Couldn't read " + GREED_VERSES_PATH)
+		push_warning("Couldn't read " + SHEET_VERSES_PATH)
 		return
+	var known = {}
+	for v in all_verses:
+		known[v.ref] = true
 	for row in data.get("verses", []):
-		var greed = row.get("greed_damage", 0)
+		if known.has(row.ref):
+			continue
+		var sins: Dictionary = row.get("sins", {})
 		var all_sin = row.get("all_damage", 0)
+		var type = "heal"
+		var best = 0.0
+		for sin in sins:
+			if sins[sin] > best:
+				best = sins[sin]
+				type = sin
+		if type == "heal" and all_sin > 0:
+			type = "all"
 		var v = {
-			"ref": row.ref, "set": "greed",
-			"type": "greed" if greed > 0 or all_sin > 0 else "heal",
-			"damage": max(greed, all_sin), "greed_damage": greed, "all_damage": all_sin,
+			"ref": row.ref, "set": "sheet", "type": type,
+			"damage": max(best, all_sin), "sins": sins, "all_damage": all_sin,
+			"vs": row.get("vs", {}),
 			"heal": row.get("heal", 0), "jesus": row.get("jesus", false),
 			"translation": row.get("translation", ""),
 			"discovered": false,
 			"en": row.get("en", ""), "es": row.get("es", ""), "pl": row.get("pl", ""),
 		}
-		if get_verse(v.ref) == null:
-			all_verses.append(v)
+		all_verses.append(v)
+		known[v.ref] = true
 
 # Heals "percent" % of max HP, split between the targets: with two targets
 # each gets half of (percent % of THEIR max HP).
@@ -680,14 +726,17 @@ func _process(delta):
 func _update_verse_text():
 	if not verse_text:
 		return
-	var display = tr("Ready this cycle: %d of %d") % [VerseManager.remaining_count(), VerseManager.discovered.size()] + "\n\n"
+	if cycle_label:
+		cycle_label.text = tr("Ready this cycle: %d of %d") % [VerseManager.remaining_count(), VerseManager.discovered.size()]
+	# One row per verse: Index | Verse | Effects (alternating row shading)
+	var display = "[table=3]"
 	var shown = 0
 	for v in all_verses:
 		if not _passes_filter(v):
 			continue   # hidden by the filter buttons
 		shown += 1
-		var is_found = VerseManager.is_discovered(v.ref)
-		if is_found:
+		var bg = "bg=#2a2236,#211b2c"
+		if VerseManager.is_discovered(v.ref):
 			var body = verse_body(v)
 			# Used verses are greyed out until the cycle resets; ready ones are green
 			var used = VerseManager.is_used(v.ref)
@@ -695,28 +744,38 @@ func _update_verse_text():
 			var status = tr("(used)") if used else tr("(ready)")
 			var power = verse_power_text(v)
 			var kind = tr("Universal (All)") if v.type == "all" else tr(v.type.capitalize())
-			if v.get("set", "") == "greed":
-				kind = tr("Greed")
+			if v.get("set", "") == "sheet":
+				var kinds = []
+				for sin in v.get("sins", {}):
+					kinds.append(tr(sin.capitalize()))
+				if v.get("all_damage", 0) > 0:
+					kinds.append(tr("Universal (All)"))
+				if kinds.is_empty():
+					kinds.append(tr("Heal"))
+				kind = ", ".join(kinds)
 			# Words of Jesus: a small red cross after the reference, and the text in red when ready (like red-letter Bibles)
 			var jesus_mark = ""
 			if v.get("jesus", false):
-				jesus_mark = "  [color=#ff6b6b]† %s[/color]" % tr("Words of Jesus")
+				jesus_mark = " [color=#ff6b6b]†[/color]"
 				if not used:
 					body = "[color=#ff9a9a]%s[/color]" % body
-			display += "[color=%s]%s  %s%s\n%s  |  %s\n%s[/color]\n\n" % [color, VerseManager.ref_text(v.ref), status, jesus_mark, power, kind, body]
+			display += "[cell expand=2 %s][color=%s]%s%s\n[font_size=11]%s[/font_size][/color][/cell]" % [bg, color, VerseManager.ref_text(v.ref), jesus_mark, status]
+			display += "[cell expand=6 %s][color=%s]%s[/color][/cell]" % [bg, color, body]
+			display += "[cell expand=3 %s][color=%s][font_size=11]%s\n%s[/font_size][/color][/cell]" % [bg, color, power, kind]
 		else:
-			display += "???\n??%  |  ???\n\n"
+			display += "[cell expand=2 %s]???[/cell][cell expand=6 %s]???[/cell][cell expand=3 %s]??%%[/cell]" % [bg, bg, bg]
+	display += "[/table]"
 	if shown == 0:
-		display += tr("(No verses of this kind yet)")
+		display = tr("(No verses of this kind yet)")
 	verse_text.text = display
 
 # The short "what it does" line shown for each verse in the verse box
 # (and in the inventory).
 func verse_power_text(v) -> String:
-	if v.get("set", "") == "greed":
+	if v.get("set", "") == "sheet":
 		var parts = []
-		if v.get("greed_damage", 0) > 0:
-			parts.append(tr("%d%% vs Greed") % v.greed_damage)
+		for sin in v.get("sins", {}):
+			parts.append(tr("%d%% vs %s") % [v.sins[sin], tr(sin.capitalize())])
 		if v.get("all_damage", 0) > 0:
 			parts.append(tr("%d%% vs any sin") % v.all_damage)
 		if v.get("heal", 0) > 0:
@@ -1000,8 +1059,11 @@ func _attack(verse, enemy, damage_scale: float, can_counter: bool):
 	var base_damage = verse_damage_against(verse, enemy)
 	if base_damage < 0:
 		var msg = tr("No effect - it's %s type now!") % tr(type_name(enemy.enemy_type))
-		if verse.get("set", "") == "greed" or enemy.enemy_type == "":
-			msg = tr("No effect - this verse only hurts Greed-type enemies")
+		if verse.get("set", "") == "sheet":
+			var names = []
+			for sin in verse.get("sins", {}):
+				names.append(tr(sin.capitalize()))
+			msg = tr("No effect - this verse only hurts %s-type enemies") % "/".join(names)
 		enemy.show_popup(msg, Color(0.75, 0.75, 0.75))
 		_show_verse_message(msg)
 		if TurnManager.in_battle:
@@ -1090,7 +1152,7 @@ func _play_shofar():
 # Builds the Guard/Faith lines under the HP bar and the shofar sound player.
 func _build_status_labels():
 	var box = VBoxContainer.new()   # stacks the labels; hidden ones take no space
-	box.position = hp_bar.position + Vector2(0, hp_bar.size.y + 4)
+	box.position = hp_bar.position + Vector2(hp_bar.size.x + 10, -2)   # right of the HP bar (the verse box is below it)
 	box.add_child(guard_label)
 	faith_label = Label.new()
 	faith_label.add_theme_color_override("font_color", Color(1.0, 0.8, 0.45))
@@ -1143,49 +1205,117 @@ func _build_guard_effect():
 #   Top:    title + "Show all" button
 #   Row:    [Attacks] [Status] [Special] filter buttons (left / middle / right)
 #   Below:  the verse list
+# The HUD, laid out like the Unity version: the player's portrait in the
+# top-left corner, Run (turn_manager.gd) beside it, the HP bar under it.
+const HUD_HP_POS = Vector2(10, 72)
+const HUD_HP_SIZE = Vector2(240, 24)
+var portrait: Control
+
+func _layout_hud():
+	var hud = hp_bar.get_parent()
+	portrait = TurnManager.make_portrait(TurnManager.portrait_of(get_node_or_null("Sprite2D"), 3))
+	portrait.name = "PlayerPortrait"
+	portrait.position = Vector2(10, 10)
+	hud.add_child.call_deferred(portrait)
+	hp_bar.position = HUD_HP_POS
+	hp_bar.size = HUD_HP_SIZE
+	var fill = StyleBoxFlat.new()
+	fill.bg_color = Color(0.2, 0.75, 0.25)
+	fill.set_corner_radius_all(3)
+	hp_bar.add_theme_stylebox_override("fill", fill)
+	# the Zeal countdown goes beside Run, out of the verse box's way
+	var timer_label = hud.get_node_or_null("TimerLabel")
+	if timer_label:
+		timer_label.position = Vector2(206, 18)
+
+# The verse box (Tab): a compact panel in the top-left, under the HP bar, with
+# Index / Verse / Effects columns, so it never covers the characters (they
+# stand in the lower middle of the screen).
+const VERSE_PANEL_POS = Vector2(10, 102)
+const VERSE_PANEL_SIZE = Vector2(620, 184)
+var cycle_label: Label
+
 func _build_verse_panel():
 	var layer = CanvasLayer.new()
 	layer.name = "VerseListLayer"
 	add_child(layer)
 	verse_panel = Panel.new()
 	verse_panel.name = "VersePanel"
-	verse_panel.position = Vector2(30, 230)
-	verse_panel.size = Vector2(620, 330)
+	verse_panel.position = VERSE_PANEL_POS
+	verse_panel.size = VERSE_PANEL_SIZE
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.1, 0.1, 0.16, 0.9)
+	style.border_color = Color(0.45, 0.45, 0.6)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(4)
+	verse_panel.add_theme_stylebox_override("panel", style)
 	layer.add_child(verse_panel)
+	var w = VERSE_PANEL_SIZE.x
 	
 	var title = Label.new()
+	title.name = "Title"
 	title.text = "Verses (Tab to close)"
-	title.position = Vector2(10, 6)
+	title.position = Vector2(8, 3)
+	title.add_theme_font_size_override("font_size", 14)
 	verse_panel.add_child(title)
+	cycle_label = Label.new()
+	cycle_label.name = "CycleLabel"
+	cycle_label.position = Vector2(w * 0.38, 3)
+	cycle_label.add_theme_font_size_override("font_size", 13)
+	cycle_label.add_theme_color_override("font_color", Color(0.55, 0.85, 1.0))
+	verse_panel.add_child(cycle_label)
 	
 	var show_all = Button.new()
 	show_all.name = "ShowAllButton"
 	show_all.text = "Show all"
-	show_all.position = Vector2(530, 4)
+	show_all.position = Vector2(w - 86, 3)
+	show_all.size = Vector2(78, 22)
+	show_all.add_theme_font_size_override("font_size", 12)
 	show_all.focus_mode = Control.FOCUS_NONE   # so Enter/Space don't press it by accident
 	show_all.pressed.connect(_on_show_all_pressed)
 	verse_panel.add_child(show_all)
 	
-	# Three equal buttons side by side
+	# The filter buttons side by side
 	var row = HBoxContainer.new()
 	row.name = "FilterRow"
-	row.position = Vector2(10, 38)
-	row.size = Vector2(600, 31)
-	row.add_theme_constant_override("separation", 8)
+	row.position = Vector2(8, 28)
+	row.size = Vector2(w - 16, 24)
+	row.add_theme_constant_override("separation", 6)
 	verse_panel.add_child(row)
 	for group in FILTER_GROUPS:
 		var button = Button.new()
 		button.name = group + "Button"
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.focus_mode = Control.FOCUS_NONE
+		button.add_theme_font_size_override("font_size", 12)
 		button.pressed.connect(_on_group_pressed.bind(group))
 		row.add_child(button)
+	
+	# Column headings
+	var heads = HBoxContainer.new()
+	heads.name = "Columns"
+	heads.position = Vector2(8, 55)
+	heads.size = Vector2(w - 28, 16)
+	verse_panel.add_child(heads)
+	for c in [["Index", 2], ["Verse", 6], ["Effects", 3]]:
+		var h = Label.new()
+		h.text = c[0]
+		h.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		h.size_flags_stretch_ratio = c[1]
+		h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		h.add_theme_font_size_override("font_size", 12)
+		h.add_theme_color_override("font_color", Color(0.8, 0.8, 0.9))
+		heads.add_child(h)
 	
 	verse_text = RichTextLabel.new()
 	verse_text.name = "VerseText"
 	verse_text.bbcode_enabled = true   # allows colors in the verse list
-	verse_text.position = Vector2(10, 76)
-	verse_text.size = Vector2(600, 246)
+	verse_text.position = Vector2(6, 73)
+	verse_text.size = Vector2(w - 12, VERSE_PANEL_SIZE.y - 79)
+	verse_text.add_theme_font_size_override("normal_font_size", 13)
+	verse_text.add_theme_font_size_override("bold_font_size", 13)
+	verse_text.add_theme_constant_override("table_h_separation", 6)
+	verse_text.add_theme_constant_override("table_v_separation", 3)
 	verse_panel.add_child(verse_text)
 	_update_filter_buttons()
 

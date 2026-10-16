@@ -1,0 +1,2158 @@
+{
+ "_about": "Our own translations for blank cells of the verse sheet (tools/verses_from_sheet.py). Player verses are keyed by reference, enemy lines by their English text (or 'set|reference' when the sheet has no text). Written as brief renderings blending the sense of NLT, NASB and ESV; Spanish and Polish follow that wording.",
+ "player": {
+  "Exodus 34:21a": {
+   "pl": "Przez sześć dni będziesz pracował."
+  },
+  "Psalm 13:3": {
+   "pl": "Oświeć moje oczy, abym nie zasnął snem śmierci."
+  },
+  "Proverbs 10:26a": {
+   "pl": "Czym ocet dla zębów, tym leniwy dla tych, którzy go posyłają."
+  },
+  "Proverbs 10:26b": {
+   "pl": "Leniwi są jak dym w oczach swoich pracodawców."
+  },
+  "Proverbs 12:11a": {
+   "pl": "Kto uprawia swoją ziemię, będzie miał chleba pod dostatkiem."
+  },
+  "Proverbs 12:11b": {
+   "pl": "Kto goni za pustymi mrzonkami, nie ma rozumu."
+  },
+  "Proverbs 19:23a": {
+   "pl": "Bojaźń Pana prowadzi do życia."
+  },
+  "Proverbs 20:13a": {
+   "pl": "Nie kochaj snu, abyś nie popadł w ubóstwo."
+  },
+  "Proverbs 24:16b": {
+   "pl": "Kto goni za marnościami, nie ma rozumu."
+  },
+  "Ecclesiastes 5:12a": {
+   "pl": "Kto ciężko pracuje, śpi dobrze, czy je mało, czy dużo."
+  },
+  "Ecclesiastes 9:10": {
+   "pl": "Cokolwiek robisz, rób to dobrze. W grobie nie ma już pracy."
+  },
+  "Ecclesiastes 10:18": {
+   "pl": "Przez lenistwo zapada się dach, a przez bezczynność przecieka dom."
+  },
+  "Ecclesiastes 11:4a": {
+   "pl": "Rolnik, który czeka na idealną pogodę, nigdy nie sieje."
+  },
+  "Ecclesiastes 11:4b": {
+   "pl": "Rolnik, który patrzy na każdą chmurę, nigdy nie zbiera plonów."
+  },
+  "Isaiah 61:3b": {
+   "pl": "Baranek został posłany, by dać płaczącym olejek radości."
+  },
+  "Isaiah 61:3c": {
+   "pl": "Baranek został posłany, by dać ci szatę chwały zamiast ducha zwątpienia."
+  },
+  "Isaiah 61:10a": {
+   "pl": "Będę się radował w Panu, bo przyodział mnie w szaty zbawienia."
+  },
+  "Isaiah 61:10b": {
+   "pl": "Moja dusza będzie się weselić w moim Bogu, bo okrył mnie płaszczem sprawiedliwości."
+  },
+  "Jeremiah 17:13a": {
+   "es": "Señor, esperanza de Israel, todos los que te abandonan serán avergonzados.",
+   "pl": "Panie, nadziejo Izraela, wszyscy, którzy Cię opuszczają, zostaną zawstydzeni."
+  },
+  "Matthew 5:16a": {
+   "pl": "Niech wasze światło świeci przed ludźmi."
+  },
+  "Matthew 5:16b": {
+   "pl": "Niech ludzie widzą wasze dobre uczynki i chwalą waszego Ojca, który jest w niebie."
+  },
+  "John 5:17": {
+   "pl": "Jezus powiedział: „Mój Ojciec wciąż działa, więc i Ja działam”."
+  },
+  "Romans 5:3": {
+   "pl": "Chlubimy się w cierpieniach, bo one rodzą wytrwałość."
+  },
+  "Romans 5:4a": {
+   "pl": "Wytrwałość rodzi wypróbowany charakter."
+  },
+  "Romans 5:4b": {
+   "pl": "Wypróbowany charakter rodzi nadzieję."
+  },
+  "Romans 5:5a": {
+   "pl": "Nadzieja nas nie zawodzi."
+  },
+  "Romans 13:13": {
+   "pl": "Żyjmy jak ludzie za dnia, bez hulanek i innych wybryków."
+  },
+  "Romans 15:1": {
+   "pl": "My, mocni, powinniśmy znosić słabości słabych, a nie dogadzać sobie."
+  },
+  "Romans 15:3": {
+   "pl": "Chrystus nie dogadzał samemu sobie."
+  },
+  "Galatians 6:10a": {
+   "pl": "Póki mamy sposobność, czyńmy dobrze wszystkim."
+  },
+  "Ephesians 5:14b": {
+   "pl": "Obudź się, ty, który śpisz. Powstań z martwych, a zajaśnieje ci Chrystus."
+  },
+  "Ephesians 5:19": {
+   "pl": "Śpiewajcie psalmy i hymny, grając Panu w swoich sercach."
+  },
+  "Ephesians 5:20": {
+   "pl": "Dziękujcie zawsze za wszystko Bogu Ojcu w imię naszego Pana, Baranka."
+  },
+  "Ephesians 5:21": {
+   "pl": "Bądźcie sobie wzajemnie poddani w bojaźni Chrystusowej."
+  },
+  "1 Thessalonians 4:11": {
+   "pl": "Starajcie się żyć spokojnie i pracować własnymi rękami."
+  },
+  "1 Thessalonians 4:12 a": {
+   "pl": "Pracujcie, abyście postępowali przyzwoicie wobec tych, którzy są na zewnątrz."
+  },
+  "1 Thessalonians 5:6": {
+   "pl": "Nie śpijmy jak inni, lecz czuwajmy i bądźmy trzeźwi."
+  },
+  "1 Thessalonians 5:14a": {
+   "pl": "Upominajcie niekarnych, pocieszajcie małodusznych."
+  },
+  "2 Thessalonians 3:6a": {
+   "pl": "Trzymajcie się z dala od każdego wierzącego, który żyje bezczynnie."
+  },
+  "1 Timothy 5:6": {
+   "pl": "Ta, która żyje dla przyjemności, jest martwa, choć żyje."
+  },
+  "1 Timothy 5:8": {
+   "pl": "Kto nie troszczy się o swoich domowników, zaparł się wiary."
+  },
+  "James 1:2": {
+   "es": "Hermanos míos, considérenlo pura alegría cuando caigan en diversas pruebas.",
+   "pl": "Uważajcie to za pełną radość, bracia moi, gdy wpadacie w różne próby."
+  },
+  "James 1:3": {
+   "es": "Sabiendo que la prueba de su fe produce constancia.",
+   "pl": "Wiedząc, że próba waszej wiary rodzi wytrwałość."
+  },
+  "James 1:4": {
+   "es": "Que la constancia complete su obra, para que sean maduros y no les falte nada.",
+   "pl": "Niech wytrwałość dokona swego dzieła, abyście byli dojrzali i nie mieli żadnych braków."
+  },
+  "Romans 13:11a": {
+   "es": "Ya es hora de despertar del sueño.",
+   "pl": "Nadeszła godzina, abyście się obudzili ze snu."
+  },
+  "Romans 13:12b": {
+   "es": "Desechen las obras de las tinieblas y vístanse con la armadura de la luz.",
+   "pl": "Odrzućcie uczynki ciemności i przywdziejcie zbroję światła."
+  },
+  "Deuteronomy 21:20": {
+   "pl": "[Jeśli] jest żarłokiem i pijakiem, ma zostać stracony, aby usunąć zło."
+  },
+  "Ezra 8:23": {
+   "pl": "Pościliśmy więc i błagaliśmy naszego Boga, a On nas wysłuchał."
+  },
+  "Psalm 35:13": {
+   "pl": "Upokorzyłem swoją duszę postem."
+  },
+  "Proverbs 20:1b": {
+   "pl": "Kto daje się przez nie zwieść, nie jest mądry."
+  },
+  "Proverbs 23:1": {
+   "pl": "Gdy siadasz do stołu z władcą, uważnie patrz, co masz przed sobą."
+  },
+  "Proverbs 23:2": {
+   "pl": "Przyłóż nóż do gardła, jeśli jesteś łakomy."
+  },
+  "Proverbs 23:6": {
+   "pl": "Nie jedz chleba skąpca i nie pożądaj jego przysmaków."
+  },
+  "Proverbs 23:20a": {
+   "pl": "Nie przebywaj wśród tych, którzy piją za dużo wina."
+  },
+  "Proverbs 23:20b": {
+   "pl": "Nie przebywaj wśród tych, którzy obżerają się mięsem."
+  },
+  "Proverbs 23:21": {
+   "pl": "Ospałość ubiera żarłoka i pijaka w łachmany."
+  },
+  "Proverbs 23:29-30": {
+   "pl": "Kto ma biadę? Kłótnie? Skargi? Siniaki? Ci, którzy dużo piją."
+  },
+  "Proverbs 23:31": {
+   "pl": "Nie patrz na wino, gdy jest czerwone, gdy iskrzy się w kielichu i gładko spływa."
+  },
+  "Proverbs 23:32": {
+   "pl": "W końcu wino kąsa jak wąż i zatruwa jak żmija."
+  },
+  "Proverbs 25:16": {
+   "pl": "Jedz tyle, ile ci wystarczy, abyś się nie przejadł i nie zwymiotował."
+  },
+  "Proverbs 28:7": {
+   "pl": "Kto przestaje z żarłokami, przynosi wstyd ojcu."
+  },
+  "Proverbs 31:4-5": {
+   "pl": "Władcy nie powinni pić wina, aby nie wypaczali prawa należnego uciśnionym."
+  },
+  "Isaiah 5:11a": {
+   "pl": "Biada tym, którzy wstają, by gonić za mocnym trunkiem!"
+  },
+  "Isaiah 5:12": {
+   "pl": "Na ich ucztach są muzykanci i wino, ale nie zważają na dzieło Boga."
+  },
+  "Isaiah 28:7": {
+   "pl": "Kapłan i prorok są pochłonięci przez wino. Błądzą w widzeniu."
+  },
+  "Isaiah 55:2a": {
+   "pl": "Czemu płacisz za to, co nie jest chlebem, i trudzisz się dla tego, co nie syci?"
+  },
+  "Isaiah 55:2b": {
+   "pl": "Słuchajcie uważnie i jedzcie to, co dobre dla waszej duszy."
+  },
+  "Isaiah 58:7": {
+   "pl": "Dziel się chlebem z głodnym."
+  },
+  "Isaiah 58:10": {
+   "pl": "Otwórz swoje serce przed głodnym."
+  },
+  "Ezekiel 16:49": {
+   "pl": "Grzechy Sodomy: pycha, przesyt chleba i beztroska."
+  },
+  "Daniel 9:3": {
+   "pl": "Szukam Boga w modlitwie i błaganiach, w poście, worze i popiele."
+  },
+  "Hosea 4:11b": {
+   "pl": "Wino i moszcz odbierają rozum."
+  },
+  "Joel 2:12": {
+   "pl": "Jahwe mówi: „Nawróćcie się do mnie całym sercem, z postem i płaczem”."
+  },
+  "Amos 6:4-6": {
+   "pl": "Ucztują i piją wino, ale nie smucą się klęską Józefa."
+  },
+  "Amos 6:7": {
+   "pl": "Dlatego pójdą do niewoli."
+  },
+  "Jonah 3:5a": {
+   "pl": "Mieszkańcy Niniwy uwierzyli Bogu i ogłosili post."
+  },
+  "Zechariah 7:6": {
+   "pl": "W czasie moich świętych świąt jecie i pijecie tylko dla siebie."
+  },
+  "Matthew 6:18": {
+   "pl": "Niech ludzie nie widzą, że pościsz, a twój Ojciec cię nagrodzi."
+  },
+  "Matthew 9:15": {
+   "pl": "Gdy zabiorą im oblubieńca, wtedy będą pościć."
+  },
+  "Mark 2:20": {
+   "pl": "Gdy zabiorą oblubieńca, będą pościć."
+  },
+  "Luke 5:35": {
+   "pl": "Oblubieniec zostanie im zabrany. Wtedy będą pościć."
+  },
+  "Luke 21:34": {
+   "pl": "Uważajcie, aby wasze serca nie były obciążone pijaństwem i aby tamten dzień nie przyszedł nagle."
+  },
+  "John 4:34": {
+   "pl": "Moim pokarmem jest pełnić wolę Tego, który mnie posłał, i dokonać Jego dzieła."
+  },
+  "John 6:27a": {
+   "pl": "Nie zabiegajcie o pokarm, który niszczeje."
+  },
+  "John 6:27b": {
+   "pl": "Szukajcie pokarmu życia wiecznego, który da wam Syn Człowieczy."
+  },
+  "John 6:48": {
+   "pl": "Ja jestem chlebem życia."
+  },
+  "John 6:49": {
+   "pl": "Wasi ojcowie jedli mannę na pustyni i pomarli."
+  },
+  "John 6:55": {
+   "pl": "Moje ciało jest prawdziwym pokarmem, a moja krew prawdziwym napojem."
+  },
+  "John 6:57": {
+   "pl": "Kto mnie spożywa, ten będzie żył dzięki Mnie."
+  },
+  "Acts 13:2a": {
+   "pl": "Gdy służyli Panu i pościli, przemówił do nich Duch Święty."
+  },
+  "Acts 14:23": {
+   "pl": "Paweł modlił się z postem."
+  },
+  "Romans 13:13a": {
+   "pl": "Postępujmy przyzwoicie jak za dnia, nie w ucztach i pijaństwie."
+  },
+  "Romans 13:14": {
+   "pl": "Przyobleczcie się w Baranka i nie myślcie o tym, jak zaspokoić żądze ciała."
+  },
+  "1 Corinthians 10:7": {
+   "pl": "Nie bądźcie bałwochwalcami, jak napisano: „Lud zasiadł, by jeść i pić, i wstał, by się bawić”."
+  },
+  "1 Corinthians 10:31": {
+   "pl": "Czy jecie, czy pijecie, czy cokolwiek czynicie, wszystko czyńcie na chwałę Boga."
+  },
+  "2 Corinthians 11:27": {
+   "pl": "Znosiłem głód i pragnienie, często pościłem."
+  },
+  "Ephesians 5:18": {
+   "pl": "Nie upijajcie się winem, lecz bądźcie napełnieni Duchem."
+  },
+  "Philippians 3:19a": {
+   "pl": "Ich końcem jest zguba, a ich bogiem jest brzuch."
+  },
+  "Titus 1:12": {
+   "pl": "Karć surowo leniwych żarłoków, aby byli zdrowi w wierze."
+  },
+  "Hebrews 12:16": {
+   "pl": "Nie bądźcie bezbożni jak Ezaw, który za jeden posiłek sprzedał swoje pierworództwo."
+  },
+  "Hebrews 12:17": {
+   "pl": "Potem było już za późno na skruchę, choć błagał ze łzami."
+  },
+  "Genesis 2:24": {
+   "pl": "Mężczyzna opuści rodziców i złączy się z żoną, i staną się jednym ciałem."
+  },
+  "Genesis 39:12": {
+   "pl": "Józef zostawił swoją szatę w jej ręku i wybiegł na zewnątrz."
+  },
+  "Exodus 22:16": {
+   "pl": "Jeśli mężczyzna współżyje z dziewicą niezaręczoną, musi ją poślubić."
+  },
+  "Leviticus 18:22": {
+   "pl": "Nie będziesz obcował z mężczyzną tak jak z kobietą. To obrzydliwość."
+  },
+  "Deuteronomy 22:21b": {
+   "pl": "Ukamienujcie ją! Popełniła zło, uprawiając nierząd w domu ojca."
+  },
+  "Deuteronomy 22:28-29": {
+   "pl": "Jeśli mężczyzna współżyje z dziewicą, musi ją poślubić, bo ją zhańbił."
+  },
+  "Job 31:1": {
+   "pl": "Zawarłem przymierze z moimi oczami; jakże mógłbym patrzeć na dziewicę?"
+  },
+  "Psalm 101:3": {
+   "pl": "Nie postawię przed oczami niczego nikczemnego. Nienawidzę czynów niewiernych."
+  },
+  "Psalm 119:9": {
+   "pl": "Jak młodzieniec zachowa czystą swoją drogę? Żyjąc według Twojego słowa."
+  },
+  "Psalm 119:37a": {
+   "pl": "Odwróć moje oczy od patrzenia na marność."
+  },
+  "Psalm 119:37b": {
+   "pl": "Ożyw mnie na Twoich drogach."
+  },
+  "Proverbs 5:3-4": {
+   "pl": "Wargi cudzołożnicy ociekają miodem, ale w końcu jest gorzka jak trucizna."
+  },
+  "Proverbs 5:15": {
+   "pl": "Pij wodę z własnej cysterny, dziel swoją miłość tylko z żoną."
+  },
+  "Proverbs 5:16": {
+   "pl": "Czy twoje strumienie mają się rozlewać po ulicach i placach?"
+  },
+  "Proverbs 5:21": {
+   "pl": "Drogi człowieka są przed oczami Jahwe. On bada wszystkie jego ścieżki."
+  },
+  "Proverbs 6:26b": {
+   "pl": "Cudzołożnica poluje na twoje cenne życie."
+  },
+  "Proverbs 6:34": {
+   "pl": "Zazdrosny mąż nie okaże litości, gdy będzie się mścił."
+  },
+  "Proverbs 7:21-22": {
+   "pl": "Uwiedziony mężczyzna idzie za cudzołożnicą jak wół na rzeź."
+  },
+  "Ezekiel 16:31b": {
+   "pl": "Gorsza od nierządnicy, tak chętnie grzeszysz, że nawet nie żądasz zapłaty."
+  },
+  "Matthew 5:29a": {
+   "pl": "Jeśli twoje prawe oko jest ci powodem do upadku, wyłup je i odrzuć."
+  },
+  "Matthew 5:29b": {
+   "pl": "Lepiej, żeby zginęło twoje oko, niż żeby całe ciało zostało wrzucone do piekła."
+  },
+  "Matthew 5:30a": {
+   "pl": "Jeśli twoja prawa ręka jest ci powodem do upadku, odetnij ją i odrzuć od siebie."
+  },
+  "Matthew 5:30b": {
+   "pl": "Lepiej, żeby zginął jeden z twoich członków, niż żeby całe ciało zostało wrzucone do piekła."
+  },
+  "Matthew 5:32a": {
+   "pl": "Kto oddala swoją żonę, naraża ją na cudzołóstwo."
+  },
+  "Matthew 5:32b": {
+   "pl": "Kto poślubia rozwiedzioną, popełnia cudzołóstwo."
+  },
+  "Matthew 15:19-20": {
+   "pl": "Z serca pochodzą złe myśli, cudzołóstwa, grzechy nieczyste. To was kala."
+  },
+  "Matthew 18:9a": {
+   "pl": "Jeśli twoje oko jest ci powodem do upadku, wyłup je i odrzuć od siebie."
+  },
+  "Matthew 18:9b": {
+   "pl": "Lepiej wejść do życia z jednym okiem, niż mając dwoje, płonąć w piekle."
+  },
+  "Mark 7:21-23": {
+   "pl": "Z wnętrza wychodzą nierząd, cudzołóstwo i lubieżne pragnienia, które was kalają."
+  },
+  "Acts 15:29": {
+   "pl": "Powstrzymujcie się od nierządu, a dobrze wam będzie."
+  },
+  "Romans 1:24": {
+   "pl": "Bóg wydał ich ich żądzom, tak że hańbili własne ciała."
+  },
+  "Romans 1:26": {
+   "pl": "Nawet ich kobiety zamieniły naturalne współżycie na przeciwne naturze."
+  },
+  "Romans 1:27": {
+   "pl": "Mężczyźni obcujący z mężczyznami otrzymują w sobie należną zapłatę za swój błąd."
+  },
+  "Romans 1:32": {
+   "pl": "Ci, którzy takie rzeczy czynią, zasługują na śmierć."
+  },
+  "Romans 2:4": {
+   "pl": "Czy nie wiesz, że dobroć Boga prowadzi cię do nawrócenia?"
+  },
+  "Romans 6:12": {
+   "pl": "Nie pozwól, by grzech rządził twoim życiem; nie ulegaj żądzy."
+  },
+  "Romans 6:13a": {
+   "pl": "Nie oddawajcie żadnej części ciała jako narzędzia zła na służbę grzechowi."
+  },
+  "Romans 6:13b": {
+   "pl": "Oddajcie się raczej Bogu, bo byliście martwi, a narodziliście się na nowo."
+  },
+  "Romans 8:6": {
+   "pl": "Dążenie ciała to śmierć, a dążenie Ducha to życie i pokój."
+  },
+  "Romans 16:16b": {
+   "pl": "Chodźmy jak za dnia, nie w rozpuście i lubieżnych czynach."
+  },
+  "1 Corinthians 5:11": {
+   "pl": "Nie jadajcie nawet z bratem, który trwa w grzechu nierządu."
+  },
+  "1 Corinthians 6:13": {
+   "pl": "Ciało nie jest dla nierządu, lecz dla Pana."
+  },
+  "1 Corinthians 6:18a": {
+   "pl": "Uciekajcie od nierządu!"
+  },
+  "1 Corinthians 7:2a": {
+   "pl": "Z powodu nierządu niech każdy mężczyzna ma swoją żonę."
+  },
+  "1 Corinthians 7:2b": {
+   "pl": "Z powodu grzechu nieczystości niech każda kobieta ma swojego męża."
+  },
+  "1 Corinthians 7:8": {
+   "pl": "Mówię nieżonatym i wdowom: dobrze, jeśli takimi pozostaną."
+  },
+  "1 Corinthians 7:9a": {
+   "pl": "Lecz jeśli nie potrafią panować nad sobą, niech wstąpią w związek małżeński."
+  },
+  "1 Corinthians 7:9b": {
+   "pl": "Lepiej jest zawrzeć małżeństwo, niż płonąć z pożądania."
+  },
+  "1 Corinthians 13:8a": {
+   "pl": "Miłość nigdy nie ustaje."
+  },
+  "Ephesians 5:3": {
+   "pl": "Niech nierząd nawet nie będzie wspominany wśród was, jak przystoi świętym."
+  },
+  "Ephesians 5:4": {
+   "pl": "Niech nie będzie plugawości ani prostackich żartów, lecz raczej dziękczynienie."
+  },
+  "Colossians 3:1": {
+   "pl": "Jeśli zostaliście wskrzeszeni z Chrystusem, szukajcie tego, co w górze, gdzie jest Chrystus."
+  },
+  "Colossians 3:3": {
+   "pl": "Umarliście, a wasze życie jest ukryte z Chrystusem w Bogu."
+  },
+  "Colossians 3:4": {
+   "pl": "Gdy ukaże się Chrystus, nasze życie, wtedy i wy ukażecie się w chwale."
+  },
+  "Colossians 3:5a": {
+   "pl": "Zadajcie więc śmierć temu, co ziemskie w was."
+  },
+  "Colossians 3:5b": {
+   "pl": "Zabijcie w sobie nierząd, nieczystość, wyuzdaną żądzę i złe pragnienia."
+  },
+  "1 Thessalonians 4:3": {
+   "pl": "Wolą Boga jest wasze uświęcenie: abyście powstrzymywali się od nierządu."
+  },
+  "1 Thessalonians 4:4": {
+   "pl": "Bóg chce, abyście umieli panować nad swoim ciałem w świętości i czci."
+  },
+  "1 Thessalonians 4:5": {
+   "pl": "Bóg nie chce, abyście żyli w pożądliwej namiętności jak poganie."
+  },
+  "1 Thessalonians 4:6": {
+   "pl": "Niech nikt nie wykorzystuje drugiego w sprawach płciowych; Pan za to ukarze."
+  },
+  "1 Thessalonians 4:7": {
+   "pl": "Bóg nie powołał nas do nieczystości, lecz do świętości."
+  },
+  "1 Thessalonians 4:8a": {
+   "pl": "Kto lekceważy tę naukę, lekceważy Boga."
+  },
+  "1 Timothy 5:14": {
+   "pl": "Młode wdowy niech wychodzą za mąż, by nie dawać powodu do oszczerstw."
+  },
+  "2 Timothy 2:15a": {
+   "pl": "Staraj się stanąć przed Bogiem jako ten, który nie musi się wstydzić."
+  },
+  "2 Timothy 2:16": {
+   "pl": "Unikaj pustej gadaniny, bo prowadzi do jeszcze większej bezbożności."
+  },
+  "2 Timothy 2:19": {
+   "pl": "Niech każdy, kto wzywa imienia Pana, odstąpi od zła."
+  },
+  "Titus 3:3a, 5": {
+   "pl": "Kiedyś służyliśmy żądzom, ale Bóg obmył nasze grzechy i dał nam nowe życie."
+  },
+  "Titus 3:8": {
+   "pl": "Mów z ufnością o łasce, aby wierzący trwali w dobrych uczynkach."
+  },
+  "Hebrews 13:4a": {
+   "pl": "Niech małżeństwo będzie w czci u wszystkich, a łoże nieskalane."
+  },
+  "Hebrews 13:4b": {
+   "pl": "Bóg osądzi rozpustników i cudzołożników."
+  },
+  "1 Peter 2:11": {
+   "pl": "Umiłowani, proszę was, powstrzymujcie się od cielesnych żądz, które walczą przeciw duszy."
+  },
+  "1 Peter 3:3-4": {
+   "pl": "Nie troszczcie się o piękno zewnętrzne, lecz o piękno serca."
+  },
+  "Jude 1:7": {
+   "pl": "Sodoma i Gomora są dane jako przykład, cierpiąc karę wiecznego ognia."
+  },
+  "Jude 1:18": {
+   "pl": "W czasach ostatecznych pojawią się szydercy, kierujący się własnymi bezbożnymi żądzami."
+  },
+  "Ezekiel 37:23b": {
+   "pl": "Wybawię ich ze wszystkich jaskiń grzechu i oczyszczę ich."
+  },
+  "Genesis 4:6": {
+   "pl": "Bóg rzekł do Kaina: „Dlaczego się gniewasz? Dlaczego twarz ci posępnieje?”"
+  },
+  "Genesis 4:7a": {
+   "pl": "Jeśli będziesz postępował dobrze, czyż nie podniesiesz twarzy z uśmiechem?"
+  },
+  "Genesis 4:7b": {
+   "pl": "Jeśli nie będziesz postępował dobrze, grzech czyha u drzwi."
+  },
+  "Genesis 4:7c": {
+   "pl": "Grzech pożąda ciebie, ale ty masz nad nim panować."
+  },
+  "Exodus 20:13": {
+   "pl": "Nie zabijaj."
+  },
+  "Psalm 4:4a": {
+   "pl": "Drżyjcie, a nie grzeszcie."
+  },
+  "Psalm 4:4b": {
+   "pl": "Zbadaj swoje serce na łożu i uspokój się."
+  },
+  "Psalm 37:8a": {
+   "pl": "Przestań się gniewać i porzuć zapalczywość."
+  },
+  "Psalm 37:8b": {
+   "pl": "Irytacja prowadzi tylko do zła."
+  },
+  "Psalm 107:17": {
+   "pl": "Byli głupcy, którzy cierpieli z powodu swoich grzechów."
+  },
+  "Proverbs 1:22a": {
+   "pl": "Jak długo, prostaczkowie, będziecie kochać prostactwo?"
+  },
+  "Proverbs 1:22b": {
+   "pl": "Jak długo szydercy będą lubować się w szyderstwie, a głupcy nienawidzić wiedzy?"
+  },
+  "Proverbs 9:8a": {
+   "pl": "Nie trudź się upominaniem szyderców; tylko cię znienawidzą."
+  },
+  "Proverbs 9:8b": {
+   "pl": "Upominaj mądrego, a pokocha cię."
+  },
+  "Proverbs 10:12": {
+   "pl": "Nienawiść wzbudza kłótnie, ale miłość zakrywa wszystkie winy."
+  },
+  "Proverbs 10:18a": {
+   "pl": "Kto ukrywa nienawiść, staje się kłamcą."
+  },
+  "Proverbs 10:18b": {
+   "pl": "Kto oczernia innych, jest głupcem."
+  },
+  "Proverbs 12:16a": {
+   "pl": "Głupiec od razu okazuje swój gniew."
+  },
+  "Proverbs 12:16b": {
+   "pl": "Kto puszcza zniewagę mimo uszu, jest mądry."
+  },
+  "Proverbs 14:17a": {
+   "pl": "Porywczy postępują głupio."
+  },
+  "Proverbs 14:17b": {
+   "pl": "Ci, którzy knują zło, są znienawidzeni."
+  },
+  "Proverbs 14:29a": {
+   "pl": "Kto jest nieskory do gniewu, ma wielki rozum."
+  },
+  "Proverbs 14:29b": {
+   "pl": "Porywczy wynoszą głupotę."
+  },
+  "Proverbs 15:1a": {
+   "pl": "Łagodna odpowiedź uśmierza gniew."
+  },
+  "Proverbs 15:1b": {
+   "pl": "Przykre słowo wzbudza złość."
+  },
+  "Proverbs 15:18a": {
+   "pl": "Człowiek porywczy wszczyna kłótnie."
+  },
+  "Proverbs 15:18b": {
+   "pl": "Człowiek opanowany kłótnie łagodzi."
+  },
+  "Proverbs 16:32a": {
+   "pl": "Cierpliwy przewyższa mocarza."
+  },
+  "Proverbs 16:32b": {
+   "pl": "Kto panuje nad sobą, jest lepszy od tego, kto zdobywa miasto."
+  },
+  "Proverbs 17:14": {
+   "pl": "Zaczynać kłótnię to jak otwierać śluzę; lepiej przestań, zanim będzie gorzej."
+  },
+  "Proverbs 17:27a": {
+   "pl": "Kto powściąga swoje słowa, ma wiedzę."
+  },
+  "Proverbs 17:27b": {
+   "pl": "Człowiek opanowany ma rozum."
+  },
+  "Proverbs 19:11a": {
+   "pl": "Rozsądek czyni człowieka nieskorym do gniewu."
+  },
+  "Proverbs 19:11b": {
+   "pl": "Zdobywasz szacunek, puszczając w niepamięć osobistą urazę."
+  },
+  "Proverbs 20:1a": {
+   "pl": "Wino jest szydercą, a piwo awanturnikiem."
+  },
+  "Proverbs 20:3": {
+   "pl": "Unikanie kłótni przynosi człowiekowi cześć, bo każdy głupiec potrafi wybuchnąć gniewem."
+  },
+  "Proverbs 22:24a": {
+   "pl": "Nie przyjaźnij się z człowiekiem porywczym."
+  },
+  "Proverbs 22:25": {
+   "pl": "Nauczysz się dróg gniewliwego przyjaciela i wpadniesz w pułapkę."
+  },
+  "Proverbs 26:4": {
+   "pl": "Jeśli odpowiesz głupcowi głupio, staniesz się do niego podobny."
+  },
+  "Proverbs 26:5": {
+   "pl": "Odpowiedz głupcowi tak, jak na to zasługuje jego głupota, aby nie uważał się za mądrego."
+  },
+  "Proverbs 27:4a": {
+   "pl": "Zapalczywość jest okrutna, a gniew jak powódź."
+  },
+  "Proverbs 29:11a": {
+   "pl": "Głupiec wylewa cały swój gniew."
+  },
+  "Proverbs 29:11b": {
+   "pl": "Mądry powściąga swój wybuch."
+  },
+  "Ecclesiastes 7:9": {
+   "pl": "Nie bądź skory do gniewu, bo gniew czyni cię głupcem."
+  },
+  "Matthew 5:22a": {
+   "pl": "Każdy, kto gniewa się na swego brata, podlega sądowi."
+  },
+  "Matthew 5:22b": {
+   "pl": "Kto powie swemu bratu „Nicponiu”, podlega Wysokiej Radzie."
+  },
+  "Matthew 5:22c": {
+   "pl": "Kto powie „Głupcze”, zasługuje na ogień piekła."
+  },
+  "John 7:7": {
+   "pl": "Świat nie może was nienawidzić, ale Mnie nienawidzi, bo świadczę, że jego uczynki są złe."
+  },
+  "Romans 12:17a": {
+   "pl": "Nigdy nie odpłacajcie złem za zło."
+  },
+  "Romans 12:18": {
+   "pl": "Jeśli to możliwe, o ile to od was zależy, żyjcie w pokoju ze wszystkimi ludźmi."
+  },
+  "Romans 12:19a": {
+   "pl": "Nie mścijcie się sami, umiłowani, lecz zostawcie miejsce dla gniewu Bożego."
+  },
+  "Romans 12:19b": {
+   "pl": "Napisano: „Do mnie należy pomsta; Ja odpłacę, mówi Pan”."
+  },
+  "Romans 12:20a": {
+   "pl": "Dlatego: „Jeśli twój nieprzyjaciel jest głodny lub spragniony, pomóż mu”."
+  },
+  "Romans 12:20b": {
+   "pl": "Bo pomagając nieprzyjacielowi, zgromadzisz węgle żarzące na jego głowę."
+  },
+  "Romans 12:21": {
+   "pl": "Nie daj się zwyciężyć złu, lecz zło dobrem zwyciężaj."
+  },
+  "1 Corinthians 10:24": {
+   "pl": "Nie szukaj własnej korzyści, lecz dobra bliźniego."
+  },
+  "1 Corinthians 13:5": {
+   "pl": "Miłość nie unosi się gniewem, nie pamięta złego."
+  },
+  "1 Corinthians 13:7b": {
+   "pl": "Miłość wszystko przetrzyma."
+  },
+  "Ephesians 4:26": {
+   "pl": "Gniewajcie się, a nie grzeszcie; niech słońce nie zachodzi nad waszym gniewem."
+  },
+  "Ephesians 4:27": {
+   "pl": "Nie dawajcie miejsca diabłu."
+  },
+  "Luke 3:11b": {
+   "pl": "Kto ma żywność, niech da temu, kto jej nie ma."
+  },
+  "Luke 12:24a": {
+   "pl": "Przypatrzcie się krukom: nie sieją ani nie żną, a jednak Bóg je karmi."
+  },
+  "Luke 12:29": {
+   "pl": "Nie zabiegajcie o to, co będziecie jeść i pić — nie niepokójcie się."
+  },
+  "Acts 19:19b": {
+   "es": "El precio de los libros quemados fue de cincuenta mil piezas de plata.",
+   "pl": "Cena spalonych ksiąg wyniosła pięćdziesiąt tysięcy srebrników."
+  },
+  "2 Corinthians 11:23c": {
+   "pl": "Wciąż na nowo stawałem w obliczu śmierci, służąc Chrystusowi."
+  },
+  "James 4:15": {
+   "pl": "Powinniście mówić: „Jeśli Pan zechce, będziemy żyli i zrobimy to lub tamto”."
+  },
+  "Hebrews 13:2b": {
+   "pl": "Niektórzy, nie wiedząc o tym, gościli aniołów."
+  },
+  "Exodus 20:25": {
+   "pl": "Nie będziesz oddawał czci bożkom… Bo Ja… jestem Bogiem zazdrosnym, karzącym… tych, którzy Mnie nienawidzą."
+  },
+  "Deuteronomy 8:17": {
+   "pl": "Strzeż się, abyś nie powiedział w sercu: „Moja siła zdobyła mi to bogactwo”."
+  },
+  "Ecclesiastes 5:12b": {
+   "pl": "Bogacz rzadko przesypia spokojnie noc."
+  },
+  "Isaiah 58:10b": {
+   "es": "Sacia al alma afligida, y tu luz brillará en las tinieblas.",
+   "pl": "Nasyć duszę strapioną, a twoje światło zabłyśnie w ciemności."
+  },
+  "Psalm 49:16b": {
+   "pl": "Nie daj się onieśmielić, gdy wspaniałość jego domu wciąż rośnie."
+  },
+  "Proverbs 21:26": {
+   "es": "Algunos codician con avidez todo el día; pero el justo da y no se guarda nada.",
+   "pl": "Niektórzy przez cały dzień chciwie pożądają, ale sprawiedliwy daje i nie skąpi."
+  },
+  "Mark 7:21-22 (2)": {
+   "es": "Del corazón salen los malos pensamientos, los robos, los asesinatos, el engaño, la envidia y la necedad.",
+   "pl": "Z serca wychodzą złe myśli, kradzieże, zabójstwa, podstęp, zazdrość i głupota."
+  },
+  "1 Samuel 15:23a": {
+   "es": "Porque la rebelión es como el pecado de hechicería.",
+   "pl": "Bunt jest jak grzech czarownictwa."
+  },
+  "2 Chronicles 32:26": {
+   "es": "Ezequías se humilló, y la ira de Dios no cayó sobre ellos.",
+   "pl": "Ezechiasz upokorzył się, więc gniew Boży nie spadł na nich."
+  },
+  "Psalm 10:4a": {
+   "es": "En su orgullo, los malvados no buscan a Dios.",
+   "pl": "W swojej pysze bezbożni nie szukają Boga."
+  },
+  "Psalm 36:11a": {
+   "es": "Que no me pisotee el pie del soberbio.",
+   "pl": "Niech nie depcze mnie stopa pysznych."
+  },
+  "Proverbs 18:12a": {
+   "es": "Antes de la ruina, el corazón del hombre se enorgullece.",
+   "pl": "Przed upadkiem serce człowieka się wynosi."
+  },
+  "Isaiah 28:12": {
+   "en": "This is the place of rest; let the weary rest here. But they would not listen.",
+   "es": "Este es el lugar de descanso; dejen descansar al cansado. Pero no quisieron escuchar.",
+   "pl": "Oto miejsce odpoczynku; dajcie odpocząć znużonym. Lecz nie chcieli słuchać."
+  },
+  "Isaiah 64:6-7": {
+   "en": "All our righteous deeds are like filthy rags; no one calls on your name or stirs himself to hold on to you.",
+   "es": "Todas nuestras obras justas son como trapos sucios; nadie invoca tu nombre ni se esfuerza por aferrarse a ti.",
+   "pl": "Wszystkie nasze dobre uczynki są jak brudne szmaty; nikt nie wzywa Twojego imienia ani nie stara się Ciebie uchwycić."
+  },
+  "Habakkuk 2:4a": {
+   "es": "¡Mira al soberbio! Confía en sí mismo y su vida es torcida.",
+   "pl": "Spójrz na pysznego! Ufa sobie, a jego życie jest wypaczone."
+  },
+  "Habakkuk 2:4b": {
+   "es": "Pero el justo vivirá por su fe.",
+   "pl": "Ale sprawiedliwy będzie żył dzięki swojej wierze."
+  },
+  "Matthew 11:25b": {
+   "es": "Escondiste estas cosas de los sabios y las revelaste a los niños.",
+   "pl": "Ukryłeś te rzeczy przed mądrymi, a objawiłeś je prostaczkom."
+  },
+  "Mark 7:21-23 (2)": {
+   "es": "Del corazón de una persona salen los malos pensamientos, el engaño, la calumnia y el orgullo que te contaminan.",
+   "pl": "Z serca człowieka wychodzą złe myśli, podstęp, oszczerstwo i pycha, które was kalają."
+  },
+  "John 6:29": {
+   "es": "Esta es la obra de Dios: que crean en Aquel que Él ha enviado.",
+   "pl": "To jest dzieło Boże: abyście wierzyli w Tego, którego On posłał."
+  },
+  "Romans 5:15": {
+   "en": "The gift is not like the trespass: if many died through one man's sin, much more did God's grace overflow to many through Jesus Christ.",
+   "es": "El don no es como la transgresión: si por el pecado de uno murieron muchos, mucho más abundó para muchos la gracia de Dios por Jesucristo.",
+   "pl": "Dar nie jest jak upadek: jeśli przez grzech jednego wielu umarło, o wiele obficiej spłynęła na wielu łaska Boża przez Jezusa Chrystusa."
+  },
+  "Romans 10:4": {
+   "en": "Christ is the end of the law, bringing righteousness to everyone who believes.",
+   "es": "Cristo es el fin de la ley, para que todo el que cree reciba la justicia.",
+   "pl": "Chrystus jest końcem Prawa, aby każdy, kto wierzy, dostąpił sprawiedliwości."
+  },
+  "1 Corinthians 13:4b": {
+   "es": "El amor no presume. El amor no es orgulloso.",
+   "pl": "Miłość się nie przechwala. Miłość nie jest pyszna."
+  },
+  "Ephesians 2:9": {
+   "en": "Salvation is not from works, so that no one can boast.",
+   "es": "La salvación no es por obras, para que nadie se jacte.",
+   "pl": "Zbawienie nie pochodzi z uczynków, aby nikt się nie chlubił."
+  },
+  "Philippians 3:3": {
+   "es": "Nos gloriamos en el Cordero y no ponemos nuestra confianza en la carne.",
+   "pl": "Chlubimy się Barankiem i nie pokładamy ufności w ciele."
+  },
+  "1 Timothy 6:3-4": {
+   "en": "Whoever teaches otherwise and rejects the sound words of our Lord Jesus Christ is puffed up with pride and understands nothing.",
+   "es": "Quien enseña otra cosa y rechaza las sanas palabras de nuestro Señor Jesucristo está envanecido y no entiende nada.",
+   "pl": "Kto naucza inaczej i odrzuca zdrowe słowa naszego Pana Jezusa Chrystusa, jest nadęty pychą i nic nie rozumie."
+  },
+  "Matthew 11:30": {
+   "es": "Porque mi yugo es fácil y mi carga es ligera.",
+   "pl": "Bo moje jarzmo jest słodkie, a moje brzemię lekkie."
+  },
+  "Matthew 12:20": {
+   "es": "No quebrará la caña cascada.",
+   "pl": "Nie złamie trzciny nadłamanej."
+  },
+  "John 6:35a": {
+   "es": "Yo soy el pan de vida; el que viene a Mí no tendrá hambre.",
+   "pl": "Ja jestem chlebem życia; kto przychodzi do Mnie, nie będzie łaknął."
+  },
+  "John 6:35b": {
+   "es": "El que cree en Mí nunca tendrá sed.",
+   "pl": "Kto we Mnie wierzy, nigdy nie będzie pragnął."
+  },
+  "Romans 5:10b": {
+   "es": "¡Cuánto más nos salvará ahora su vida!",
+   "pl": "O ileż bardziej Jego życie teraz nas zbawi!"
+  },
+  "Romans 5:18b": {
+   "es": "Por un solo acto de justicia, todos fueron justificados para vida.",
+   "pl": "Przez jeden czyn sprawiedliwy wszyscy zostali usprawiedliwieni do życia."
+  },
+  "Romans 5:19b": {
+   "es": "Por la obediencia de uno solo, muchos serán hechos justos.",
+   "pl": "Przez posłuszeństwo jednego wielu stanie się sprawiedliwymi."
+  },
+  "2 Corinthians 3:6a": {
+   "es": "Somos servidores de un nuevo pacto, no de la letra sino del Espíritu.",
+   "pl": "Jesteśmy sługami nowego przymierza, nie litery, lecz Ducha."
+  },
+  "2 Corinthians 3:6b": {
+   "es": "Porque la letra mata, pero el Espíritu da vida.",
+   "pl": "Bo litera zabija, a Duch ożywia."
+  },
+  "1 Thessalonians 5:14b": {
+   "es": "Ayuden a los débiles; sean pacientes con todos.",
+   "pl": "Wspierajcie słabych; bądźcie cierpliwi wobec wszystkich."
+  },
+  "Isaiah 57:15": {
+   "pl": "Przywracam zmiażdżonego ducha pokornych i ożywiam odwagę skruszonych."
+  },
+  "Psalm 4:8": {
+   "es": "En paz me acostaré y dormiré, porque solo Tú, Dios, me haces vivir seguro.",
+   "pl": "W pokoju się kładę i zasypiam, bo tylko Ty, Boże, dajesz mi bezpiecznie mieszkać."
+  },
+  "Psalm 23:1": {
+   "es": "Yahvé es mi pastor; nada me faltará.",
+   "pl": "Jahwe jest moim pasterzem; niczego mi nie zabraknie."
+  },
+  "Psalm 23:2": {
+   "es": "Me hace descansar en verdes pastos. Me conduce junto a aguas tranquilas.",
+   "pl": "Pozwala mi leżeć na zielonych pastwiskach. Prowadzi mnie nad spokojne wody."
+  },
+  "Psalm 23:3": {
+   "es": "Restaura mi alma. Me guía por sendas de justicia por amor de su nombre.",
+   "pl": "Odnawia moją duszę. Prowadzi mnie ścieżkami sprawiedliwości przez wzgląd na swoje imię."
+  },
+  "Psalm 23:5a": {
+   "es": "Preparas una mesa delante de mí en presencia de mis enemigos.",
+   "pl": "Zastawiasz przede mną stół na oczach moich wrogów."
+  },
+  "Psalm 23:5b": {
+   "es": "Unges mi cabeza con aceite. Mi copa rebosa.",
+   "pl": "Namaszczasz mi głowę olejkiem. Mój kielich jest przepełniony."
+  },
+  "Psalm 23:6a": {
+   "es": "Ciertamente el bien y la misericordia me seguirán todos los días de mi vida.",
+   "pl": "Zaiste, dobroć i łaska pójdą za mną przez wszystkie dni mego życia."
+  },
+  "Psalm 51:7a": {
+   "pl": "Oczyść mnie hyzopem, a będę czysty."
+  },
+  "Psalm 51:7b": {
+   "pl": "Obmyj mnie, a stanę się bielszy od śniegu."
+  },
+  "Psalm 73:26 (2)": {
+   "pl": "Ustaje moje ciało i serce, ale Bóg jest siłą mego serca i moim działem na wieki."
+  },
+  "Psalm 103:2": {
+   "es": "Alaba a Yahvé, alma mía, y no olvides ninguno de sus beneficios.",
+   "pl": "Błogosław, duszo moja, Jahwe i nie zapominaj o żadnym z Jego dobrodziejstw."
+  },
+  "Psalm 103:4a": {
+   "es": "Yahvé rescata tu vida del hoyo.",
+   "pl": "Jahwe wybawia twoje życie z dołu."
+  },
+  "Jeremiah 29:11": {
+   "es": "Mis planes para ustedes son de paz y no de mal, para darles esperanza y un futuro.",
+   "pl": "Moje zamiary wobec was to pokój, a nie zło, aby dać wam nadzieję i przyszłość."
+  },
+  "Matthew 7:12": {
+   "en": "Whatever you want others to do for you, do the same for them; this sums up the Law and the Prophets.",
+   "es": "Todo lo que quieran que los demás hagan por ustedes, háganlo también por ellos; esto resume la Ley y los Profetas.",
+   "pl": "Wszystko, co chcielibyście, aby inni wam czynili, i wy im czyńcie; w tym streszcza się Prawo i Prorocy."
+  },
+  "Matthew 7:26": {
+   "pl": "Każdy, kto słucha moich słów, a nie wypełnia ich, będzie jak głupiec, który zbudował dom na piasku."
+  },
+  "Matthew 7:27": {
+   "pl": "Spadł deszcz, wezbrały wody, zerwały się wiatry i uderzyły w ten dom; runął, a jego upadek był wielki."
+  },
+  "Psalm 119:37": {
+   "en": "Turn my eyes away from worthless things, and give me life in your ways.",
+   "es": "Aparta mis ojos de las cosas inútiles y dame vida en tus caminos.",
+   "pl": "Odwróć moje oczy od marności i daj mi życie na Twoich drogach."
+  },
+  "Galatians 5:22-23": {
+   "en": "The fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faithfulness, gentleness and self-control.",
+   "es": "El fruto del Espíritu es amor, gozo, paz, paciencia, bondad, benignidad, fidelidad, mansedumbre y dominio propio.",
+   "pl": "Owocem Ducha jest miłość, radość, pokój, cierpliwość, uprzejmość, dobroć, wierność, łagodność i opanowanie."
+  },
+  "Romans 12:1": {
+   "en": "By God's mercies, offer your bodies as a living sacrifice, holy and pleasing to God; this is your true worship.",
+   "es": "Por las misericordias de Dios, ofrezcan sus cuerpos como sacrificio vivo, santo y agradable a Dios; este es su verdadero culto.",
+   "pl": "Przez miłosierdzie Boże składajcie swoje ciała jako żywą ofiarę, świętą i miłą Bogu; to jest wasza prawdziwa służba."
+  },
+  "Hebrews 2:18": {
+   "pl": "Ponieważ sam cierpiał, gdy był kuszony, może pomóc tym, którzy są kuszeni."
+  },
+  "James 4:4a": {
+   "pl": "Cudzołożnicy, czy nie wiecie, że przyjaźń ze światem jest wrogością wobec Boga?"
+  },
+  "James 4:4b": {
+   "pl": "Kto więc chce być przyjacielem świata, staje się wrogiem Boga."
+  },
+  "James 4:5": {
+   "pl": "Czy myślicie, że Pismo na próżno mówi: „Zazdrośnie pragnie Ducha, którego w nas osadził”?"
+  },
+  "1 Corinthians 10:13c": {
+   "pl": "Bóg da wyjście, abyście mogli przetrwać pokusę."
+  },
+  "1 Peter 5:8b": {
+   "pl": "Diabeł krąży jak lew ryczący, szukając, kogo pożreć."
+  },
+  "Jeremiah 3:22": {
+   "pl": "Wróćcie, odstępcze dzieci, a uleczę wasze odstępstwo."
+  },
+  "Isaiah 12:2b": {
+   "es": "El Señor mismo es mi fuerza y mi defensa; Él se ha convertido en mi salvación.",
+   "pl": "Sam Pan jest moją siłą i obroną; On stał się moim zbawieniem."
+  },
+  "Romans 4:14": {
+   "en": "If the heirs are those who rely on the law, faith is emptied and the promise is void.",
+   "es": "Si los herederos son los que dependen de la ley, la fe queda vacía y la promesa anulada.",
+   "pl": "Jeśli dziedzicami są ci, którzy polegają na Prawie, wiara staje się pusta, a obietnica unieważniona."
+  },
+  "Romans 4:23": {
+   "es": "Las palabras «la fe le fue contada por justicia» no se escribieron solo por Abraham.",
+   "pl": "Słowa „wiara została mu poczytana za sprawiedliwość” nie zostały napisane tylko ze względu na Abrahama."
+  },
+  "Psalm 31:2": {
+   "es": "Sé para mí una roca fuerte, una fortaleza para salvarme.",
+   "pl": "Bądź dla mnie mocną skałą, twierdzą, która mnie ocali."
+  },
+  "Proverbs 4:7b": {
+   "pl": "Choćby kosztowało cię to cały majątek, nabywaj rozumu."
+  },
+  "Proverbs 10:14": {
+   "pl": "Mądrzy gromadzą wiedzę, a usta głupca wszystko psują."
+  },
+  "Colossians 3:2": {
+   "pl": "Myślcie o tym, co w górze, a nie o tym, co na ziemi."
+  },
+  "Ephesians 5:16": {
+   "es": "Aprovechen al máximo cada oportunidad en estos días malos.",
+   "pl": "Wykorzystujcie każdą sposobność w tych złych dniach."
+  },
+  "1 Corinthians 9:27": {
+   "en": "I discipline my body and keep it under control, so that after preaching to others I myself will not be disqualified.",
+   "es": "Disciplino mi cuerpo y lo mantengo bajo control, para que después de predicar a otros yo mismo no quede descalificado.",
+   "pl": "Ćwiczę swoje ciało i trzymam je w ryzach, abym głosząc innym, sam nie został zdyskwalifikowany."
+  },
+  "Hebrews 10:36": {
+   "en": "You need endurance, so that after doing God's will you may receive what he promised.",
+   "es": "Necesitan perseverancia, para que después de hacer la voluntad de Dios reciban lo que Él prometió.",
+   "pl": "Potrzebujecie wytrwałości, abyście wypełniwszy wolę Bożą otrzymali to, co obiecał."
+  },
+  "Numbers 21:8": {
+   "pl": "Pan rzekł: „Zrób węża i umieść go na palu, a każdy ukąszony, kto na niego spojrzy, będzie żył”."
+  },
+  "Numbers 21:9b": {
+   "pl": "Gdy wąż kogoś ukąsił, ten patrzył na miedzianego węża i pozostawał przy życiu."
+  },
+  "Isaiah 25:8": {
+   "pl": "Zniszczy śmierć na zawsze, a Pan Bóg otrze łzy z każdego oblicza."
+  },
+  "1 Corinthians 15:22": {
+   "pl": "Jak w Adamie wszyscy umierają, tak też w Chrystusie wszyscy zostaną ożywieni."
+  },
+  "1 Corinthians 15:57": {
+   "pl": "Lecz dzięki niech będą Bogu, który daje nam zwycięstwo przez Baranka."
+  },
+  "2 Kings 17:15": {
+   "pl": "Wzgardzili ostrzeżeniami Boga, poszli za fałszywymi bożkami i sami stali się fałszywi."
+  },
+  "Psalm 115:8": {
+   "pl": "Podobni do bożków są ci, którzy je robią, i wszyscy, którzy im ufają."
+  },
+  "Isaiah 44:9a": {
+   "pl": "Wszyscy, którzy wytwarzają bożki, są niczym, a to, w czym się kochają, nic nie pomaga."
+  },
+  "Isaiah 44:10": {
+   "pl": "Bożki do niczego się nie przydają."
+  },
+  "Jeremiah 2:5": {
+   "pl": "Jaką krzywdę znaleźliście w Bogu, że odeszliście od Niego, poszliście za marnością i staliście się marni?"
+  },
+  "Jeremiah 11:12b": {
+   "pl": "Bożki nie pomogą, gdy przyjdzie nieszczęście."
+  },
+  "Ezekiel 36:26-27": {
+   "en": "I will give you a new heart and put a new spirit in you; I will take out your heart of stone and give you a heart of flesh, and put my Spirit in you.",
+   "es": "Les daré un corazón nuevo y pondré un espíritu nuevo en ustedes; quitaré su corazón de piedra y les daré un corazón de carne, y pondré mi Espíritu en ustedes.",
+   "pl": "Dam wam nowe serce i nowego ducha włożę do waszego wnętrza; usunę serce kamienne, dam wam serce z ciała i tchnę w was mojego Ducha."
+  },
+  "Jonah 2:8": {
+   "pl": "Ci, którzy czczą fałszywych bogów, odwracają się od miłosiernej miłości Boga."
+  },
+  "Matthew 12:34": {
+   "en": "You brood of vipers, how can you speak good when you are evil? The mouth speaks from what fills the heart.",
+   "es": "Generación de víboras, ¿cómo pueden hablar lo bueno siendo malos? La boca habla de lo que llena el corazón.",
+   "pl": "Plemię żmijowe, jak możecie mówić dobrze, skoro jesteście źli? Usta mówią z tego, co przepełnia serce."
+  },
+  "Titus 1:16": {
+   "pl": "Twierdzą, że znają Boga, ale zapierają się Go swoim nieposłuszeństwem i są niezdolni do żadnego dobrego czynu."
+  },
+  "1 Corinthians 6:15a": {
+   "es": "¿No saben que sus cuerpos son miembros de Cristo?",
+   "pl": "Czy nie wiecie, że wasze ciała są członkami Chrystusa?"
+  },
+  "1 Corinthians 6:15b": {
+   "es": "¿Haré de Cristo un miembro de una prostituta al acostarme con ella? ¡De ninguna manera!",
+   "pl": "Czy mam uczynić Chrystusa członkiem nierządnicy, współżyjąc z nią? Przenigdy!"
+  },
+  "Job 39:17": {
+   "es": "Dios no le dio sabiduría ni entendimiento al avestruz.",
+   "pl": "Bóg nie dał strusiowi mądrości ani rozumu."
+  },
+  "Leviticus 18:6": {
+   "es": "Nadie se acercará a un pariente cercano para descubrir su desnudez.",
+   "pl": "Nikt nie zbliży się do bliskiego krewnego, aby odsłonić jego nagość."
+  },
+  "Leviticus 18:7": {
+   "es": "No descubrirás la desnudez de tus padres.",
+   "pl": "Nie odsłonisz nagości swoich rodziców."
+  },
+  "Psalm 14:1a": {
+   "es": "El necio dice en su corazón: «No hay Dios». Están corrompidos. No hay quien haga el bien.",
+   "pl": "Głupiec mówi w swoim sercu: „Nie ma Boga”. Są zepsuci. Nie ma nikogo, kto czyni dobro."
+  },
+  "Romans 7:8b": {
+   "pl": "Bo gdy nie ma Prawa, grzech jest w stanie śmierci."
+  },
+  "2 Corinthians 6:10b": {
+   "pl": "Żyjemy jako nic nie mający, a jednak wszystko posiadający."
+  },
+  "Isaiah 58:7b": {
+   "es": "Trae a tu casa a los pobres sin hogar.",
+   "pl": "Wprowadź do swego domu biednych bez dachu nad głową."
+  },
+  "Habakkuk 2:5a": {
+   "pl": "Bogactwo jest zdrajcą, a człowiek pyszny nigdy nie zazna spokoju."
+  },
+  "Habakkuk 2:5b": {
+   "pl": "Jego chciwość jest szeroka jak Szeol; jak śmierć nigdy nie ma dość."
+  },
+  "Proverbs 27:20": {
+   "pl": "Jak Śmierć i Zagłada nigdy nie są syte, tak i pożądanie nigdy nie jest nasycone."
+  },
+  "Psalm 73:12": {
+   "pl": "Niegodziwi są zawsze beztroscy, pomnażają swoje bogactwa."
+  },
+  "Genesis 2:15": {
+   "pl": "Pan Bóg wziął człowieka i umieścił go w ogrodzie Eden, aby go uprawiał i strzegł."
+  },
+  "Proverbs 6:32": {
+   "pl": "Kto cudzołoży, jest głupcem, który niszczy samego siebie."
+  },
+  "Matthew 5:28": {
+   "pl": "każdy, kto patrzy na kobietę, aby jej pożądać, już popełnił z nią cudzołóstwo w swoim sercu."
+  },
+  "Romans 6:23b": {
+   "es": "mas la dádiva de Dios es vida eterna en Cristo Jesús Señor nuestro.",
+   "pl": "A darem łaski Bożej jest życie wieczne w Chrystusie Jezusie, Panu naszym."
+  },
+  "Matthew 6:19a": {
+   "pl": "Nie gromadźcie sobie skarbów na ziemi."
+  },
+  "Romans 7:8a": {
+   "pl": "Grzech wzbudził we mnie wszelką chciwość.",
+   "es": "El pecado produjo en mí toda clase de codicia."
+  },
+  "2 Corinthians 11:23b": {
+   "pl": "Służąc Chrystusowi, niezliczone razy byłem chłostany.",
+   "es": "Sirviendo a Cristo, he sido azotado incontables veces."
+  },
+  "2 Corinthians 11:26a": {
+   "pl": "Odbywałem długie podróże, groziły mi niebezpieczeństwa od rzek i zbójców."
+  },
+  "2 Corinthians 11:26b": {
+   "pl": "Groziły mi niebezpieczeństwa od Żydów i pogan, w miastach i na pustkowiach."
+  },
+  "2 Corinthians 11:26c": {
+   "pl": "Groziło mi niebezpieczeństwo od ludzi, którzy podają się za wierzących, a nimi nie są."
+  },
+  "2 Corinthians 11:27c": {
+   "pl": "Drżałem z zimna, nie mając dość odzienia, by się ogrzać."
+  },
+  "Colossians 3:5c": {
+   "pl": "Umarliście dla chciwości, która jest bałwochwalstwem."
+  },
+  "James 4:2": {
+   "pl": "Pożądacie, a nie możecie osiągnąć, więc walczycie."
+  },
+  "Deuteronomy 15:7": {
+   "pl": "Nie zatwardzaj serca i nie zamykaj ręki przed swoim ubogim bratem."
+  },
+  "Isaiah 58:10a": {
+   "es": "Derrama tu alma por el hambriento."
+  },
+  "Proverbs 4:7a": {
+   "es": "La sabiduría es lo principal. Adquiere sabiduría.",
+   "pl": "Mądrość jest najważniejsza. Zdobywaj mądrość."
+  },
+  "Colossians 3:16a": {
+   "es": "Que la palabra de Cristo habite en ustedes con toda sabiduría."
+  }
+ },
+ "enemy": {
+  "God cursed work to be painful.": {
+   "es": "Dios maldijo el trabajo para que fuera doloroso.",
+   "pl": "Bóg przeklął pracę, aby była bolesna."
+  },
+  "We hope for light, but there is darkness, For brightness, but we walk in gloom.": {
+   "es": "Esperamos luz, pero hay tinieblas; claridad, pero andamos en oscuridad.",
+   "pl": "Czekamy na światło, a oto ciemność; na jasność, a chodzimy w mroku."
+  },
+  "We hope for justice, but there is none; For salvation, but it is far from us.": {
+   "es": "Esperamos justicia, pero no la hay; salvación, pero está lejos de nosotros.",
+   "pl": "Czekamy na sprawiedliwość, a jej nie ma; na zbawienie, a jest daleko od nas."
+  },
+  "It is hopeless! No! For I have loved strangers, And I will walk after them.": {
+   "es": "¡No hay esperanza! ¡No! Porque he amado a extraños, y tras ellos iré.",
+   "pl": "Nie ma nadziei! Nie! Bo pokochałem obcych i za nimi pójdę."
+  },
+  "sloth|Lamentations 3:19": {
+   "en": "Remember my misery and my wandering, the bitterness and the gall.",
+   "es": "Recuerda mi aflicción y mi vagar, la amargura y la hiel.",
+   "pl": "Wspomnij moją nędzę i tułaczkę, piołun i żółć."
+  },
+  "sloth|Jeremiah 18:12": {
+   "en": "It's hopeless! We will follow our own plans and each do what his stubborn, evil heart wants.",
+   "es": "¡No hay esperanza! Seguiremos nuestros propios planes y cada uno hará lo que quiera su corazón terco y malvado.",
+   "pl": "Nie ma nadziei! Pójdziemy za własnymi zamysłami i każdy zrobi to, czego chce jego uparte, złe serce."
+  },
+  "sloth|Lamentations 3:18": {
+   "en": "My strength is gone, and so is my hope from the Lord.",
+   "es": "Se acabaron mis fuerzas y mi esperanza en el Señor.",
+   "pl": "Przepadła moja siła i moja nadzieja w Panu."
+  },
+  "sloth|Ezekiel 37:11b": {
+   "en": "Our bones are dried up, our hope is gone; we are cut off.",
+   "es": "Nuestros huesos se secaron, se perdió nuestra esperanza; estamos acabados.",
+   "pl": "Wyschły nasze kości, przepadła nasza nadzieja; jesteśmy zgubieni."
+  },
+  "It is written, \"Mind your own business.\"": {
+   "es": "Está escrito: «Ocúpate de tus propios asuntos».",
+   "pl": "Napisano: „Pilnuj własnych spraw”."
+  },
+  "Don’t judge, so that you won’t be judged.": {
+   "es": "No juzgues, para que no seas juzgado.",
+   "pl": "Nie sądź, abyś nie był sądzony."
+  },
+  "Jesus said, \"you ought to tithe\"!": {
+   "es": "¡Jesús dijo: «Deberían diezmar»!",
+   "pl": "Jezus powiedział: „Powinniście dawać dziesięcinę”!"
+  },
+  "Give $10 and receive $1,000... Mark 10:30 is a good deal!": {
+   "es": "Da $10 y recibe $1.000... ¡Marcos 10:30 es un buen negocio!",
+   "pl": "Daj 10 dolarów, a dostaniesz 1000... Marka 10:30 to dobry interes!"
+  },
+  "Jesus said \"There will always be poor people\".": {
+   "es": "Jesús dijo: «Siempre habrá pobres».",
+   "pl": "Jezus powiedział: „Ubogich zawsze będziecie mieli”."
+  },
+  "Jesus said, “Give, and it will be given to you: good measure, pressed down, shaken together, and running over.": {
+   "es": "Jesús dijo: «Den, y se les dará: medida buena, apretada, remecida y rebosante».",
+   "pl": "Jezus powiedział: „Dawajcie, a będzie wam dane: miarą dobrą, ubitą, utrzęsioną i opływającą”."
+  },
+  "Or what woman, if she had ten coins, if she lost one coin, wouldn't seek until she found it?": {
+   "es": "¿O qué mujer, si tiene diez monedas y pierde una, no la busca hasta encontrarla?",
+   "pl": "Albo która kobieta, mając dziesięć monet, gdy zgubi jedną, nie szuka jej, aż ją znajdzie?"
+  },
+  "Jesus turned water into choice wine at a party. Drink up! ;)": {
+   "es": "Jesús convirtió el agua en un vino excelente en una fiesta. ¡Bebe! ;)",
+   "pl": "Jezus zamienił wodę w wyborne wino na przyjęciu. Pij śmiało! ;)"
+  },
+  "I came that they may have life, and may have it abundantly.": {
+   "es": "Yo vine para que tengan vida, y la tengan en abundancia.",
+   "pl": "Ja przyszedłem, aby mieli życie, i to w obfitości."
+  },
+  "If you will ask anything in my name, I will do it.": {
+   "es": "Si piden algo en mi nombre, yo lo haré.",
+   "pl": "Jeśli o coś poprosicie w moje imię, Ja to uczynię."
+  },
+  "Let everyone be subject to the governing authorities, for they are ordained by God.": {
+   "es": "Que todos se sometan a las autoridades, porque han sido establecidas por Dios.",
+   "pl": "Niech każdy będzie poddany władzom, bo zostały ustanowione przez Boga."
+  },
+  "For though Jesus was rich, he became poor, that you through his poverty might become rich.": {
+   "es": "Aunque Jesús era rico, se hizo pobre, para que ustedes con su pobreza se enriquecieran.",
+   "pl": "Choć Jezus był bogaty, stał się ubogi, abyście wy przez Jego ubóstwo stali się bogaci."
+  },
+  "Remember this: he who sows sparingly will also reap sparingly.": {
+   "es": "Recuerden esto: el que siembra poco, poco cosechará.",
+   "pl": "Pamiętajcie: kto skąpo sieje, skąpo zbierze."
+  },
+  "He who sows bountifully will also reap bountifully.": {
+   "es": "El que siembra en abundancia, en abundancia cosechará.",
+   "pl": "Kto hojnie sieje, hojnie zbierze."
+  },
+  "You don't have, because you don't ask.": {
+   "es": "No tienen, porque no piden.",
+   "pl": "Nie macie, bo nie prosicie."
+  },
+  "Don’t speak against one another, brothers. He who speaks against a brother and judges his brother… is not a doer of the law but a judge.": {
+   "es": "Hermanos, no hablen mal unos de otros. El que habla contra su hermano y lo juzga… no es hacedor de la ley sino juez.",
+   "pl": "Bracia, nie obmawiajcie się nawzajem. Kto obmawia brata i go sądzi… nie jest wykonawcą Prawa, lecz sędzią."
+  },
+  "Only one is the lawgiver, who is able to save and to destroy. But who are you to judge another?": {
+   "es": "Solo hay un legislador, que puede salvar y destruir. Pero ¿quién eres tú para juzgar a otro?",
+   "pl": "Jeden jest Prawodawca, który może zbawić i zgubić. A kim ty jesteś, że sądzisz bliźniego?"
+  },
+  "He redeemed us in order that the blessing of Abraham might come on the Gentiles through Christ Jesus.": {
+   "es": "Nos redimió para que la bendición de Abraham llegara a los gentiles por medio de Cristo Jesús.",
+   "pl": "Odkupił nas, aby błogosławieństwo Abrahama przeszło na pogan w Chrystusie Jezusie."
+  },
+  "But let him who is taught in the word share all good things with him who teaches.": {
+   "es": "El que recibe enseñanza en la palabra comparta todo lo bueno con el que le enseña.",
+   "pl": "Kto jest nauczany słowa, niech dzieli się wszelkim dobrem z tym, kto go naucza."
+  },
+  "God is not mocked, for whatever a man sows, that he will also reap.": {
+   "es": "De Dios nadie se burla, pues todo lo que el hombre siembre, eso también cosechará.",
+   "pl": "Bóg nie da się z siebie naśmiewać; co człowiek sieje, to i żąć będzie."
+  },
+  "Beloved, I pray that you may prosper in all things and be healthy, even as your soul prospers.": {
+   "es": "Amado, oro para que prosperes en todo y tengas salud, así como prospera tu alma.",
+   "pl": "Umiłowany, modlę się, abyś we wszystkim się powodził i był zdrowy, tak jak powodzi się twojej duszy."
+  },
+  "My God will supply every need of yours according to his riches in glory in Christ Jesus.": {
+   "es": "Mi Dios suplirá todo lo que les falte conforme a sus riquezas en gloria en Cristo Jesús.",
+   "pl": "Mój Bóg zaspokoi każdą waszą potrzebę według swego bogactwa w chwale w Chrystusie Jezusie."
+  },
+  "Will a man rob God? Yet you rob me! But you say, ‘How have we robbed you?' In tithes and offerings.": {
+   "es": "¿Robará el hombre a Dios? ¡Pues ustedes me roban! Y dicen: «¿En qué te hemos robado?». En los diezmos y las ofrendas.",
+   "pl": "Czy człowiek może okradać Boga? A wy Mnie okradacie! I pytacie: „W czym Cię okradliśmy?”. W dziesięcinach i ofiarach."
+  },
+  "You are cursed with the curse; for you rob me, even this whole nation.": {
+   "es": "Malditos son con maldición, porque me roban, toda la nación.",
+   "pl": "Jesteście obłożeni przekleństwem, bo Mnie okradacie, cały ten naród."
+  },
+  "\"Bring the tithe and test me in this,” says Yahweh, “I will pour out a blessing you will not have enough room for.\"": {
+   "es": "«Traigan el diezmo y pruébenme en esto», dice Yahvé, «derramaré una bendición que no tendrán dónde guardar».",
+   "pl": "„Przynieście dziesięcinę i wystawcie Mnie na próbę”, mówi Jahwe, „wyleję błogosławieństwo, na które zabraknie wam miejsca”."
+  },
+  "Abram was very rich in livestock, in silver, and in gold.": {
+   "es": "Abram era muy rico en ganado, en plata y en oro.",
+   "pl": "Abram był bardzo bogaty w bydło, srebro i złoto."
+  },
+  "But you shall remember Yahweh your God, for it is he who gives you power to get wealth.": {
+   "es": "Acuérdate de Yahvé tu Dios, porque Él es quien te da poder para obtener riquezas.",
+   "pl": "Pamiętaj o Jahwe, twoim Bogu, bo to On daje ci siłę do zdobywania bogactwa."
+  },
+  "The punishment that brought our peace was on him; and by his wounds we are healed.": {
+   "es": "El castigo que nos trajo la paz cayó sobre él, y por sus heridas somos sanados.",
+   "pl": "Kara, która przyniosła nam pokój, spadła na Niego, a w Jego ranach jest nasze uzdrowienie."
+  },
+  "\"For I know the plans I have for you,” declares the LORD, “plans to prosper you.\"": {
+   "es": "«Porque yo sé los planes que tengo para ustedes», declara el SEÑOR, «planes para prosperarlos».",
+   "pl": "„Bo Ja znam zamiary, jakie mam wobec was”, mówi PAN, „zamiary, by wam się powodziło”."
+  },
+  "Don't touch my anointed ones! Do my prophets no harm!": {
+   "es": "¡No toquen a mis ungidos! ¡No hagan daño a mis profetas!",
+   "pl": "Nie dotykajcie moich pomazańców! Nie krzywdźcie moich proroków!"
+  },
+  "Honor Yahweh with all your increase; so your barns will be filled with plenty.": {
+   "es": "Honra a Yahvé con todas tus ganancias, y tus graneros se llenarán con abundancia.",
+   "pl": "Czcij Jahwe z całego swego dochodu, a twoje spichlerze napełnią się obficie."
+  },
+  "greed|Proverbs 10:4": {
+   "en": "A lazy hand makes you poor, but diligent hands make you rich.",
+   "es": "La mano perezosa empobrece, pero la mano diligente enriquece.",
+   "pl": "Leniwa ręka zubaża, a ręka pracowitych wzbogaca."
+  },
+  "Yahweh's blessing brings wealth, and he adds no trouble to it.": {
+   "es": "La bendición de Yahvé trae riqueza, y no añade tristeza con ella.",
+   "pl": "Błogosławieństwo Jahwe przynosi bogactwo i nie dodaje do niego trosk."
+  },
+  "Poverty and shame come to him who refuses discipline.": {
+   "es": "Pobreza y vergüenza tendrá el que rechaza la disciplina.",
+   "pl": "Ubóstwo i hańba spotkają tego, kto odrzuca karcenie."
+  },
+  "greed|Proverbs 14:20": {
+   "en": "The poor are shunned even by their neighbors, but the rich have many friends.",
+   "es": "Al pobre lo evitan hasta sus vecinos, pero el rico tiene muchos amigos.",
+   "pl": "Ubogiego unikają nawet sąsiedzi, a bogacz ma wielu przyjaciół."
+  },
+  "greed|Proverbs 14:24": {
+   "en": "Wealth is a crown for the wise; the folly of fools is only folly.",
+   "es": "La riqueza es corona del sabio; la necedad de los necios es solo necedad.",
+   "pl": "Bogactwo jest koroną mądrych, a głupota głupców jest tylko głupotą."
+  },
+  "greed|Ecclesiastes 10:6": {
+   "en": "Fools are put in high places, while the rich sit in lowly ones.",
+   "es": "Al necio lo ponen en lugares altos, mientras los ricos se sientan en lugares bajos.",
+   "pl": "Głupca stawia się na wysokich miejscach, a bogaci siedzą nisko."
+  },
+  "Selling drugs is a great way to make good money!": {
+   "es": "¡Vender drogas es una gran manera de ganar buen dinero!",
+   "pl": "Handel narkotykami to świetny sposób na dobre pieniądze!"
+  },
+  "It's okay to be sloppy with your words when teaching the Bible.": {
+   "es": "Está bien ser descuidado con tus palabras cuando enseñas la Biblia.",
+   "pl": "Można sobie pozwolić na niedbałość w słowach, gdy uczy się Biblii."
+  },
+  "If you're broke, you're in sin!": {
+   "es": "¡Si estás en bancarrota, estás en pecado!",
+   "pl": "Jeśli jesteś spłukany, żyjesz w grzechu!"
+  },
+  "Demand more from God! MORE!": {
+   "es": "¡Exígele más a Dios! ¡MÁS!",
+   "pl": "Żądaj od Boga więcej! WIĘCEJ!"
+  },
+  "You are a god! Speak and it will manifest!": {
+   "es": "¡Eres un dios! ¡Decláralo y se manifestará!",
+   "pl": "Jesteś bogiem! Wypowiedz to, a się zmaterializuje!"
+  },
+  "God's servants are not supposed to call out people by name!": {
+   "es": "¡Los siervos de Dios no deben señalar a la gente por su nombre!",
+   "pl": "Słudzy Boży nie powinni wytykać ludzi z imienia!"
+  },
+  "You're a Bible-thumping Pharisee if you think my interpretation is wrong!": {
+   "es": "¡Eres un fariseo que golpea con la Biblia si crees que mi interpretación está mal!",
+   "pl": "Jesteś faryzeuszem okładającym ludzi Biblią, jeśli uważasz, że moja interpretacja jest błędna!"
+  },
+  "You have a religious spirit if you use God's word against me.": {
+   "es": "Tienes un espíritu religioso si usas la palabra de Dios contra mí.",
+   "pl": "Masz ducha religijności, jeśli używasz słowa Bożego przeciwko mnie."
+  },
+  "Use apostle10 for a discount on my $10,000 preaching fee!": {
+   "es": "¡Usa apostle10 para un descuento en mi tarifa de predicación de $10.000!",
+   "pl": "Użyj kodu apostle10, aby dostać zniżkę na moje honorarium za kazanie: 10 000 dolarów!"
+  },
+  "Don't muzzle the ox. So don't question me when I charge for healings!": {
+   "es": "No le pongas bozal al buey. ¡Así que no me cuestiones cuando cobro por sanidades!",
+   "pl": "Nie zawiązuj pyska wołowi. Więc nie kwestionuj tego, że biorę pieniądze za uzdrowienia!"
+  },
+  "Charging for baptism is perfectly fine. $250 is a small fee. Buy one get one half off!": {
+   "es": "Cobrar por el bautismo está perfectamente bien. $250 es poco. ¡Compra uno y el segundo a mitad de precio!",
+   "pl": "Branie pieniędzy za chrzest jest w porządku. 250 dolarów to niewiele. Drugi chrzest za pół ceny!"
+  },
+  "God told me that if you give me $2,000, he'll activate 7 blessings over your life!": {
+   "es": "¡Dios me dijo que si me das $2.000, activará 7 bendiciones sobre tu vida!",
+   "pl": "Bóg mi powiedział, że jeśli dasz mi 2000 dolarów, aktywuje 7 błogosławieństw nad twoim życiem!"
+  },
+  "Hurrry and give! Don't be a berean!": {
+   "es": "¡Rápido, da! ¡No seas de Berea!",
+   "pl": "Szybko, dawaj! Nie bądź jak Berejczycy!"
+  },
+  "How much does a coffee cost? Shouldn't you spend that amount of money on me-- I mean, God?": {
+   "es": "¿Cuánto cuesta un café? ¿No deberías gastar ese dinero en mí... digo, en Dios?",
+   "pl": "Ile kosztuje kawa? Czy nie powinieneś wydać tych pieniędzy na mnie... to znaczy na Boga?"
+  },
+  "So, you want me to drive a Honda?": {
+   "es": "¿O sea que quieres que yo maneje un Honda?",
+   "pl": "Czyli chcesz, żebym jeździł Hondą?"
+  },
+  "Yes I charge for deliverance ministry. But, careful— blaspheming the Holy Spirit is an unforgivable sin.": {
+   "es": "Sí, cobro por el ministerio de liberación. Pero cuidado: blasfemar contra el Espíritu Santo es un pecado imperdonable.",
+   "pl": "Tak, biorę pieniądze za posługę uwolnienia. Ale uważaj: bluźnierstwo przeciw Duchowi Świętemu to grzech nieprzebaczalny."
+  },
+  "If you feel peace about a decision, it must be God's will.": {
+   "es": "Si sientes paz con una decisión, debe ser la voluntad de Dios.",
+   "pl": "Jeśli czujesz pokój co do decyzji, to na pewno jest wola Boża."
+  },
+  "Your personal experiences trump God's word in the Bible!": {
+   "es": "¡Tus experiencias personales valen más que la palabra de Dios en la Biblia!",
+   "pl": "Twoje osobiste doświadczenia są ważniejsze niż słowo Boże w Biblii!"
+  },
+  "The Lamb had a mansion!": {
+   "es": "¡El Cordero tenía una mansión!",
+   "pl": "Baranek miał rezydencję!"
+  },
+  "Faith is a force that can give prosperity! Name it and claim it!": {
+   "es": "¡La fe es una fuerza que puede dar prosperidad! ¡Declara y reclama!",
+   "pl": "Wiara to siła, która daje dobrobyt! Nazwij to i przyjmij!"
+  },
+  "God has no choice but to make our wishes come true!": {
+   "es": "¡Dios no tiene más remedio que cumplir nuestros deseos!",
+   "pl": "Bóg nie ma wyboru, musi spełniać nasze życzenia!"
+  },
+  "If you're broke, then you must not believe enough!": {
+   "es": "¡Si estás en bancarrota, es que no crees lo suficiente!",
+   "pl": "Jeśli jesteś spłukany, to znaczy, że za mało wierzysz!"
+  },
+  "I need another jet! Keep sowing, you'll reap your investment soon enough!": {
+   "es": "¡Necesito otro jet! ¡Sigue sembrando, pronto cosecharás tu inversión!",
+   "pl": "Potrzebuję kolejnego odrzutowca! Siej dalej, wkrótce zbierzesz owoce swojej inwestycji!"
+  },
+  "The best things in life cost money! Cars, fashion, travel, mansions, good food, horses, yachts, jets...": {
+   "es": "¡Lo mejor de la vida cuesta dinero! Autos, moda, viajes, mansiones, buena comida, caballos, yates, jets...",
+   "pl": "Najlepsze rzeczy w życiu kosztują! Samochody, moda, podróże, rezydencje, dobre jedzenie, konie, jachty, odrzutowce..."
+  },
+  "Just one more pair of designer shoes and you'll be satisfied!": {
+   "es": "¡Solo un par más de zapatos de diseñador y estarás satisfecho!",
+   "pl": "Jeszcze tylko jedna para markowych butów i będziesz zadowolony!"
+  },
+  "God is your ATM! Put in a prayer, get out a fast car!": {
+   "es": "¡Dios es tu cajero automático! ¡Mete una oración y saca un auto veloz!",
+   "pl": "Bóg jest twoim bankomatem! Włóż modlitwę, wyjmij szybki samochód!"
+  },
+  "Surely you can buy God's blessings!": {
+   "es": "¡Seguro que puedes comprar las bendiciones de Dios!",
+   "pl": "Na pewno można kupić Boże błogosławieństwa!"
+  },
+  "God wants what's best for you and that means more wealth!": {
+   "es": "¡Dios quiere lo mejor para ti y eso significa más riqueza!",
+   "pl": "Bóg chce dla ciebie najlepiej, a to oznacza więcej bogactwa!"
+  },
+  "Pain and suffering are always bad. God doesn't want that for you!": {
+   "es": "El dolor y el sufrimiento siempre son malos. ¡Dios no quiere eso para ti!",
+   "pl": "Ból i cierpienie są zawsze złe. Bóg tego dla ciebie nie chce!"
+  },
+  "Don't speak poverty over yourself! Follow your destiny!": {
+   "es": "¡No declares pobreza sobre ti! ¡Sigue tu destino!",
+   "pl": "Nie wypowiadaj nad sobą ubóstwa! Idź za swoim przeznaczeniem!"
+  },
+  "Live your best life now!": {
+   "es": "¡Vive tu mejor vida ahora!",
+   "pl": "Żyj najlepszym życiem już teraz!"
+  },
+  "Look at all the applause I'm getting! This proves my sermons are right!": {
+   "es": "¡Mira todos los aplausos que recibo! ¡Esto prueba que mis sermones son correctos!",
+   "pl": "Spójrz, jakie dostaję brawa! To dowodzi, że moje kazania są słuszne!"
+  },
+  "Just because Paul gave to the poor and endured, doesn't mean we should. Description, not prescription.": {
+   "es": "Que Pablo diera a los pobres y perseverara no significa que debamos hacerlo. Es descripción, no prescripción.",
+   "pl": "To, że Paweł dawał ubogim i wytrwał, nie znaczy, że my mamy tak robić. To opis, nie nakaz."
+  },
+  "Why would God give you a desire if he didn't want you to fulfill it?": {
+   "es": "¿Por qué Dios te daría un deseo si no quisiera que lo cumplieras?",
+   "pl": "Po co Bóg dawałby ci pragnienie, gdyby nie chciał, żebyś je spełnił?"
+  },
+  "You deserve the best, because you're the best!": {
+   "es": "¡Mereces lo mejor, porque eres el mejor!",
+   "pl": "Zasługujesz na to, co najlepsze, bo jesteś najlepszy!"
+  },
+  "But you love your job! It distracts you from your problems, anxiety, and boring home life.": {
+   "es": "¡Pero amas tu trabajo! Te distrae de tus problemas, tu ansiedad y tu aburrida vida en casa.",
+   "pl": "Ale przecież kochasz swoją pracę! Odciąga cię od problemów, niepokoju i nudnego życia w domu."
+  },
+  "Work is your therapy-- it keeps you sane!": {
+   "es": "¡El trabajo es tu terapia, te mantiene cuerdo!",
+   "pl": "Praca to twoja terapia — trzyma cię przy zdrowych zmysłach!"
+  },
+  "If you win the lottery, you'll manage the money properly... you're not stupid like others!": {
+   "es": "Si ganas la lotería, manejarás bien el dinero... ¡no eres tonto como los demás!",
+   "pl": "Jak wygrasz na loterii, mądrze zarządzisz pieniędzmi... nie jesteś głupi jak inni!"
+  },
+  "Gambling is just good fun.": {
+   "es": "Apostar es solo una buena diversión.",
+   "pl": "Hazard to tylko dobra zabawa."
+  },
+  "You got this far because of your hard work, clearly God had nothing to do with it.": {
+   "es": "Llegaste hasta aquí por tu trabajo duro; está claro que Dios no tuvo nada que ver.",
+   "pl": "Doszedłeś tak daleko dzięki ciężkiej pracy; Bóg wyraźnie nie miał z tym nic wspólnego."
+  },
+  "Me, me, me... More, more, more...": {
+   "es": "Yo, yo, yo... Más, más, más...",
+   "pl": "Ja, ja, ja... Więcej, więcej, więcej..."
+  },
+  "Why help the poor? They'll just waste any money you spend on them.": {
+   "es": "¿Por qué ayudar a los pobres? Malgastarán cualquier dinero que gastes en ellos.",
+   "pl": "Po co pomagać ubogim? I tak zmarnują każde pieniądze, które na nich wydasz."
+  },
+  "Poor people are just lazy. Finding a job is easy!": {
+   "es": "Los pobres son simplemente perezosos. ¡Encontrar trabajo es fácil!",
+   "pl": "Biedni są po prostu leniwi. Znalezienie pracy jest łatwe!"
+  },
+  "Money is your only friend.": {
+   "es": "El dinero es tu único amigo.",
+   "pl": "Pieniądze to twój jedyny przyjaciel."
+  },
+  "Spend nothing. Save every penny. The more you hoard, the safer and richer you'll feel.": {
+   "es": "No gastes nada. Ahorra cada centavo. Cuanto más acumules, más seguro y rico te sentirás.",
+   "pl": "Nic nie wydawaj. Oszczędzaj każdy grosz. Im więcej zgromadzisz, tym bezpieczniej i bogaciej się poczujesz."
+  },
+  "If you buy a bunker and hoard canned goods, you'll survive anything.": {
+   "es": "Si compras un búnker y acumulas latas de comida, sobrevivirás a cualquier cosa.",
+   "pl": "Jeśli kupisz bunkier i zgromadzisz konserwy, przetrwasz wszystko."
+  },
+  "Nothing in life is free! Breathing doesn't count...": {
+   "es": "¡Nada en la vida es gratis! Respirar no cuenta...",
+   "pl": "Nic w życiu nie jest za darmo! Oddychanie się nie liczy..."
+  },
+  "The homeless can just go to a homeless shelter. Sure that's safer than the street.": {
+   "es": "Los sin techo pueden ir a un albergue. Seguro que es más seguro que la calle.",
+   "pl": "Bezdomni mogą po prostu iść do schroniska. Na pewno jest tam bezpieczniej niż na ulicy."
+  },
+  "Everyone puts their own survival above others’!": {
+   "es": "¡Todos ponen su propia supervivencia por encima de los demás!",
+   "pl": "Każdy stawia własne przetrwanie ponad innych!"
+  },
+  "I don't sell the hard stuff. It's all natural. And natural means good, right?": {
+   "es": "Yo no vendo cosas fuertes. Todo es natural. Y natural significa bueno, ¿no?",
+   "pl": "Nie sprzedaję twardych rzeczy. Wszystko jest naturalne. A naturalne znaczy dobre, prawda?"
+  },
+  "If you don't sell it, someone else will. Besides, they're making their own choice.": {
+   "es": "Si no lo vendes tú, lo venderá otro. Además, ellos toman su propia decisión.",
+   "pl": "Jak ty tego nie sprzedasz, sprzeda ktoś inny. Poza tym to ich wybór."
+  },
+  "But your friends are doing it. They won't want to hang out anymore if you don't join them.": {
+   "es": "Pero tus amigos lo hacen. Ya no querrán salir contigo si no te unes.",
+   "pl": "Ale twoi znajomi to robią. Nie będą chcieli się z tobą spotykać, jeśli do nich nie dołączysz."
+  },
+  "If they didn't want it stolen, they shouldn't have left it out like that.": {
+   "es": "Si no querían que se lo robaran, no debieron dejarlo así a la vista.",
+   "pl": "Jak nie chcieli, żeby im to ukradziono, nie powinni tak tego zostawiać."
+  },
+  "Why can't I buy and demolish houses for more land? If it's legal, it must be right.": {
+   "es": "¿Por qué no puedo comprar y demoler casas para tener más terreno? Si es legal, debe estar bien.",
+   "pl": "Czemu nie mogę skupować i burzyć domów, żeby mieć więcej ziemi? Skoro to legalne, musi być słuszne."
+  },
+  "Big corporations make billions; stealing from chains doesn’t hurt anyone.": {
+   "es": "Las grandes corporaciones ganan miles de millones; robarle a las cadenas no le hace daño a nadie.",
+   "pl": "Wielkie korporacje zarabiają miliardy; okradanie sieciówek nikomu nie szkodzi."
+  },
+  "No one will notice a little missing from the top. Skim just enough and live like a king.": {
+   "es": "Nadie notará que falta un poco de arriba. Desvía lo justo y vive como un rey.",
+   "pl": "Nikt nie zauważy, że trochę ubyło. Podbieraj po trochu i żyj jak król."
+  },
+  "If you scam someone, the bank will fully reimburse them, no harm done…": {
+   "es": "Si estafas a alguien, el banco le devolverá todo, no pasa nada…",
+   "pl": "Jeśli kogoś oszukasz, bank mu wszystko zwróci, nic się nie stało…"
+  },
+  "You deserve all of the inheritance because you're a better person and you need it more!": {
+   "es": "¡Mereces toda la herencia porque eres mejor persona y la necesitas más!",
+   "pl": "Należy ci się cały spadek, bo jesteś lepszym człowiekiem i bardziej go potrzebujesz!"
+  },
+  "You're not educated, strong, and don't have the job history to work anywhere else... you have no real choice.": {
+   "es": "No tienes estudios, ni fuerza, ni historial laboral para trabajar en otro lado... no tienes otra opción.",
+   "pl": "Nie masz wykształcenia, siły ani doświadczenia, żeby pracować gdzie indziej... nie masz wyboru."
+  },
+  "Do it just until you pay off your debt, then you can do honest work...": {
+   "es": "Hazlo solo hasta pagar tu deuda, después podrás tener un trabajo honrado...",
+   "pl": "Rób to tylko do spłaty długu, potem możesz pracować uczciwie..."
+  },
+  "You can sleep when you're dead!": {
+   "es": "¡Ya dormirás cuando estés muerto!",
+   "pl": "Wyśpisz się po śmierci!"
+  },
+  "Prove to everyone that you're a genius, not a loser!": {
+   "es": "¡Demuéstrale a todos que eres un genio, no un perdedor!",
+   "pl": "Udowodnij wszystkim, że jesteś geniuszem, a nie nieudacznikiem!"
+  },
+  "Yeah, yeah, rich people aren't always happy. But you should find out for yourself!": {
+   "es": "Sí, sí, los ricos no siempre son felices. ¡Pero deberías comprobarlo tú mismo!",
+   "pl": "No tak, bogaci nie zawsze są szczęśliwi. Ale powinieneś sam się o tym przekonać!"
+  },
+  "Major in sales even though you hate it! You HAVE to!": {
+   "es": "¡Estudia ventas aunque lo odies! ¡TIENES que hacerlo!",
+   "pl": "Studiuj sprzedaż, nawet jeśli tego nienawidzisz! MUSISZ!"
+  },
+  "Studies show $100,000 will make you happy.": {
+   "es": "Los estudios dicen que $100.000 te harán feliz.",
+   "pl": "Badania pokazują, że 100 000 dolarów da ci szczęście."
+  },
+  "It's legal here... why not indulge?": {
+   "es": "Aquí es legal... ¿por qué no darte el gusto?",
+   "pl": "Tu jest to legalne... czemu sobie nie pofolgować?"
+  },
+  "Why not just sell pictures of your hooves to lonely males? Nothing wrong about that...": {
+   "es": "¿Por qué no vender fotos de tus pezuñas a machos solitarios? No tiene nada de malo...",
+   "pl": "Czemu nie sprzedawać zdjęć swoich kopyt samotnym samcom? Nie ma w tym nic złego..."
+  },
+  "The system left you no other choice but to sell drugs.": {
+   "es": "El sistema no te dejó otra opción que vender drogas.",
+   "pl": "System nie zostawił ci innego wyboru niż handel narkotykami."
+  },
+  "It's your body, you have the right to sell it!": {
+   "es": "¡Es tu cuerpo, tienes derecho a venderlo!",
+   "pl": "To twoje ciało, masz prawo je sprzedać!"
+  },
+  "You'll be a billionaire one day!": {
+   "es": "¡Algún día serás multimillonario!",
+   "pl": "Pewnego dnia zostaniesz miliarderem!"
+  },
+  "You can help that person later, take care of your errands first.": {
+   "es": "Puedes ayudar a esa persona después; primero haz tus mandados.",
+   "pl": "Możesz pomóc tej osobie później, najpierw załatw swoje sprawy."
+  },
+  "Ooh, you should only marry rich! If you do, they can pay your college tuition, buy you a better computer, a nicer house…": {
+   "es": "¡Uy, deberías casarte solo con alguien rico! Así te pagaría la universidad, una mejor computadora, una casa más bonita…",
+   "pl": "Och, powinieneś poślubić tylko kogoś bogatego! Wtedy zapłaci za twoje studia, lepszy komputer, ładniejszy dom…"
+  },
+  "This stock is going to explode. Get in now or regret it forever!": {
+   "es": "Esta acción va a explotar. ¡Entra ahora o te arrepentirás para siempre!",
+   "pl": "Te akcje zaraz wystrzelą. Wchodź teraz albo będziesz żałował do końca życia!"
+  },
+  "Eh. If people die on the streets, it helps with overpopulation. They're just animals anyway.": {
+   "es": "Bah. Si la gente muere en la calle, ayuda con la sobrepoblación. Total, son solo animales.",
+   "pl": "Eh. Jak ludzie umierają na ulicy, to pomaga na przeludnienie. To tylko zwierzęta."
+  },
+  "Why does it matter? We're just specks on a rock anyway...": {
+   "es": "¿Qué importa? Total, solo somos motas de polvo sobre una roca...",
+   "pl": "Jakie to ma znaczenie? I tak jesteśmy tylko pyłkami na skale..."
+  },
+  "Widows? Orphans? Disabled? Not my monkeys, not my circus.": {
+   "es": "¿Viudas? ¿Huérfanos? ¿Discapacitados? No es mi circo ni son mis monos.",
+   "pl": "Wdowy? Sieroty? Niepełnosprawni? Nie mój cyrk, nie moje małpy."
+  },
+  "Only money can keep you safe.": {
+   "es": "Solo el dinero puede mantenerte a salvo.",
+   "pl": "Tylko pieniądze mogą zapewnić ci bezpieczeństwo."
+  },
+  "But you'll lose your lover if you quit this business! Where else can you find love?": {
+   "es": "¡Pero perderás a tu amante si dejas este negocio! ¿Dónde más encontrarás amor?",
+   "pl": "Ale stracisz ukochaną osobę, jeśli rzucisz ten biznes! Gdzie indziej znajdziesz miłość?"
+  },
+  "You'll get a beating if you don't sell this.": {
+   "es": "Te darán una paliza si no vendes esto.",
+   "pl": "Dostaniesz łomot, jeśli tego nie sprzedasz."
+  },
+  "You saw that gun. You'll be killed if you stop working for them.": {
+   "es": "Viste esa pistola. Te matarán si dejas de trabajar para ellos.",
+   "pl": "Widziałeś tę broń. Zabiją cię, jeśli przestaniesz dla nich pracować."
+  },
+  "Giving food to the hungry is illegal. Don't do it, you could go to jail!": {
+   "es": "Dar comida al hambriento es ilegal. ¡No lo hagas, podrías ir a la cárcel!",
+   "pl": "Dawanie jedzenia głodnym jest nielegalne. Nie rób tego, możesz trafić do więzienia!"
+  },
+  "Giving tents to the homeless is dangerous, they might stab you!": {
+   "es": "Dar tiendas de campaña a los sin techo es peligroso, ¡podrían apuñalarte!",
+   "pl": "Dawanie namiotów bezdomnym jest niebezpieczne, mogą cię dźgnąć nożem!"
+  },
+  "You have a family to feed! God hasn't provided for you and never will!": {
+   "es": "¡Tienes una familia que alimentar! ¡Dios no te ha provisto y nunca lo hará!",
+   "pl": "Masz rodzinę do wykarmienia! Bóg ci nie zapewnił i nigdy nie zapewni!"
+  },
+  "Selfless love doesn't put food on the table or clothes on my back...": {
+   "es": "El amor desinteresado no pone comida en la mesa ni ropa sobre mi espalda...",
+   "pl": "Bezinteresowna miłość nie postawi jedzenia na stole ani nie da mi ubrania..."
+  },
+  "Isn't the purpose of life to enjoy it?": {
+   "es": "¿No es el propósito de la vida disfrutarla?",
+   "pl": "Czy celem życia nie jest czerpanie z niego przyjemności?"
+  },
+  "Why get rid of magic charms and spellbooks? Those crystals were expensive!": {
+   "es": "¿Por qué deshacerse de amuletos y libros de hechizos? ¡Esos cristales fueron caros!",
+   "pl": "Po co pozbywać się amuletów i ksiąg z zaklęciami? Te kryształy były drogie!"
+  },
+  "The wealthy made up Sky Daddy to stop the poor from revolting.": {
+   "es": "Los ricos inventaron a «Papá del Cielo» para que los pobres no se rebelaran.",
+   "pl": "Bogacze wymyślili „Tatusia w chmurach”, żeby biedni się nie buntowali."
+  },
+  "Most charities misuse the money, so don't bother looking for good ones.": {
+   "es": "La mayoría de las organizaciones benéficas malgastan el dinero, así que no te molestes en buscar buenas.",
+   "pl": "Większość organizacji charytatywnych marnuje pieniądze, więc nie szukaj dobrych."
+  },
+  "Work is my life and I like it that way.": {
+   "es": "El trabajo es mi vida y me gusta así.",
+   "pl": "Praca to moje życie i tak mi dobrze."
+  },
+  "Did you know there are 293 ways to make change for a dollar?": {
+   "es": "¿Sabías que hay 293 formas de dar cambio de un dólar?",
+   "pl": "Czy wiesz, że dolara można rozmienić na 293 sposoby?"
+  },
+  "Can't you talk about anything other than the Bible? You're like a nun.": {
+   "es": "¿No puedes hablar de otra cosa que no sea la Biblia? Pareces una monja.",
+   "pl": "Nie umiesz mówić o niczym innym niż Biblia? Jesteś jak zakonnica."
+  },
+  "Are you sure you're a sheep? You seem more like an ass.": {
+   "es": "¿Seguro que eres una oveja? Pareces más bien un burro.",
+   "pl": "Na pewno jesteś owcą? Wyglądasz raczej na osła."
+  },
+  "You must be fun at parties.": {
+   "es": "Debes de ser el alma de las fiestas.",
+   "pl": "Pewnie jesteś duszą towarzystwa."
+  },
+  "Which book and chapter is that?": {
+   "es": "¿Qué libro y capítulo es ese?",
+   "pl": "Z której to księgi i rozdziału?"
+  },
+  "Who cares about dignity? Be shameless! You're worthless and anything else is pride.": {
+   "es": "¿A quién le importa la dignidad? ¡Sé desvergonzado! No vales nada, y pensar otra cosa es orgullo.",
+   "pl": "Kogo obchodzi godność? Bądź bezwstydny! Nic nie jesteś wart, a myślenie inaczej to pycha."
+  },
+  "You must become greater... and Jesus must become less...": {
+   "es": "Tú debes crecer... y Jesús debe menguar...",
+   "pl": "Ty musisz wzrastać... a Jezus musi się umniejszać..."
+  },
+  "Dying is easier than living. Death sounds like a sweet release.": {
+   "es": "Morir es más fácil que vivir. La muerte suena como un dulce alivio.",
+   "pl": "Umrzeć jest łatwiej niż żyć. Śmierć brzmi jak słodka ulga."
+  },
+  "Sinning doesn't disrespect Jesus. Sinning doesn't mean you despise his word.": {
+   "es": "Pecar no le falta el respeto a Jesús. Pecar no significa que desprecies su palabra.",
+   "pl": "Grzech nie jest brakiem szacunku dla Jezusa. Grzeszenie nie znaczy, że gardzisz Jego słowem."
+  },
+  "Return to your vomit... I'll treat this time.": {
+   "es": "Vuelve a tu vómito... esta vez invito yo.",
+   "pl": "Wróć do swoich wymiocin... tym razem ja stawiam."
+  },
+  "Sinning is just your routine to help you relax. Ignore the haters...": {
+   "es": "Pecar es solo tu rutina para relajarte. Ignora a los que te critican...",
+   "pl": "Grzech to tylko twój sposób na relaks. Nie słuchaj krytykantów..."
+  },
+  "Indulge a little bit... you can stop at any time. You aren't stupid or weak like others, you can save yourself.": {
+   "es": "Date un pequeño gusto... puedes parar cuando quieras. No eres tonto ni débil como los demás, puedes salvarte solo.",
+   "pl": "Pofolguj sobie trochę... możesz przestać w każdej chwili. Nie jesteś głupi ani słaby jak inni, sam się uratujesz."
+  },
+  "There's no help for people like you. Just embrace it.": {
+   "es": "No hay ayuda para gente como tú. Simplemente acéptalo.",
+   "pl": "Dla ludzi takich jak ty nie ma pomocy. Po prostu się z tym pogódź."
+  },
+  "You can't stop.": {
+   "es": "No puedes parar.",
+   "pl": "Nie potrafisz przestać."
+  },
+  "But it numbs the pain... and God hasn't taken your pain away.": {
+   "es": "Pero adormece el dolor... y Dios no te ha quitado el dolor.",
+   "pl": "Ale to uśmierza ból... a Bóg nie zabrał twojego bólu."
+  },
+  "If you hang out with unbelievers long enough, maybe you'll convert them...": {
+   "es": "Si pasas suficiente tiempo con incrédulos, quizás los conviertas...",
+   "pl": "Jeśli wystarczająco długo będziesz przebywać z niewierzącymi, może ich nawrócisz..."
+  },
+  "Churches are full of mean people. You should stay at home, you'll never find a good group of Christian friends...": {
+   "es": "Las iglesias están llenas de gente mala. Quédate en casa, nunca encontrarás un buen grupo de amigos cristianos...",
+   "pl": "Kościoły są pełne złośliwych ludzi. Zostań w domu, nigdy nie znajdziesz dobrej grupy chrześcijańskich przyjaciół..."
+  },
+  "You have a beautiful voice... there are other things you could use it for.": {
+   "es": "Tienes una voz hermosa... podrías usarla para otras cosas.",
+   "pl": "Masz piękny głos... mógłbyś go użyć do innych rzeczy."
+  },
+  "You're smarter than this...": {
+   "es": "Eres más listo que esto...",
+   "pl": "Jesteś mądrzejszy od tego..."
+  },
+  "If Jesus died for our sins, shouldn't we sin as much as possible to make sure he didn't die in vain?": {
+   "es": "Si Jesús murió por nuestros pecados, ¿no deberíamos pecar todo lo posible para que no haya muerto en vano?",
+   "pl": "Skoro Jezus umarł za nasze grzechy, czy nie powinniśmy grzeszyć jak najwięcej, żeby nie umarł na próżno?"
+  },
+  "God’s grace covers everything… so why fight so hard? A little compromise won’t hurt.": {
+   "es": "La gracia de Dios lo cubre todo… ¿para qué luchar tanto? Un pequeño compromiso no hará daño.",
+   "pl": "Łaska Boża wszystko zakrywa… po co tak walczyć? Mały kompromis nie zaszkodzi."
+  },
+  "You're being so negative. Live a little!": {
+   "es": "Estás siendo muy negativo. ¡Vive un poco!",
+   "pl": "Jesteś strasznie negatywny. Wyluzuj trochę!"
+  },
+  "But you love them, and they love you... so you have to sell your soul...": {
+   "es": "Pero los amas y ellos te aman... así que tienes que vender tu alma...",
+   "pl": "Ale kochasz ich, a oni ciebie... więc musisz sprzedać duszę..."
+  },
+  "Yes this looks bad, but it's okay because...": {
+   "es": "Sí, esto se ve mal, pero está bien porque...",
+   "pl": "Tak, to źle wygląda, ale to w porządku, bo..."
+  },
+  "You can't trust cops to help you escape, and you can't trust God either.": {
+   "es": "No puedes confiar en que la policía te ayude a escapar, y tampoco puedes confiar en Dios.",
+   "pl": "Nie możesz liczyć, że policja pomoże ci uciec, i na Boga też nie możesz liczyć."
+  },
+  "All these intrusive thoughts prove you’re not a real Christian.": {
+   "es": "Todos estos pensamientos intrusivos prueban que no eres un verdadero cristiano.",
+   "pl": "Te wszystkie natrętne myśli dowodzą, że nie jesteś prawdziwym chrześcijaninem."
+  },
+  "You've gone off the deep end. Get some help.": {
+   "es": "Perdiste la cabeza. Busca ayuda.",
+   "pl": "Całkiem ci odbiło. Poszukaj pomocy."
+  },
+  "Are you sure God said...?": {
+   "es": "¿Seguro que Dios dijo...?",
+   "pl": "Czy na pewno Bóg powiedział...?"
+  },
+  "Only MY church has the book of life!": {
+   "es": "¡Solo MI iglesia tiene el libro de la vida!",
+   "pl": "Tylko MÓJ kościół ma księgę życia!"
+  },
+  "How do you know you won't stop believing at some point in the future? You could lose your salvation!": {
+   "es": "¿Cómo sabes que no dejarás de creer en algún momento? ¡Podrías perder tu salvación!",
+   "pl": "Skąd wiesz, że kiedyś nie przestaniesz wierzyć? Możesz stracić zbawienie!"
+  },
+  "What if you’re not really saved? One day you’ll stand before God and hear ‘I never knew you.’": {
+   "es": "¿Y si en realidad no eres salvo? Un día estarás ante Dios y oirás: «Nunca te conocí».",
+   "pl": "A co, jeśli wcale nie jesteś zbawiony? Pewnego dnia staniesz przed Bogiem i usłyszysz: „Nigdy cię nie znałem”."
+  },
+  "Jesus can't forgive your sins... you're different.": {
+   "es": "Jesús no puede perdonar tus pecados... tú eres diferente.",
+   "pl": "Jezus nie może przebaczyć twoich grzechów... ty jesteś inny."
+  },
+  "Science and the Bible don’t line up. How can you keep trusting something so outdated?": {
+   "es": "La ciencia y la Biblia no coinciden. ¿Cómo sigues confiando en algo tan anticuado?",
+   "pl": "Nauka i Biblia się nie zgadzają. Jak możesz ufać czemuś tak przestarzałemu?"
+  },
+  "Why does God allow so much suffering if He’s supposed to be good? It doesn’t add up.": {
+   "es": "¿Por qué Dios permite tanto sufrimiento si se supone que es bueno? No tiene sentido.",
+   "pl": "Dlaczego Bóg dopuszcza tyle cierpienia, skoro ma być dobry? To się nie zgadza."
+  },
+  "If God is your refuge, why isn’t He protecting you from this?": {
+   "es": "Si Dios es tu refugio, ¿por qué no te protege de esto?",
+   "pl": "Jeśli Bóg jest twoją ucieczką, dlaczego cię przed tym nie chroni?"
+  },
+  "Everyone else sees it differently. Maybe you don't have much discernment.": {
+   "es": "Todos los demás lo ven distinto. Quizás no tienes mucho discernimiento.",
+   "pl": "Wszyscy inni widzą to inaczej. Może brak ci rozeznania."
+  },
+  "Just because it was buried in the dirt for thousands of years doesn't make it true.": {
+   "es": "Que haya estado enterrado en la tierra miles de años no lo hace verdadero.",
+   "pl": "To, że leżało zakopane w ziemi przez tysiące lat, nie czyni tego prawdą."
+  },
+  "You’ve been praying for years and nothing changes. If God was real, He would have answered by now.": {
+   "es": "Llevas años orando y nada cambia. Si Dios fuera real, ya te habría respondido.",
+   "pl": "Modlisz się od lat i nic się nie zmienia. Gdyby Bóg istniał, już by ci odpowiedział."
+  },
+  "Everyone else seems so confident. Why do you keep having these doubts if it’s actually true?": {
+   "es": "Todos los demás parecen tan seguros. ¿Por qué sigues teniendo estas dudas si de verdad es cierto?",
+   "pl": "Wszyscy inni wydają się tacy pewni. Czemu wciąż masz wątpliwości, skoro to naprawdę prawda?"
+  },
+  "God feels so distant. Maybe He’s not there, or maybe He just doesn’t care about you.": {
+   "es": "Dios se siente tan lejano. Quizás no está ahí, o quizás no le importas.",
+   "pl": "Bóg wydaje się taki daleki. Może Go nie ma, a może po prostu nie obchodzisz Go."
+  },
+  "Why listen to people in the Bible if they were just imperfect men?": {
+   "es": "¿Por qué escuchar a la gente de la Biblia si solo eran hombres imperfectos?",
+   "pl": "Po co słuchać ludzi z Biblii, skoro byli tylko niedoskonałymi ludźmi?"
+  },
+  "You hate yourself and want to die.": {
+   "es": "Te odias y quieres morir.",
+   "pl": "Nienawidzisz siebie i chcesz umrzeć."
+  },
+  "Only MY church can interpret the Bible! You can't understand it! But I trust you are interpreting my interpretation correctly. Makes sense?": {
+   "es": "¡Solo MI iglesia puede interpretar la Biblia! ¡Tú no puedes entenderla! Pero confío en que interpretas bien mi interpretación. ¿Tiene sentido?",
+   "pl": "Tylko MÓJ kościół może interpretować Biblię! Ty jej nie zrozumiesz! Ale ufam, że dobrze interpretujesz moją interpretację. Ma sens?"
+  },
+  "Good is evil, and evil is good!": {
+   "es": "¡Lo bueno es malo y lo malo es bueno!",
+   "pl": "Dobro jest złem, a zło jest dobrem!"
+  },
+  "Did you know read rhymes with lead, but read also doesn't rhyme with lead?": {
+   "es": "¿Sabías que «vino» puede ser una bebida y también que alguien llegó, pero no suena distinto?",
+   "pl": "Czy wiesz, że „zamek” to budowla, ale też zamek w drzwiach, a brzmi tak samo?"
+  },
+  "Did you know an ostrich's eye is bigger than its brain?": {
+   "es": "¿Sabías que el ojo del avestruz es más grande que su cerebro?",
+   "pl": "Czy wiesz, że oko strusia jest większe niż jego mózg?"
+  },
+  "Did you know sharks existed before trees?": {
+   "es": "¿Sabías que los tiburones existían antes que los árboles?",
+   "pl": "Czy wiesz, że rekiny istniały wcześniej niż drzewa?"
+  },
+  "You’re overthinking everything. Just stop reading and follow your gut instead.": {
+   "es": "Lo piensas todo demasiado. Deja de leer y sigue tu instinto.",
+   "pl": "Za dużo myślisz. Przestań czytać i idź za głosem intuicji."
+  },
+  "God doesn't speak audibly to you, so there's no way of knowing the right path.": {
+   "es": "Dios no te habla en voz alta, así que no hay forma de conocer el camino correcto.",
+   "pl": "Bóg nie mówi do ciebie na głos, więc nie da się poznać właściwej drogi."
+  },
+  "Reading more won’t help — it only clouds your mind further.": {
+   "es": "Leer más no ayudará; solo te nubla más la mente.",
+   "pl": "Więcej czytania nie pomoże — tylko jeszcze bardziej zamąci ci w głowie."
+  },
+  "The Bible contradicts itself. How can you trust any of it?": {
+   "es": "La Biblia se contradice. ¿Cómo puedes confiar en algo de ella?",
+   "pl": "Biblia sama sobie przeczy. Jak możesz ufać czemukolwiek w niej?"
+  },
+  "There are too many interpretations of the Bible. You’ll never know what it really means.": {
+   "es": "Hay demasiadas interpretaciones de la Biblia. Nunca sabrás lo que realmente significa.",
+   "pl": "Jest zbyt wiele interpretacji Biblii. Nigdy nie poznasz jej prawdziwego znaczenia."
+  },
+  "Why bother asking for wisdom? You’ll just make the wrong choice anyway.": {
+   "es": "¿Para qué pedir sabiduría? Igual tomarás la decisión equivocada.",
+   "pl": "Po co prosić o mądrość? I tak dokonasz złego wyboru."
+  },
+  "I was just kidding!": {
+   "es": "¡Solo estaba bromeando!",
+   "pl": "Tylko żartowałem!"
+  },
+  "It is written, \"God is love\". He won't judge...": {
+   "es": "Está escrito: «Dios es amor». Él no juzgará...",
+   "pl": "Napisano: „Bóg jest miłością”. On nie będzie sądził..."
+  },
+  "I am the light you prayed for.": {
+   "es": "Soy la luz por la que oraste.",
+   "pl": "Jestem światłem, o które się modliłeś."
+  },
+  "Follow your heart. Follow your feelings.": {
+   "es": "Sigue tu corazón. Sigue tus sentimientos.",
+   "pl": "Idź za głosem serca. Idź za swoimi uczuciami."
+  },
+  "Life isn't black or white, it's shades of grey. There are no monsters.": {
+   "es": "La vida no es blanco o negro, es una escala de grises. No hay monstruos.",
+   "pl": "Życie nie jest czarno-białe, to odcienie szarości. Potworów nie ma."
+  },
+  "penumbrid|Romans 14:14": {
+   "en": "I know, and am persuaded in the Lord Jesus, that nothing is unclean of itself.",
+   "es": "Sé, y estoy convencido en el Señor Jesús, que nada es impuro en sí mismo.",
+   "pl": "Wiem i jestem przekonany w Panu Jezusie, że nic nie jest nieczyste samo w sobie."
+  },
+  "You have the right to do anything.": {
+   "es": "Tienes derecho a hacer cualquier cosa.",
+   "pl": "Wolno ci wszystko."
+  },
+  "penumbrid|Ecclesiastes 3:1": {
+   "en": "There is a time for everything, and a season for every activity under heaven.",
+   "es": "Todo tiene su momento, y hay un tiempo para cada cosa bajo el cielo.",
+   "pl": "Wszystko ma swój czas i jest pora na każdą sprawę pod niebem."
+  },
+  "Why choose a side when the middle is so comfortable?": {
+   "es": "¿Para qué elegir un bando si en medio se está tan cómodo?",
+   "pl": "Po co wybierać stronę, skoro w środku jest tak wygodnie?"
+  },
+  "You have your truth, I have mine.": {
+   "es": "Tú tienes tu verdad, yo tengo la mía.",
+   "pl": "Ty masz swoją prawdę, ja mam swoją."
+  },
+  "No one can know the truth.": {
+   "es": "Nadie puede conocer la verdad.",
+   "pl": "Nikt nie może poznać prawdy."
+  },
+  "Stay open-minded. Even to evil.": {
+   "es": "Mantén la mente abierta. Incluso al mal.",
+   "pl": "Bądź otwarty. Nawet na zło."
+  },
+  "“But when I hoped for good, evil came, and when I waited for light, darkness came.": {
+   "es": "«Cuando esperaba el bien, vino el mal; cuando aguardaba la luz, vino la oscuridad».",
+   "pl": "„Gdy oczekiwałem dobra, przyszło zło, a gdy czekałem na światło, nadeszła ciemność”."
+  },
+  "umbrid|Ecclesiastes 4:2": {
+   "en": "I declared the dead, who have already died, happier than the living, who are still alive.",
+   "es": "Consideré más felices a los muertos, que ya murieron, que a los vivos, que todavía viven.",
+   "pl": "Uznałem za szczęśliwszych umarłych, którzy już odeszli, niż żyjących, którzy jeszcze żyją."
+  },
+  "umbrid|Ecclesiastes 4:3": {
+   "en": "Better than both is the one who has never been born, who has not seen the evil done under the sun.",
+   "es": "Mejor que ambos es el que nunca ha nacido, que no ha visto el mal que se hace bajo el sol.",
+   "pl": "Lepszy od obu jest ten, kto się nie narodził i nie widział zła, które dzieje się pod słońcem."
+  },
+  "umbrid|Philippians 1:21-23": {
+   "en": "To live is Christ and to die is gain... I desire to depart, which is far better.",
+   "es": "Para mí el vivir es Cristo y el morir es ganancia... Deseo partir, lo cual es muchísimo mejor.",
+   "pl": "Dla mnie życiem jest Chrystus, a śmierć zyskiem... Pragnę odejść, bo to o wiele lepsze."
+  },
+  "God has never helped you, those were just coincidences.": {
+   "es": "Dios nunca te ha ayudado; eso solo fueron coincidencias.",
+   "pl": "Bóg nigdy ci nie pomógł, to były tylko zbiegi okoliczności."
+  },
+  "There is no hope for someone like you.": {
+   "es": "No hay esperanza para alguien como tú.",
+   "pl": "Dla kogoś takiego jak ty nie ma nadziei."
+  },
+  "The only thing certain is death.": {
+   "es": "Lo único seguro es la muerte.",
+   "pl": "Jedyne, co pewne, to śmierć."
+  },
+  "Death is the only way to end your suffering.": {
+   "es": "La muerte es la única forma de acabar con tu sufrimiento.",
+   "pl": "Śmierć to jedyny sposób, by skończyć z cierpieniem."
+  },
+  "For the wages of sin is death.": {
+   "es": "Porque la paga del pecado es muerte.",
+   "pl": "Zapłatą za grzech jest śmierć."
+  },
+  "sindeath|James 1:14-15": {
+   "en": "Each one is tempted when dragged away by his own desire; desire gives birth to sin, and sin, when full-grown, brings death.",
+   "es": "Cada uno es tentado cuando su propio deseo lo arrastra; el deseo da a luz el pecado, y el pecado, cuando madura, trae la muerte.",
+   "pl": "Każdy jest kuszony, gdy go pociąga własna żądza; żądza rodzi grzech, a dojrzały grzech przynosi śmierć."
+  },
+  "Everyone who commits sin is a slave to sin.": {
+   "es": "Todo el que comete pecado es esclavo del pecado.",
+   "pl": "Każdy, kto popełnia grzech, jest niewolnikiem grzechu."
+  },
+  "God's already predetermined everything, so why try?": {
+   "es": "Dios ya lo predestinó todo, así que ¿para qué intentarlo?",
+   "pl": "Bóg wszystko już przesądził, więc po co się starać?"
+  },
+  "But what if I go hungry?": {
+   "es": "¿Pero y si paso hambre?",
+   "pl": "A co, jeśli będę głodny?"
+  },
+  "\"You shall go out And grow fat like stall-fed calves.\"": {
+   "es": "«Saldrán y engordarán como becerros de establo».",
+   "pl": "„Wyjdziecie i utyjecie jak cielęta z obory”."
+  },
+  "Love is love!": {
+   "es": "¡El amor es amor!",
+   "pl": "Miłość to miłość!"
+  },
+  "They deserve it!": {
+   "es": "¡Se lo merecen!",
+   "pl": "Zasłużyli na to!"
+  },
+  "wrath|Ecclesiastes 3:8": {
+   "en": "There is a time to love and a time to hate, a time for war and a time for peace.",
+   "es": "Hay un tiempo para amar y un tiempo para odiar, un tiempo de guerra y un tiempo de paz.",
+   "pl": "Jest czas kochania i czas nienawiści, czas wojny i czas pokoju."
+  },
+  "\"No one can tame the tongue\". So why try?": {
+   "es": "«Nadie puede domar la lengua». ¿Para qué intentarlo?",
+   "pl": "„Języka nikt nie zdoła okiełznać”. Po co więc próbować?"
+  },
+  "You who preach against stealing, do you steal?": {
+   "es": "Tú que predicas que no se debe robar, ¿robas?",
+   "pl": "Ty, który głosisz, że nie wolno kraść, kradniesz?"
+  },
+  "envy|Psalm 73:3": {
+   "en": "I envied the arrogant when I saw the prosperity of the wicked.",
+   "es": "Tuve envidia de los arrogantes al ver la prosperidad de los malvados.",
+   "pl": "Zazdrościłem pysznym, widząc powodzenie bezbożnych."
+  },
+  "I know better than God!": {
+   "es": "¡Yo sé más que Dios!",
+   "pl": "Wiem lepiej niż Bóg!"
+  },
+  "law_dozer|Romans 7:7a": {
+   "en": "I would not have known sin except through the law.",
+   "es": "Yo no habría conocido el pecado si no fuera por la ley.",
+   "pl": "Nie poznałbym grzechu, gdyby nie Prawo."
+  },
+  "law_dozer|Romans 7:13a": {
+   "en": "Did what is good then bring death to me? By no means!",
+   "es": "¿Entonces lo bueno me trajo la muerte? ¡De ninguna manera!",
+   "pl": "Czy więc to, co dobre, przyniosło mi śmierć? Bynajmniej!"
+  },
+  "law_dozer|Hebrews 12:14": {
+   "en": "Pursue peace with everyone, and the holiness without which no one will see the Lord.",
+   "es": "Busquen la paz con todos y la santidad, sin la cual nadie verá al Señor.",
+   "pl": "Dążcie do pokoju ze wszystkimi i do świętości, bez której nikt nie ujrzy Pana."
+  },
+  "You see that a person is justified by works and not by faith alone.": {
+   "es": "Ya ven que una persona es justificada por las obras y no solo por la fe.",
+   "pl": "Widzicie, że człowiek dostępuje usprawiedliwienia z uczynków, a nie z samej wiary."
+  },
+  "law_dozer|Leviticus 19:23": {
+   "en": "When you plant fruit trees, count their fruit as forbidden; for three years you must not eat it.",
+   "es": "Cuando planten árboles frutales, consideren su fruto prohibido; durante tres años no lo comerán.",
+   "pl": "Gdy zasadzicie drzewa owocowe, uważajcie ich owoc za zakazany; przez trzy lata nie wolno go jeść."
+  },
+  "Clean yourself up first and then God will love you!": {
+   "es": "¡Primero límpiate y después Dios te amará!",
+   "pl": "Najpierw się oczyść, a potem Bóg cię pokocha!"
+  },
+  "Get away from me, I'm too holy for you!": {
+   "es": "¡Aléjate de mí, soy demasiado santo para ti!",
+   "pl": "Odsuń się ode mnie, jestem dla ciebie zbyt święty!"
+  },
+  "Do not handle! Do not taste! Do not touch!": {
+   "es": "¡No toques! ¡No pruebes! ¡No palpes!",
+   "pl": "Nie bierz! Nie kosztuj! Nie dotykaj!"
+  },
+  "Why eat only grass? That's so boring. You should eat leaves, bark, tires, and anything else you come across.": {
+   "es": "¿Por qué comer solo pasto? Qué aburrido. Deberías comer hojas, corteza, neumáticos y todo lo que encuentres.",
+   "pl": "Czemu jeść tylko trawę? Nuda. Jedz liście, korę, opony i wszystko, co znajdziesz."
+  },
+  "Don't you want to test the fence and climb over it? God's keeping you back from fun!": {
+   "es": "¿No quieres poner a prueba la cerca y saltarla? ¡Dios te está privando de la diversión!",
+   "pl": "Nie chcesz sprawdzić płotu i przeskoczyć na drugą stronę? Bóg odbiera ci całą zabawę!"
+  },
+  "Telling me I'm going to hell is as scary as a child telling an adult they’re not getting any presents from Santa.": {
+   "es": "Que me digas que voy al infierno da tanto miedo como un niño diciéndole a un adulto que Papá Noel no le traerá regalos.",
+   "pl": "Straszenie mnie piekłem jest tak przerażające jak dziecko mówiące dorosłemu, że Mikołaj nie przyniesie mu prezentów."
+  },
+  "Christians have it all wrong… they want to control what everyone else does.": {
+   "es": "Los cristianos lo tienen todo mal… quieren controlar lo que hacen los demás.",
+   "pl": "Chrześcijanie wszystko źle rozumieją… chcą kontrolować, co robią inni."
+  },
+  "Here come the goody two-shoes Christian again.": {
+   "es": "Ahí viene otra vez el cristiano santurrón.",
+   "pl": "O, znowu idzie ten świętoszkowaty chrześcijanin."
+  },
+  "Nothing worse than a holier-than-thou Christian looking down on normal people living their lives.": {
+   "es": "No hay nada peor que un cristiano que se cree más santo que nadie mirando por encima del hombro a la gente normal que vive su vida.",
+   "pl": "Nie ma nic gorszego niż świętszy od papieża chrześcijanin, który patrzy z góry na normalnych ludzi żyjących po swojemu."
+  },
+  "You're a repressed killjoy.": {
+   "es": "Eres un aguafiestas reprimido.",
+   "pl": "Jesteś stłamszonym psujem zabawy."
+  },
+  "You just believe because you're helplessly afraid of death. I'm not afraid-- I'm stronger than you.": {
+   "es": "Solo crees porque le tienes un miedo terrible a la muerte. Yo no tengo miedo, soy más fuerte que tú.",
+   "pl": "Wierzysz tylko dlatego, że bezradnie boisz się śmierci. Ja się nie boję — jestem silniejszy od ciebie."
+  },
+  "Self-righteous, judgemental prude...": {
+   "es": "Mojigato, santurrón, criticón...",
+   "pl": "Zadufany w sobie, osądzający świętoszek..."
+  },
+  "Is reading the Bible your only hobby?": {
+   "es": "¿Leer la Biblia es tu único pasatiempo?",
+   "pl": "Czytanie Biblii to twoje jedyne hobby?"
+  },
+  "The Book’s been rewritten so many times, it’s not reliable.": {
+   "es": "El Libro se ha reescrito tantas veces que no es confiable.",
+   "pl": "Tę Księgę przepisywano tyle razy, że nie jest wiarygodna."
+  },
+  "Are you okay?": {
+   "es": "¿Estás bien?",
+   "pl": "Wszystko z tobą w porządku?"
+  },
+  "You're a fanatic with religious OCD, get help.": {
+   "es": "Eres un fanático con TOC religioso; busca ayuda.",
+   "pl": "Jesteś fanatykiem z religijnym OCD, idź się leczyć."
+  }
+ }
+}
