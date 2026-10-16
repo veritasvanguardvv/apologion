@@ -1,0 +1,93 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://enemy.gd" id="1_e"]
+[ext_resource type="Texture2D" path="res://Greed/ghost-idle.png" id="2_e"]
+[ext_resource type="Texture2D" path="res://Greed/ghost-idle.png" id="3_e"]
+[ext_resource type="Texture2D" path="res://Greed/ghost-idle.png" id="4_e"]
+[ext_resource type="Texture2D" path="res://Greed/ghost-idle.png" id="5_e"]
+[ext_resource type="Texture2D" path="res://Greed/ghost-idle.png" id="6_e"]
+[ext_resource type="Texture2D" path="res://Greed/ghost-idle.png" id="7_e"]
+[ext_resource type="Texture2D" path="res://Greed/ghost-idle.png" id="8_e"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1"]
+atlas = ExtResource("2_e")
+region = Rect2(0, 0, 64, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2"]
+atlas = ExtResource("3_e")
+region = Rect2(64, 0, 64, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3"]
+atlas = ExtResource("4_e")
+region = Rect2(128, 0, 64, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4"]
+atlas = ExtResource("5_e")
+region = Rect2(192, 0, 64, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5"]
+atlas = ExtResource("6_e")
+region = Rect2(256, 0, 64, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6"]
+atlas = ExtResource("7_e")
+region = Rect2(320, 0, 64, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7"]
+atlas = ExtResource("8_e")
+region = Rect2(384, 0, 64, 80)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7")
+}],
+"loop": true,
+"name": &"default",
+"speed": 2.2222
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_9"]
+size = Vector2(215.04, 307.2)
+
+[node name="Greedwraith" type="CharacterBody2D"]
+script = ExtResource("1_e")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, 0)
+scale = Vector2(4.8, 4.8)
+sprite_frames = SubResource("SpriteFrames_8")
+autoplay = "default"
+centered = false
+offset = Vector2(-32, -40)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 38.4)
+shape = SubResource("RectangleShape2D_9")
+
+[node name="EnemyHP" type="ProgressBar" parent="."]
+offset_left = -60
+offset_top = -226
+offset_right = 60
+offset_bottom = -206
+value = 100.0
+show_percentage = false

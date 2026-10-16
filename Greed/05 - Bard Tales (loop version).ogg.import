@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cuxw018jsoydk"
+path="res://.godot/imported/05 - Bard Tales (loop version).ogg-f551abfd9dfcc6859d5b8acd30e285ba.oggvorbisstr"
+
+[deps]
+
+source_file="res://Greed/05 - Bard Tales (loop version).ogg"
+dest_files=["res://.godot/imported/05 - Bard Tales (loop version).ogg-f551abfd9dfcc6859d5b8acd30e285ba.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dt84ljb1m645t"
+path="res://.godot/imported/SUCCESS PICKUP Collect Chime 05.wav-2044ab828a9f8c325748157578269c7c.sample"
+
+[deps]
+
+source_file="res://Greed/SUCCESS PICKUP Collect Chime 05.wav"
+dest_files=["res://.godot/imported/SUCCESS PICKUP Collect Chime 05.wav-2044ab828a9f8c325748157578269c7c.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

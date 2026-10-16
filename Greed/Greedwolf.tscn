@@ -1,0 +1,69 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://enemy.gd" id="1_e"]
+[ext_resource type="Texture2D" path="res://Greed/wolf_2.png" id="2_e"]
+[ext_resource type="Texture2D" path="res://Greed/wolf_2.png" id="3_e"]
+[ext_resource type="Texture2D" path="res://Greed/wolf_2.png" id="4_e"]
+[ext_resource type="Texture2D" path="res://Greed/wolf_2.png" id="5_e"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1"]
+atlas = ExtResource("2_e")
+region = Rect2(108, 0, 54, 36)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2"]
+atlas = ExtResource("3_e")
+region = Rect2(162, 0, 54, 36)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3"]
+atlas = ExtResource("4_e")
+region = Rect2(216, 0, 54, 36)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4"]
+atlas = ExtResource("5_e")
+region = Rect2(270, 0, 54, 36)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4")
+}],
+"loop": true,
+"name": &"default",
+"speed": 2.2222
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6"]
+size = Vector2(181.44, 138.24)
+
+[node name="Greedwolf" type="CharacterBody2D"]
+script = ExtResource("1_e")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, 0)
+scale = Vector2(4.8, 4.8)
+sprite_frames = SubResource("SpriteFrames_5")
+autoplay = "default"
+centered = false
+offset = Vector2(-27, -18)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 17.28)
+shape = SubResource("RectangleShape2D_6")
+
+[node name="EnemyHP" type="ProgressBar" parent="."]
+offset_left = -60
+offset_top = -120.4
+offset_right = 60
+offset_bottom = -100.4
+value = 100.0
+show_percentage = false

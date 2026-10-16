@@ -29,7 +29,9 @@ var collected_pickups: Dictionary = {}
 var defeated_enemies: Dictionary = {}
 
 # menu_layer.gd uses this same array, so unlocking a level is remembered.
-var unlocked_levels = ["Sloth", "Gluttony", "Lust"]
+# Greed is open from the start for now (Anger, the level before it, isn't built yet).
+const DEFAULT_UNLOCKED = ["Sloth", "Gluttony", "Lust", "Greed"]
+var unlocked_levels = DEFAULT_UNLOCKED.duplicate()
 
 # "en" or "es" - set by the English / Español buttons in the main menu.
 # Always change it with set_language() so all the text switches too.
@@ -220,7 +222,11 @@ func load_game(change_level := true) -> bool:
 		pending_position = config.get_value("progress", "player_position")
 	# Change the contents (not the array itself) so menu_layer keeps sharing it.
 	unlocked_levels.clear()
-	unlocked_levels.append_array(config.get_value("progress", "unlocked_levels", ["Sloth", "Gluttony", "Lust"]))
+	unlocked_levels.append_array(config.get_value("progress", "unlocked_levels", DEFAULT_UNLOCKED))
+	# Levels added after the save was made are still open
+	for level_name in DEFAULT_UNLOCKED:
+		if level_name not in unlocked_levels:
+			unlocked_levels.append(level_name)
 
 	set_language(config.get_value("progress", "language", "en"))
 	PartyManager.current = config.get_value("progress", "party", PartyManager.DEFAULT_MEMBER)

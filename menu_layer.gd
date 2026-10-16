@@ -7,7 +7,7 @@ extends CanvasLayer
 @onready var mode_select = $ModeSelect
 @onready var story_select = $StorySelect
 
-var unlocked_levels = ["Sloth", "Gluttony", "Lust"]
+var unlocked_levels = ["Sloth", "Gluttony", "Lust", "Greed"]
 
 func _ready():
 	add_to_group("menus")   # so the inventory can check if a menu is open
@@ -127,6 +127,8 @@ func _on_level_selected(level_name: String):
 			call_deferred("change_scene", "res://Gluttony.tscn")
 		"Lust":
 			call_deferred("change_scene", "res://Lust.tscn")
+		"Greed":
+			call_deferred("change_scene", "res://Greed.tscn")
 		_:
 			print("No scene set up for ", level_name)
 
