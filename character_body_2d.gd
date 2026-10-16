@@ -731,7 +731,16 @@ func _update_verse_text():
 	# One row per verse: Index | Verse | Effects (alternating row shading)
 	var display = "[table=3]"
 	var shown = 0
+	# Discovered verses first, then the "???" rows of the ones still to find
+	var ordered = []
+	var hidden = []
 	for v in all_verses:
+		if VerseManager.is_discovered(v.ref):
+			ordered.append(v)
+		else:
+			hidden.append(v)
+	ordered.append_array(hidden)
+	for v in ordered:
 		if not _passes_filter(v):
 			continue   # hidden by the filter buttons
 		shown += 1
@@ -743,6 +752,9 @@ func _update_verse_text():
 			var color = "gray" if used else "lightgreen"
 			var status = tr("(used)") if used else tr("(ready)")
 			var power = verse_power_text(v)
+			var instant = instant_kill_text(v)
+			if instant != "":   # in gold in the Effects column
+				power = power.replace(instant, "[color=#ffd84a]%s[/color]" % instant)
 			var kind = tr("Universal (All)") if v.type == "all" else tr(v.type.capitalize())
 			if v.get("set", "") == "sheet":
 				var kinds = []
@@ -774,6 +786,8 @@ func _update_verse_text():
 func verse_power_text(v) -> String:
 	if v.get("set", "") == "sheet":
 		var parts = []
+		if INSTANT_KILLS.has(v.ref):
+			parts.append(instant_kill_text(v))
 		for sin in v.get("sins", {}):
 			parts.append(tr("%d%% vs %s") % [v.sins[sin], tr(sin.capitalize())])
 		if v.get("all_damage", 0) > 0:
@@ -1055,7 +1069,36 @@ func pay_skip_cost() -> float:
 # - Typed enemies (e.g. "Sloth" after Genesis 3) only take damage from verses
 #   of their type or Universal ("all") verses. Others do nothing.
 # - A counter verse on your next turn after a "!" verse does x counter_multiplier.
+# Verses that defeat one kind of enemy at once (their own sin, named in the
+# verse): ignores defense, Guard, Faith and splitting. With the default
+# targets every matching enemy in the battle falls; with Alt only the chosen
+# target (if it matches). Against anything else the verse works normally.
+# The kind is one of the enemy's line_sets (enemy.gd).
+const INSTANT_KILLS = {
+	"Ecclesiastes 5:10a": "silver_wolf",   # "He who loves silver..." - Greedwolf
+	"Isaiah 56:11a": "bronze_wolf",        # "the dogs are greedy..." - Greedog
+}
+const INSTANT_KILL_NAMES = {"silver_wolf": "Silver wolves", "bronze_wolf": "Bronze wolves"}
+
+func instant_kill_text(verse) -> String:
+	if not INSTANT_KILLS.has(verse.get("ref", "")):
+		return ""
+	return tr("Instant defeat vs %s") % tr(INSTANT_KILL_NAMES[INSTANT_KILLS[verse.ref]])
+
+func instant_kill_against(verse, enemy) -> bool:
+	var kind = INSTANT_KILLS.get(verse.get("ref", ""), "")
+	return kind != "" and enemy.has_method("is_kind") and enemy.is_kind(kind)
+
 func _attack(verse, enemy, damage_scale: float, can_counter: bool):
+	if instant_kill_against(verse, enemy):
+		var hp_before = enemy.hp
+		var msg = tr("Instant defeat!")
+		if TurnManager.in_battle:
+			TurnManager.show_message(msg + " " + tr("%s is defeated by %s") % [tr(enemy.display_name), VerseManager.ref_text(verse.ref)])
+		_show_verse_message(msg)
+		enemy.instant_defeat()
+		print(verse.ref, ": instant defeat of ", enemy.display_name)
+		return hp_before
 	var base_damage = verse_damage_against(verse, enemy)
 	if base_damage < 0:
 		var msg = tr("No effect - it's %s type now!") % tr(type_name(enemy.enemy_type))

@@ -6429,7 +6429,7 @@
    "translation": "Fragment",
    "en": "He who loves silver shall not be satisfied with silver.",
    "es": "El que ama la plata no se saciará de plata.",
-   "pl": "Gdy dobra się mnożą, mnożą się ich zjadacze. I jakiż pożytek ma z nich właściciel, jak ten, że nimi napawa swe oczy?",
+   "pl": "Kto kocha srebro, nie nasyci się srebrem.",
    "all_damage": 0,
    "sins": {
     "greed": 50
@@ -6601,7 +6601,7 @@
    "translation": "Fragment",
    "en": "Shepherds who can't understand have turned to their own way, each one to his gain.",
    "es": "Pastores que no entienden se han vuelto a su propio camino, cada uno tras su ganancia.",
-   "pl": "Są to pasterze niezdolni do zrozumienia.",
+   "pl": "Pasterze bez zrozumienia poszli własną drogą, każdy za swoim zyskiem.",
    "all_damage": 0,
    "sins": {
     "greed": 50

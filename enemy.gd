@@ -301,8 +301,42 @@ func take_damage(amount):
 	hp = max(hp - amount, 0)
 	hp_bar.value = hp
 	if hp <= 0:
-		bubble.hide_bubble()
-		SaveManager.mark_enemy_defeated(self)  # remember it for saving
-		queue_free()  # enemy dies
-		print(display_name, " defeated")
+		_die()
 	return amount
+
+func _die():
+	bubble.hide_bubble()
+	SaveManager.mark_enemy_defeated(self)  # remember it for saving
+	queue_free()  # enemy dies
+	print(display_name, " defeated")
+
+# One of its kinds (its line_sets, e.g. "silver_wolf")
+func is_kind(kind: String) -> bool:
+	return kind in line_sets
+
+# Defeated at once by a verse aimed at its kind (character_body_2d.gd
+# INSTANT_KILLS): no defense, no damage numbers. A golden copy of it flashes
+# and fades where it stood, with "Instant defeat!" above.
+func instant_defeat():
+	if hp <= 0 or is_queued_for_deletion():
+		return
+	show_popup(tr("Instant defeat!"), Color(1, 0.85, 0.25))
+	var level = get_parent()
+	for c in get_children():
+		if (c is Sprite2D or c is AnimatedSprite2D) and c.visible:
+			var ghost = c.duplicate(0)
+			ghost.set_script(null)
+			level.add_child(ghost)
+			ghost.global_transform = c.global_transform
+			ghost.z_index = c.z_index + 1
+			ghost.modulate = Color(2.2, 1.9, 0.6)
+			if ghost is AnimatedSprite2D:
+				ghost.pause()
+			var t = ghost.create_tween().set_parallel(true)
+			t.tween_property(ghost, "scale", ghost.scale * 1.35, 0.9).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+			t.tween_property(ghost, "modulate", Color(3, 2.6, 1, 0), 0.9)
+			t.chain().tween_callback(ghost.queue_free)
+			break
+	hp = 0
+	hp_bar.value = 0
+	_die()
