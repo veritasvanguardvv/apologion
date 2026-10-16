@@ -28,6 +28,11 @@ extends CharacterBody2D
 # they line up (the node's origin = where his feet touch the floor).
 
 @export var display_name = "Pastor Ramuel"
+# true = a friend controls this party member from their PHONE (see
+# phone_server.gd and phone_player.tscn). On their battle turn they type or
+# say a verse on the phone instead of the computer picking one.
+@export var player_controlled = false
+var phone_slot = 0              # 1, 2 or 3 (which phone player this is)
 
 @export_group("Following")
 @export var follow_distance = 90.0     # how far behind the player he walks (pixels)
@@ -77,15 +82,19 @@ var bubble
 const PopupText = preload("res://popup_text.gd")
 var hp = 100.0
 var knocked_out = false
-var member_id = ""            # "ramuel" / "baana" (see party_manager.gd)
+var member_id = ""            # "ramuel" / "baana" / "phone_1"... (see party_manager.gd)
 var hp_bar: ProgressBar
 
 
 func _ready():
 	add_to_group("party")   # TurnManager puts everyone in "party" into battles
-	member_id = PartyManager.id_for_scene(scene_file_path)
+	if member_id == "":
+		member_id = PartyManager.id_for_scene(scene_file_path)
 	hp = PartyManager.get_hp(member_id, max_hp)
 	_build_hp_bar()
+	if player_controlled:
+		_build_name_label()
+	TurnManager.battle_ended.connect(_end_phone_turn.bind(0.0))
 	bubble = preload("res://speech_bubble.gd").new()
 	bubble.set_light_style()   # party members and the player have white bubbles
 	bubble.target = self
@@ -246,6 +255,7 @@ func _say(title: String, text: String) -> float:
 
 func _process(delta):
 	bubble_time_left = max(bubble_time_left - delta, 0.0)
+	_process_phone_turn(delta)
 
 
 # ---------------- Health ----------------
@@ -291,3 +301,108 @@ func heal(amount) -> float:
 	_update_hp()
 	PopupText.spawn(self, "+" + str(snapped(hp - before, 0.1)), Color(0.45, 1.0, 0.5), Vector2(0, -60))
 	return hp - before
+
+
+# ---------------- Phone players (player_controlled = true) ----------------
+# Their turn: TurnManager calls take_phone_turn() and WAITS until the phone
+# sends a verse (or "skip"), the time runs out, or they disconnect.
+#   - Same verse matching as the computer (character_body_2d.gd).
+#   - They share the host's DISCOVERED verses (the team's verse list grows
+#     together), but each phone player has their OWN verse cycle, so one
+#     person using Psalm 17:8 doesn't block it for everybody else.
+#   - Their verses do FULL damage/healing (damage_scale is only for the
+#     computer-controlled companions): a real person is playing.
+#   - They use the default targets (all enemies / whole party, split).
+
+signal phone_turn_done(wait_time)
+var waiting_for_phone = false
+var phone_time_left = 0.0
+var name_label: Label
+
+func take_phone_turn():
+	if knocked_out:
+		TurnManager.show_message(tr("%s is knocked out...") % display_name)
+		return 0.0
+	if not PhoneServer.is_slot_connected(phone_slot):
+		TurnManager.show_message(tr("%s is disconnected - turn skipped") % display_name)
+		return 0.5
+	waiting_for_phone = true
+	phone_time_left = PhoneServer.turn_timeout
+	TurnManager.show_message(tr("%s's turn - waiting for their phone") % display_name)
+	var wait = await phone_turn_done
+	waiting_for_phone = false
+	return wait
+
+func _end_phone_turn(wait: float):
+	if waiting_for_phone:
+		waiting_for_phone = false
+		phone_turn_done.emit(wait)
+
+# Called by PhoneServer when the phone sends a verse. Returns "" if it was
+# recited, or a message for the phone (already translated).
+func phone_verse(text: String) -> String:
+	if not waiting_for_phone:
+		return tr("Wait for your turn!")
+	if not _find_player():
+		return tr("Wait for your turn!")
+	var lower = text.to_lower().strip_edges()
+	if player._is_enemy_verse(lower):
+		return tr("That's an enemy's verse - you can't use it")
+	var verse = player._find_verse(lower)
+	if verse == null:
+		return tr("That's not a verse you know - try again")
+	var note = ""
+	if VerseManager.discover(verse.ref):   # shared with the whole team
+		verse.discovered = true
+		note = tr("New verse discovered: %s!") % VerseManager.ref_text(verse.ref)
+	if not PhoneServer.can_use_verse(phone_slot, verse.ref):
+		return tr("%s was already used - recite your other %d verse(s) first (Tab to see them)") % [VerseManager.ref_text(verse.ref), PhoneServer.remaining_count(phone_slot)]
+	PhoneServer.mark_verse_used(phone_slot, verse.ref)
+	var body = player.verse_body(verse)
+	_say(VerseManager.ref_text(verse.ref), body.substr(0, 1).to_upper() + body.substr(1))
+	# Full damage (1.0) and healing (1.0), can counter, default targets
+	player.cast_verse(verse, 1.0, true, false, 1.0)
+	print(display_name, " (phone) recites ", verse.ref)
+	recited.emit(verse.ref)
+	_end_phone_turn(bubble_time_left)
+	return note
+
+func phone_skip() -> bool:
+	if not waiting_for_phone:
+		return false
+	TurnManager.show_message(tr("%s skipped their turn") % display_name)
+	_end_phone_turn(0.5)
+	return true
+
+func _process_phone_turn(delta):
+	if waiting_for_phone:
+		phone_time_left -= delta
+		if phone_time_left <= 0.0:
+			TurnManager.show_message(tr("%s ran out of time - turn skipped") % display_name)
+			_end_phone_turn(0.5)
+		elif not PhoneServer.is_slot_connected(phone_slot):
+			TurnManager.show_message(tr("%s is disconnected - turn skipped") % display_name)
+			_end_phone_turn(0.5)
+
+func _exit_tree():
+	_end_phone_turn(0.0)   # never leave a battle waiting for a removed player
+
+# The friend's name above the head
+func _build_name_label():
+	name_label = Label.new()
+	name_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.size = Vector2(160, 22)
+	name_label.position = Vector2(-80, bubble_head_offset - 26)
+	name_label.add_theme_font_size_override("font_size", 15)
+	name_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	name_label.add_theme_constant_override("outline_size", 5)
+	add_child(name_label)
+	update_name_label()
+
+func update_name_label():
+	if name_label == null:
+		return
+	var connected = PhoneServer.is_slot_connected(phone_slot)
+	name_label.text = display_name + ("" if connected else " (" + tr("disconnected") + ")")
+	name_label.add_theme_color_override("font_color", visual.modulate.lightened(0.3) if connected else Color(0.7, 0.7, 0.7))

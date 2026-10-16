@@ -29,6 +29,8 @@ PartyManager="*res://party_manager.gd"
 SpeechRecognizer="*res://speech_recognizer.gd"
 Targeting="*res://targeting.gd"
 Inventory="*res://inventory.gd"
+PhoneServer="*res://phone_server.gd"
+OnlineService="*res://online_service.gd"
 
 [display]
 
@@ -89,3 +91,13 @@ renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 2d/snap/snap_2d_transforms_to_pixel=true
 2d/snap/snap_2d_vertices_to_pixel=true
+
+[phone]
+
+http_port=8080
+turn_timeout=30.0
+
+[online]
+
+enabled=false
+base_url="http://127.0.0.1:5000"

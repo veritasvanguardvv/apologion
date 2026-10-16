@@ -118,3 +118,83 @@ Voice: no sound came from the microphone (%s). Check Windows Settings > Privacy 
 Voice: the microphone only recorded silence (%s). Check it isn't muted and that apps may use it,Voice: the microphone only recorded silence (%s). Check it isn't muted and that apps may use it,Voz: el micrófono solo grabó silencio (%s). Comprueba que no esté silenciado y que las aplicaciones puedan usarlo
 John,John,Juan
 1 Peter,1 Peter,1 Pedro
+Multiplayer,Multiplayer,Multijugador
+Church,Church,Iglesia
+Leaderboards,Leaderboards,Clasificaciones
+Join the game,Join the game,Únete al juego
+Your name,Your name,Tu nombre
+Room code,Room code,Código de sala
+Join,Join,Entrar
+Type or say a verse...,Type or say a verse...,Escribe o di un versículo...
+Recite,Recite,Recitar
+Speak,Speak,Hablar
+Skip turn,Skip turn,Saltar turno
+Your turn!,Your turn!,¡Tu turno!
+Waiting for %s,Waiting for %s,Esperando a %s
+Not in a battle,Not in a battle,No hay batalla
+Discovered verses,Discovered verses,Versículos descubiertos
+Battle,Battle,Batalla
+Party,Party,Grupo
+used,used,usado
+Reconnecting...,Reconnecting...,Reconectando...
+Knocked out,Knocked out,Fuera de combate
+Tip: tap the microphone on your phone's keyboard to dictate a verse.,Tip: tap the microphone on your phone's keyboard to dictate a verse.,Consejo: toca el micrófono del teclado de tu teléfono para dictar un versículo.
+Listening...,Listening...,Escuchando...
+%d s left,%d s left,quedan %d s
+Each verse can be used once per cycle (yours).,Each verse can be used once per cycle (yours).,Cada versículo se puede usar una vez por ciclo (el tuyo).
+No messages yet,No messages yet,Aún no hay mensajes
+No verses discovered yet,No verses discovered yet,Aún no has descubierto versículos
+Couldn't start the server (port %d busy?),Couldn't start the server (port %d busy?),No se pudo iniciar el servidor (¿el puerto %d está ocupado?)
+Wrong room code,Wrong room code,Código de sala incorrecto
+Please type your name,Please type your name,Escribe tu nombre
+The room is full (%d phone players),The room is full (%d phone players),La sala está llena (%d jugadores con teléfono)
+"Verses work in battles, on your turn","Verses work in battles, on your turn","Los versículos funcionan en las batallas, en tu turno"
+Host,Host,Anfitrión
+%s is disconnected - turn skipped,%s is disconnected - turn skipped,%s está desconectado: se salta su turno
+%s's turn - waiting for their phone,%s's turn - waiting for their phone,Turno de %s: esperando su teléfono
+%s skipped their turn,%s skipped their turn,%s saltó su turno
+%s ran out of time - turn skipped,%s ran out of time - turn skipped,A %s se le acabó el tiempo: se salta su turno
+disconnected,disconnected,desconectado
+connected,connected,conectado
+"On your phone: scan the QR code, or open this address in the browser:","On your phone: scan the QR code, or open this address in the browser:",En tu teléfono: escanea el código QR o abre esta dirección en el navegador:
+"Phones must be on the same Wi-Fi as this computer. The first time, Windows asks to allow the game on networks: tick Private networks and click Allow.","Phones must be on the same Wi-Fi as this computer. The first time, Windows asks to allow the game on networks: tick Private networks and click Allow.","Los teléfonos deben estar en la misma red Wi-Fi que esta computadora. La primera vez, Windows pide permitir el juego en las redes: marca Redes privadas y haz clic en Permitir."
+Stop hosting,Stop hosting,Dejar de alojar
+Start hosting,Start hosting,Empezar a alojar
+Not hosting,Not hosting,No se está alojando
+Room code: %s,Room code: %s,Código de sala: %s
+Not working? Try:,Not working? Try:,¿No funciona? Prueba:
+Players (%d/%d):,Players (%d/%d):,Jugadores (%d/%d):
+waiting for a phone...,waiting for a phone...,esperando un teléfono...
+Couldn't reach the server - showing saved churches,Couldn't reach the server - showing saved churches,No se pudo conectar con el servidor: se muestran las iglesias guardadas
+"Please fill in the name, city and country","Please fill in the name, city and country","Escribe el nombre, la ciudad y el país"
+Choose your church first to see State and Country rankings,Choose your church first to see State and Country rankings,Primero elige tu iglesia para ver las clasificaciones de tu estado y país
+Couldn't reach the server - showing only your own score,Couldn't reach the server - showing only your own score,No se pudo conectar con el servidor: solo se muestra tu propia puntuación
+Offline: only your own score is shown until online leaderboards are turned on,Offline: only your own score is shown until online leaderboards are turned on,Sin conexión: solo se muestra tu propia puntuación hasta que se activen las clasificaciones en línea
+World,World,Mundo
+Church & Profile,Church & Profile,Iglesia y perfil
+Your name (shown on leaderboards):,Your name (shown on leaderboards):,Tu nombre (se muestra en las clasificaciones):
+Find your church:,Find your church:,Busca tu iglesia:
+Search by name or city...,Search by name or city...,Busca por nombre o ciudad...
+Choose this church,Choose this church,Elegir esta iglesia
+No church,No church,Sin iglesia
+Submit your church,Submit your church,Envía tu iglesia
+Your church: %s,Your church: %s,Tu iglesia: %s
+(none),(none),(ninguna)
+waiting for approval,waiting for approval,pendiente de aprobación
+Pick a church in the list first,Pick a church in the list first,Primero elige una iglesia de la lista
+Your church is now %s,Your church is now %s,Ahora tu iglesia es %s
+Church name,Church name,Nombre de la iglesia
+City,City,Ciudad
+State / region,State / region,Estado / región
+Country,Country,País
+New churches are checked by a moderator before they appear for everyone online. You can pick yours right away.,New churches are checked by a moderator before they appear for everyone online. You can pick yours right away.,Un moderador revisa las iglesias nuevas antes de que aparezcan para todos en línea. Puedes elegir la tuya enseguida.
+Submit,Submit,Enviar
+Couldn't submit the church,Couldn't submit the church,No se pudo enviar la iglesia
+Thanks! %s was submitted and is now your church.,Thanks! %s was submitted and is now your church.,¡Gracias! Se envió %s y ahora es tu iglesia.
+State,State,Estado
+Churches,Churches,Iglesias
+Players,Players,Jugadores
+Your enemies defeated: %d,Your enemies defeated: %d,Enemigos que has derrotado: %d
+Loading...,Loading...,Cargando...
+enemies defeated,enemies defeated,enemigos derrotados
+No entries yet,No entries yet,Aún no hay entradas

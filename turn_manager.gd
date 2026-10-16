@@ -136,10 +136,13 @@ func _make_side_button(text: String, top: float, action: Callable) -> Button:
 # translated with tr() (it's often built from several parts).
 var message_count = 0   # goes up with every message (so old timers don't hide new ones)
 
+signal message_shown(text)   # phones show the battle messages too (phone_server.gd)
+
 func show_message(text: String):
 	message_count += 1
 	turn_label.text = text
 	turn_label.visible = true
+	message_shown.emit(text)
 
 
 func _on_language_changed(_new_language):
@@ -313,8 +316,15 @@ func _run_battle(player, enemies):
 					return
 				if _is_alive(fighter):
 					# take_turn() may return how long to wait (e.g. Pastor's
-					# speech bubble) so the next turn doesn't start too soon
-					var asked = fighter.take_turn()
+					# speech bubble) so the next turn doesn't start too soon.
+					# Phone players: wait for their phone (with a time limit).
+					var asked = null
+					if fighter.get("player_controlled"):
+						asked = await fighter.take_phone_turn()
+						if my_battle != battle_id:
+							return
+					else:
+						asked = fighter.take_turn()
 					if asked is float or asked is int:
 						wait = max(wait, asked)
 			await get_tree().create_timer(wait).timeout

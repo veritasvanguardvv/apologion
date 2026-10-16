@@ -36,6 +36,7 @@ func _ready():
 	_build_black_background()
 	_build_language_buttons()
 	_build_change_party_button()
+	_build_online_buttons()
 	
 	for child in story_select.get_children():
 		if child is Button and child.name != "BackButton":
@@ -52,6 +53,7 @@ func _connect_if_exists(path: String, callable: Callable):
 		print("Missing button: ", path)
 
 # Esc works like the "Back" button of whatever is open (top-most first):
+#   Multiplayer lobby / Church / Leaderboards -> closed (form -> church list)
 #   party selector / inventory -> closed
 #   Story Select -> Mode Select -> Main Menu
 #   pause menu -> closed (same as Continue)
@@ -59,7 +61,11 @@ func _connect_if_exists(path: String, callable: Callable):
 func _input(event):
 	if not event.is_action_pressed("ui_cancel") or event.is_echo():
 		return
-	if PartyManager.is_selector_open():
+	if PhoneServer.is_lobby_open():
+		PhoneServer.close_lobby()
+	elif OnlineService.menu.is_open():
+		OnlineService.menu.go_back()
+	elif PartyManager.is_selector_open():
 		PartyManager.close_selector()
 	elif Inventory.is_open():
 		Inventory.close()
@@ -216,6 +222,31 @@ func _build_change_party_button():
 	button.size = Vector2(250, 97)
 	button.pressed.connect(PartyManager.open_selector)
 	pause_menu.add_child(button)
+
+# "Multiplayer", "Church" and "Leaderboards" buttons: in the main menu under
+# "Continue (Load Save)", and in the pause menu on the left.
+# (Multiplayer = phones join as party members, see phone_server.gd;
+#  Church / Leaderboards, see online_service.gd and online_menu.gd)
+func _build_online_buttons():
+	var buttons = [
+		["MultiplayerButton", "Multiplayer", PhoneServer.open_lobby],
+		["ChurchButton", "Church", OnlineService.menu.open_church],
+		["LeaderboardsButton", "Leaderboards", OnlineService.menu.open_leaderboards],
+	]
+	for i in buttons.size():
+		if main_menu:
+			_add_button(main_menu, buttons[i], Vector2(750, 233 + i * 88), Vector2(250, 76))
+		if pause_menu:
+			_add_button(pause_menu, buttons[i], Vector2(130, 105 + i * 168.5), Vector2(260, 100))
+
+func _add_button(parent: Control, info: Array, pos: Vector2, button_size: Vector2):
+	var button = Button.new()
+	button.name = info[0]
+	button.text = info[1]
+	button.position = pos
+	button.size = button_size
+	button.pressed.connect(info[2])
+	parent.add_child(button)
 
 # ---------------- Save / Load ----------------
 

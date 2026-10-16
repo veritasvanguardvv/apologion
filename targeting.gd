@@ -84,10 +84,10 @@ func get_options() -> Array:
 	var enemies = battle_enemies()
 	if enemies.size() > 1:
 		options.append_array(enemies)
-	var party = party_member()
-	if party:
+	var party = party_members()
+	if not party.is_empty():
 		options.append(player())
-		options.append(party)
+		options.append_array(party)
 	return options
 
 
@@ -102,6 +102,14 @@ func party_member():
 		if TurnManager._is_alive(member):
 			return member
 	return null
+
+# Everyone in your party who is still standing (AI companion + phone players)
+func party_members() -> Array:
+	var list = []
+	for member in get_tree().get_nodes_in_group("party"):
+		if TurnManager._is_alive(member):
+			list.append(member)
+	return list
 
 # Living enemies in the current battle, left to right
 func battle_enemies() -> Array:
@@ -135,8 +143,7 @@ func heal_targets(use_choice := true) -> Array:
 	var list = []
 	if player():
 		list.append(player())
-	if party_member():
-		list.append(party_member())
+	list.append_array(party_members())   # AI companion + phone players
 	return list
 
 

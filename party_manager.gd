@@ -44,6 +44,8 @@ func ensure_party():
 	var wanted = MEMBERS[current].scene
 	var found = null
 	for member in get_tree().get_nodes_in_group("party"):
+		if member.is_in_group("phone_players"):
+			continue   # friends on phones are handled by phone_server.gd
 		if member.scene_file_path == wanted and found == null:
 			found = member
 		else:
@@ -53,6 +55,7 @@ func ensure_party():
 		var member = load(wanted).instantiate()
 		member.global_position = _spot_next_to(player)
 		level.add_child(member)
+	PhoneServer.ensure_phone_members()   # and the phone players (if hosting)
 
 
 # On the floor, a little behind the player

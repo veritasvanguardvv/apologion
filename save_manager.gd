@@ -6,6 +6,7 @@ extends Node
 #   - defeated_enemies     (which enemies were beaten, per level)
 #   - unlocked_levels      (shared with menu_layer.gd)
 #   - collected_pickups    (items picked up from the floor, per level)
+#   - profile_name, church, lifetime_defeats (leaderboards, also in user://profile.cfg)
 #   (the inventory itself is in inventory.gd, party HP in party_manager.gd)
 # ...and writes everything (plus VerseManager's verse lists, the current
 # level and the player's position) to a save file.
@@ -35,6 +36,16 @@ var unlocked_levels = ["Sloth", "Gluttony", "Lust"]
 var language = "en"
 signal language_changed(new_language)
 
+# ---- Player profile + lifetime stat (church leaderboards, online_service.gd) ----
+# Kept in their own small file (user://profile.cfg, written right away) AND
+# in the save file. Loading an older save never LOWERS lifetime_defeats, so
+# the leaderboard number only goes up.
+const PROFILE_PATH = "user://profile.cfg"
+var profile_name = ""            # the name shown on leaderboards and on phones
+var church = {}                  # {"id", "name", "city", "region", "country"} or {} = none
+var lifetime_defeats = 0         # every enemy you've ever defeated (never goes down)
+signal profile_changed
+
 # When a save is loaded we switch scenes first; the player then picks up
 # its saved position from here in its _ready() (see apply_pending_player_state).
 var pending_position = null
@@ -42,6 +53,7 @@ var pending_position = null
 
 func _ready():
 	TranslationServer.set_locale(language)
+	load_profile()
 
 
 # ---------------- Language ----------------
@@ -66,6 +78,11 @@ func _enemy_id(enemy: Node) -> Array:
 
 
 func mark_enemy_defeated(enemy: Node) -> void:
+	# Lifetime stat: +1 for every defeat (counted once per enemy, even if it
+	# takes extra hits on the way out)
+	if not enemy.has_meta("defeat_counted"):
+		enemy.set_meta("defeat_counted", true)
+		add_lifetime_defeats(1)
 	var id = _enemy_id(enemy)
 	if not defeated_enemies.has(id[0]):
 		defeated_enemies[id[0]] = []
@@ -76,6 +93,38 @@ func mark_enemy_defeated(enemy: Node) -> void:
 func is_enemy_defeated(enemy: Node) -> bool:
 	var id = _enemy_id(enemy)
 	return defeated_enemies.has(id[0]) and id[1] in defeated_enemies[id[0]]
+
+
+func add_lifetime_defeats(amount: int) -> void:
+	lifetime_defeats += amount
+	save_profile()
+	profile_changed.emit()
+	if has_node("/root/OnlineService"):
+		get_node("/root/OnlineService").record_defeats(amount)   # leaderboard (queued if offline)
+
+
+# ---------------- Profile (name, church, lifetime defeats) ----------------
+
+func set_profile(new_name: String, new_church: Dictionary) -> void:
+	profile_name = new_name
+	church = new_church.duplicate()
+	save_profile()
+	profile_changed.emit()
+
+func save_profile() -> void:
+	var config = ConfigFile.new()
+	config.set_value("profile", "name", profile_name)
+	config.set_value("profile", "church", church)
+	config.set_value("profile", "lifetime_defeats", lifetime_defeats)
+	config.save(PROFILE_PATH)
+
+func load_profile() -> void:
+	var config = ConfigFile.new()
+	if config.load(PROFILE_PATH) != OK:
+		return
+	profile_name = config.get_value("profile", "name", "")
+	church = config.get_value("profile", "church", {})
+	lifetime_defeats = int(config.get_value("profile", "lifetime_defeats", 0))
 
 
 # ---------------- Picked-up items ----------------
@@ -144,6 +193,9 @@ func save_game() -> bool:
 
 	config.set_value("enemies", "defeated", defeated_enemies)
 	config.set_value("enemies", "defeated_count", get_defeated_count())  # just for reading the file
+	config.set_value("profile", "name", profile_name)
+	config.set_value("profile", "church", church)
+	config.set_value("profile", "lifetime_defeats", lifetime_defeats)
 
 	var err = config.save(SAVE_PATH)
 	if err != OK:
@@ -182,6 +234,11 @@ func load_game(change_level := true) -> bool:
 	})
 
 	defeated_enemies = config.get_value("enemies", "defeated", {})
+	profile_name = config.get_value("profile", "name", profile_name)
+	church = config.get_value("profile", "church", church)
+	lifetime_defeats = max(lifetime_defeats, int(config.get_value("profile", "lifetime_defeats", 0)))
+	save_profile()
+	profile_changed.emit()
 
 	var level = config.get_value("progress", "level", "")
 	if change_level and level != "" and ResourceLoader.exists(level):

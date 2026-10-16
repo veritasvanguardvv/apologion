@@ -136,12 +136,14 @@ func take_turn():
 	else:
 		TurnManager.show_message(tr("%s waits...") % display_name)
 
-# The party member in this battle who can still be hit (or null)
+# A party member in this battle who can still be hit (or null). With phone
+# players in the party it picks one of them at random.
 func _party_member_to_attack():
+	var options = []
 	for member in get_tree().get_nodes_in_group("party"):
 		if TurnManager._is_alive(member) and member.has_method("take_damage") and not member.knocked_out:
-			return member
-	return null
+			options.append(member)
+	return null if options.is_empty() else options.pick_random()
 
 # Recites one of its verses: hurts the player, changes its type and maybe
 # opens a counter chance. Returns how long the battle should wait.
