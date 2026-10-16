@@ -1,0 +1,322 @@
+[gd_scene format=3 uid="uid://b32gbh7vn342o"]
+
+[ext_resource type="Script" uid="uid://xavj88eon4qj" path="res://character_body_2d.gd" id="1_qtonm"]
+[ext_resource type="Texture2D" uid="uid://c1ps1oie4io16" path="res://Playerwalkanim.png" id="2_2j17x"]
+[ext_resource type="Script" uid="uid://clibt8yfiqmdr" path="res://sprite_2d.gd" id="3_opkyj"]
+[ext_resource type="Texture2D" uid="uid://cjae4ede1ckiw" path="res://Light tests/Light2.png" id="4_7n08s"]
+[ext_resource type="Texture2D" uid="uid://dg0o06xr4ed4x" path="res://Light tests/Halo ring.png" id="5_0awj0"]
+[ext_resource type="Texture2D" uid="uid://bb7k81f5kpci4" path="res://BG pngs/Stonetest.png" id="6_rugqi"]
+[ext_resource type="Script" uid="uid://bkw1wy34ffxqx" path="res://menu_layer.gd" id="7_2j17x"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_coroa"]
+size = Vector2(86, 69.5)
+
+[sub_resource type="Gradient" id="Gradient_n4u6y"]
+offsets = PackedFloat32Array(0, 0.9386792)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_h0xem"]
+gradient = SubResource("Gradient_n4u6y")
+fill = 1
+fill_from = Vector2(0.5117647, 0.5088235)
+fill_to = Vector2(0.85882354, 0.84117645)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8f2bu"]
+size = Vector2(1176, 289.5)
+
+[node name="Gluttony" type="Node2D" unique_id=2072584270]
+
+[node name="Player" type="CharacterBody2D" parent="." unique_id=1761394652]
+position = Vector2(10, 16)
+script = ExtResource("1_qtonm")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=1532036248]
+position = Vector2(102.00006, 507.00003)
+scale = Vector2(0.17, 0.17)
+texture = ExtResource("2_2j17x")
+hframes = 5
+script = ExtResource("3_opkyj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=1403526357]
+position = Vector2(106, 520)
+shape = SubResource("RectangleShape2D_coroa")
+
+[node name="PointLight2D" type="PointLight2D" parent="Player" unique_id=2069850642]
+modulate = Color(0, 0, 0, 0)
+texture_filter = 2
+position = Vector2(206, 619.99994)
+energy = 0.0
+texture = ExtResource("4_7n08s")
+texture_scale = 0.85
+height = 100.0
+
+[node name="NearLight" type="PointLight2D" parent="Player" unique_id=929821243]
+modulate = Color(0, 0, 0, 0)
+texture_filter = 2
+position = Vector2(107.99999, 517)
+scale = Vector2(5.096967, 4.586856)
+energy = 0.0
+shadow_color = Color(0.14044744, 0.14044744, 0.14044744, 0)
+texture = SubResource("GradientTexture2D_h0xem")
+texture_scale = 0.85
+height = 100.0
+
+[node name="Halo" type="PointLight2D" parent="Player" unique_id=458871853]
+modulate = Color(0, 0, 0, 0)
+texture_filter = 2
+position = Vector2(105.99999, 526)
+scale = Vector2(0.41544116, 0.38867182)
+color = Color(0.84313726, 0.84313726, 0.7176471, 1)
+energy = 0.0
+texture = ExtResource("5_0awj0")
+texture_scale = 0.85
+height = 100.0
+
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=2060022439]
+position = Vector2(573, 532)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=111508977]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=403326747]
+position = Vector2(587, 727.25)
+shape = SubResource("RectangleShape2D_8f2bu")
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D/CollisionShape2D" unique_id=1019396474]
+position = Vector2(-1.1777039, 35.911873)
+scale = Vector2(1.3554007, 0.6761904)
+texture = ExtResource("6_rugqi")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1165739312]
+
+[node name="HPBar" type="ProgressBar" parent="CanvasLayer" unique_id=2063809318]
+offset_left = 15.0
+offset_top = 128.0
+offset_right = 267.0
+offset_bottom = 155.0
+
+[node name="TimerLabel" type="Label" parent="CanvasLayer" unique_id=1403745051]
+offset_left = 40.0
+offset_top = 293.0
+offset_right = 80.0
+offset_bottom = 316.0
+
+[node name="DialogueLabel" type="Label" parent="CanvasLayer" unique_id=2054857394]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="LineEdit" type="LineEdit" parent="CanvasLayer" unique_id=77199072]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -438.0
+offset_top = -58.0
+offset_right = 438.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_placeholder_color = Color(0.8745098, 0.8745098, 0.8745098, 0.8980392)
+placeholder_text = "Press 'Enter' or click here to start Scripture recitation"
+
+[node name="MenuLayer" type="CanvasLayer" parent="." unique_id=1552899766]
+script = ExtResource("7_2j17x")
+
+[node name="PauseMenu" type="Control" parent="MenuLayer" unique_id=256791748]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ContinueButton" type="Button" parent="MenuLayer/PauseMenu" unique_id=185096061]
+layout_mode = 0
+offset_left = 427.0
+offset_top = 105.0
+offset_right = 711.0
+offset_bottom = 208.0
+text = "Continue"
+icon_alignment = 1
+
+[node name="SettingsButton" type="Button" parent="MenuLayer/PauseMenu" unique_id=2143903345]
+layout_mode = 0
+offset_left = 436.0
+offset_top = 283.0
+offset_right = 700.0
+offset_bottom = 379.0
+text = "Settings"
+
+[node name="QuitToMenuButton" type="Button" parent="MenuLayer/PauseMenu" unique_id=1140393236]
+layout_mode = 0
+offset_left = 443.0
+offset_top = 442.0
+offset_right = 702.0
+offset_bottom = 539.0
+text = "Quit to Menu"
+
+[node name="SaveButton" type="Button" parent="MenuLayer/PauseMenu" unique_id=947876999]
+layout_mode = 0
+offset_left = 750.0
+offset_top = 105.0
+offset_right = 1000.0
+offset_bottom = 208.0
+text = "Save Progress"
+
+[node name="LoadButton" type="Button" parent="MenuLayer/PauseMenu" unique_id=1497871144]
+layout_mode = 0
+offset_left = 750.0
+offset_top = 283.0
+offset_right = 1000.0
+offset_bottom = 379.0
+text = "Load Save"
+
+[node name="MainMenu" type="Control" parent="MenuLayer" unique_id=1012034893]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayButton" type="Button" parent="MenuLayer/MainMenu" unique_id=1684605204]
+layout_mode = 0
+offset_left = 433.0
+offset_top = 21.0
+offset_right = 717.0
+offset_bottom = 152.0
+text = "Play"
+icon_alignment = 1
+
+[node name="SettingsButton" type="Button" parent="MenuLayer/MainMenu" unique_id=1360850306]
+layout_mode = 0
+offset_left = 438.0
+offset_top = 233.0
+offset_right = 702.0
+offset_bottom = 398.0
+text = "Settings"
+
+[node name="Quit" type="Button" parent="MenuLayer/MainMenu" unique_id=4857]
+layout_mode = 0
+offset_left = 431.0
+offset_top = 478.0
+offset_right = 727.0
+offset_bottom = 594.0
+text = "Quit"
+
+[node name="LoadButton" type="Button" parent="MenuLayer/MainMenu" unique_id=203694312]
+layout_mode = 0
+offset_left = 750.0
+offset_top = 21.0
+offset_right = 1000.0
+offset_bottom = 152.0
+text = "Continue (Load Save)"
+
+[node name="ModeSelect" type="Control" parent="MenuLayer" unique_id=266517734]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StoryModeButton" type="Button" parent="MenuLayer/ModeSelect" unique_id=1758208977]
+layout_mode = 0
+offset_left = 443.0
+offset_top = 35.0
+offset_right = 727.0
+offset_bottom = 166.0
+text = "Story Mode"
+icon_alignment = 1
+
+[node name="EndlessModeButton Mode" type="Button" parent="MenuLayer/ModeSelect" unique_id=2084846498]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 247.0
+offset_right = 712.0
+offset_bottom = 412.0
+text = "Endless"
+
+[node name="Back" type="Button" parent="MenuLayer/ModeSelect" unique_id=488617964]
+layout_mode = 0
+offset_left = 441.0
+offset_top = 492.0
+offset_right = 737.0
+offset_bottom = 608.0
+text = "Back"
+
+[node name="StorySelect" type="Control" parent="MenuLayer" unique_id=509835285]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SlothButton" type="Button" parent="MenuLayer/StorySelect" unique_id=2010440250]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 30.0
+offset_right = 718.0
+offset_bottom = 78.0
+text = "Sloth"
+icon_alignment = 1
+
+[node name="GluttonyButton" type="Button" parent="MenuLayer/StorySelect" unique_id=885137651]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 95.0
+offset_right = 714.0
+offset_bottom = 135.0
+text = "Gluttony"
+
+[node name="LustButton" type="Button" parent="MenuLayer/StorySelect" unique_id=1819376468]
+layout_mode = 0
+offset_left = 454.0
+offset_top = 152.0
+offset_right = 718.0
+offset_bottom = 199.0
+text = "Lust"
+
+[node name="AngerButton" type="Button" parent="MenuLayer/StorySelect" unique_id=1318291159]
+layout_mode = 0
+offset_left = 453.0
+offset_top = 214.0
+offset_right = 717.0
+offset_bottom = 260.0
+text = "Anger"
+
+[node name="GreedButton" type="Button" parent="MenuLayer/StorySelect" unique_id=532572234]
+layout_mode = 0
+offset_left = 453.0
+offset_top = 274.0
+offset_right = 717.0
+offset_bottom = 320.0
+text = "Greed"
+
+[node name="EnvyButton" type="Button" parent="MenuLayer/StorySelect" unique_id=291616254]
+layout_mode = 0
+offset_left = 452.0
+offset_top = 339.0
+offset_right = 716.0
+offset_bottom = 387.0
+text = "Envy"
+
+[node name="PrideButton" type="Button" parent="MenuLayer/StorySelect" unique_id=153824552]
+layout_mode = 0
+offset_left = 458.0
+offset_top = 403.0
+offset_right = 706.0
+offset_bottom = 459.0
+text = "Pride"
+
+[node name="BackButton" type="Button" parent="MenuLayer/StorySelect" unique_id=775213288]
+layout_mode = 0
+offset_left = 438.0
+offset_top = 497.0
+offset_right = 734.0
+offset_bottom = 556.0
+text = "Back"
