@@ -35,7 +35,7 @@ var detail_info: Label
 var use_button: Button
 var drop_button: Button
 var selected_id = ""             # the item whose Use / Drop buttons are shown
-var money_flying = 0             # money pieces still in the air
+var money_pending = 0            # money pieces about to lift off (still in the slot)
 const SLOT_COUNT = 12
 const ItemPickupScene = preload("res://item_pickup.tscn")
 signal money_flew_away           # one piece of money left the screen (and the inventory)
@@ -115,7 +115,7 @@ func is_usable_kind(id: String) -> bool:
 # Drops one of the item: it's left on the ground behind you (scrolls, gold)
 # or thrown away (money). Weight (gold) updates right away. Returns true if dropped.
 func drop(id: String) -> bool:
-	if count(id) - (money_flying if id == "money" else 0) <= 0:
+	if count(id) - (money_pending if id == "money" else 0) <= 0:
 		return false
 	var item = get_item(id)
 	remove(id)
@@ -177,46 +177,48 @@ func _icon_texture(item: Dictionary) -> Texture2D:
 # ---------------- Money flies away ----------------
 
 # Every piece of money in the inventory flies off the screen in a random
-# direction on WHITE WINGS; when it's out of sight it's removed from the
-# inventory. Port of Unity's UIBezierPath.cs + the UIMoney sprite animations:
-#   - sheet: Greed/flying_money.png ("Flying money loop.png" from the Unity
-#     project): 7 frames of 141x141 (sprite rects from its .meta), nearest filter
-#   - 0.13 s per frame (SpriteAnimData Speed). It first holds frame 0 (wings
-#     spread) for 10 ticks ("UIMoney 1"), then loops the 7-frame flap ("UIMoney 2")
-#   - fades in over 2 s, waits 2 s, then flies for 2.5 s with InSine easing
-#     (DOTween ease 2) while growing from 1x to 1.1x
-#   - size: 325x321 on Unity's 1920x1080 reference canvas, scaled to our screen
+# direction on WHITE WINGS (Proverbs 23:5). The moment a bill lifts off it
+# leaves the inventory (the slot count drops / the slot goes away), and the
+# flying bill starts exactly on top of the slot icon at the same size, so it's
+# the item itself that grows wings:
+#   1. "sprout": FlyingMoneySprout.png (3 frames of 141x141) - the wings sprout, once
+#   2. "flap": Greed/flying_money.png ("Flying money loop.png" from the Unity
+#      project, 7 frames of 141x141 from its .meta) looping while it flies
+#   - 0.13 s per frame for both (the Unity UIMoney SpriteAnimData Speed; the
+#     sprout sheet has no timing of its own), nearest filter
+#   - flight: 2.5 s with InSine easing (DOTween ease 2) while growing to 1.1x,
+#     like Unity's UIBezierPath; the bills lift off 0.12 s apart
+const MONEY_SPROUT_SHEET = "res://FlyingMoneySprout.png"
 const MONEY_SHEET = "res://Greed/flying_money.png"
 const MONEY_FRAME = 141
 const MONEY_FRAME_TIME = 0.13
-const MONEY_HOLD_TICKS = 10
-const MONEY_FADE_TIME = 2.0
-const MONEY_WAIT_TIME = 2.0
 const MONEY_FLY_TIME = 2.5
-const MONEY_UNITY_SIZE = 325.0        # pixels on a 1920-wide screen
 const MONEY_END_SCALE = 1.1
+const MONEY_STAGGER = 0.12
+# Where Greed/money.png sits inside a 141x141 frame (measured pixel-exact), so
+# the flying bill lines up with the slot icon, and the flap frames with the sprout
+const MONEY_ICON_OFFSET_SPROUT = Vector2(45, 55)
+const MONEY_ICON_OFFSET_FLAP = Vector2(43, 59)
 var money_frames: SpriteFrames
 
 func _money_sprite_frames() -> SpriteFrames:
 	if money_frames:
 		return money_frames
-	var sheet = load(MONEY_SHEET)
 	money_frames = SpriteFrames.new()
 	money_frames.remove_animation("default")
-	# Unity's rects count y from the bottom: frame 0-2 = top row, 3-5 = middle, 6 = bottom left
-	var regions = []
-	for i in 7:
-		regions.append(Rect2((i % 3) * MONEY_FRAME, (i / 3) * MONEY_FRAME, MONEY_FRAME, MONEY_FRAME))
-	money_frames.add_animation("hover")      # "UIMoney 1": frame 0 held for 10 ticks
-	money_frames.set_animation_loop("hover", false)
-	money_frames.set_animation_speed("hover", 1.0 / MONEY_FRAME_TIME)
-	for t in MONEY_HOLD_TICKS:
-		money_frames.add_frame("hover", _atlas(sheet, regions[0]))
-	money_frames.add_animation("flap")       # "UIMoney 2": the 7-frame wing flap, looping
+	var sprout = load(MONEY_SPROUT_SHEET)
+	money_frames.add_animation("sprout")
+	money_frames.set_animation_loop("sprout", false)
+	money_frames.set_animation_speed("sprout", 1.0 / MONEY_FRAME_TIME)
+	for i in sprout.get_width() / MONEY_FRAME:
+		money_frames.add_frame("sprout", _atlas(sprout, Rect2(i * MONEY_FRAME, 0, MONEY_FRAME, MONEY_FRAME)))
+	# Unity's rects count y from the bottom: frames 0-2 = top row, 3-5 = middle, 6 = bottom left
+	var sheet = load(MONEY_SHEET)
+	money_frames.add_animation("flap")
 	money_frames.set_animation_loop("flap", true)
 	money_frames.set_animation_speed("flap", 1.0 / MONEY_FRAME_TIME)
-	for r in regions:
-		money_frames.add_frame("flap", _atlas(sheet, r))
+	for i in 7:
+		money_frames.add_frame("flap", _atlas(sheet, Rect2((i % 3) * MONEY_FRAME, (i / 3) * MONEY_FRAME, MONEY_FRAME, MONEY_FRAME)))
 	return money_frames
 
 static func _atlas(sheet: Texture2D, region: Rect2) -> AtlasTexture:
@@ -225,37 +227,62 @@ static func _atlas(sheet: Texture2D, region: Rect2) -> AtlasTexture:
 	a.region = region
 	return a
 
+# Seconds one bill takes from liftoff until it's gone
+func money_flight_time() -> float:
+	return _money_sprite_frames().get_frame_count("sprout") * MONEY_FRAME_TIME + MONEY_FLY_TIME
+
 func _fly_money_away():
-	var waiting = count("money") - money_flying
+	var waiting = count("money") - money_pending
 	if waiting <= 0 or layer == null:
 		return
-	var start = panel.global_position + Vector2(60, 90)
-	var slot = list.get_node_or_null("money")
-	if slot:
-		start = slot.global_position + slot.size / 2.0
-	var screen = get_viewport().get_visible_rect().size
-	var base_scale = MONEY_UNITY_SIZE / MONEY_FRAME * screen.x / 1920.0
-	var far = screen.length() + MONEY_UNITY_SIZE
 	for i in waiting:
-		money_flying += 1
-		var bill = AnimatedSprite2D.new()
-		bill.name = "FlyingMoney"
-		bill.sprite_frames = _money_sprite_frames()
-		bill.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		bill.scale = Vector2.ONE * base_scale
-		bill.position = start
-		bill.modulate.a = 0.0
-		layer.add_child(bill)
-		bill.play("hover")
-		bill.animation_finished.connect(func(): bill.play("flap"))
-		var target = start + Vector2.RIGHT.rotated(randf() * TAU) * far
-		var stagger = i * 0.12
+		money_pending += 1
+		if i == 0:
+			_lift_off_bill()
+		else:
+			get_tree().create_timer(i * MONEY_STAGGER).timeout.connect(_lift_off_bill)
+
+# The slot icon's drawn rect on screen (TextureRect keeps the aspect, centered)
+func _slot_icon_rect(id: String) -> Rect2:
+	var slot = list.get_node_or_null(id) if list else null
+	var icon = slot.get_node_or_null("Icon") if slot else null
+	if icon == null or icon.texture == null:
+		return Rect2()
+	var tex_size = icon.texture.get_size()
+	var k = min(icon.size.x / tex_size.x, icon.size.y / tex_size.y)
+	var drawn = tex_size * k
+	return Rect2(icon.global_position + (icon.size - drawn) / 2.0, drawn)
+
+func _lift_off_bill():
+	money_pending = max(money_pending - 1, 0)
+	if count("money") <= 0:
+		return
+	var icon_rect = _slot_icon_rect("money")
+	var k = 1.4
+	if icon_rect.size.x > 0:
+		k = icon_rect.size.x / _icon_texture(get_item("money")).get_width()   # same size as the slot icon
+	else:
+		icon_rect = Rect2(panel.global_position + Vector2(22, 60), Vector2.ZERO)
+	remove("money")     # the bill leaves the slot right now: it IS the flying one
+	var bill = AnimatedSprite2D.new()
+	bill.name = "FlyingMoney"
+	bill.sprite_frames = _money_sprite_frames()
+	bill.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	bill.centered = false
+	bill.offset = -MONEY_ICON_OFFSET_SPROUT
+	bill.scale = Vector2(k, k)
+	bill.position = icon_rect.position     # money.png's top left = slot icon's top left
+	layer.add_child(bill)
+	bill.play("sprout")
+	var screen = get_viewport().get_visible_rect().size
+	var target = bill.position + Vector2.RIGHT.rotated(randf() * TAU) * (screen.length() + MONEY_FRAME * k * 1.5)
+	bill.animation_finished.connect(func():
+		bill.offset = -MONEY_ICON_OFFSET_FLAP   # keep the bill in place across the sheets
+		bill.play("flap")
 		var tween = bill.create_tween()
-		tween.tween_property(bill, "modulate:a", 1.0, MONEY_FADE_TIME).set_delay(stagger)
-		var fly = tween.parallel()
-		fly.tween_property(bill, "position", target, MONEY_FLY_TIME).set_delay(stagger + MONEY_WAIT_TIME).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-		tween.parallel().tween_property(bill, "scale", Vector2.ONE * base_scale * MONEY_END_SCALE, MONEY_FLY_TIME).set_delay(stagger + MONEY_WAIT_TIME).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-		tween.chain().tween_callback(_money_gone.bind(bill))
+		tween.tween_property(bill, "position", target, MONEY_FLY_TIME).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		tween.parallel().tween_property(bill, "scale", Vector2(k, k) * MONEY_END_SCALE, MONEY_FLY_TIME).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		tween.chain().tween_callback(_money_gone.bind(bill)), CONNECT_ONE_SHOT)
 
 func _fly_money_away_soon():
 	await get_tree().process_frame
@@ -263,12 +290,6 @@ func _fly_money_away_soon():
 
 func _money_gone(bill: Node):
 	bill.queue_free()
-	money_flying = max(money_flying - 1, 0)
-	if count("money") > 0:
-		remove("money")
-	if selected_id == "money" and count("money") <= 0:
-		selected_id = ""
-		_refresh()
 	money_flew_away.emit()
 
 
@@ -446,10 +467,6 @@ func _refresh():
 		slot.custom_minimum_size = Vector2(72, 72)
 		slot.focus_mode = Control.FOCUS_NONE
 		slot.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-		slot.expand_icon = true
-		slot.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		slot.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
-		slot.add_theme_font_size_override("font_size", 13)
 		slot.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		list.add_child(slot)
 		if n >= ids.size():
@@ -459,8 +476,26 @@ func _refresh():
 		var id = ids[n]
 		var item = get_item(id)
 		slot.name = id
-		slot.icon = _icon_texture(item)
-		slot.text = "x%d" % count(id)
+		# icon (a TextureRect so we know exactly where it's drawn - the flying money starts there)
+		var icon = TextureRect.new()
+		icon.name = "Icon"
+		icon.texture = _icon_texture(item)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		icon.position = Vector2(6, 4)
+		icon.size = Vector2(60, 44)
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot.add_child(icon)
+		var amount = Label.new()
+		amount.name = "Count"
+		amount.text = "x%d" % count(id)
+		amount.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		amount.position = Vector2(0, 48)
+		amount.size = Vector2(72, 22)
+		amount.add_theme_font_size_override("font_size", 13)
+		amount.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot.add_child(amount)
 		slot.pressed.connect(select.bind(id))
 		var verse = player.get_verse(item.verse) if player and item.has("verse") else null
 		slot.tooltip_text = tr(item.name)
