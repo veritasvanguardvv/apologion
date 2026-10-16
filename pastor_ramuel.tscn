@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cmvxynqicm8rm" path="res://Pastor_walk.png" id="3_walk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ramuel"]
-size = Vector2(100, 66)
+size = Vector2(120, 79)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bubble"]
 content_margin_left = 10.0
@@ -31,22 +31,22 @@ script = ExtResource("1_party")
 [node name="Visual" type="Node2D" parent="." unique_id=1904415722]
 
 [node name="IdleSprite" type="Sprite2D" parent="Visual" unique_id=1287345521]
-position = Vector2(40.5, -51)
-scale = Vector2(3, 3)
+position = Vector2(48.6, -61.2)
+scale = Vector2(3.6, 3.6)
 texture = ExtResource("2_idle")
 hframes = 2
 vframes = 2
 
 [node name="WalkSprite" type="Sprite2D" parent="Visual" unique_id=1739920483]
 visible = false
-position = Vector2(9, -33)
-scale = Vector2(0.3, 0.3)
+position = Vector2(10.8, -39.6)
+scale = Vector2(0.36, 0.36)
 texture = ExtResource("3_walk")
 hframes = 4
 vframes = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=726450893]
-position = Vector2(0, -33)
+position = Vector2(0, -39.5)
 shape = SubResource("RectangleShape2D_ramuel")
 
 [node name="BubbleLayer" type="CanvasLayer" parent="." unique_id=1588930021]

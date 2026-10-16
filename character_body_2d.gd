@@ -5,7 +5,14 @@ var speed = 200
 var jump_velocity = -400
 var gravity = 980
 var language = "en"
-var current_filter = "all"  # "all", "light", "zeal", "lust", "guard"
+# Verse box filter (see _build_verse_panel). Three groups of verse types:
+const FILTER_GROUPS = {
+	"Attacks": ["sloth", "lust"],               # left button (no Sloth verses exist yet)
+	"Status": ["zeal", "guard", "faith", "fear"], # middle button
+	"Special": ["light"],                       # right button
+}
+var filter_group = "all"   # "all", "Attacks", "Status" or "Special"
+var filter_type = "all"    # "all" (whole group) or one type, e.g. "lust"
 
 # Turn-based battles (see turn_manager.gd). Higher battle_speed = acts earlier
 # in each round. ("speed" above is walking speed - a different thing.)
@@ -21,6 +28,23 @@ var display_name = "You"
 var guard_rounds_left = 0            # 0 = not guarded
 var guard_fx: AnimatedSprite2D       # the wings/dome animation (built in _ready)
 var guard_label: Label               # "Guard 50% up (3)" (built in _ready)
+@export var guard_linger_opacity = 0.5  # after the animation, the wings stay at this opacity while guarded
+
+# Faith (Psalm 27:1b, Psalm 29:11, Isaiah 40:29): attack up.
+# Each Faith verse adds faith_step (+50%) up to faith_max (+100%) and resets
+# the duration to faith_rounds. Only the PLAYER's verse damage is boosted.
+@export var faith_step = 0.5
+@export var faith_max = 1.0
+@export var faith_rounds = 3
+@export var shofar_sound_path = "res://shofar.mp3"   # plays when Faith reaches the max
+var faith_bonus = 0.0                # 0.5 = +50% attack
+var faith_rounds_left = 0
+var faith_label: Label
+var shofar_player: AudioStreamPlayer
+var shofar_plays = 0                 # how many times the shofar has played (for testing)
+signal faith_maxed                   # emitted when Faith newly reaches the max
+
+# Fear (Psalm 75:10): lowers enemy attack - see enemy.gd (fear_reduction)
 
 var base_scale_light = 1.2
 var base_scale_near = 0.6
@@ -38,8 +62,8 @@ var lamp_base_energy = 0.9
 @onready var halo = get_node_or_null("Halo")
 @onready var lamp = get_node_or_null("Lamp")
 @onready var verse_input = get_parent().get_node("CanvasLayer/LineEdit")
-@onready var verse_panel = get_parent().get_node_or_null("VerseListLayer/VersePanel")
-@onready var verse_text = get_parent().get_node_or_null("VerseListLayer/VersePanel/VerseText")
+var verse_panel: Panel          # the verse box (built in code, see _build_verse_panel)
+var verse_text: RichTextLabel
 
 # "discovered": true here means "the player starts the game knowing this verse".
 # The live discovered / used-this-cycle lists are kept in VerseManager
@@ -56,7 +80,13 @@ var all_verses = [
 	{"ref": "Psalm 119:105", "type": "light", "damage": 50, "discovered": false, "en": "your word is a lamp to my feet, and a light for my path."},
 	# Guard verse: "damage" isn't used for guard verses. "alt" = other wordings
 	# that also count (here the fuller KJV version).
-	{"ref": "Psalm 17:8", "type": "guard", "damage": 0, "discovered": false, "en": "hide me under the shadow of your wings.", "es": "guárdame como a la niña de tus ojos; escóndeme bajo la sombra de tus alas.", "alt": ["keep me as the apple of the eye, hide me under the shadow of thy wings."]}
+	{"ref": "Psalm 17:8", "type": "guard", "damage": 0, "discovered": false, "en": "hide me under the shadow of your wings.", "es": "guárdame como a la niña de tus ojos; escóndeme bajo la sombra de tus alas.", "alt": ["keep me as the apple of the eye, hide me under the shadow of thy wings."]},
+	# Faith verses (attack up). Spanish = RVR1960. "LORD" counts as "Yahweh" when matching.
+	{"ref": "Psalm 27:1b", "type": "faith", "damage": 0, "discovered": false, "en": "Whom shall I fear? Yahweh is the strength of my life.", "es": "Jehová es la fortaleza de mi vida; ¿de quién he de atemorizarme?", "alt": ["The LORD is the strength of my life; of whom shall I be afraid?", "Yahweh is the strength of my life. Of whom shall I be afraid?"]},
+	{"ref": "Psalm 29:11", "type": "faith", "damage": 0, "discovered": false, "en": "Yahweh will give strength to His people.", "es": "Jehová dará poder a su pueblo; Jehová bendecirá a su pueblo con paz.", "alt": ["The LORD will give strength unto his people; the LORD will bless his people with peace.", "Yahweh will give strength to his people. Yahweh will bless his people with peace."]},
+	{"ref": "Isaiah 40:29", "type": "faith", "damage": 0, "discovered": false, "en": "He gives power to the weak.", "es": "Él da esfuerzo al cansado, y multiplica las fuerzas al que no tiene ningunas.", "alt": ["He giveth power to the faint; and to them that have no might he increaseth strength.", "He gives power to the weak. He increases the strength of him who has no might."]},
+	# Fear verse (enemy attack down)
+	{"ref": "Psalm 75:10", "type": "fear", "damage": 0, "discovered": false, "en": "God says, \"I will cut off the strength of the wicked.\"", "es": "Quebrantaré todo el poderío de los pecadores, y el poder del justo será exaltado.", "alt": ["I will cut off the strength of the wicked.", "All the horns of the wicked also will I cut off; but the horns of the righteous shall be exalted.", "All the horns of the wicked also will I cut off."]}
 ]
 
 var lust_verses = [
@@ -75,7 +105,7 @@ var zeal_verses = [
 	{"ref": "romans 12:11", "text": "never lag in diligence. let the spirit excite you as you serve the lord."}
 ]
 
-var bible_books = ["psalm", "psalms", "proverb", "proverbs", "matthew", "romans", "corinthians"]
+var bible_books = ["psalm", "psalms", "proverb", "proverbs", "matthew", "romans", "corinthians", "isaiah"]
 
 const DEFAULT_PLACEHOLDER = "Press 'Enter' or click here to start Scripture recitation"
 var message_id = 0  # used by _show_verse_message so old messages don't overwrite new ones
@@ -100,35 +130,58 @@ func _ready():
 	# Redraw the verse box whenever a verse is discovered or used
 	VerseManager.verses_changed.connect(_update_verse_text)
 	
-	# Sloth and Gluttony don't have a verse box in the scene, so build one
-	if not verse_panel:
-		_build_verse_panel()
+	# The verse box is built in code (same in every level)
+	_build_verse_panel()
 	verse_panel.visible = false
-	verse_text.bbcode_enabled = true  # allows colors in the verse list
 	_update_verse_text()
 	print("Player ready. Verse panel: ", verse_panel)
-	var filter_btn = verse_panel.get_node_or_null("FilterButton")
-	if filter_btn:
-		filter_btn.focus_mode = Control.FOCUS_NONE  # so Enter/Space don't press it by accident
-		filter_btn.pressed.connect(_on_filter_pressed)
 	if lamp:
 		lamp.energy = lamp_base_energy
 	
 	_build_guard_effect()
-	# Guard counts down at the end of every battle round
+	_build_status_labels()
+	# Guard and Faith count down at the end of every battle round
 	TurnManager.round_ended.connect(_on_round_ended)
 
-func _on_filter_pressed():
-	match current_filter:
-		"all": current_filter = "light"
-		"light": current_filter = "zeal"
-		"zeal": current_filter = "lust"
-		"lust": current_filter = "guard"
-		"guard": current_filter = "all"
-	var filter_btn = verse_panel.get_node_or_null("FilterButton")
-	if filter_btn:
-		filter_btn.text = "Filter: " + current_filter.capitalize()
+# A group button was pressed (Attacks / Status / Special).
+# First press shows the whole group; pressing again cycles through its types.
+func _on_group_pressed(group: String):
+	var types = FILTER_GROUPS[group]
+	if filter_group != group:
+		filter_group = group
+		filter_type = "all"
+	elif filter_type == "all":
+		filter_type = types[0]
+	else:
+		var i = types.find(filter_type)
+		filter_type = "all" if i + 1 >= types.size() else types[i + 1]
+	_update_filter_buttons()
 	_update_verse_text()
+
+func _on_show_all_pressed():
+	filter_group = "all"
+	filter_type = "all"
+	_update_filter_buttons()
+	_update_verse_text()
+
+# The active group's button shows what it's filtering and is highlighted.
+func _update_filter_buttons():
+	for group in FILTER_GROUPS:
+		var button = verse_panel.get_node("FilterRow/" + group + "Button")
+		if group == filter_group:
+			button.text = group + ": " + ("All" if filter_type == "all" else filter_type.capitalize())
+			button.modulate = Color(1, 0.9, 0.5)
+		else:
+			button.text = group
+			button.modulate = Color.WHITE
+
+# True if a verse type passes the current filter.
+func _passes_filter(type: String) -> bool:
+	if filter_group == "all":
+		return true
+	if filter_type == "all":
+		return type in FILTER_GROUPS[filter_group]
+	return type == filter_type
 
 func _input(event):
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ENTER and not verse_input.has_focus():
@@ -185,8 +238,9 @@ func _on_verse_submitted(text):
 	
 	_finish_typing()
 	
-	# The player's verses hit the nearest enemy (no range limit, like before)
-	apply_verse_effects(lower, get_nearest_enemy())
+	# The player's verses hit the nearest enemy (no range limit, like before).
+	# Faith boosts the damage (x1.5 at +50%, x2 at +100%).
+	apply_verse_effects(lower, get_nearest_enemy(), 1.0 + faith_bonus)
 	
 	# A real verse was recited: if it was our battle turn, the turn is over
 	if TurnManager.is_players_turn():
@@ -238,6 +292,23 @@ func apply_verse_effects(lower: String, enemy, damage_scale := 1.0):
 	# Guard (Psalm 17:8)
 	if only_type == "guard":
 		activate_guard()
+	
+	# Faith: attack up for the player
+	if only_type == "faith":
+		activate_faith()
+	
+	# Fear: every enemy in the battle attacks weaker. Outside a battle it hits
+	# the nearest enemy (and only starts counting down once a battle starts).
+	if only_type == "fear":
+		var targets = []
+		for e in TurnManager.battle_enemies:
+			if TurnManager._is_alive(e):
+				targets.append(e)
+		if targets.is_empty() and enemy and is_instance_valid(enemy):
+			targets.append(enemy)
+		for e in targets:
+			if e.has_method("apply_fear"):
+				e.apply_fear()
 	
 	# Zeal
 	for verse in (zeal_verses if only_type in ["", "zeal"] else []):
@@ -307,32 +378,40 @@ func _update_verse_text():
 	if not verse_text:
 		return
 	var display = "Ready this cycle: %d of %d\n\n" % [VerseManager.remaining_count(), VerseManager.discovered.size()]
-	var sorted = all_verses.duplicate()
-	if current_filter != "all":
-		sorted.sort_custom(func(a, b):
-			var a_match = a.type == current_filter
-			var b_match = b.type == current_filter
-			if a_match and not b_match: return true
-			if b_match and not a_match: return false
-			return false
-		)
-	for v in sorted:
+	var shown = 0
+	for v in all_verses:
+		if not _passes_filter(v.type):
+			continue   # hidden by the filter buttons
+		shown += 1
 		var is_found = VerseManager.is_discovered(v.ref)
-		if current_filter != "all" and v.type != current_filter and is_found:
-			continue  # optional: hide non-matching when filtering
 		if is_found:
 			var verse_body = v.en if language == "en" else v.get("es", v.en)
 			# Used verses are greyed out until the cycle resets; ready ones are green
 			var used = VerseManager.is_used(v.ref)
 			var color = "gray" if used else "lightgreen"
 			var status = "(used)" if used else "(ready)"
-			var power = "%d%%" % v.damage
-			if v.type == "guard":
-				power = "+%d%% defense, %d rounds" % [int(guard_reduction * 100), guard_rounds]
+			var power = _verse_power_text(v)
 			display += "[color=%s]%s  %s\n%s  |  %s\n%s[/color]\n\n" % [color, v.ref, status, power, v.type.capitalize(), verse_body]
 		else:
 			display += "???\n??%  |  ???\n\n"
+	if shown == 0:
+		display += "(No verses of this kind yet)"
 	verse_text.text = display
+
+# The short "what it does" line shown for each verse in the verse box.
+func _verse_power_text(v) -> String:
+	match v.type:
+		"guard":
+			return "+%d%% defense, %d rounds" % [int(guard_reduction * 100), guard_rounds]
+		"faith":
+			return "+%d%% attack (stacks to +%d%%), %d rounds" % [int(faith_step * 100), int(faith_max * 100), faith_rounds]
+		"fear":
+			return "All enemies in battle: attack -50%, 3 rounds"
+		"zeal":
+			return "Speed + jump boost"
+		"light":
+			return "Lights up the dark"
+	return "%d%%" % v.damage
 
 func discover_verse(ref_name: String):
 	for v in all_verses:
@@ -385,10 +464,11 @@ func get_nearest_enemy(from_position = null, max_distance := 0.0):
 func _find_verse(lower: String):
 	var best = null
 	var best_score = 0.0
+	lower = _normalize(lower)
 	for v in all_verses:
-		var text_score = max(lower.similarity(v.en.to_lower()), lower.similarity(v.get("es", "").to_lower()))
+		var text_score = max(lower.similarity(_normalize(v.en)), lower.similarity(_normalize(v.get("es", ""))))
 		for alt in v.get("alt", []):
-			text_score = max(text_score, lower.similarity(alt.to_lower()))
+			text_score = max(text_score, lower.similarity(_normalize(alt)))
 		var ref_score = lower.similarity(v.ref.to_lower())
 		if text_score > 0.4 or ref_score > 0.6:
 			var score = max(text_score, ref_score)
@@ -396,6 +476,11 @@ func _find_verse(lower: String):
 				best_score = score
 				best = v
 	return best
+
+# Lowercases text and treats "LORD" and "Yahweh" as the same word, so either
+# wording matches.
+func _normalize(text: String) -> String:
+	return text.to_lower().replace("the lord", "yahweh").replace("lord", "yahweh")
 
 # Shows a short message in the verse input box (as its grey placeholder text),
 # then puts the normal placeholder back after a few seconds.
@@ -437,20 +522,85 @@ func take_damage(amount):
 func activate_guard():
 	guard_rounds_left = guard_rounds
 	_update_guard_label()
-	# Play the wings/dome animation once
+	# Play the wings/dome animation once (fully visible)
 	guard_fx.visible = true
+	guard_fx.modulate.a = 1.0
 	guard_fx.frame = 0
 	guard_fx.play("guard")
 	print("Guard up for ", guard_rounds, " rounds")
+
+# When the animation ends, keep its last frame on screen (see-through)
+# for as long as the guard lasts.
+func _on_guard_fx_finished():
+	if guard_rounds_left > 0:
+		guard_fx.modulate.a = guard_linger_opacity
+	else:
+		guard_fx.visible = false
 
 func _on_round_ended():
 	if guard_rounds_left > 0:
 		guard_rounds_left -= 1
 		_update_guard_label()
+		if guard_rounds_left == 0:
+			guard_fx.visible = false   # guard over: hide the lingering wings
+	if faith_rounds_left > 0:
+		faith_rounds_left -= 1
+		if faith_rounds_left == 0:
+			faith_bonus = 0.0
+		_update_faith_label()
 
 func _update_guard_label():
 	guard_label.visible = guard_rounds_left > 0
 	guard_label.text = "Guard %d%% up (%d)" % [int(guard_reduction * 100), guard_rounds_left]
+
+# ---------------- Faith (attack up) ----------------
+
+# +faith_step attack (stacking up to faith_max) and reset the duration.
+# Outside a battle it doesn't count down.
+func activate_faith():
+	var was_max = faith_bonus >= faith_max
+	if faith_rounds_left > 0:
+		faith_bonus = min(faith_bonus + faith_step, faith_max)
+	else:
+		faith_bonus = faith_step
+	faith_rounds_left = faith_rounds
+	_update_faith_label()
+	print("Faith: attack +", int(faith_bonus * 100), "% for ", faith_rounds, " rounds")
+	if faith_bonus >= faith_max and not was_max:
+		_play_shofar()
+
+func _update_faith_label():
+	faith_label.visible = faith_rounds_left > 0
+	faith_label.text = "Faith %d%% up (%d)" % [int(faith_bonus * 100), faith_rounds_left]
+
+# The shofar plays when Faith newly reaches the max.
+func _play_shofar():
+	shofar_plays += 1
+	faith_maxed.emit()
+	if shofar_player.stream:
+		shofar_player.play()
+	else:
+		print("Faith maxed! (No shofar sound yet: add a file at ", shofar_sound_path, ")")
+
+# Builds the Guard/Faith lines under the HP bar and the shofar sound player.
+func _build_status_labels():
+	var box = VBoxContainer.new()   # stacks the labels; hidden ones take no space
+	box.position = hp_bar.position + Vector2(0, hp_bar.size.y + 4)
+	box.add_child(guard_label)
+	faith_label = Label.new()
+	faith_label.add_theme_color_override("font_color", Color(1.0, 0.8, 0.45))
+	faith_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	faith_label.add_theme_constant_override("outline_size", 4)
+	faith_label.visible = false
+	box.add_child(faith_label)
+	hp_bar.get_parent().add_child.call_deferred(box)
+	
+	shofar_player = AudioStreamPlayer.new()
+	if ResourceLoader.exists(shofar_sound_path):
+		shofar_player.stream = load(shofar_sound_path)
+		if "loop" in shofar_player.stream:
+			shofar_player.stream.loop = false
+	add_child(shofar_player)
 
 # Builds the guard animation (Guardeffect.png: 12 frames of 78x78 in one row)
 # and the "Guard 50% up" label under the HP bar.
@@ -474,38 +624,62 @@ func _build_guard_effect():
 	guard_fx.position = (shape.position if shape else Vector2.ZERO) + Vector2(0, -23)
 	guard_fx.z_index = 5
 	guard_fx.visible = false
-	guard_fx.animation_finished.connect(func(): guard_fx.visible = false)   # hide when done
+	guard_fx.animation_finished.connect(_on_guard_fx_finished)
 	add_child(guard_fx)
 	
 	guard_label = Label.new()
-	guard_label.position = hp_bar.position + Vector2(0, hp_bar.size.y + 4)
 	guard_label.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
 	guard_label.add_theme_color_override("font_outline_color", Color.BLACK)
 	guard_label.add_theme_constant_override("outline_size", 4)
 	guard_label.visible = false
-	hp_bar.get_parent().add_child.call_deferred(guard_label)
 
-# Builds the same verse box that Lust.tscn has, for scenes that don't have one.
-# (It's added under the player, so you won't see it in the editor's scene tree.)
+# Builds the verse box (Tab). It's made in code so it's the same in every
+# level, and it's added under the player, so you won't see it in the editor.
+#   Top:    title + "Show all" button
+#   Row:    [Attacks] [Status] [Special] filter buttons (left / middle / right)
+#   Below:  the verse list
 func _build_verse_panel():
 	var layer = CanvasLayer.new()
 	layer.name = "VerseListLayer"
 	add_child(layer)
 	verse_panel = Panel.new()
 	verse_panel.name = "VersePanel"
-	verse_panel.position = Vector2(30, 187)
-	verse_panel.size = Vector2(574, 180)
+	verse_panel.position = Vector2(30, 230)
+	verse_panel.size = Vector2(620, 330)
 	layer.add_child(verse_panel)
-	verse_text = RichTextLabel.new()
-	verse_text.name = "VerseText"
-	verse_text.size = Vector2(571, 177)
-	verse_panel.add_child(verse_text)
+	
 	var title = Label.new()
 	title.text = "Verses (Tab to close)"
-	title.position = Vector2(207, -31)
+	title.position = Vector2(10, 6)
 	verse_panel.add_child(title)
-	var filter_btn = Button.new()
-	filter_btn.name = "FilterButton"
-	filter_btn.text = "Filter: All"
-	filter_btn.position = Vector2(470, -35)
-	verse_panel.add_child(filter_btn)
+	
+	var show_all = Button.new()
+	show_all.name = "ShowAllButton"
+	show_all.text = "Show all"
+	show_all.position = Vector2(530, 4)
+	show_all.focus_mode = Control.FOCUS_NONE   # so Enter/Space don't press it by accident
+	show_all.pressed.connect(_on_show_all_pressed)
+	verse_panel.add_child(show_all)
+	
+	# Three equal buttons side by side
+	var row = HBoxContainer.new()
+	row.name = "FilterRow"
+	row.position = Vector2(10, 38)
+	row.size = Vector2(600, 31)
+	row.add_theme_constant_override("separation", 8)
+	verse_panel.add_child(row)
+	for group in FILTER_GROUPS:
+		var button = Button.new()
+		button.name = group + "Button"
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.focus_mode = Control.FOCUS_NONE
+		button.pressed.connect(_on_group_pressed.bind(group))
+		row.add_child(button)
+	
+	verse_text = RichTextLabel.new()
+	verse_text.name = "VerseText"
+	verse_text.bbcode_enabled = true   # allows colors in the verse list
+	verse_text.position = Vector2(10, 76)
+	verse_text.size = Vector2(600, 246)
+	verse_panel.add_child(verse_text)
+	_update_filter_buttons()

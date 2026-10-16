@@ -11,6 +11,14 @@ var hp = 100
 # Inspector to make enemies skip their turn instead.
 @export var can_attack = true
 @export var attack_damage = 5
+
+# Fear (Psalm 75:10): this enemy's attack is lowered for a few rounds.
+# Recasting refreshes the duration (it doesn't stack).
+@export var fear_reduction = 0.5   # 0.5 = attacks do half damage
+@export var fear_rounds = 3
+var fear_rounds_left = 0
+var fear_label: Label              # "Attack 50% down (3)" above the HP bar
+
 @onready var hp_bar = $EnemyHP
 
 func _ready():
@@ -23,13 +31,43 @@ func _ready():
 	hp_bar.value = hp
 	if display_name == "":
 		display_name = str(name)
+	
+	# Fear label, just above the HP bar
+	fear_label = Label.new()
+	fear_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	fear_label.position = hp_bar.position + Vector2(0, -26)
+	fear_label.size = Vector2(hp_bar.size.x, 24)
+	fear_label.add_theme_color_override("font_color", Color(0.75, 0.55, 1.0))
+	fear_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	fear_label.add_theme_constant_override("outline_size", 4)
+	fear_label.visible = false
+	add_child(fear_label)
+	TurnManager.round_ended.connect(_on_round_ended)
+
+func apply_fear():
+	fear_rounds_left = fear_rounds
+	_update_fear_label()
+	print(display_name, " is afraid: attack -", int(fear_reduction * 100), "% for ", fear_rounds, " rounds")
+
+func _on_round_ended():
+	if fear_rounds_left > 0:
+		fear_rounds_left -= 1
+		_update_fear_label()
+
+func _update_fear_label():
+	fear_label.visible = fear_rounds_left > 0
+	fear_label.text = "Attack %d%% down (%d)" % [int(fear_reduction * 100), fear_rounds_left]
 
 # Called by TurnManager when it's this enemy's turn in a battle.
 func take_turn():
 	var player = get_tree().get_first_node_in_group("player")
 	if can_attack and player and player.has_method("take_damage"):
-		# take_damage returns the damage after the player's guard (Psalm 17:8)
-		var dealt = player.take_damage(attack_damage)
+		var damage = attack_damage
+		if fear_rounds_left > 0:
+			damage *= (1.0 - fear_reduction)   # Fear: weaker attack
+		# take_damage returns the damage after the player's guard (Psalm 17:8),
+		# so Fear and Guard together = 5 x 0.5 x 0.5 = 1.25
+		var dealt = player.take_damage(damage)
 		TurnManager.show_message("%s attacks! -%s HP" % [display_name, str(snapped(dealt, 0.1))])
 		print(display_name, " attacks for ", dealt)
 	else:

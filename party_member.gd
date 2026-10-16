@@ -38,7 +38,7 @@ extends CharacterBody2D
 @export var bubble_min_time = 2.5        # shortest time the bubble stays up (seconds)
 @export var bubble_time_per_char = 0.06  # extra time per letter, so long verses stay longer
 @export var bubble_max_time = 6.0        # longest time the bubble stays up
-@export var bubble_head_offset = -95.0   # where his head is, above his feet (pixels)
+@export var bubble_head_offset = -114.0   # where his head is, above his feet (pixels)
 
 @export_group("Sprite")
 @export var sprite_faces_right = true  # the Pastor art faces right

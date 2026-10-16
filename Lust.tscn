@@ -42,6 +42,8 @@ color = Color(0.18359044, 0.18359044, 0.18359044, 1)
 
 [node name="Parallax2D" type="Parallax2D" parent="Rainbow" unique_id=1819504106]
 scroll_scale = Vector2(0.5, 0.5)
+repeat_size = Vector2(1838.9, 0)
+repeat_times = 6
 
 [node name="Sprite2D" type="Sprite2D" parent="Rainbow/Parallax2D" unique_id=1978254056]
 light_mask = 0
@@ -385,31 +387,3 @@ offset_right = 1113.0
 offset_bottom = 158.0
 grow_horizontal = 0
 value = 100.0
-
-[node name="VerseListLayer" type="CanvasLayer" parent="." unique_id=984646102]
-
-[node name="VersePanel" type="Panel" parent="VerseListLayer" unique_id=300597871]
-visible = false
-offset_left = 30.0
-offset_top = 187.0
-offset_right = 604.0
-offset_bottom = 367.0
-
-[node name="VerseText" type="RichTextLabel" parent="VerseListLayer/VersePanel" unique_id=358932843]
-layout_mode = 0
-offset_right = 571.0
-offset_bottom = 177.0
-
-[node name="Label" type="Label" parent="VerseListLayer/VersePanel" unique_id=445559486]
-layout_mode = 0
-offset_left = 207.0
-offset_top = -31.0
-offset_right = 365.0
-offset_bottom = -8.0
-text = "Verses (Tab to close)"
-
-[node name="FilterButton" type="Button" parent="VerseListLayer/VersePanel" unique_id=80801208]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-text = "All"
