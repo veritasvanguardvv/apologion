@@ -17,13 +17,13 @@ import json, re, sys, unicodedata, pathlib
 
 # Our Polish translations for rows whose TEXT PL cell is blank in the table.
 PL_FILL = {
-    "Psalm 73:12": "Oto niegodziwi zawsze są beztroscy, pomnażają swoje bogactwa.",
-    "Luke 12:29a": "Nie zabiegajcie o to, co będziecie jeść i co będziecie pić.",
-    "2 Corinthians 6:10b": "Jako ubodzy, a jednak wielu ubogacający; jako nic nie mający, a jednak wszystko posiadający.",
-    "Isaiah 58:7b": "Przyjmij do swego domu biednych bez dachu nad głową.",
-    "Habakkuk 2:5a": "Zaiste, wino jest zdradliwe; człowiek pyszny nie zazna spokoju.",
-    "Habakkuk 2:5b": "Rozwiera swą paszczę jak kraina umarłych i jak śmierć nie może się nasycić.",
-    "Proverbs 27:20": "Kraina umarłych i otchłań nigdy nie są syte, tak i oczy człowieka nigdy nie są nasycone.",
+    "Psalm 73:12": "Niegodziwi są zawsze beztroscy, pomnażają swoje bogactwa.",
+    "Luke 12:29a": "Nie zabiegajcie o to, co będziecie jeść i pić.",
+    "2 Corinthians 6:10b": "Żyjemy jako nic nie mający, a jednak wszystko posiadający.",
+    "Isaiah 58:7b": "Wprowadź do swego domu biednych bez dachu nad głową.",
+    "Habakkuk 2:5a": "Bogactwo jest zdrajcą, a człowiek pyszny nigdy nie zazna spokoju.",
+    "Habakkuk 2:5b": "Jego chciwość jest szeroka jak Szeol; jak śmierć nigdy nie ma dość.",
+    "Proverbs 27:20": "Jak Śmierć i Zagłada nigdy nie są syte, tak i pożądanie nigdy nie jest nasycone.",
 }
 ES_FILL = {
     "Isaiah 58:7b": "Trae a tu casa a los pobres sin hogar.",
