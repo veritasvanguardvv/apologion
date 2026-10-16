@@ -1,0 +1,90 @@
+keys,en,es
+Continue,Continue,Continuar
+Settings,Settings,Ajustes
+Quit to Menu,Quit to Menu,Salir al menú
+Save Progress,Save Progress,Guardar progreso
+Load Save,Load Save,Cargar partida
+Play,Play,Jugar
+Quit,Quit,Salir
+Continue (Load Save),Continue (Load Save),Continuar (cargar partida)
+Story Mode,Story Mode,Modo historia
+Endless,Endless,Sin fin
+Back,Back,Volver
+Sloth,Sloth,Pereza
+Gluttony,Gluttony,Gula
+Lust,Lust,Lujuria
+Anger,Anger,Ira
+Greed,Greed,Avaricia
+Envy,Envy,Envidia
+Pride,Pride,Soberbia
+Saved!,Saved!,¡Guardado!
+Save failed,Save failed,Error al guardar
+No save found,No save found,No hay partida guardada
+Change Party,Change Party,Cambiar grupo
+Only one companion can travel with you.,Only one companion can travel with you.,Solo un compañero puede viajar contigo.
+You can't change your party during a battle.,You can't change your party during a battle.,No puedes cambiar tu grupo durante una batalla.
+Close,Close,Cerrar
+Press Enter (or hold Shift and speak) to recite Scripture,Press Enter (or hold Shift and speak) to recite Scripture,Pulsa Enter (o mantén Shift y habla) para recitar las Escrituras
+Press Up to talk,Press Up to talk,Pulsa Arriba para hablar
+Life's so stressful...,Life's so stressful...,La vida es muy estresante...
+You,You,Tú
+Run (R),Run (R),Huir (R)
+Got away safely!,Got away safely!,¡Escapaste sin problemas!
+A %s appears!,A %s appears!,¡Aparece %s!
+%d enemies appear!,%d enemies appear!,¡Aparecen %d enemigos!
+Your turn - type or say a verse,Your turn - type or say a verse,Tu turno: escribe o di un versículo
+%s's turn,%s's turn,Turno de %s
+Victory!,Victory!,¡Victoria!
+You were defeated... restarting the level,You were defeated... restarting the level,Has sido derrotado... reiniciando el nivel
+%s attacks! -%s HP,%s attacks! -%s HP,¡%s ataca! -%s PS
+%s waits...,%s waits...,%s espera...
+%s recites %s! -%s HP - it's %s type now!,%s recites %s! -%s HP - it's %s type now!,¡%s recita %s! -%s PS. ¡Ahora es de tipo %s!
+No effect - it's %s type now!,No effect - it's %s type now!,Sin efecto: ¡ahora es de tipo %s!
+Countered! x%s,Countered! x%s,¡Contraataque! x%s
+Defense +%d%% (%d),Defense +%d%% (%d),Defensa +%d%% (%d)
+Faith +%d%% (%d),Faith +%d%% (%d),Fe +%d%% (%d)
+Attack -%d%% (%d),Attack -%d%% (%d),Ataque -%d%% (%d)
+Wait for your turn!,Wait for your turn!,¡Espera tu turno!
+That's an enemy's verse - you can't use it,That's an enemy's verse - you can't use it,Ese versículo es del enemigo: no puedes usarlo
+New verse discovered: %s!,New verse discovered: %s!,¡Nuevo versículo descubierto: %s!
+%s was already used - recite your other %d verse(s) first (Tab to see them),%s was already used - recite your other %d verse(s) first (Tab to see them),%s ya se usó: recita primero tus otros %d versículo(s) (Tab para verlos)
+That's not a verse you know - try again,That's not a verse you know - try again,No conoces ese versículo: inténtalo de nuevo
+Verses (Tab to close),Verses (Tab to close),Versículos (Tab para cerrar)
+Show all,Show all,Mostrar todo
+Attacks,Attacks,Ataques
+Status,Status,Estados
+Special,Special,Especial
+%s (all),%s (all),%s (todos)
+Ready this cycle: %d of %d,Ready this cycle: %d of %d,Listos en este ciclo: %d de %d
+(used),(used),(usado)
+(ready),(ready),(listo)
+Universal (All),Universal (All),Universal (todos)
+Universal,Universal,Universal
+(No verses of this kind yet),(No verses of this kind yet),(Aún no hay versículos de este tipo)
+Zeal,Zeal,Celo
+Guard,Guard,Defensa
+Faith,Faith,Fe
+Fear,Fear,Temor
+Light,Light,Luz
+"+%d%% defense, %d rounds","+%d%% defense, %d rounds","+%d%% de defensa, %d rondas"
+"+%d%% attack (stacks to +%d%%), %d rounds","+%d%% attack (stacks to +%d%%), %d rounds","+%d%% de ataque (se acumula hasta +%d%%), %d rondas"
+"All enemies in battle: attack -50%, 3 rounds","All enemies in battle: attack -50%, 3 rounds","Todos los enemigos en batalla: ataque -50%, 3 rondas"
+Speed + jump boost,Speed + jump boost,Más velocidad y salto
+Lights up the dark,Lights up the dark,Ilumina la oscuridad
+", hurts any enemy type",", hurts any enemy type",", daña a cualquier tipo de enemigo"
+", hurts untyped and %s-type enemies",", hurts untyped and %s-type enemies",", daña a enemigos sin tipo y de tipo %s"
+", counters %s (x%s)",", counters %s (x%s)",", contrarresta %s (x%s)"
+Listening... release Shift to recite,Listening... release Shift to recite,Escuchando... suelta Shift para recitar
+Didn't catch that - try again,Didn't catch that - try again,No te entendí: inténtalo de nuevo
+Still recognizing - wait a moment,Still recognizing - wait a moment,Aún reconociendo: espera un momento
+Hold Shift while you speak,Hold Shift while you speak,Mantén Shift mientras hablas
+Voice recognition isn't set up (see VOICE_SETUP.md),Voice recognition isn't set up (see VOICE_SETUP.md),El reconocimiento de voz no está instalado (ver VOICE_SETUP.md)
+Recognizing...,Recognizing...,Reconociendo...
+Psalm,Psalm,Salmos
+Genesis,Genesis,Génesis
+Proverbs,Proverbs,Proverbios
+Isaiah,Isaiah,Isaías
+Matthew,Matthew,Mateo
+Romans,Romans,Romanos
+1 Corinthians,1 Corinthians,1 Corintios
+Galatians,Galatians,Gálatas

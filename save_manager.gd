@@ -24,12 +24,29 @@ var defeated_enemies: Dictionary = {}
 # menu_layer.gd uses this same array, so unlocking a level is remembered.
 var unlocked_levels = ["Sloth", "Gluttony", "Lust"]
 
-# "en" or "es" - set by the language button in the main menu (menu_layer.gd)
+# "en" or "es" - set by the English / Español buttons in the main menu.
+# Always change it with set_language() so all the text switches too.
 var language = "en"
+signal language_changed(new_language)
 
 # When a save is loaded we switch scenes first; the player then picks up
 # its saved position from here in its _ready() (see apply_pending_player_state).
 var pending_position = null
+
+
+func _ready():
+	TranslationServer.set_locale(language)
+
+
+# ---------------- Language ----------------
+
+# Switches ALL the game's text (menus, messages, verse box...) and the verse
+# language. Godot's TranslationServer picks the right column of
+# translations/strings.csv; scripts listen to language_changed to redraw.
+func set_language(new_language: String) -> void:
+	language = new_language
+	TranslationServer.set_locale(new_language)
+	language_changed.emit(new_language)
 
 
 # ---------------- Enemies ----------------
@@ -94,6 +111,7 @@ func save_game() -> bool:
 		config.set_value("progress", "player_position", player.global_position)
 	config.set_value("progress", "unlocked_levels", unlocked_levels)
 	config.set_value("progress", "language", language)
+	config.set_value("progress", "party", PartyManager.current)
 
 	var verses = VerseManager.get_save_data()
 	config.set_value("verses", "discovered", verses.discovered)
@@ -127,7 +145,8 @@ func load_game(change_level := true) -> bool:
 	unlocked_levels.clear()
 	unlocked_levels.append_array(config.get_value("progress", "unlocked_levels", ["Sloth", "Gluttony", "Lust"]))
 
-	language = config.get_value("progress", "language", "en")
+	set_language(config.get_value("progress", "language", "en"))
+	PartyManager.current = config.get_value("progress", "party", PartyManager.DEFAULT_MEMBER)
 
 	VerseManager.load_save_data({
 		"discovered": config.get_value("verses", "discovered", []),
@@ -139,5 +158,7 @@ func load_game(change_level := true) -> bool:
 	var level = config.get_value("progress", "level", "")
 	if change_level and level != "" and ResourceLoader.exists(level):
 		get_tree().change_scene_to_file.call_deferred(level)
+	else:
+		PartyManager.ensure_party()
 	print("Game loaded")
 	return true

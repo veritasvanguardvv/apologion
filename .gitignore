@@ -23,3 +23,10 @@ mono_crash.*.json
 *.exe
 # Uncomment if your project does not version PCK files as runtime dependencies.
 # *.pck
+
+# Voice: the Linux build of the speech addon is only used for testing (the game targets Windows)
+addons/godot_whisper/bin/*.so
+# Bigger optional voice models (download them yourself, see VOICE_SETUP.md)
+models/ggml-base*.bin
+models/ggml-small*.bin
+!translations/*.translation

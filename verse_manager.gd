@@ -76,3 +76,12 @@ func load_save_data(data: Dictionary) -> void:
 	discovered = Array(data.get("discovered", []))
 	used_this_cycle = Array(data.get("used_this_cycle", []))
 	verses_changed.emit()
+
+
+# A verse reference in the current language, e.g. "Psalm 17:8" -> "Salmos 17:8".
+# The book names are translated in translations/strings.csv.
+func ref_text(ref: String) -> String:
+	var space = ref.rfind(" ")   # the book is everything before the last space
+	if space == -1:
+		return tr(ref)
+	return tr(ref.substr(0, space)) + ref.substr(space)

@@ -1,6 +1,7 @@
 extends CanvasLayer
+# All the menus. Text on buttons/labels is translated automatically by Godot
+# (translations/strings.csv), because the button text is the English "key".
 
-var language = "en"
 @onready var pause_menu = $PauseMenu
 @onready var main_menu = $MainMenu
 @onready var mode_select = $ModeSelect
@@ -30,13 +31,10 @@ func _ready():
 	
 	_connect_if_exists("StorySelect/BackButton", _on_story_back_pressed)
 	
-	# The language button sits in the main menu (only Lust.tscn has one so far).
-	# get_node_or_null = no error in scenes that don't have it.
-	language = SaveManager.language  # keep the language chosen in an earlier scene
-	var lang_button = get_node_or_null("MainMenu/LanguageButton")
-	if lang_button:
-		lang_button.pressed.connect(_on_language_button_pressed)
-		_update_language_button()
+	layer = 10   # menus are drawn above the game's HUD
+	_build_black_background()
+	_build_language_buttons()
+	_build_change_party_button()
 	
 	for child in story_select.get_children():
 		if child is Button and child.name != "BackButton":
@@ -111,6 +109,10 @@ func _show_only(menu):
 	if main_menu: main_menu.visible = (menu == main_menu)
 	if mode_select: mode_select.visible = (menu == mode_select)
 	if story_select: story_select.visible = (menu == story_select)
+	# Solid black behind the main menu screens (not the pause menu, so you
+	# can still see the game while paused)
+	if black_background:
+		black_background.visible = menu != null and menu != pause_menu
 
 func _update_story_buttons():
 	for child in story_select.get_children():
@@ -132,26 +134,65 @@ func unlock_next_level(completed: String):
 			_update_story_buttons()
 			print("Unlocked: ", next_level)
 
-# Switches between English and Spanish verses. The choice is stored in
-# SaveManager (so it carries over to other levels and into saves) and is
-# passed to the player, which uses it to check typed verses and to show
-# the verse box in that language.
-func _on_language_button_pressed():
-	if language == "en":
-		language = "es"
-	else:
-		language = "en"
-	SaveManager.language = language
-	var player = get_tree().get_first_node_in_group("player")
-	if player and player.has_method("set_language"):
-		player.set_language(language)
-	_update_language_button()
+# ---------------- Built in code (same in every level) ----------------
 
-# The button shows the language you'd switch TO.
-func _update_language_button():
-	var lang_button = get_node_or_null("MainMenu/LanguageButton")
-	if lang_button:
-		lang_button.text = "English" if language == "es" else "Español"
+var black_background: ColorRect
+
+# A full-screen black rectangle behind the menu buttons
+func _build_black_background():
+	black_background = ColorRect.new()
+	black_background.name = "BlackBackground"
+	black_background.color = Color.BLACK
+	black_background.set_anchors_preset(Control.PRESET_FULL_RECT)
+	black_background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	black_background.visible = false
+	add_child(black_background)
+	move_child(black_background, 0)   # first child = drawn behind the menus
+
+# "English" and "Español" buttons in the main menu's top-left corner.
+# The language is kept in SaveManager (other levels + save file).
+func _build_language_buttons():
+	if not main_menu:
+		return
+	var row = HBoxContainer.new()
+	row.name = "LanguageButtons"
+	row.position = Vector2(16, 16)
+	row.add_theme_constant_override("separation", 8)
+	main_menu.add_child(row)
+	for lang in [["en", "English"], ["es", "Español"]]:
+		var button = Button.new()
+		button.name = "EnglishButton" if lang[0] == "en" else "SpanishButton"
+		button.text = lang[1]
+		button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED   # language names stay as they are
+		button.custom_minimum_size = Vector2(110, 44)
+		button.focus_mode = Control.FOCUS_NONE
+		button.pressed.connect(_set_language.bind(lang[0]))
+		row.add_child(button)
+	_update_language_buttons()
+
+func _set_language(lang: String):
+	SaveManager.set_language(lang)   # switches every text in the game
+	_update_language_buttons()
+
+# The current language's button is highlighted
+func _update_language_buttons():
+	var row = main_menu.get_node_or_null("LanguageButtons") if main_menu else null
+	if row == null:
+		return
+	row.get_node("EnglishButton").modulate = Color(1, 0.9, 0.5) if SaveManager.language == "en" else Color.WHITE
+	row.get_node("SpanishButton").modulate = Color(1, 0.9, 0.5) if SaveManager.language == "es" else Color.WHITE
+
+# "Change Party" in the pause menu, under "Load Save"
+func _build_change_party_button():
+	if not pause_menu:
+		return
+	var button = Button.new()
+	button.name = "ChangePartyButton"
+	button.text = "Change Party"
+	button.position = Vector2(750, 442)
+	button.size = Vector2(250, 97)
+	button.pressed.connect(PartyManager.open_selector)
+	pause_menu.add_child(button)
 
 # ---------------- Save / Load ----------------
 

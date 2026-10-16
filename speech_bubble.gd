@@ -1,8 +1,10 @@
 extends CanvasLayer
 # SPEECH BUBBLE (built in code)
 # -----------------------------
-# The same dark bubble with a cream border that Pastor Ramuel uses, for
-# enemies. It follows a node around and stays inside the screen.
+# A speech bubble that follows a node around and stays inside the screen.
+# Two looks (call set_light_style() right after creating it):
+#   dark  (default) = dark fill, cream border  -> enemies
+#   light           = white fill, black text   -> the player and party members
 #   say(title, text, badge, time)
 #     badge = true shows a small "!" next to the bubble (= you can counter it!)
 #     time  = seconds to stay up; 0 or less = stay until hide_bubble() is called
@@ -13,6 +15,7 @@ var max_width = 340.0
 var time_left = 0.0
 var stays_up = false
 
+var style: StyleBoxFlat
 var panel: PanelContainer
 var ref_label: Label
 var text_label: Label
@@ -22,7 +25,7 @@ var badge: Label
 func _init():
 	layer = 4
 	panel = PanelContainer.new()
-	var style = StyleBoxFlat.new()   # same look as pastor_ramuel.tscn
+	style = StyleBoxFlat.new()
 	style.bg_color = Color(0.1, 0.08, 0.16, 0.94)
 	style.border_color = Color(0.95, 0.88, 0.6)
 	style.set_border_width_all(3)
@@ -65,6 +68,14 @@ func _init():
 	badge.add_theme_stylebox_override("normal", badge_style)
 	add_child(badge)
 	hide_bubble()
+
+# White bubble, black text and border (for the player and party members)
+func set_light_style():
+	style.bg_color = Color(1, 1, 1, 0.97)
+	style.border_color = Color.BLACK
+	tail.color = Color.BLACK
+	ref_label.add_theme_color_override("font_color", Color(0.1, 0.1, 0.1))
+	text_label.add_theme_color_override("font_color", Color.BLACK)
 
 func say(title: String, text: String, show_badge := false, time := 3.0):
 	ref_label.text = title

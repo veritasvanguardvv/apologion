@@ -6,7 +6,11 @@ var hp = 100
 var speed = 200
 var jump_velocity = -400
 var gravity = 980
-var language = "en"
+# "en" or "es". The language lives in SaveManager (set with the main menu's
+# English / Español buttons); this just reads it so verse checks match.
+var language: String:
+	get:
+		return SaveManager.language
 # Verse box filter (see _build_verse_panel). Three groups of verse types:
 const FILTER_GROUPS = {
 	"Attacks": ["sloth", "lust", "all"],        # left button ("all" = Universal: hurts any enemy type)
@@ -21,6 +25,25 @@ var filter_type = "*"      # "*" = the whole group, or one type, e.g. "lust"
 # in each round. ("speed" above is walking speed - a different thing.)
 @export var battle_speed = 10
 var display_name = "You"
+
+# Speech bubble above the player when you recite a verse (white, like party members)
+@export_group("Speech bubble")
+@export var bubble_max_width = 340.0
+@export var bubble_min_time = 2.5        # shortest time it stays up (seconds)
+@export var bubble_time_per_char = 0.06  # longer verses stay up longer
+@export var bubble_max_time = 6.0
+@export var bubble_head_gap = 135.0      # how far above the body's centre the bubble points (above the speaker icon)
+var bubble
+
+# Voice (push-to-talk, see speech_recognizer.gd): hold Shift and speak.
+# While the mic is on, a pixel-art speaker icon floats above your head.
+@export_group("Voice")
+@export var speaker_pixel_size = 20.0    # bigger = chunkier pixels on the speaker icon
+@export var speaker_size = 110.0         # icon size on screen (pixels)
+@export var speaker_height = 85.0        # how far above the body's centre it floats
+@export var voice_submit_delay = 0.6     # the recognized text stays in the box this long before it's recited
+var speaker_icon: Sprite2D
+@export_group("")
 # Countering: if an enemy recites a verse that can be countered (it shows a
 # "!" bubble), reciting the counter verse on your very next turn multiplies
 # the damage. Counters are listed in enemy_verses.gd.
@@ -78,12 +101,12 @@ var verse_text: RichTextLabel
 # Attack verses (lust / sloth / all) use the "damage" number here.
 var all_verses = [
 	{"ref": "Matthew 5:28", "type": "lust", "damage": 100, "discovered": true, "en": "everyone who gazes at a woman to lust after her has committed adultery in his heart.", "es": "todo el que mira a una mujer para codiciarla ya cometió adulterio en su corazón."},
-	{"ref": "Psalm 18:28", "type": "light", "damage": 50, "discovered": false, "en": "the lord, my god, lights up my darkness."},
-	{"ref": "Romans 12:11", "type": "zeal", "damage": 50, "discovered": false, "en": "never lag in diligence. let the spirit excite you as you serve the lord."},
+	{"ref": "Psalm 18:28", "type": "light", "damage": 50, "discovered": false, "en": "the lord, my god, lights up my darkness.", "es": "Jehová mi Dios alumbrará mis tinieblas."},
+	{"ref": "Romans 12:11", "type": "zeal", "damage": 50, "discovered": false, "en": "never lag in diligence. let the spirit excite you as you serve the lord.", "es": "En lo que requiere diligencia, no perezosos; fervientes en espíritu, sirviendo al Señor."},
 	{"ref": "1 Corinthians 6:18", "type": "lust", "damage": 50, "discovered": false, "en": "flee sexual immorality!", "es": "¡huyan de la inmoralidad sexual!"},
 	{"ref": "Proverbs 6:32", "type": "lust", "damage": 50, "discovered": false, "en": "he who commits adultery is a fool who destroys himself.", "es": "el que comete adulterio es un necio que se destruye a sí mismo."},
-	{"ref": "Psalm 18:28a", "type": "light", "damage": 50, "discovered": false, "en": "you light a lamp for me."},
-	{"ref": "Psalm 119:105", "type": "light", "damage": 50, "discovered": false, "en": "your word is a lamp to my feet, and a light for my path."},
+	{"ref": "Psalm 18:28a", "type": "light", "damage": 50, "discovered": false, "en": "you light a lamp for me.", "es": "Tú encenderás mi lámpara."},
+	{"ref": "Psalm 119:105", "type": "light", "damage": 50, "discovered": false, "en": "your word is a lamp to my feet, and a light for my path.", "es": "Lámpara es a mis pies tu palabra, y lumbrera a mi camino."},
 	# Guard verse: "damage" isn't used for guard verses. "alt" = other wordings
 	# that also count (here the fuller KJV version).
 	{"ref": "Psalm 17:8", "type": "guard", "damage": 0, "discovered": false, "en": "hide me under the shadow of your wings.", "es": "guárdame como a la niña de tus ojos; escóndeme bajo la sombra de tus alas.", "alt": ["keep me as the apple of the eye, hide me under the shadow of thy wings."]},
@@ -114,7 +137,8 @@ var zeal_verses = [
 
 var bible_books = ["psalm", "psalms", "proverb", "proverbs", "matthew", "romans", "corinthians", "isaiah"]
 
-const DEFAULT_PLACEHOLDER = "Press 'Enter' or click here to start Scripture recitation"
+# (translated automatically: the LineEdit looks this text up in strings.csv)
+const DEFAULT_PLACEHOLDER = "Press Enter (or hold Shift and speak) to recite Scripture"
 var message_id = 0  # used by _show_verse_message so old messages don't overwrite new ones
 
 func _ready():
@@ -125,7 +149,6 @@ func _ready():
 	# Health comes from SaveManager (full HP on a new level, saved HP after loading)
 	hp = SaveManager.player_hp
 	hp_bar.value = hp
-	language = SaveManager.language  # "en" or "es", chosen with the menu's language button
 	# If we just loaded a save, move to the saved position
 	SaveManager.apply_pending_player_state(self)
 	
@@ -147,6 +170,15 @@ func _ready():
 	
 	_build_guard_effect()
 	_build_status_labels()
+	_build_bubble_and_speaker()
+	# Redraw text that's built in code when the language changes
+	SaveManager.language_changed.connect(_on_language_changed)
+	# Voice: Shift = mic on (speech_recognizer.gd), the result is recited like typed text
+	SpeechRecognizer.listening_changed.connect(_on_listening_changed)
+	SpeechRecognizer.transcribed.connect(_on_voice_transcribed)
+	SpeechRecognizer.status.connect(_on_voice_status)
+	# Bring the chosen party member into this level (party_manager.gd)
+	PartyManager.ensure_party.call_deferred()
 	# Guard and Faith count down at the end of every battle round
 	TurnManager.round_ended.connect(_on_round_ended)
 
@@ -177,10 +209,10 @@ func _update_filter_buttons():
 		var button = verse_panel.get_node("FilterRow/" + group + "Button")
 		if group == filter_group:
 			# e.g. "Attacks (all)" for the whole group, "Attacks: Universal" for one type
-			button.text = (group + " (all)") if filter_type == "*" else group + ": " + type_name(filter_type)
+			button.text = (tr("%s (all)") % tr(group)) if filter_type == "*" else tr(group) + ": " + tr(type_name(filter_type))
 			button.modulate = Color(1, 0.9, 0.5)
 		else:
-			button.text = group
+			button.text = tr(group)
 			button.modulate = Color.WHITE
 
 # True if a verse type passes the current filter.
@@ -204,7 +236,7 @@ func _input(event):
 	if event.is_action_pressed("ui_up") and not verse_input.has_focus():
 		var prompt = get_parent().get_node_or_null("NPC/PromptLabel")
 		if prompt and prompt.text == "Press Up to talk":
-			prompt.text = "Life's so stressful..."
+			prompt.text = "Life's so stressful..."   # both translated automatically
 	
 	# Tab = show/hide the verse box ("toggle_verse_box" in Project Settings > Input Map).
 	# Works while typing too. set_input_as_handled() stops Godot from also using
@@ -223,7 +255,7 @@ func _on_verse_submitted(text):
 	# --- Battles (see turn_manager.gd) ---
 	# In a battle you can only recite on your own turn.
 	if TurnManager.in_battle and not TurnManager.is_players_turn():
-		_show_verse_message("Wait for your turn!")
+		_show_verse_message(tr("Wait for your turn!"))
 		_finish_typing()
 		return
 	
@@ -233,28 +265,32 @@ func _on_verse_submitted(text):
 	# the other discovered verses have been used too.
 	# Enemy verses (enemy_verses.gd) can't be discovered or used by the player
 	if _is_enemy_verse(lower):
-		_show_verse_message("That's an enemy's verse - you can't use it")
+		_show_verse_message(tr("That's an enemy's verse - you can't use it"))
 		_finish_typing()
 		return   # in a battle this does NOT use up your turn
 	var typed_verse = _find_verse(lower)
 	if typed_verse:
 		if VerseManager.discover(typed_verse.ref):
 			typed_verse.discovered = true
-			_show_verse_message("New verse discovered: " + typed_verse.ref + "!")
+			_show_verse_message(tr("New verse discovered: %s!") % VerseManager.ref_text(typed_verse.ref))
 			print("Discovered: ", typed_verse.ref)
 		if not VerseManager.can_use(typed_verse.ref):
-			_show_verse_message("%s was already used - recite your other %d verse(s) first (Tab to see them)" % [typed_verse.ref, VerseManager.remaining_count()])
+			_show_verse_message(tr("%s was already used - recite your other %d verse(s) first (Tab to see them)") % [VerseManager.ref_text(typed_verse.ref), VerseManager.remaining_count()])
 			print(typed_verse.ref, " is on cooldown")
 			_finish_typing()
 			return   # in a battle this does NOT use up your turn
 		VerseManager.mark_used(typed_verse.ref)
 	elif TurnManager.in_battle:
 		# Not a verse we recognise: let the player try again (turn not used)
-		_show_verse_message("That's not a verse you know - try again")
+		_show_verse_message(tr("That's not a verse you know - try again"))
 		_finish_typing()
 		return
 	
 	_finish_typing()
+	
+	# Say it in a speech bubble (reference + the whole verse)
+	if typed_verse:
+		say_verse(typed_verse)
 	
 	# The player's verses hit the nearest enemy (no range limit, like before).
 	# Faith boosts the damage (x1.5 at +50%, x2 at +100%).
@@ -292,7 +328,9 @@ func apply_verse_effects(lower: String, enemy, damage_scale := 1.0, can_counter 
 	# Light
 	var matched = false
 	var duration = 70.0
-	for verse in (light_verses if only_type in ["", "light"] else []):
+	if only_type == "light":
+		matched = true   # (also works for the Spanish text)
+	for verse in (light_verses if only_type == "" else []):
 		if lower.similarity(verse.text) > 0.4 or lower.similarity(verse.ref) > 0.6:
 			matched = true
 			break
@@ -328,7 +366,7 @@ func apply_verse_effects(lower: String, enemy, damage_scale := 1.0, can_counter 
 	
 	# Zeal
 	for verse in (zeal_verses if only_type in ["", "zeal"] else []):
-		if lower.similarity(verse.text) > 0.4 or lower.similarity(verse.ref) > 0.6:
+		if only_type == "zeal" or lower.similarity(verse.text) > 0.4 or lower.similarity(verse.ref) > 0.6:
 			jump_velocity = -700
 			speed = 400
 			var timer_label = get_parent().get_node_or_null("CanvasLayer/TimerLabel")
@@ -353,6 +391,7 @@ func _physics_process(delta):
 	move_and_slide()
 
 func _process(delta):
+	_process_speaker_bob(delta)
 	flicker_time += delta
 	var flicker_amount = 0.94 + sin(flicker_time * 8.0) * 0.04 + randf_range(-0.02, 0.02)
 	
@@ -393,7 +432,7 @@ func _process(delta):
 func _update_verse_text():
 	if not verse_text:
 		return
-	var display = "Ready this cycle: %d of %d\n\n" % [VerseManager.remaining_count(), VerseManager.discovered.size()]
+	var display = tr("Ready this cycle: %d of %d") % [VerseManager.remaining_count(), VerseManager.discovered.size()] + "\n\n"
 	var shown = 0
 	for v in all_verses:
 		if not _passes_filter(v.type):
@@ -401,43 +440,43 @@ func _update_verse_text():
 		shown += 1
 		var is_found = VerseManager.is_discovered(v.ref)
 		if is_found:
-			var verse_body = v.en if language == "en" else v.get("es", v.en)
+			var body = verse_body(v)
 			# Used verses are greyed out until the cycle resets; ready ones are green
 			var used = VerseManager.is_used(v.ref)
 			var color = "gray" if used else "lightgreen"
-			var status = "(used)" if used else "(ready)"
+			var status = tr("(used)") if used else tr("(ready)")
 			var power = _verse_power_text(v)
-			var kind = "Universal (All)" if v.type == "all" else v.type.capitalize()
-			display += "[color=%s]%s  %s\n%s  |  %s\n%s[/color]\n\n" % [color, v.ref, status, power, kind, verse_body]
+			var kind = tr("Universal (All)") if v.type == "all" else tr(v.type.capitalize())
+			display += "[color=%s]%s  %s\n%s  |  %s\n%s[/color]\n\n" % [color, VerseManager.ref_text(v.ref), status, power, kind, body]
 		else:
 			display += "???\n??%  |  ???\n\n"
 	if shown == 0:
-		display += "(No verses of this kind yet)"
+		display += tr("(No verses of this kind yet)")
 	verse_text.text = display
 
 # The short "what it does" line shown for each verse in the verse box.
 func _verse_power_text(v) -> String:
 	match v.type:
 		"guard":
-			return "+%d%% defense, %d rounds" % [int(guard_reduction * 100), guard_rounds]
+			return tr("+%d%% defense, %d rounds") % [int(guard_reduction * 100), guard_rounds]
 		"faith":
-			return "+%d%% attack (stacks to +%d%%), %d rounds" % [int(faith_step * 100), int(faith_max * 100), faith_rounds]
+			return tr("+%d%% attack (stacks to +%d%%), %d rounds") % [int(faith_step * 100), int(faith_max * 100), faith_rounds]
 		"fear":
-			return "All enemies in battle: attack -50%, 3 rounds"
+			return tr("All enemies in battle: attack -50%, 3 rounds")
 		"zeal":
-			return "Speed + jump boost"
+			return tr("Speed + jump boost")
 		"light":
-			return "Lights up the dark"
+			return tr("Lights up the dark")
 	var text = "%d%%" % v.damage
 	if v.type == "all":
-		text += ", hurts any enemy type"
+		text += tr(", hurts any enemy type")
 	else:
-		text += ", hurts untyped and %s-type enemies" % v.type.capitalize()
+		text += tr(", hurts untyped and %s-type enemies") % tr(v.type.capitalize())
 	# Which enemy verses does it counter? (from enemy_verses.gd)
 	for ref in EnemyVerses.VERSES:
 		var ev = EnemyVerses.VERSES[ref]
 		if v.ref in ev.get("counters", []):
-			text += ", counters %s (x%s)" % [ev.title, str(snapped(counter_multiplier, 0.1)).trim_suffix(".0")]
+			text += tr(", counters %s (x%s)") % [VerseManager.ref_text(ev.title), str(snapped(counter_multiplier, 0.1)).trim_suffix(".0")]
 	return text
 
 func discover_verse(ref_name: String):
@@ -501,16 +540,30 @@ func _find_verse(lower: String):
 
 # How well typed text (already normalized) matches a verse, 0 = no match.
 # The text must be over 40% similar, or the reference over 60% similar.
+# The reference can be English or Spanish ("Psalm 17:8" or "Salmos 17:8").
 func _verse_score(lower: String, v) -> float:
 	var text_score = max(lower.similarity(_normalize(v.en)), lower.similarity(_normalize(v.get("es", ""))))
 	for alt in v.get("alt", []):
 		text_score = max(text_score, lower.similarity(_normalize(alt)))
-	var ref_score = lower.similarity(v.ref.to_lower())
+	var refs = [v.ref]
 	if v.has("title"):
-		ref_score = max(ref_score, lower.similarity(v.title.to_lower()))
+		refs.append(v.title)
+	var ref_score = 0.0
+	for r in refs:
+		ref_score = max(ref_score, lower.similarity(_normalize(r)))
+		ref_score = max(ref_score, lower.similarity(_normalize(_spanish_ref(r))))
 	if text_score > 0.4 or ref_score > 0.6:
 		return max(text_score, ref_score)
 	return 0.0
+
+# "Psalm 17:8" -> "Salmos 17:8" (from the Spanish column of strings.csv)
+func _spanish_ref(ref: String) -> String:
+	var es = TranslationServer.get_translation_object("es")
+	var space = ref.rfind(" ")
+	if es == null or space == -1:
+		return ref
+	var book = String(es.get_message(ref.substr(0, space)))
+	return (book if book != "" else ref.substr(0, space)) + ref.substr(space)
 
 # True if the text matches an ENEMY verse better than any player verse.
 func _is_enemy_verse(lower: String) -> bool:
@@ -525,10 +578,93 @@ func _is_enemy_verse(lower: String) -> bool:
 			return true
 	return false
 
-# Lowercases text and treats "LORD" and "Yahweh" as the same word, so either
-# wording matches.
+# Makes typed or SPOKEN text easy to compare with the verses:
+#   - lowercase, no accents (á -> a) and no punctuation
+#   - "LORD", "Jehová", "Señor" and voice mistakes like "Yah way" all count as "Yahweh"
+#   - numbers said as words become digits: "psalm seventeen eight" -> "psalm 17 8",
+#     "first corinthians" -> "1 corinthians", "salmo ciento diecinueve" -> "salmo 119"
+#   - "17:8" -> "17 8" (so it matches the spoken version)
 func _normalize(text: String) -> String:
-	return text.to_lower().replace("the lord", "yahweh").replace("lord", "yahweh")
+	var t = text.to_lower()
+	for pair in [["á", "a"], ["é", "e"], ["í", "i"], ["ó", "o"], ["ú", "u"], ["ü", "u"], ["ñ", "n"]]:
+		t = t.replace(pair[0], pair[1])
+	var clean = ""
+	for c in t:
+		clean += c if (c >= "a" and c <= "z") or (c >= "0" and c <= "9") else " "
+	var words = []
+	for w in clean.split(" ", false):
+		words.append(w)
+	words = _numbers_to_digits(words)
+	t = " " + " ".join(words) + " "
+	for name in YAHWEH_SOUNDALIKES:
+		t = t.replace(" " + name + " ", " yahweh ")
+	return t.strip_edges()
+
+# What the LORD's name may look like after typing or speech recognition
+const YAHWEH_SOUNDALIKES = ["the lord", "lord", "yah way", "yah weh", "ya way", "yahway", "yaweh", "yahwe", "yawe",
+	"jehovah", "jehova", "el senor", "senor", "yave", "yahve", "jave"]
+
+const NUMBER_WORDS = {
+	"zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9,
+	"ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15, "sixteen": 16,
+	"seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20, "thirty": 30, "forty": 40, "fifty": 50,
+	"sixty": 60, "seventy": 70, "eighty": 80, "ninety": 90,
+	"cero": 0, "uno": 1, "un": 1, "dos": 2, "tres": 3, "cuatro": 4, "cinco": 5, "seis": 6, "siete": 7, "ocho": 8,
+	"nueve": 9, "diez": 10, "once": 11, "doce": 12, "trece": 13, "catorce": 14, "quince": 15, "dieciseis": 16,
+	"diecisiete": 17, "dieciocho": 18, "diecinueve": 19, "veinte": 20, "veintiuno": 21, "veintidos": 22,
+	"veintitres": 23, "veinticuatro": 24, "veinticinco": 25, "veintiseis": 26, "veintisiete": 27,
+	"veintiocho": 28, "veintinueve": 29, "treinta": 30, "cuarenta": 40, "cincuenta": 50, "sesenta": 60,
+	"setenta": 70, "ochenta": 80, "noventa": 90,
+}
+const HUNDRED_WORDS = ["hundred", "cien", "ciento"]
+const ORDINAL_WORDS = {"first": "1", "second": "2", "third": "3", "primera": "1", "primero": "1", "segunda": "2", "segundo": "2"}
+
+# Turns runs of number words into digits. "seventeen eight" -> ["17", "8"],
+# "one hundred nineteen" -> ["119"], "treinta y uno" -> ["31"]
+func _numbers_to_digits(words: Array) -> Array:
+	var out = []
+	var current = -1   # the number being built, -1 = none
+	var i = 0
+	while i < words.size():
+		var w = words[i]
+		if ORDINAL_WORDS.has(w) and current == -1:
+			out.append(ORDINAL_WORDS[w])
+		elif w in HUNDRED_WORDS:
+			if current == -1:
+				current = 100
+			elif current < 10:
+				current *= 100
+			else:
+				out.append(str(current))
+				current = 100
+		elif NUMBER_WORDS.has(w):
+			var n = NUMBER_WORDS[w]
+			var fits = false
+			if current != -1:
+				if current >= 100 and current % 100 == 0:
+					fits = true                                # "one hundred" + "nineteen"
+				elif n < 10 and current % 10 == 0 and current >= 20 and current % 100 != 0:
+					fits = true                                # "twenty" + "seven"
+				elif n < 10 and current % 10 == 0 and current > 100:
+					fits = true                                # "one hundred twenty" + "six"
+			if fits:
+				current += n
+			else:
+				if current != -1:
+					out.append(str(current))
+				current = n
+		elif (w == "and" or w == "y") and current != -1 and i + 1 < words.size() and NUMBER_WORDS.has(words[i + 1]):
+			pass   # "one hundred and five", "treinta y uno"
+		else:
+			if current != -1:
+				out.append(str(current))
+				current = -1
+			if not (w in ["chapter", "verse", "verses", "capitulo", "versiculo", "versiculos"]):
+				out.append(w)
+		i += 1
+	if current != -1:
+		out.append(str(current))
+	return out
 
 # Shows a short message in the verse input box (as its grey placeholder text),
 # then puts the normal placeholder back after a few seconds.
@@ -540,12 +676,9 @@ func _show_verse_message(msg: String):
 	if my_id == message_id and is_instance_valid(verse_input):
 		verse_input.placeholder_text = DEFAULT_PLACEHOLDER
 
-# Called by the menu's language button ("en" or "es").
-# Typed lust verses are then checked against the Spanish text, and the
-# verse box shows Spanish where a translation exists.
+# Changes the whole game's language ("en" or "es"). Same as the menu buttons.
 func set_language(new_language: String):
-	language = new_language
-	_update_verse_text()
+	SaveManager.set_language(new_language)
 
 # Player health. Use this (instead of changing hp directly) so the HP bar
 # and SaveManager stay up to date. Nothing damages the player yet, but
@@ -570,7 +703,7 @@ func take_damage(amount):
 # - A counter verse on your next turn after a "!" verse does x counter_multiplier.
 func _attack(verse, enemy, damage_scale: float, can_counter: bool):
 	if enemy.has_method("can_be_hurt_by") and not enemy.can_be_hurt_by(verse.type):
-		var msg = "No effect - it's %s type now!" % type_name(enemy.enemy_type)
+		var msg = tr("No effect - it's %s type now!") % tr(type_name(enemy.enemy_type))
 		enemy.show_popup(msg, Color(0.75, 0.75, 0.75))
 		_show_verse_message(msg)
 		if TurnManager.in_battle:
@@ -580,7 +713,7 @@ func _attack(verse, enemy, damage_scale: float, can_counter: bool):
 	var damage = verse.damage * damage_scale
 	if can_counter and enemy.has_method("is_countered_by") and enemy.is_countered_by(verse.ref):
 		damage *= counter_multiplier
-		var msg = "Countered! x%s" % str(snapped(counter_multiplier, 0.1)).trim_suffix(".0")
+		var msg = tr("Countered! x%s") % str(snapped(counter_multiplier, 0.1)).trim_suffix(".0")
 		enemy.show_popup(msg, Color(1, 0.85, 0.3))
 		if TurnManager.in_battle:
 			TurnManager.show_message(msg + " -" + str(snapped(damage, 0.1)))
@@ -624,7 +757,7 @@ func _on_round_ended():
 
 func _update_guard_label():
 	guard_label.visible = guard_rounds_left > 0
-	guard_label.text = "Guard %d%% up (%d)" % [int(guard_reduction * 100), guard_rounds_left]
+	guard_label.text = tr("Defense +%d%% (%d)") % [int(guard_reduction * 100), guard_rounds_left]
 
 # ---------------- Faith (attack up) ----------------
 
@@ -644,7 +777,7 @@ func activate_faith():
 
 func _update_faith_label():
 	faith_label.visible = faith_rounds_left > 0
-	faith_label.text = "Faith %d%% up (%d)" % [int(faith_bonus * 100), faith_rounds_left]
+	faith_label.text = tr("Faith +%d%% (%d)") % [int(faith_bonus * 100), faith_rounds_left]
 
 # The shofar plays when Faith newly reaches the max.
 func _play_shofar():
@@ -756,3 +889,81 @@ func _build_verse_panel():
 	verse_text.size = Vector2(600, 246)
 	verse_panel.add_child(verse_text)
 	_update_filter_buttons()
+
+# ---------------- Language ----------------
+
+# A verse's text in the current language (English if there's no Spanish)
+func verse_body(v) -> String:
+	return v.get("es", v.en) if language == "es" else v.en
+
+# Text that's built in code doesn't switch by itself: redraw it
+func _on_language_changed(_new_language):
+	_update_verse_text()
+	_update_filter_buttons()
+	_update_guard_label()
+	_update_faith_label()
+	verse_input.placeholder_text = DEFAULT_PLACEHOLDER
+
+# ---------------- Speech bubble and speaker icon ----------------
+
+func _build_bubble_and_speaker():
+	bubble = preload("res://speech_bubble.gd").new()
+	bubble.set_light_style()   # white = the player and party members
+	bubble.target = self
+	var body = get_node_or_null("CollisionShape2D")
+	bubble.head_offset = (body.position if body else Vector2.ZERO) + Vector2(0, -bubble_head_gap)
+	bubble.max_width = bubble_max_width
+	add_child(bubble)
+	
+	# Speaker icon (speaker.png) with a pixelate shader so it looks like pixel art
+	speaker_icon = Sprite2D.new()
+	speaker_icon.name = "SpeakerIcon"
+	speaker_icon.texture = load("res://speaker.png")
+	speaker_icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	var material = ShaderMaterial.new()
+	material.shader = load("res://pixelate.gdshader")
+	material.set_shader_parameter("pixel_size", speaker_pixel_size)
+	speaker_icon.material = material
+	var tex_size = speaker_icon.texture.get_size()
+	speaker_icon.scale = Vector2.ONE * (speaker_size / max(tex_size.x, tex_size.y))
+	speaker_icon.position = (body.position if body else Vector2.ZERO) + Vector2(0, -speaker_height)
+	speaker_icon.z_index = 20
+	speaker_icon.visible = false
+	add_child(speaker_icon)
+
+# Shows "Reference / whole verse" above the player
+func say_verse(v):
+	var title = VerseManager.ref_text(v.ref)
+	var text = verse_body(v)
+	text = text.substr(0, 1).to_upper() + text.substr(1)
+	var time = clamp(bubble_time_per_char * (title.length() + text.length()), bubble_min_time, bubble_max_time)
+	bubble.say(title, text, false, time)
+
+# ---------------- Voice (push-to-talk) ----------------
+
+func _on_listening_changed(on: bool):
+	speaker_icon.visible = on
+	if on:
+		_show_verse_message(tr("Listening... release Shift to recite"))
+
+func _on_voice_status(message: String):
+	_show_verse_message(message)
+
+# The recognized words go in the verse box for a moment, then they're
+# recited exactly as if you had typed them and pressed Enter.
+func _on_voice_transcribed(text: String):
+	text = text.strip_edges()
+	if text == "":
+		_show_verse_message(tr("Didn't catch that - try again"))
+		return
+	verse_input.text = text
+	await get_tree().create_timer(voice_submit_delay).timeout
+	if is_instance_valid(verse_input) and verse_input.text == text:
+		_on_verse_submitted(text)
+
+# The speaker icon bobs up and down a little (in whole pixels, so it stays crisp)
+func _process_speaker_bob(_delta):
+	if speaker_icon and speaker_icon.visible:
+		var body = get_node_or_null("CollisionShape2D")
+		var base_y = (body.position.y if body else 0.0) - speaker_height
+		speaker_icon.position.y = base_y + round(sin(Time.get_ticks_msec() / 160.0) * 3.0)

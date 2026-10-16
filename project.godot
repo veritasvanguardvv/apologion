@@ -20,6 +20,8 @@ config/icon="res://icon.svg"
 VerseManager="*res://verse_manager.gd"
 SaveManager="*res://save_manager.gd"
 TurnManager="*res://turn_manager.gd"
+PartyManager="*res://party_manager.gd"
+SpeechRecognizer="*res://speech_recognizer.gd"
 
 [display]
 
@@ -31,6 +33,16 @@ window/stretch/scale_mode="integer"
 toggle_verse_box={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194306,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
+push_to_talk={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194325,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
+change_party={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":80,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
 run_away={
@@ -51,3 +63,11 @@ renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 2d/snap/snap_2d_transforms_to_pixel=true
 2d/snap/snap_2d_vertices_to_pixel=true
+
+[audio]
+
+driver/enable_input=true
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://translations/strings.en.translation", "res://translations/strings.es.translation")

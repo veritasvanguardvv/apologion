@@ -67,20 +67,28 @@ func _ready():
 	turn_label.add_theme_color_override("font_outline_color", Color.BLACK)
 	turn_label.add_theme_constant_override("outline_size", 6)
 	turn_label.visible = false
+	turn_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED   # messages come in already translated
 	layer.add_child(turn_label)
 	
-	# Run button, under the turn label. Only shown during battles.
+	# Run button, bottom-right next to the verse box. Only shown during battles.
 	run_button = Button.new()
 	run_button.text = "Run (R)"
-	run_button.anchor_left = 0.5
-	run_button.anchor_right = 0.5
-	run_button.offset_left = -50
-	run_button.offset_right = 50
-	run_button.offset_top = 60
+	run_button.anchor_left = 1.0
+	run_button.anchor_right = 1.0
+	run_button.anchor_top = 1.0
+	run_button.anchor_bottom = 1.0
+	run_button.offset_left = -126
+	run_button.offset_right = -10
+	run_button.offset_top = -56
+	run_button.offset_bottom = -12
 	run_button.focus_mode = Control.FOCUS_NONE   # so Enter/Space don't press it by accident
 	run_button.visible = false
 	run_button.pressed.connect(run_away)
 	layer.add_child(run_button)
+	
+	# Language switched mid-battle: redo the "your turn" message
+	# (and hide an old message like "Got away safely!" when not in a battle)
+	SaveManager.language_changed.connect(_on_language_changed)
 	
 	# Battle start sound (plays once, never loops)
 	battle_sound = AudioStreamPlayer.new()
@@ -90,9 +98,21 @@ func _ready():
 	add_child(battle_sound)
 
 
+# Shows a message at the top of the screen. Pass text that's already
+# translated with tr() (it's often built from several parts).
+var message_count = 0   # goes up with every message (so old timers don't hide new ones)
+
 func show_message(text: String):
+	message_count += 1
 	turn_label.text = text
 	turn_label.visible = true
+
+
+func _on_language_changed(_new_language):
+	if is_players_turn():
+		show_message(tr("Your turn - type or say a verse"))
+	elif not in_battle:
+		turn_label.visible = false
 
 
 func is_players_turn() -> bool:
@@ -116,10 +136,11 @@ func run_away():
 		if _is_alive(enemy):
 			escaped_from[enemy] = run_grace_time
 	_end_battle()
-	show_message("Got away safely!")
+	show_message(tr("Got away safely!"))
+	var my_message = message_count
 	print("Ran away")
 	await get_tree().create_timer(1.5).timeout
-	if not in_battle and turn_label.text == "Got away safely!":
+	if not in_battle and message_count == my_message:
 		turn_label.visible = false
 
 
@@ -189,7 +210,7 @@ func _run_battle(player, enemies):
 	battle_started.emit()
 	battle_sound.play()
 	var first_name = enemies[0].display_name
-	show_message(("A %s appears!" % first_name) if enemies.size() == 1 else "%d enemies appear!" % enemies.size())
+	show_message((tr("A %s appears!") % first_name) if enemies.size() == 1 else tr("%d enemies appear!") % enemies.size())
 	print("Battle started against ", enemies.size(), " enemy(s)")
 	await get_tree().create_timer(intro_time).timeout
 
@@ -211,11 +232,11 @@ func _run_battle(player, enemies):
 			turn_started.emit(fighter)
 			var wait = after_turn_pause
 			if fighter == player:
-				show_message("Your turn - type a verse and press Enter")
+				show_message(tr("Your turn - type or say a verse"))
 				await player_turn_finished
 				current = null   # your turn is over (no second verse or Run during the pause)
 			else:
-				show_message("%s's turn" % fighter.display_name)
+				show_message(tr("%s's turn") % fighter.display_name)
 				await get_tree().create_timer(turn_delay).timeout
 				if my_battle != battle_id:
 					return
@@ -241,7 +262,7 @@ func _run_battle(player, enemies):
 		return  # an old battle from a previous scene: just stop
 	print("Battle won")
 	_end_battle()
-	show_message("Victory!")
+	show_message(tr("Victory!"))
 	await get_tree().create_timer(1.5).timeout
 	if not in_battle:
 		turn_label.visible = false
@@ -259,7 +280,7 @@ func _end_battle():
 
 
 func _player_defeated(my_battle):
-	show_message("You were defeated... restarting the level")
+	show_message(tr("You were defeated... restarting the level"))
 	await get_tree().create_timer(2.0).timeout
 	if my_battle != battle_id:
 		return

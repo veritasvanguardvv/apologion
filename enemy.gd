@@ -6,6 +6,11 @@ const SpeechBubble = preload("res://speech_bubble.gd")
 var max_hp = 100
 var hp = 100
 
+# Hidden defense stat (never shown to the player): every verse that hits this
+# enemy does (1 - defense) of its damage.  0 = full damage, 0.65 = 35% damage.
+# Kept between 0 and 0.9 so verses always do something.
+@export_range(0.0, 0.9, 0.05) var defense = 0.0
+
 # --- Turn-based battles (see turn_manager.gd) ---
 @export var display_name = ""      # shown as "<name>'s turn"; empty = use the node's name
 @export var battle_speed = 5       # lower than the player (10) and Pastor Ramuel (8), so it acts last
@@ -64,6 +69,7 @@ func _ready():
 	fear_label.visible = false
 	add_child(fear_label)
 	TurnManager.round_ended.connect(_on_round_ended)
+	SaveManager.language_changed.connect(func(_l): _update_fear_label())
 	
 	# Type tag, just under the HP bar
 	type_label = Label.new()
@@ -96,7 +102,7 @@ func _on_round_ended():
 
 func _update_fear_label():
 	fear_label.visible = fear_rounds_left > 0
-	fear_label.text = "Attack %d%% down (%d)" % [int(fear_reduction * 100), fear_rounds_left]
+	fear_label.text = tr("Attack -%d%% (%d)") % [int(fear_reduction * 100), fear_rounds_left]
 
 # Called by TurnManager when it's this enemy's turn in a battle.
 func take_turn():
@@ -111,10 +117,10 @@ func take_turn():
 		# take_damage returns the damage after the player's guard (Psalm 17:8),
 		# so Fear and Guard together = 5 x 0.5 x 0.5 = 1.25
 		var dealt = player.take_damage(damage)
-		TurnManager.show_message("%s attacks! -%s HP" % [display_name, str(snapped(dealt, 0.1))])
+		TurnManager.show_message(tr("%s attacks! -%s HP") % [display_name, str(snapped(dealt, 0.1))])
 		print(display_name, " attacks for ", dealt)
 	else:
-		TurnManager.show_message("%s waits..." % display_name)
+		TurnManager.show_message(tr("%s waits...") % display_name)
 
 # Recites one of its verses: hurts the player, changes its type and maybe
 # opens a counter chance. Returns how long the battle should wait.
@@ -131,22 +137,22 @@ func recite_verse():
 		if fear_rounds_left > 0:
 			damage *= (1.0 - fear_reduction)
 		dealt = player.take_damage(damage)   # the player's Guard reduces it too
-	var lang = player.language if player else "en"
-	var text = v.es if lang == "es" and v.has("es") else v.en
+	var text = v.es if SaveManager.language == "es" and v.has("es") else v.en
+	var title = VerseManager.ref_text(v.title)   # "Genesis 3" / "Génesis 3"
 	set_enemy_type(v.type)
 	counter_refs = v.get("counters", []).duplicate()
 	if counter_refs.is_empty():
-		bubble.say(v.title, text, false, verse_bubble_time)
+		bubble.say(title, text, false, verse_bubble_time)
 	else:
-		bubble.say(v.title, text, true, 0.0)   # stays up through your next turn
-	TurnManager.show_message("%s recites %s! -%s HP - it's %s type now!" % [display_name, v.title, str(snapped(dealt, 0.1)), type_name(v.type)])
+		bubble.say(title, text, true, 0.0)   # stays up through your next turn
+	TurnManager.show_message(tr("%s recites %s! -%s HP - it's %s type now!") % [display_name, title, str(snapped(dealt, 0.1)), tr(type_name(v.type))])
 	print(display_name, " recites ", ref, " for ", dealt, " (counters: ", counter_refs, ")")
 	return verse_read_time
 
 func set_enemy_type(new_type: String):
 	enemy_type = new_type
 	type_label.visible = enemy_type != ""
-	type_label.text = type_name(enemy_type)
+	type_label.text = type_name(enemy_type)   # e.g. "Sloth": translated automatically
 
 static func type_name(t: String) -> String:
 	return "Universal" if t == "all" else t.capitalize()
@@ -192,7 +198,9 @@ func get_center() -> Vector2:
 	var shape = get_node_or_null("CollisionShape2D")
 	return shape.global_position if shape else global_position
 
+# Returns the damage actually done (after defense).
 func take_damage(amount):
+	amount *= (1.0 - clamp(defense, 0.0, 0.9))
 	hp = max(hp - amount, 0)
 	hp_bar.value = hp
 	if hp <= 0:
@@ -200,3 +208,4 @@ func take_damage(amount):
 		SaveManager.mark_enemy_defeated(self)  # remember it for saving
 		queue_free()  # enemy dies
 		print("Enemy defeated")
+	return amount

@@ -10,6 +10,7 @@ size = Vector2(165, 136)
 [node name="Umbrid" type="CharacterBody2D" unique_id=2001846573]
 script = ExtResource("1_enemy")
 verses = Array[String](["Genesis 3:17"])
+defense = 0.65
 
 [node name="UmbridIdle" type="Sprite2D" parent="." unique_id=1377012418]
 scale = Vector2(0.75, 0.75)

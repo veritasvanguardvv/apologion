@@ -222,14 +222,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="LanguageButton" type="Button" parent="MenuLayer/MainMenu" unique_id=380221494]
-layout_mode = 0
-offset_left = 38.0
-offset_top = 27.0
-offset_right = 141.0
-offset_bottom = 100.0
-text = "Español"
-
 [node name="PlayButton" type="Button" parent="MenuLayer/MainMenu" unique_id=1027643705]
 layout_mode = 0
 offset_left = 433.0

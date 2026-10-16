@@ -1,0 +1,15 @@
+[configuration]
+
+entry_symbol = "godot_whisper_library_init"
+compatibility_minimum = 4.2
+
+; Trimmed for Apologion: only 64-bit Windows (the game's platform) and
+; 64-bit Linux. The full addon (all platforms) is at
+; https://github.com/appsinacup/godot-whisper/releases (v2.0.3, MIT license).
+
+[libraries]
+
+windows.debug.x86_64 = "bin/libgodot_whisper.windows.template_release.x86_64.dll"
+windows.release.x86_64 = "bin/libgodot_whisper.windows.template_release.x86_64.dll"
+linux.debug.x86_64 = "bin/libgodot_whisper.linux.template_release.x86_64.so"
+linux.release.x86_64 = "bin/libgodot_whisper.linux.template_release.x86_64.so"

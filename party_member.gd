@@ -1,5 +1,5 @@
 extends CharacterBody2D
-# Party member (used by pastor_ramuel.tscn)
+# Party member (used by pastor_ramuel.tscn and baana.tscn)
 # ------------------------------------------
 # Follows the player a moment behind them, and fights in turn-based battles
 # (see turn_manager.gd). On his turn he recites a random verse from ALL the
@@ -12,6 +12,8 @@ extends CharacterBody2D
 #
 # Everything with @export can be changed in the Inspector when you click the
 # party member's root node in pastor_ramuel.tscn (or in a level).
+#
+# Only one party member is with you at a time (see party_manager.gd).
 #
 # Sprites: two Sprite2D nodes under "Visual" - IdleSprite and WalkSprite.
 # Only one is shown at a time. You can move/scale each one in the editor so
@@ -46,6 +48,8 @@ extends CharacterBody2D
 @export var walk_fps = 12.0            # walk animation speed
 @export var idle_frame_count = 2       # frames used in Pastor_idle.png
 @export var walk_frame_count = 12      # frames used in Pastor_walk.png (3 rows of 4)
+@export var idle_first_frame = 0       # first idle frame in the sheet (Baana's sheet has idle frames at 3-4)
+@export var walk_first_frame = 0       # first walk frame in the sheet
 
 # Emitted every time he recites (handy for sound effects later)
 signal recited(verse_ref)
@@ -58,17 +62,18 @@ var anim_time = 0.0
 @onready var visual = $Visual
 @onready var idle_sprite = $Visual/IdleSprite
 @onready var walk_sprite = $Visual/WalkSprite
-# Speech bubble: lives on a CanvasLayer so it can be kept on screen
-@onready var bubble = $BubbleLayer/SpeechBubble
-@onready var bubble_ref = $BubbleLayer/SpeechBubble/VBox/RefLabel
-@onready var bubble_text = $BubbleLayer/SpeechBubble/VBox/TextLabel
-@onready var bubble_tail = $BubbleLayer/Tail
+# Speech bubble (white, see speech_bubble.gd). Built in _ready.
+var bubble
 
 
 func _ready():
 	add_to_group("party")   # TurnManager puts everyone in "party" into battles
-	bubble.visible = false
-	bubble_tail.visible = false
+	bubble = preload("res://speech_bubble.gd").new()
+	bubble.set_light_style()   # party members and the player have white bubbles
+	bubble.target = self
+	bubble.head_offset = Vector2(0, bubble_head_offset)
+	bubble.max_width = bubble_max_width
+	add_child(bubble)
 	_update_animation(0.0)
 
 
@@ -165,12 +170,12 @@ func _update_animation(delta):
 	walk_sprite.visible = walking
 	anim_time += delta
 	if walking:
-		walk_sprite.frame = int(anim_time * walk_fps) % walk_frame_count
+		walk_sprite.frame = walk_first_frame + int(anim_time * walk_fps) % walk_frame_count
 		# Mirror the whole Visual node so both sprites flip around his feet
 		var moving_right = velocity.x > 0
 		visual.scale.x = 1 if moving_right == sprite_faces_right else -1
 	else:
-		idle_sprite.frame = int(anim_time * idle_fps) % idle_frame_count
+		idle_sprite.frame = idle_first_frame + int(anim_time * idle_fps) % idle_frame_count
 
 
 # ---------------- Battle turns ----------------
@@ -202,63 +207,25 @@ func recite_random_verse() -> bool:
 		return false
 	var verse = player.all_verses.pick_random()
 	
-	# Use the same language as the player so the effect matches
-	var text = verse.en
-	if player.language == "es" and verse.has("es"):
-		text = verse.es
+	# Use the same language as the game so the effect matches
+	var text = player.verse_body(verse)
 	player.apply_verse_effects(text.to_lower(), target, damage_scale)
 	
-	print("Pastor Ramuel recites ", verse.ref)
-	_say(verse.ref, text.substr(0, 1).to_upper() + text.substr(1))
+	print(display_name, " recites ", verse.ref)
+	_say(VerseManager.ref_text(verse.ref), text.substr(0, 1).to_upper() + text.substr(1))
 	recited.emit(verse.ref)
 	return true
 
 
 var bubble_time_left = 0.0
 
-# Shows a speech bubble with the reference (title) and text above his head.
-# Returns how many seconds it will stay up.
+# Shows a speech bubble with the reference (title) and text above the head.
+# Returns how many seconds it will stay up (longer text stays up longer).
 func _say(title: String, text: String) -> float:
-	bubble_ref.text = title
-	bubble_ref.visible = title != ""
-	bubble_text.text = text
-	# Width: as wide as the text needs, but no wider than bubble_max_width
-	var font = bubble_text.get_theme_font("font")
-	var font_size = bubble_text.get_theme_font_size("font_size")
-	var text_width = max(font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x,
-		font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x)
-	bubble_text.custom_minimum_size.x = min(text_width + 2, bubble_max_width)
-	bubble.reset_size()   # shrink/grow the panel to fit the text
-	bubble.visible = true
-	bubble_tail.visible = true
-	# Longer text stays up longer
 	bubble_time_left = clamp(bubble_time_per_char * (title.length() + text.length()), bubble_min_time, bubble_max_time)
-	_place_bubble()
+	bubble.say(title, text, false, bubble_time_left)
 	return bubble_time_left
 
 
 func _process(delta):
-	if bubble.visible:
-		bubble_time_left -= delta
-		if bubble_time_left <= 0.0:
-			bubble.visible = false
-			bubble_tail.visible = false
-		else:
-			_place_bubble()
-
-
-# Puts the bubble above his head, but always inside the screen.
-func _place_bubble():
-	var screen_size = get_viewport().get_visible_rect().size
-	# His head position on the screen (works with the camera moving)
-	var head = get_global_transform_with_canvas() * Vector2(0, bubble_head_offset)
-	bubble.reset_size()
-	var size = bubble.size
-	var margin = 8.0
-	var tail_height = 12.0
-	var pos = Vector2(head.x - size.x / 2.0, head.y - size.y - tail_height)
-	pos.x = clamp(pos.x, margin, max(margin, screen_size.x - size.x - margin))
-	pos.y = clamp(pos.y, margin, max(margin, screen_size.y - size.y - margin))
-	bubble.position = pos
-	# The little tail points down at his head (kept under the bubble)
-	bubble_tail.position = Vector2(clamp(head.x, pos.x + 16.0, pos.x + size.x - 16.0), pos.y + size.y - 2.0)
+	bubble_time_left = max(bubble_time_left - delta, 0.0)
