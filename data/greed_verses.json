@@ -1,0 +1,103 @@
+{
+ "verses": [
+  {
+   "ref": "Matthew 6:1",
+   "translation": "Fragment",
+   "en": "Don't do your charitable giving before men to be seen by them.",
+   "pl": "Strzeżcie się, żebyście uczynków pobożnych nie wykonywali przed ludźmi po to, aby was widzieli; inaczej nie będziecie mieli nagrody u Ojca waszego, który jest w niebie.",
+   "es": "No hagas tu limosna delante de los hombres para ser visto por ellos.",
+   "all_damage": 0,
+   "greed_damage": 100,
+   "heal": 0,
+   "jesus": true
+  },
+  {
+   "ref": "Matthew 6:19a",
+   "translation": "Fragment",
+   "en": "Don't lay up treasures on earth.",
+   "pl": "Nie gromadźcie sobie skarbów na ziemi, gdzie mól i rdza niszczą i gdzie złodzieje włamują się, i kradną.",
+   "es": "No atesores tesoros en la tierra.",
+   "all_damage": 0,
+   "greed_damage": 200,
+   "heal": 0,
+   "jesus": true
+  },
+  {
+   "ref": "Matthew 6:20a",
+   "translation": "Fragment",
+   "en": "Lay up for yourselves treasures in heaven.",
+   "pl": "Gromadźcie sobie skarby w niebie, gdzie ani mól, ani rdza nie niszczą i gdzie złodzieje nie włamują się, i nie kradną.",
+   "es": "Atesoren para ustedes tesoros en el cielo.",
+   "all_damage": 200,
+   "greed_damage": 200,
+   "heal": 0,
+   "jesus": true
+  },
+  {
+   "ref": "Psalm 49:18",
+   "translation": "Fragment",
+   "en": "In life the rich think themselves lucky and people applaud their success.",
+   "pl": "Za życia bogacz uważa się za szczęśliwca, a ludzie chwalą go za jego sukces.",
+   "es": "En vida los ricos se creen afortunados y la gente los aplaude por su éxito.",
+   "all_damage": 0,
+   "greed_damage": 50,
+   "heal": 0,
+   "jesus": false
+  },
+  {
+   "ref": "Psalm 73:12",
+   "translation": "Fragment",
+   "en": "The wicked are always at ease, they increase in riches.",
+   "pl": "Oto niegodziwi zawsze są beztroscy, pomnażają swoje bogactwa.",
+   "es": "Los malvados siempre están a sus anchas; aumentan en riquezas.",
+   "all_damage": 0,
+   "greed_damage": 50,
+   "heal": 0,
+   "jesus": false
+  },
+  {
+   "ref": "Psalm 73:25",
+   "translation": "Fragment",
+   "en": "There is no one on earth whom I desire besides God.",
+   "pl": "Kogo prócz Ciebie mam w niebie? Gdy jestem z Tobą, nie cieszy mnie ziemia. Niszczeje moje ciało i serce, Bóg jest opoką mego serca i mym udziałem na wieki",
+   "es": "¿A quién tengo yo en el cielo? No hay nadie en la tierra a quien desee fuera de ti.",
+   "all_damage": 50,
+   "greed_damage": 0,
+   "heal": 0,
+   "jesus": false
+  },
+  {
+   "ref": "Psalm 73:26",
+   "translation": "Full",
+   "en": "My flesh and my heart fails, but God is the strength of my heart and my portion forever.",
+   "pl": "Ciało moje i serce moje ustaje, lecz Bóg jest siłą mego serca i moim udziałem na wieki.",
+   "es": "Mi carne y mi corazón desfallecen, pero Dios es la fortaleza de mi corazón y mi porción para siempre.",
+   "all_damage": 50,
+   "greed_damage": 0,
+   "heal": 50,
+   "jesus": false
+  },
+  {
+   "ref": "Psalm 119:36",
+   "translation": "Full",
+   "en": "Turn my heart toward your statutes and not toward selfish gain.",
+   "pl": "Nakłoń me serce do Twoich napomnień, a nie do zysku!",
+   "es": "Inclina mi corazón a tus estatutos y no a la ganancia egoísta.",
+   "all_damage": 0,
+   "greed_damage": 50,
+   "heal": 0,
+   "jesus": false
+  },
+  {
+   "ref": "Habakkuk 2:9",
+   "translation": "Fragment",
+   "en": "Woe to him who gets an evil gain for his household, to be delivered from the hand of evil!",
+   "pl": "Biada temu, kto zdobywa niegodziwy zysk dla swego domu, aby się wyrwać z ręki zła!",
+   "es": "¡Ay del que obtiene ganancia mala para su casa, para librarse de la mano del mal!",
+   "all_damage": 0,
+   "greed_damage": 50,
+   "heal": 0,
+   "jesus": false
+  }
+ ]
+}

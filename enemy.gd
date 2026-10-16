@@ -46,6 +46,10 @@ var turns_taken = 0
 # After reciting e.g. a Sloth verse it becomes "sloth": then only Sloth and
 # Universal ("all") attack verses can hurt it.
 var enemy_type = ""
+# The enemy's own sin. "greed" for the Greed level's enemies: they start as
+# Greed type, and Greed verses (data/greed_verses.json) do their Greed %
+# damage to them even if a recited verse changed their type tag.
+@export var base_type = ""
 var counter_refs = []     # player verses that counter what it just recited (only during your next turn)
 var type_label: Label     # small "Sloth" tag under the HP bar
 var bubble                # speech bubble (speech_bubble.gd)
@@ -87,6 +91,9 @@ func _ready():
 	type_label.add_theme_constant_override("outline_size", 4)
 	type_label.visible = false
 	add_child(type_label)
+	
+	if base_type != "":
+		set_enemy_type(base_type)
 	
 	bubble = SpeechBubble.new()
 	bubble.target = self
@@ -160,7 +167,7 @@ func recite_verse():
 		if fear_rounds_left > 0:
 			damage *= (1.0 - fear_reduction)
 		dealt = player.take_damage(damage)   # the player's Guard reduces it too
-	var text = v.es if SaveManager.language == "es" and v.has("es") else v.en
+	var text = v.get(SaveManager.language, v.en) if SaveManager.language != "en" else v.en
 	var title = VerseManager.ref_text(v.title)   # "Genesis 3" / "Génesis 3"
 	set_enemy_type(v.type)
 	counter_refs = v.get("counters", []).duplicate()
@@ -179,6 +186,10 @@ func set_enemy_type(new_type: String):
 
 static func type_name(t: String) -> String:
 	return "Universal" if t == "all" else t.capitalize()
+
+# A Greed enemy (Greed verses do their Greed % to it)
+func is_greed() -> bool:
+	return base_type == "greed" or enemy_type == "greed"
 
 # Can a player attack verse of this type hurt it?
 func can_be_hurt_by(verse_type: String) -> bool:

@@ -1,0 +1,180 @@
+extends Node
+# GameSettings (autoload / singleton)
+# -----------------------------------
+# Settings that are NOT part of a save game (they stay the same for every
+# save): music / sound-effect volume and the key bindings. They're written to
+# user://settings.cfg as soon as they change, and applied when the game starts.
+#
+#   Audio buses: "Music" and "SFX" (both feed "Master"). Every sound player in
+#   the game is put on the SFX bus automatically, unless it's already on another
+#   bus (the voice mic uses "Mic", Greed's music uses "Music").
+#
+#   Key bindings: one key per action (see ACTIONS). The remap screen in
+#   Settings (menu_layer.gd) calls rebind().
+
+const PATH = "user://settings.cfg"
+const MUSIC_BUS = "Music"
+const SFX_BUS = "SFX"
+
+# [action, English label (translated in strings.csv), default key]
+# Keys are PHYSICAL keys (the same spot on any keyboard layout).
+const ACTIONS = [
+	["move_left", "Move left", KEY_LEFT],
+	["move_right", "Move right", KEY_RIGHT],
+	["jump", "Jump", KEY_SPACE],
+	["interact", "Talk / enter door", KEY_UP],
+	["ram", "Ram (hold to charge)", KEY_X],
+	["recite", "Recite (type a verse)", KEY_ENTER],
+	["push_to_talk", "Voice (hold and speak)", KEY_SHIFT],
+	["toggle_verse_box", "Verse box", KEY_TAB],
+	["toggle_inventory", "Inventory", KEY_CTRL],
+	["cycle_target", "Choose target", KEY_ALT],
+	["skip_turn", "Skip turn", KEY_K],
+	["run_away", "Run away", KEY_R],
+	["change_party", "Change Party", KEY_P],
+]
+
+var music_volume = 0.8   # 0..1
+var sfx_volume = 1.0     # 0..1
+var bindings = {}        # action -> physical keycode
+
+signal bindings_changed
+
+
+func _ready():
+	_ensure_bus(MUSIC_BUS)
+	_ensure_bus(SFX_BUS)
+	for a in ACTIONS:
+		bindings[a[0]] = a[2]
+	_load()
+	_apply_volumes()
+	for action in bindings:
+		_apply_binding(action)
+	# Route every sound player that gets created to the SFX bus
+	get_tree().node_added.connect(_on_node_added)
+
+
+# ---------------- Audio ----------------
+
+func _ensure_bus(bus_name: String):
+	if AudioServer.get_bus_index(bus_name) != -1:
+		return
+	AudioServer.add_bus()
+	var i = AudioServer.bus_count - 1
+	AudioServer.set_bus_name(i, bus_name)
+	AudioServer.set_bus_send(i, "Master")
+
+
+func _on_node_added(node: Node):
+	if node is AudioStreamPlayer or node is AudioStreamPlayer2D or node is AudioStreamPlayer3D:
+		_route.call_deferred(node)   # deferred: scripts often set .bus right after add_child
+
+
+func _route(node):
+	if not is_instance_valid(node):
+		return
+	if node.bus == "Master" or node.bus == "":
+		node.bus = MUSIC_BUS if node.has_meta("music") or str(node.name).to_lower().contains("music") else SFX_BUS
+
+
+func set_music_volume(v: float):
+	music_volume = clampf(v, 0.0, 1.0)
+	_apply_volumes()
+	_save()
+
+
+func set_sfx_volume(v: float):
+	sfx_volume = clampf(v, 0.0, 1.0)
+	_apply_volumes()
+	_save()
+
+
+func _apply_volumes():
+	for pair in [[MUSIC_BUS, music_volume], [SFX_BUS, sfx_volume]]:
+		var i = AudioServer.get_bus_index(pair[0])
+		if i == -1:
+			continue
+		AudioServer.set_bus_mute(i, pair[1] <= 0.001)
+		AudioServer.set_bus_volume_db(i, linear_to_db(max(pair[1], 0.001)))
+
+
+# ---------------- Key bindings ----------------
+
+func action_label(action: String) -> String:
+	for a in ACTIONS:
+		if a[0] == action:
+			return a[1]
+	return action
+
+
+# The key's name, e.g. "Space", "X", "Shift"
+func key_name(action: String) -> String:
+	var physical = int(bindings.get(action, 0))
+	if physical == 0:
+		return "-"
+	var keycode = DisplayServer.keyboard_get_keycode_from_physical(physical)
+	var text = OS.get_keycode_string(keycode if keycode != KEY_NONE else physical)
+	return text if text != "" else str(physical)
+
+
+# Gives "action" this key. If another action already used that key, the two
+# swap keys (so nothing ends up with two actions on one key).
+func rebind(action: String, physical_keycode: int):
+	var old = int(bindings.get(action, 0))
+	for other in bindings:
+		if other != action and int(bindings[other]) == physical_keycode:
+			bindings[other] = old
+			_apply_binding(other)
+	bindings[action] = physical_keycode
+	_apply_binding(action)
+	_save()
+	bindings_changed.emit()
+
+
+func reset_bindings():
+	for a in ACTIONS:
+		bindings[a[0]] = a[2]
+		_apply_binding(a[0])
+	_save()
+	bindings_changed.emit()
+
+
+func _apply_binding(action: String):
+	if not InputMap.has_action(action):
+		InputMap.add_action(action, 0.2)
+	# Keep joypad events, replace the keyboard key
+	for e in InputMap.action_get_events(action):
+		if e is InputEventKey:
+			InputMap.action_erase_event(action, e)
+	var physical = int(bindings.get(action, 0))
+	if physical == 0:
+		return
+	var ev = InputEventKey.new()
+	ev.physical_keycode = physical
+	InputMap.action_add_event(action, ev)
+	# Enter on the number pad also recites
+	if action == "recite" and physical == KEY_ENTER:
+		var kp = InputEventKey.new()
+		kp.physical_keycode = KEY_KP_ENTER
+		InputMap.action_add_event(action, kp)
+
+
+# ---------------- File ----------------
+
+func _save():
+	var c = ConfigFile.new()
+	c.set_value("audio", "music", music_volume)
+	c.set_value("audio", "sfx", sfx_volume)
+	for action in bindings:
+		c.set_value("keys", action, int(bindings[action]))
+	c.save(PATH)
+
+
+func _load():
+	var c = ConfigFile.new()
+	if c.load(PATH) != OK:
+		return
+	music_volume = float(c.get_value("audio", "music", music_volume))
+	sfx_volume = float(c.get_value("audio", "sfx", sfx_volume))
+	for action in bindings.keys():
+		bindings[action] = int(c.get_value("keys", action, bindings[action]))

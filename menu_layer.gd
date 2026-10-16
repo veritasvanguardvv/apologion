@@ -37,6 +37,12 @@ func _ready():
 	_build_language_buttons()
 	_build_change_party_button()
 	_build_online_buttons()
+	_build_multiplayer_menu()
+	_build_settings_menu()
+	_build_remap_menu()
+	_connect_if_exists("MainMenu/SettingsButton", _open_settings.bind(false))
+	_connect_if_exists("PauseMenu/SettingsButton", _open_settings.bind(true))
+	_style_pause_menu()
 	
 	for child in story_select.get_children():
 		if child is Button and child.name != "BackButton":
@@ -59,6 +65,16 @@ func _connect_if_exists(path: String, callable: Callable):
 #   pause menu -> closed (same as Continue)
 #   playing with nothing open -> pause menu (the game keeps running)
 func _input(event):
+	# Remap screen waiting for a key: the next key press is the new binding
+	if remap_waiting != "" and event is InputEventKey and event.pressed and not event.echo:
+		get_viewport().set_input_as_handled()
+		if event.physical_keycode == KEY_ESCAPE:
+			remap_waiting = ""   # cancelled
+		else:
+			GameSettings.rebind(remap_waiting, event.physical_keycode)
+			remap_waiting = ""
+		_refresh_remap_list()
+		return
 	if not event.is_action_pressed("ui_cancel") or event.is_echo():
 		return
 	if PhoneServer.is_lobby_open():
@@ -69,6 +85,12 @@ func _input(event):
 		PartyManager.close_selector()
 	elif Inventory.is_open():
 		Inventory.close()
+	elif remap_menu.visible:
+		_close_remap()
+	elif settings_menu.visible:
+		_close_settings()
+	elif multiplayer_menu.visible:
+		_close_multiplayer()
 	elif story_select.visible:
 		_on_story_back_pressed()
 	elif mode_select.visible:
@@ -84,6 +106,8 @@ func _input(event):
 # True while the main menu, Mode Select or Story Select is on screen
 # (inventory.gd won't open over them)
 func is_main_menu_open() -> bool:
+	if (settings_menu.visible or remap_menu.visible or multiplayer_menu.visible) and not sub_from_pause:
+		return true
 	return main_menu.visible or mode_select.visible or story_select.visible
 
 func _on_continue_pressed():
@@ -140,10 +164,20 @@ func _show_only(menu):
 	if main_menu: main_menu.visible = (menu == main_menu)
 	if mode_select: mode_select.visible = (menu == mode_select)
 	if story_select: story_select.visible = (menu == story_select)
-	# Solid black behind the main menu screens (not the pause menu, so you
-	# can still see the game while paused)
+	if settings_menu: settings_menu.visible = (menu == settings_menu)
+	if remap_menu: remap_menu.visible = (menu == remap_menu)
+	if multiplayer_menu: multiplayer_menu.visible = (menu == multiplayer_menu)
+	if menu != remap_menu:
+		remap_waiting = ""
+	# The pause menu (and Settings / Multiplayer opened from it) dims the game
+	# behind it: you still see it running (the game is NOT paused).
+	# The main menu screens get solid black instead.
+	var is_sub = menu == settings_menu or menu == remap_menu or menu == multiplayer_menu
+	var over_game = menu == pause_menu or (is_sub and sub_from_pause)
+	if dim_background:
+		dim_background.visible = over_game
 	if black_background:
-		black_background.visible = menu != null and menu != pause_menu
+		black_background.visible = menu != null and not over_game
 
 func _update_story_buttons():
 	for child in story_select.get_children():
@@ -168,6 +202,14 @@ func unlock_next_level(completed: String):
 # ---------------- Built in code (same in every level) ----------------
 
 var black_background: ColorRect
+var dim_background: ColorRect
+var settings_menu: Control
+var remap_menu: Control
+var multiplayer_menu: Control
+var sub_from_pause = false     # Settings / Multiplayer were opened from the pause menu
+var remap_waiting = ""         # action waiting for a new key on the remap screen
+var remap_list: VBoxContainer
+var bold_font: FontVariation
 
 # A full-screen black rectangle behind the menu buttons
 func _build_black_background():
@@ -179,8 +221,19 @@ func _build_black_background():
 	black_background.visible = false
 	add_child(black_background)
 	move_child(black_background, 0)   # first child = drawn behind the menus
+	# See-through black over the game while the pause menu is open
+	dim_background = ColorRect.new()
+	dim_background.name = "DimBackground"
+	dim_background.color = Color(0, 0, 0, 0.6)
+	dim_background.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim_background.mouse_filter = Control.MOUSE_FILTER_STOP   # clicks don't reach the game's buttons behind it
+	dim_background.visible = false
+	add_child(dim_background)
+	move_child(dim_background, 1)
 
-# "English" and "Español" buttons in the main menu's top-left corner.
+const LANGUAGES = [["en", "English", "EnglishButton"], ["es", "Español", "SpanishButton"], ["pl", "Polski", "PolishButton"]]
+
+# "English", "Español" and "Polski" buttons in the main menu's top-left corner.
 # The language is kept in SaveManager (other levels + save file).
 func _build_language_buttons():
 	if not main_menu:
@@ -190,9 +243,9 @@ func _build_language_buttons():
 	row.position = Vector2(16, 16)
 	row.add_theme_constant_override("separation", 8)
 	main_menu.add_child(row)
-	for lang in [["en", "English"], ["es", "Español"]]:
+	for lang in LANGUAGES:
 		var button = Button.new()
-		button.name = "EnglishButton" if lang[0] == "en" else "SpanishButton"
+		button.name = lang[2]
 		button.text = lang[1]
 		button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED   # language names stay as they are
 		button.custom_minimum_size = Vector2(110, 44)
@@ -210,8 +263,8 @@ func _update_language_buttons():
 	var row = main_menu.get_node_or_null("LanguageButtons") if main_menu else null
 	if row == null:
 		return
-	row.get_node("EnglishButton").modulate = Color(1, 0.9, 0.5) if SaveManager.language == "en" else Color.WHITE
-	row.get_node("SpanishButton").modulate = Color(1, 0.9, 0.5) if SaveManager.language == "es" else Color.WHITE
+	for lang in LANGUAGES:
+		row.get_node(lang[2]).modulate = Color(1, 0.9, 0.5) if SaveManager.language == lang[0] else Color.WHITE
 
 # "Change Party" in the pause menu, under "Load Save"
 func _build_change_party_button():
@@ -225,21 +278,15 @@ func _build_change_party_button():
 	button.pressed.connect(PartyManager.open_selector)
 	pause_menu.add_child(button)
 
-# "Multiplayer", "Church" and "Leaderboards" buttons: in the main menu under
-# "Continue (Load Save)", and in the pause menu on the left.
-# (Multiplayer = phones join as party members, see phone_server.gd;
-#  Church / Leaderboards, see online_service.gd and online_menu.gd)
+# "Multiplayer" button: in the main menu under "Continue (Load Save)", and in
+# the pause menu on the left. It opens the Multiplayer menu, which holds
+# Local Multiplayer (phones join as party members, see phone_server.gd),
+# Church and Leaderboards (online_service.gd and online_menu.gd).
 func _build_online_buttons():
-	var buttons = [
-		["MultiplayerButton", "Multiplayer", PhoneServer.open_lobby],
-		["ChurchButton", "Church", OnlineService.menu.open_church],
-		["LeaderboardsButton", "Leaderboards", OnlineService.menu.open_leaderboards],
-	]
-	for i in buttons.size():
-		if main_menu:
-			_add_button(main_menu, buttons[i], Vector2(750, 233 + i * 88), Vector2(250, 76))
-		if pause_menu:
-			_add_button(pause_menu, buttons[i], Vector2(130, 105 + i * 168.5), Vector2(260, 100))
+	if main_menu:
+		_add_button(main_menu, ["MultiplayerButton", "Multiplayer", _open_multiplayer.bind(false)], Vector2(750, 233), Vector2(250, 76))
+	if pause_menu:
+		_add_button(pause_menu, ["MultiplayerButton", "Multiplayer", _open_multiplayer.bind(true)], Vector2(130, 105), Vector2(260, 100))
 
 func _add_button(parent: Control, info: Array, pos: Vector2, button_size: Vector2):
 	var button = Button.new()
@@ -252,19 +299,21 @@ func _add_button(parent: Control, info: Array, pos: Vector2, button_size: Vector
 
 # ---------------- Save / Load ----------------
 
-func _on_save_pressed():
-	var button = get_node_or_null("PauseMenu/SaveButton")
+func _on_save_pressed(button: Button = null):
+	if button == null:
+		button = get_node_or_null("PauseMenu/SaveButton")
 	if SaveManager.save_game():
 		_flash_button_text(button, "Saved!", "Save Progress")
 	else:
 		_flash_button_text(button, "Save failed", "Save Progress")
 
-func _on_load_pressed():
+func _on_load_pressed(button: Button = null):
 	if SaveManager.load_game():
 		_show_only(null)  # the saved level is loaded right after this
 	else:
 		# No save yet: show it on whichever Load button is on screen
-		var button = get_node_or_null("MainMenu/LoadButton") if main_menu.visible else get_node_or_null("PauseMenu/LoadButton")
+		if button == null:
+			button = get_node_or_null("MainMenu/LoadButton") if main_menu.visible else get_node_or_null("PauseMenu/LoadButton")
 		var normal_text = button.text if button else ""
 		_flash_button_text(button, "No save found", normal_text)
 
@@ -276,3 +325,230 @@ func _flash_button_text(button: Button, msg: String, normal_text: String):
 	await get_tree().create_timer(1.5).timeout
 	if is_instance_valid(button):
 		button.text = normal_text
+
+
+# ---------------- Look: bold, bigger buttons ----------------
+
+const MENU_FONT_SIZE = 28
+
+func _get_bold_font() -> FontVariation:
+	if bold_font == null:
+		bold_font = FontVariation.new()
+		bold_font.base_font = ThemeDB.fallback_font
+		bold_font.variation_embolden = 0.9
+	return bold_font
+
+func _make_bold(button: Button, font_size := MENU_FONT_SIZE):
+	button.add_theme_font_override("font", _get_bold_font())
+	button.add_theme_font_size_override("font_size", font_size)
+	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART   # long translations wrap instead of spilling out
+
+# Pause menu: bold buttons with a larger font (the dim layer is dim_background)
+func _style_pause_menu():
+	if not pause_menu:
+		return
+	for child in pause_menu.get_children():
+		if child is Button:
+			_make_bold(child)
+
+# A screen built in code: full-screen Control with a centred column
+func _make_screen(screen_name: String, title_text: String) -> Array:
+	var screen = Control.new()
+	screen.name = screen_name
+	screen.set_anchors_preset(Control.PRESET_FULL_RECT)
+	screen.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	screen.visible = false
+	add_child(screen)
+	var center = CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	screen.add_child(center)
+	var column = VBoxContainer.new()
+	column.name = "Column"
+	column.add_theme_constant_override("separation", 14)
+	column.custom_minimum_size = Vector2(560, 0)
+	center.add_child(column)
+	var title = Label.new()
+	title.name = "Title"
+	title.text = title_text
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_override("font", _get_bold_font())
+	title.add_theme_font_size_override("font_size", 40)
+	column.add_child(title)
+	return [screen, column]
+
+func _make_menu_button(button_name: String, text: String, callable: Callable) -> Button:
+	var button = Button.new()
+	button.name = button_name
+	button.text = text
+	button.custom_minimum_size = Vector2(0, 64)
+	button.focus_mode = Control.FOCUS_NONE
+	button.pressed.connect(callable)
+	_make_bold(button)
+	return button
+
+# ---------------- Multiplayer menu (Local Multiplayer / Church / Leaderboards) ----------------
+
+func _build_multiplayer_menu():
+	var parts = _make_screen("MultiplayerMenu", "Multiplayer")
+	multiplayer_menu = parts[0]
+	var column = parts[1]
+	column.add_child(_make_menu_button("LocalButton", "Local Multiplayer (Phones)", PhoneServer.open_lobby))
+	column.add_child(_make_menu_button("ChurchButton", "Church", OnlineService.menu.open_church))
+	column.add_child(_make_menu_button("LeaderboardsButton", "Leaderboards", OnlineService.menu.open_leaderboards))
+	column.add_child(_make_menu_button("BackButton", "Back", _close_multiplayer))
+
+func _open_multiplayer(from_pause: bool):
+	sub_from_pause = from_pause
+	_show_only(multiplayer_menu)
+
+func _close_multiplayer():
+	_show_only(pause_menu if sub_from_pause else main_menu)
+
+# ---------------- Settings ----------------
+# Save / Load, Music and SFX volume, Controls (key remapping). Volumes and
+# keys are kept by GameSettings (settings_manager.gd) in user://settings.cfg.
+
+func _build_settings_menu():
+	var parts = _make_screen("SettingsMenu", "Settings")
+	settings_menu = parts[0]
+	var column = parts[1]
+	var save_row = HBoxContainer.new()
+	save_row.name = "SaveRow"
+	save_row.add_theme_constant_override("separation", 12)
+	column.add_child(save_row)
+	var save_button = _make_menu_button("SaveButton", "Save Progress", _on_settings_save)
+	save_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	save_row.add_child(save_button)
+	var load_button = _make_menu_button("LoadButton", "Load Save", _on_settings_load)
+	load_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	save_row.add_child(load_button)
+	_add_volume_slider(column, "MusicSlider", "Music volume", GameSettings.music_volume, GameSettings.set_music_volume)
+	_add_volume_slider(column, "SfxSlider", "Sound effects volume", GameSettings.sfx_volume, GameSettings.set_sfx_volume)
+	column.add_child(_make_menu_button("ControlsButton", "Controls (remap keys)", _open_remap))
+	column.add_child(_make_menu_button("BackButton", "Back", _close_settings))
+
+func _on_settings_save():
+	_on_save_pressed(settings_menu.find_child("SaveButton", true, false))
+
+func _on_settings_load():
+	_on_load_pressed(settings_menu.find_child("LoadButton", true, false))
+
+func _add_volume_slider(column: Control, slider_name: String, label_text: String, value: float, setter: Callable):
+	var row = HBoxContainer.new()
+	row.name = slider_name + "Row"
+	row.add_theme_constant_override("separation", 12)
+	column.add_child(row)
+	var label = Label.new()
+	label.text = label_text
+	label.custom_minimum_size = Vector2(260, 0)
+	label.add_theme_font_override("font", _get_bold_font())
+	label.add_theme_font_size_override("font_size", 22)
+	row.add_child(label)
+	var slider = HSlider.new()
+	slider.name = slider_name
+	slider.min_value = 0
+	slider.max_value = 100
+	slider.step = 1
+	slider.value = value * 100.0
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	slider.custom_minimum_size = Vector2(200, 32)
+	slider.focus_mode = Control.FOCUS_NONE
+	row.add_child(slider)
+	var number = Label.new()
+	number.custom_minimum_size = Vector2(60, 0)
+	number.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	number.text = "%d%%" % int(slider.value)
+	number.add_theme_font_size_override("font_size", 22)
+	row.add_child(number)
+	slider.value_changed.connect(func(v):
+		number.text = "%d%%" % int(v)
+		setter.call(v / 100.0))
+
+func _open_settings(from_pause: bool):
+	sub_from_pause = from_pause
+	# Saving only makes sense from inside a level (the pause menu)
+	var save_button = settings_menu.find_child("SaveButton", true, false)
+	if save_button:
+		save_button.disabled = not from_pause
+	_show_only(settings_menu)
+
+func _close_settings():
+	_show_only(pause_menu if sub_from_pause else main_menu)
+
+# ---------------- Controls (key remapping) ----------------
+
+func _build_remap_menu():
+	var parts = _make_screen("RemapMenu", "Controls")
+	remap_menu = parts[0]
+	var column = parts[1]
+	column.custom_minimum_size = Vector2(620, 0)
+	var hint = Label.new()
+	hint.text = "Click an action, then press the new key (Esc cancels)."
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(hint)
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(620, 380)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	column.add_child(scroll)
+	remap_list = VBoxContainer.new()
+	remap_list.name = "List"
+	remap_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	remap_list.add_theme_constant_override("separation", 6)
+	scroll.add_child(remap_list)
+	for a in GameSettings.ACTIONS:
+		var row = HBoxContainer.new()
+		row.name = a[0]
+		remap_list.add_child(row)
+		var label = Label.new()
+		label.text = a[1]
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		label.add_theme_font_size_override("font_size", 22)
+		row.add_child(label)
+		var key_button = Button.new()
+		key_button.name = "Key"
+		key_button.custom_minimum_size = Vector2(200, 40)
+		key_button.focus_mode = Control.FOCUS_NONE
+		key_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED   # key names; set in _refresh_remap_list
+		key_button.pressed.connect(_start_remap.bind(a[0]))
+		_make_bold(key_button, 22)
+		row.add_child(key_button)
+	var buttons = HBoxContainer.new()
+	buttons.add_theme_constant_override("separation", 12)
+	column.add_child(buttons)
+	var reset = _make_menu_button("ResetButton", "Reset to defaults", func():
+		GameSettings.reset_bindings()
+		_refresh_remap_list())
+	reset.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	buttons.add_child(reset)
+	var back = _make_menu_button("BackButton", "Back", _close_remap)
+	back.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	buttons.add_child(back)
+	SaveManager.language_changed.connect(func(_l): _refresh_remap_list())
+	_refresh_remap_list()
+
+func _refresh_remap_list():
+	if remap_list == null:
+		return
+	for row in remap_list.get_children():
+		var key_button = row.get_node("Key")
+		if row.name == remap_waiting:
+			key_button.text = tr("Press a key...")
+			key_button.modulate = Color(1, 0.9, 0.5)
+		else:
+			key_button.text = GameSettings.key_name(str(row.name))
+			key_button.modulate = Color.WHITE
+
+func _start_remap(action: String):
+	remap_waiting = action
+	_refresh_remap_list()
+
+func _open_remap():
+	_show_only(remap_menu)
+	_refresh_remap_list()
+
+func _close_remap():
+	remap_waiting = ""
+	_show_only(settings_menu)

@@ -235,7 +235,7 @@ func recite_random_verse() -> bool:
 	# Use the same language as the game so the effect matches
 	var text = player.verse_body(verse)
 	# Default targets (use_choice = false), 25% damage and 25% healing
-	player.cast_verse(verse, damage_scale, false, false, damage_scale)
+	player.cast_verse(verse, damage_scale, false, false, damage_scale, self)
 	
 	print(display_name, " recites ", verse.ref)
 	_say(VerseManager.ref_text(verse.ref), text.substr(0, 1).to_upper() + text.substr(1))
@@ -361,7 +361,7 @@ func phone_verse(text: String) -> String:
 	var body = player.verse_body(verse)
 	_say(VerseManager.ref_text(verse.ref), body.substr(0, 1).to_upper() + body.substr(1))
 	# Full damage (1.0) and healing (1.0), can counter, default targets
-	player.cast_verse(verse, 1.0, true, false, 1.0)
+	player.cast_verse(verse, 1.0, true, false, 1.0, self)
 	print(display_name, " (phone) recites ", verse.ref)
 	recited.emit(verse.ref)
 	_end_phone_turn(bubble_time_left)

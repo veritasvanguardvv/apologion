@@ -47,6 +47,8 @@ size = Vector2(204.12, 155.52)
 
 [node name="Greedvorg" type="CharacterBody2D"]
 script = ExtResource("1_e")
+base_type = "greed"
+verses = Array[String](["Hosea 12:8"])
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, 0)

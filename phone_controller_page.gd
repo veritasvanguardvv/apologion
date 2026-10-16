@@ -5,7 +5,7 @@ extends RefCounted
 # the game automatically (no extra files). The host replaces these words
 # before sending it:
 #   __WS_PORT__  -> the WebSocket port (http port + 1)
-#   __LANG__     -> "en" or "es" (the host's language)
+#   __LANG__     -> "en", "es" or "pl" (the host's language)
 #   __UI_JSON__  -> the page's texts, translated with tr() (see UI_KEYS)
 #
 # The phone and the game talk with small JSON messages over a WebSocket:
@@ -186,7 +186,7 @@ if (Recognition && window.isSecureContext) {
   $("speechHint").classList.add("hidden");
   $("speakButton").onclick = function () {
     var rec = new Recognition();
-    rec.lang = (lang === "es") ? "es-ES" : "en-US";
+    rec.lang = (lang === "es") ? "es-ES" : (lang === "pl") ? "pl-PL" : "en-US";
     rec.interimResults = false;
     $("speakButton").textContent = t("Listening...");
     rec.onresult = function (e) { $("verseInput").value = e.results[0][0].transcript; };

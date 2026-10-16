@@ -1,213 +1,295 @@
-keys,en,es
-Continue,Continue,Continuar
-Settings,Settings,Ajustes
-Quit to Menu,Quit to Menu,Salir al menú
-Save Progress,Save Progress,Guardar progreso
-Load Save,Load Save,Cargar partida
-Play,Play,Jugar
-Quit,Quit,Salir
-Continue (Load Save),Continue (Load Save),Continuar (cargar partida)
-Story Mode,Story Mode,Modo historia
-Endless,Endless,Sin fin
-Back,Back,Volver
-Sloth,Sloth,Pereza
-Gluttony,Gluttony,Gula
-Lust,Lust,Lujuria
-Anger,Anger,Ira
-Greed,Greed,Avaricia
-Envy,Envy,Envidia
-Pride,Pride,Soberbia
-Saved!,Saved!,¡Guardado!
-Save failed,Save failed,Error al guardar
-No save found,No save found,No hay partida guardada
-Change Party,Change Party,Cambiar grupo
-Only one companion can travel with you.,Only one companion can travel with you.,Solo un compañero puede viajar contigo.
-You can't change your party during a battle.,You can't change your party during a battle.,No puedes cambiar tu grupo durante una batalla.
-Close,Close,Cerrar
-Press Enter (or hold Shift and speak) to recite Scripture,Press Enter (or hold Shift and speak) to recite Scripture,Pulsa Enter (o mantén Shift y habla) para recitar las Escrituras
-Press Up to talk,Press Up to talk,Pulsa Arriba para hablar
-Life's so stressful...,Life's so stressful...,La vida es muy estresante...
-You,You,Tú
-Run (R),Run (R),Huir (R)
-Got away safely!,Got away safely!,¡Escapaste sin problemas!
-A %s appears!,A %s appears!,¡Aparece %s!
-%d enemies appear!,%d enemies appear!,¡Aparecen %d enemigos!
-Your turn - type or say a verse,Your turn - type or say a verse,Tu turno: escribe o di un versículo
-%s's turn,%s's turn,Turno de %s
-Victory!,Victory!,¡Victoria!
-You were defeated... restarting the level,You were defeated... restarting the level,Has sido derrotado... reiniciando el nivel
-%s attacks! -%s HP,%s attacks! -%s HP,¡%s ataca! -%s PS
-%s waits...,%s waits...,%s espera...
-%s recites %s! -%s HP - it's %s type now!,%s recites %s! -%s HP - it's %s type now!,¡%s recita %s! -%s PS. ¡Ahora es de tipo %s!
-No effect - it's %s type now!,No effect - it's %s type now!,Sin efecto: ¡ahora es de tipo %s!
-Countered! x%s,Countered! x%s,¡Contraataque! x%s
-Defense +%d%% (%d),Defense +%d%% (%d),Defensa +%d%% (%d)
-Faith +%d%% (%d),Faith +%d%% (%d),Fe +%d%% (%d)
-Attack -%d%% (%d),Attack -%d%% (%d),Ataque -%d%% (%d)
-Wait for your turn!,Wait for your turn!,¡Espera tu turno!
-That's an enemy's verse - you can't use it,That's an enemy's verse - you can't use it,Ese versículo es del enemigo: no puedes usarlo
-New verse discovered: %s!,New verse discovered: %s!,¡Nuevo versículo descubierto: %s!
-%s was already used - recite your other %d verse(s) first (Tab to see them),%s was already used - recite your other %d verse(s) first (Tab to see them),%s ya se usó: recita primero tus otros %d versículo(s) (Tab para verlos)
-That's not a verse you know - try again,That's not a verse you know - try again,No conoces ese versículo: inténtalo de nuevo
-Verses (Tab to close),Verses (Tab to close),Versículos (Tab para cerrar)
-Show all,Show all,Mostrar todo
-Attacks,Attacks,Ataques
-Status,Status,Estados
-Special,Special,Especial
-%s (all),%s (all),%s (todos)
-Ready this cycle: %d of %d,Ready this cycle: %d of %d,Listos en este ciclo: %d de %d
-(used),(used),(usado)
-(ready),(ready),(listo)
-Universal (All),Universal (All),Universal (todos)
-Universal,Universal,Universal
-(No verses of this kind yet),(No verses of this kind yet),(Aún no hay versículos de este tipo)
-Zeal,Zeal,Celo
-Guard,Guard,Defensa
-Faith,Faith,Fe
-Fear,Fear,Temor
-Light,Light,Luz
-"+%d%% defense, %d rounds","+%d%% defense, %d rounds","+%d%% de defensa, %d rondas"
-"+%d%% attack (stacks to +%d%%), %d rounds","+%d%% attack (stacks to +%d%%), %d rounds","+%d%% de ataque (se acumula hasta +%d%%), %d rondas"
-"All enemies in battle: attack -50%, 3 rounds","All enemies in battle: attack -50%, 3 rounds","Todos los enemigos en batalla: ataque -50%, 3 rondas"
-Speed + jump boost,Speed + jump boost,Más velocidad y salto
-Lights up the dark,Lights up the dark,Ilumina la oscuridad
-", hurts any enemy type",", hurts any enemy type",", daña a cualquier tipo de enemigo"
-", hurts untyped and %s-type enemies",", hurts untyped and %s-type enemies",", daña a enemigos sin tipo y de tipo %s"
-", counters %s (x%s)",", counters %s (x%s)",", contrarresta %s (x%s)"
-Listening... release Shift to recite,Listening... release Shift to recite,Escuchando... suelta Shift para recitar
-Didn't catch that - try again,Didn't catch that - try again,No te entendí: inténtalo de nuevo
-Still recognizing - wait a moment,Still recognizing - wait a moment,Aún reconociendo: espera un momento
-Hold Shift while you speak,Hold Shift while you speak,Mantén Shift mientras hablas
-Recognizing...,Recognizing...,Reconociendo...
-Psalm,Psalm,Salmos
-Genesis,Genesis,Génesis
-Proverbs,Proverbs,Proverbios
-Isaiah,Isaiah,Isaías
-Matthew,Matthew,Mateo
-Romans,Romans,Romanos
-1 Corinthians,1 Corinthians,1 Corintios
-Galatians,Galatians,Gálatas
-Heal,Heal,Curación
-Heals %d%% of max HP (split between you and your party),Heals %d%% of max HP (split between you and your party),Cura el %d%% de los PS máximos (repartido entre tú y tu compañero)
-Healed: %s,Healed: %s,Curación: %s
-You read the %s,You read the %s,Lees el %s
-Healing Scroll,Healing Scroll,Pergamino de sanación
-Battle Scroll,Battle Scroll,Pergamino de batalla
-Guard Scroll,Guard Scroll,Pergamino de protección
-Skip (K),Skip (K),Pasar (K)
-Target (Alt),Target (Alt),Objetivo (Alt)
-Target (Option),Target (Option),Objetivo (Option)
-You skipped your turn (-%s HP),You skipped your turn (-%s HP),Pasaste tu turno (-%s PS)
-%s attacks %s! -%s HP,%s attacks %s! -%s HP,¡%s ataca a %s! -%s PS
-%s is knocked out...,%s is knocked out...,%s está fuera de combate...
-Inventory (Ctrl),Inventory (Ctrl),Inventario (Ctrl)
-Use,Use,Usar
-No items yet. Look around the levels!,No items yet. Look around the levels!,Aún no tienes objetos. ¡Explora los niveles!
-You can't use that now,You can't use that now,Ahora no puedes usar eso
-Only in a battle,Only in a battle,Solo en batalla
-Everyone is at full health,Everyone is at full health,Todos tienen los PS al máximo
-Voice: audio input is turned off (Project Settings > Audio > Driver > Enable Input),Voice: audio input is turned off (Project Settings > Audio > Driver > Enable Input),Voz: la entrada de audio está desactivada (Configuración del proyecto > Audio > Driver > Enable Input)
-Voice: the Godot Whisper addon is missing (%s),Voice: the Godot Whisper addon is missing (%s),Voz: falta el complemento Godot Whisper (%s)
-Voice: the addon has no library for this computer (%s),Voice: the addon has no library for this computer (%s),Voz: el complemento no tiene una biblioteca para este ordenador (%s)
-Voice: the addon's library file is missing: %s,Voice: the addon's library file is missing: %s,Voz: falta el archivo de la biblioteca del complemento: %s
-"Voice: the addon's library didn't load (%s). Restart Godot; if it still fails, look for 'Can't open dynamic library' in the Output panel","Voice: the addon's library didn't load (%s). Restart Godot; if it still fails, look for 'Can't open dynamic library' in the Output panel","Voz: la biblioteca del complemento no se cargó (%s). Reinicia Godot; si sigue fallando, busca 'Can't open dynamic library' en el panel Salida"
-Voice: the addon loaded but has no SpeechToText class (wrong addon version?),Voice: the addon loaded but has no SpeechToText class (wrong addon version?),Voz: el complemento se cargó pero no tiene la clase SpeechToText (¿versión equivocada?)
-Voice: no model file found. Put ggml-tiny-q5_1.bin in %s,Voice: no model file found. Put ggml-tiny-q5_1.bin in %s,Voz: no se encontró ningún modelo. Pon ggml-tiny-q5_1.bin en %s
-Voice: no microphone found,Voice: no microphone found,Voz: no se encontró ningún micrófono
-Voice: no sound came from the microphone (%s). Check Windows Settings > Privacy > Microphone,Voice: no sound came from the microphone (%s). Check Windows Settings > Privacy > Microphone,Voz: no llegó sonido del micrófono (%s). Revisa Configuración de Windows > Privacidad > Micrófono
-Voice: the microphone only recorded silence (%s). Check it isn't muted and that apps may use it,Voice: the microphone only recorded silence (%s). Check it isn't muted and that apps may use it,Voz: el micrófono solo grabó silencio (%s). Comprueba que no esté silenciado y que las aplicaciones puedan usarlo
-John,John,Juan
-1 Peter,1 Peter,1 Pedro
-Multiplayer,Multiplayer,Multijugador
-Church,Church,Iglesia
-Leaderboards,Leaderboards,Clasificaciones
-Join the game,Join the game,Únete al juego
-Your name,Your name,Tu nombre
-Room code,Room code,Código de sala
-Join,Join,Entrar
-Type or say a verse...,Type or say a verse...,Escribe o di un versículo...
-Recite,Recite,Recitar
-Speak,Speak,Hablar
-Skip turn,Skip turn,Saltar turno
-Your turn!,Your turn!,¡Tu turno!
-Waiting for %s,Waiting for %s,Esperando a %s
-Not in a battle,Not in a battle,No hay batalla
-Discovered verses,Discovered verses,Versículos descubiertos
-Battle,Battle,Batalla
-Party,Party,Grupo
-used,used,usado
-Reconnecting...,Reconnecting...,Reconectando...
-Knocked out,Knocked out,Fuera de combate
-Tip: tap the microphone on your phone's keyboard to dictate a verse.,Tip: tap the microphone on your phone's keyboard to dictate a verse.,Consejo: toca el micrófono del teclado de tu teléfono para dictar un versículo.
-Listening...,Listening...,Escuchando...
-%d s left,%d s left,quedan %d s
-Each verse can be used once per cycle (yours).,Each verse can be used once per cycle (yours).,Cada versículo se puede usar una vez por ciclo (el tuyo).
-No messages yet,No messages yet,Aún no hay mensajes
-No verses discovered yet,No verses discovered yet,Aún no has descubierto versículos
-Couldn't start the server (port %d busy?),Couldn't start the server (port %d busy?),No se pudo iniciar el servidor (¿el puerto %d está ocupado?)
-Wrong room code,Wrong room code,Código de sala incorrecto
-Please type your name,Please type your name,Escribe tu nombre
-The room is full (%d phone players),The room is full (%d phone players),La sala está llena (%d jugadores con teléfono)
-"Verses work in battles, on your turn","Verses work in battles, on your turn","Los versículos funcionan en las batallas, en tu turno"
-Host,Host,Anfitrión
-%s is disconnected - turn skipped,%s is disconnected - turn skipped,%s está desconectado: se salta su turno
-%s's turn - waiting for their phone,%s's turn - waiting for their phone,Turno de %s: esperando su teléfono
-%s skipped their turn,%s skipped their turn,%s saltó su turno
-%s ran out of time - turn skipped,%s ran out of time - turn skipped,A %s se le acabó el tiempo: se salta su turno
-disconnected,disconnected,desconectado
-connected,connected,conectado
-"On your phone: scan the QR code, or open this address in the browser:","On your phone: scan the QR code, or open this address in the browser:",En tu teléfono: escanea el código QR o abre esta dirección en el navegador:
-"Phones must be on the same Wi-Fi as this computer. The first time, Windows asks to allow the game on networks: tick Private networks and click Allow.","Phones must be on the same Wi-Fi as this computer. The first time, Windows asks to allow the game on networks: tick Private networks and click Allow.","Los teléfonos deben estar en la misma red Wi-Fi que esta computadora. La primera vez, Windows pide permitir el juego en las redes: marca Redes privadas y haz clic en Permitir."
-Stop hosting,Stop hosting,Dejar de alojar
-Start hosting,Start hosting,Empezar a alojar
-Not hosting,Not hosting,No se está alojando
-Room code: %s,Room code: %s,Código de sala: %s
-Not working? Try:,Not working? Try:,¿No funciona? Prueba:
-Players (%d/%d):,Players (%d/%d):,Jugadores (%d/%d):
-waiting for a phone...,waiting for a phone...,esperando un teléfono...
-Couldn't reach the server - showing saved churches,Couldn't reach the server - showing saved churches,No se pudo conectar con el servidor: se muestran las iglesias guardadas
-"Please fill in the name, city and country","Please fill in the name, city and country","Escribe el nombre, la ciudad y el país"
-Choose your church first to see State and Country rankings,Choose your church first to see State and Country rankings,Primero elige tu iglesia para ver las clasificaciones de tu estado y país
-Couldn't reach the server - showing only your own score,Couldn't reach the server - showing only your own score,No se pudo conectar con el servidor: solo se muestra tu propia puntuación
-Offline: only your own score is shown until online leaderboards are turned on,Offline: only your own score is shown until online leaderboards are turned on,Sin conexión: solo se muestra tu propia puntuación hasta que se activen las clasificaciones en línea
-World,World,Mundo
-Church & Profile,Church & Profile,Iglesia y perfil
-Your name (shown on leaderboards):,Your name (shown on leaderboards):,Tu nombre (se muestra en las clasificaciones):
-Find your church:,Find your church:,Busca tu iglesia:
-Search by name or city...,Search by name or city...,Busca por nombre o ciudad...
-Choose this church,Choose this church,Elegir esta iglesia
-No church,No church,Sin iglesia
-Submit your church,Submit your church,Envía tu iglesia
-Your church: %s,Your church: %s,Tu iglesia: %s
-(none),(none),(ninguna)
-waiting for approval,waiting for approval,pendiente de aprobación
-Pick a church in the list first,Pick a church in the list first,Primero elige una iglesia de la lista
-Your church is now %s,Your church is now %s,Ahora tu iglesia es %s
-Church name,Church name,Nombre de la iglesia
-City,City,Ciudad
-State / region,State / region,Estado / región
-Country,Country,País
-New churches are checked by a moderator before they appear for everyone online. You can pick yours right away.,New churches are checked by a moderator before they appear for everyone online. You can pick yours right away.,Un moderador revisa las iglesias nuevas antes de que aparezcan para todos en línea. Puedes elegir la tuya enseguida.
-Submit,Submit,Enviar
-Couldn't submit the church,Couldn't submit the church,No se pudo enviar la iglesia
-Thanks! %s was submitted and is now your church.,Thanks! %s was submitted and is now your church.,¡Gracias! Se envió %s y ahora es tu iglesia.
-State,State,Estado
-Churches,Churches,Iglesias
-Players,Players,Jugadores
-Your enemies defeated: %d,Your enemies defeated: %d,Enemigos que has derrotado: %d
-Loading...,Loading...,Cargando...
-enemies defeated,enemies defeated,enemigos derrotados
-No entries yet,No entries yet,Aún no hay entradas
-Press Up to enter,Press Up to enter,Pulsa Arriba para entrar
-Coins: %d,Coins: %d,Monedas: %d
-Gold: %d (G to drop),Gold: %d (G to drop),Oro: %d (G para soltarlo)
-Dropped the gold,Dropped the gold,Soltaste el oro
-I guess I am too heavy...,I guess I am too heavy...,Supongo que soy demasiado pesado…
-You fell... restarting the level,You fell... restarting the level,Te caíste... reiniciando el nivel
-You defeated the forces of greed!,You defeated the forces of greed!,¡Derrotaste a las fuerzas de la avaricia!
-Defeat the Greedwraith first!,Defeat the Greedwraith first!,¡Primero derrota al Espectro de la Avaricia!
-+ Gold,+ Gold,+ Oro
-Speed up!,Speed up!,¡Más velocidad!
-itemHint,Letter from V.: Thorns block the way. Recite Scripture near them to break them.,Carta de V.: Las espinas bloquean el camino. Recita la Escritura cerca de ellas para romperlas.
-itemHint2,2nd Letter from V.: Sometimes Scripture can lead to secrets.,2ª Carta de V.: A veces la Escritura puede llevar a secretos.
-itemHint3,3rd Letter from V.: And he took the calf... then he ground it to powder...,3ª Carta de V.: Y tomó el becerro... luego lo molió hasta hacerlo polvo...
+keys,en,es,pl
+Continue,Continue,Continuar,Kontynuuj
+Settings,Settings,Ajustes,Ustawienia
+Quit to Menu,Quit to Menu,Salir al menú,Wyjdź do menu
+Save Progress,Save Progress,Guardar progreso,Zapisz postęp
+Load Save,Load Save,Cargar partida,Wczytaj zapis
+Play,Play,Jugar,Graj
+Quit,Quit,Salir,Wyjdź
+Continue (Load Save),Continue (Load Save),Continuar (cargar partida),Kontynuuj (wczytaj zapis)
+Story Mode,Story Mode,Modo historia,Tryb fabularny
+Endless,Endless,Sin fin,Bez końca
+Back,Back,Volver,Wstecz
+Sloth,Sloth,Pereza,Lenistwo
+Gluttony,Gluttony,Gula,Obżarstwo
+Lust,Lust,Lujuria,Nieczystość
+Anger,Anger,Ira,Gniew
+Greed,Greed,Avaricia,Chciwość
+Envy,Envy,Envidia,Zazdrość
+Pride,Pride,Soberbia,Pycha
+Saved!,Saved!,¡Guardado!,Zapisano!
+Save failed,Save failed,Error al guardar,Nie udało się zapisać
+No save found,No save found,No hay partida guardada,Brak zapisu gry
+Change Party,Change Party,Cambiar grupo,Zmień drużynę
+Only one companion can travel with you.,Only one companion can travel with you.,Solo un compañero puede viajar contigo.,Tylko jeden towarzysz może z tobą podróżować.
+You can't change your party during a battle.,You can't change your party during a battle.,No puedes cambiar tu grupo durante una batalla.,Nie możesz zmienić drużyny podczas walki.
+Close,Close,Cerrar,Zamknij
+Press Enter (or hold Shift and speak) to recite Scripture,Press Enter (or hold Shift and speak) to recite Scripture,Pulsa Enter (o mantén Shift y habla) para recitar las Escrituras,"Naciśnij Enter (lub przytrzymaj Shift i mów), aby recytować Pismo"
+Press Up to talk,Press Up to talk,Pulsa Arriba para hablar,"Naciśnij strzałkę w górę, aby porozmawiać"
+Life's so stressful...,Life's so stressful...,La vida es muy estresante...,Życie jest takie stresujące...
+You,You,Tú,Ty
+Run (R),Run (R),Huir (R),Ucieczka (R)
+Got away safely!,Got away safely!,¡Escapaste sin problemas!,Udało się uciec!
+A %s appears!,A %s appears!,¡Aparece %s!,Pojawia się %s!
+%d enemies appear!,%d enemies appear!,¡Aparecen %d enemigos!,Pojawiają się wrogowie: %d!
+Your turn - type or say a verse,Your turn - type or say a verse,Tu turno: escribe o di un versículo,Twoja tura – wpisz lub wypowiedz werset
+%s's turn,%s's turn,Turno de %s,Tura: %s
+Victory!,Victory!,¡Victoria!,Zwycięstwo!
+You were defeated... restarting the level,You were defeated... restarting the level,Has sido derrotado... reiniciando el nivel,Przegrałeś... poziom zaczyna się od nowa
+%s attacks! -%s HP,%s attacks! -%s HP,¡%s ataca! -%s PS,%s atakuje! -%s PŻ
+%s waits...,%s waits...,%s espera...,%s czeka...
+%s recites %s! -%s HP - it's %s type now!,%s recites %s! -%s HP - it's %s type now!,¡%s recita %s! -%s PS. ¡Ahora es de tipo %s!,%s recytuje %s! -%s PŻ – teraz jest typu %s!
+No effect - it's %s type now!,No effect - it's %s type now!,Sin efecto: ¡ahora es de tipo %s!,Bez efektu – teraz jest typu %s!
+Countered! x%s,Countered! x%s,¡Contraataque! x%s,Kontra! x%s
+Defense +%d%% (%d),Defense +%d%% (%d),Defensa +%d%% (%d),Obrona +%d%% (%d)
+Faith +%d%% (%d),Faith +%d%% (%d),Fe +%d%% (%d),Wiara +%d%% (%d)
+Attack -%d%% (%d),Attack -%d%% (%d),Ataque -%d%% (%d),Atak -%d%% (%d)
+Wait for your turn!,Wait for your turn!,¡Espera tu turno!,Poczekaj na swoją turę!
+That's an enemy's verse - you can't use it,That's an enemy's verse - you can't use it,Ese versículo es del enemigo: no puedes usarlo,To werset wroga – nie możesz go użyć
+New verse discovered: %s!,New verse discovered: %s!,¡Nuevo versículo descubierto: %s!,Odkryto nowy werset: %s!
+%s was already used - recite your other %d verse(s) first (Tab to see them),%s was already used - recite your other %d verse(s) first (Tab to see them),%s ya se usó: recita primero tus otros %d versículo(s) (Tab para verlos),"%s został już użyty – najpierw wyrecytuj pozostałe wersety (%d) (Tab, aby je zobaczyć)"
+That's not a verse you know - try again,That's not a verse you know - try again,No conoces ese versículo: inténtalo de nuevo,Nie znasz tego wersetu – spróbuj ponownie
+Verses (Tab to close),Verses (Tab to close),Versículos (Tab para cerrar),"Wersety (Tab, aby zamknąć)"
+Show all,Show all,Mostrar todo,Pokaż wszystko
+Attacks,Attacks,Ataques,Ataki
+Status,Status,Estados,Stany
+Special,Special,Especial,Specjalne
+%s (all),%s (all),%s (todos),%s (wszystkie)
+Ready this cycle: %d of %d,Ready this cycle: %d of %d,Listos en este ciclo: %d de %d,Gotowe w tym cyklu: %d z %d
+(used),(used),(usado),(użyty)
+(ready),(ready),(listo),(gotowy)
+Universal (All),Universal (All),Universal (todos),Uniwersalny (wszystkie)
+Universal,Universal,Universal,Uniwersalny
+(No verses of this kind yet),(No verses of this kind yet),(Aún no hay versículos de este tipo),(Brak jeszcze wersetów tego rodzaju)
+Zeal,Zeal,Celo,Gorliwość
+Guard,Guard,Defensa,Ochrona
+Faith,Faith,Fe,Wiara
+Fear,Fear,Temor,Strach
+Light,Light,Luz,Światło
+"+%d%% defense, %d rounds","+%d%% defense, %d rounds","+%d%% de defensa, %d rondas","+%d%% obrony, %d rundy"
+"+%d%% attack (stacks to +%d%%), %d rounds","+%d%% attack (stacks to +%d%%), %d rounds","+%d%% de ataque (se acumula hasta +%d%%), %d rondas","+%d%% ataku (kumuluje się do +%d%%), %d rundy"
+"All enemies in battle: attack -50%, 3 rounds","All enemies in battle: attack -50%, 3 rounds","Todos los enemigos en batalla: ataque -50%, 3 rondas","Wszyscy wrogowie w walce: atak -50%, 3 rundy"
+Speed + jump boost,Speed + jump boost,Más velocidad y salto,Szybszy bieg i wyższy skok
+Lights up the dark,Lights up the dark,Ilumina la oscuridad,Rozświetla ciemność
+", hurts any enemy type",", hurts any enemy type",", daña a cualquier tipo de enemigo",", rani każdy typ wroga"
+", hurts untyped and %s-type enemies",", hurts untyped and %s-type enemies",", daña a enemigos sin tipo y de tipo %s",", rani wrogów bez typu i typu %s"
+", counters %s (x%s)",", counters %s (x%s)",", contrarresta %s (x%s)",", kontruje %s (x%s)"
+Listening... release Shift to recite,Listening... release Shift to recite,Escuchando... suelta Shift para recitar,"Słucham... puść Shift, aby wyrecytować"
+Didn't catch that - try again,Didn't catch that - try again,No te entendí: inténtalo de nuevo,Nie zrozumiałem – spróbuj ponownie
+Still recognizing - wait a moment,Still recognizing - wait a moment,Aún reconociendo: espera un momento,Wciąż rozpoznaję – chwileczkę
+Hold Shift while you speak,Hold Shift while you speak,Mantén Shift mientras hablas,"Przytrzymaj Shift, gdy mówisz"
+Recognizing...,Recognizing...,Reconociendo...,Rozpoznaję...
+Psalm,Psalm,Salmos,Psalm
+Genesis,Genesis,Génesis,Rodzaju
+Proverbs,Proverbs,Proverbios,Przysłów
+Isaiah,Isaiah,Isaías,Izajasza
+Matthew,Matthew,Mateo,Mateusza
+Romans,Romans,Romanos,Rzymian
+1 Corinthians,1 Corinthians,1 Corintios,1 Koryntian
+Galatians,Galatians,Gálatas,Galacjan
+Heal,Heal,Curación,Leczenie
+Heals %d%% of max HP (split between you and your party),Heals %d%% of max HP (split between you and your party),Cura el %d%% de los PS máximos (repartido entre tú y tu compañero),Leczy %d%% maks. PŻ (dzielone między ciebie i drużynę)
+Healed: %s,Healed: %s,Curación: %s,Uleczono: %s
+You read the %s,You read the %s,Lees el %s,Czytasz: %s
+Healing Scroll,Healing Scroll,Pergamino de sanación,Zwój uzdrowienia
+Battle Scroll,Battle Scroll,Pergamino de batalla,Zwój bitewny
+Guard Scroll,Guard Scroll,Pergamino de protección,Zwój ochrony
+Skip (K),Skip (K),Pasar (K),Pomiń (K)
+Target (Alt),Target (Alt),Objetivo (Alt),Cel (Alt)
+Target (Option),Target (Option),Objetivo (Option),Cel (Option)
+You skipped your turn (-%s HP),You skipped your turn (-%s HP),Pasaste tu turno (-%s PS),Pominąłeś turę (-%s PŻ)
+%s attacks %s! -%s HP,%s attacks %s! -%s HP,¡%s ataca a %s! -%s PS,%s atakuje: %s! -%s PŻ
+%s is knocked out...,%s is knocked out...,%s está fuera de combate...,%s jest nieprzytomny...
+Inventory (Ctrl),Inventory (Ctrl),Inventario (Ctrl),Ekwipunek (Ctrl)
+Use,Use,Usar,Użyj
+No items yet. Look around the levels!,No items yet. Look around the levels!,Aún no tienes objetos. ¡Explora los niveles!,Nie masz jeszcze przedmiotów. Rozejrzyj się po poziomach!
+You can't use that now,You can't use that now,Ahora no puedes usar eso,Nie możesz teraz tego użyć
+Only in a battle,Only in a battle,Solo en batalla,Tylko podczas walki
+Everyone is at full health,Everyone is at full health,Todos tienen los PS al máximo,Wszyscy mają pełne zdrowie
+Voice: audio input is turned off (Project Settings > Audio > Driver > Enable Input),Voice: audio input is turned off (Project Settings > Audio > Driver > Enable Input),Voz: la entrada de audio está desactivada (Configuración del proyecto > Audio > Driver > Enable Input),Głos: wejście audio jest wyłączone (Ustawienia projektu > Audio > Driver > Enable Input)
+Voice: the Godot Whisper addon is missing (%s),Voice: the Godot Whisper addon is missing (%s),Voz: falta el complemento Godot Whisper (%s),Głos: brakuje dodatku Godot Whisper (%s)
+Voice: the addon has no library for this computer (%s),Voice: the addon has no library for this computer (%s),Voz: el complemento no tiene una biblioteca para este ordenador (%s),Głos: dodatek nie ma biblioteki dla tego komputera (%s)
+Voice: the addon's library file is missing: %s,Voice: the addon's library file is missing: %s,Voz: falta el archivo de la biblioteca del complemento: %s,Głos: brakuje pliku biblioteki dodatku: %s
+"Voice: the addon's library didn't load (%s). Restart Godot; if it still fails, look for 'Can't open dynamic library' in the Output panel","Voice: the addon's library didn't load (%s). Restart Godot; if it still fails, look for 'Can't open dynamic library' in the Output panel","Voz: la biblioteca del complemento no se cargó (%s). Reinicia Godot; si sigue fallando, busca 'Can't open dynamic library' en el panel Salida","Głos: biblioteka dodatku się nie wczytała (%s). Uruchom ponownie Godot; jeśli nadal nie działa, poszukaj 'Can't open dynamic library' w panelu Wyjście"
+Voice: the addon loaded but has no SpeechToText class (wrong addon version?),Voice: the addon loaded but has no SpeechToText class (wrong addon version?),Voz: el complemento se cargó pero no tiene la clase SpeechToText (¿versión equivocada?),"Głos: dodatek się wczytał, ale nie ma klasy SpeechToText (zła wersja dodatku?)"
+Voice: no model file found. Put ggml-tiny-q5_1.bin in %s,Voice: no model file found. Put ggml-tiny-q5_1.bin in %s,Voz: no se encontró ningún modelo. Pon ggml-tiny-q5_1.bin en %s,Głos: nie znaleziono pliku modelu. Umieść ggml-tiny-q5_1.bin w %s
+Voice: no microphone found,Voice: no microphone found,Voz: no se encontró ningún micrófono,Głos: nie znaleziono mikrofonu
+Voice: no sound came from the microphone (%s). Check Windows Settings > Privacy > Microphone,Voice: no sound came from the microphone (%s). Check Windows Settings > Privacy > Microphone,Voz: no llegó sonido del micrófono (%s). Revisa Configuración de Windows > Privacidad > Micrófono,Głos: z mikrofonu nie dochodzi dźwięk (%s). Sprawdź Ustawienia Windows > Prywatność > Mikrofon
+Voice: the microphone only recorded silence (%s). Check it isn't muted and that apps may use it,Voice: the microphone only recorded silence (%s). Check it isn't muted and that apps may use it,Voz: el micrófono solo grabó silencio (%s). Comprueba que no esté silenciado y que las aplicaciones puedan usarlo,"Głos: mikrofon nagrał tylko ciszę (%s). Sprawdź, czy nie jest wyciszony i czy aplikacje mogą go używać"
+John,John,Juan,Jana
+1 Peter,1 Peter,1 Pedro,1 Piotra
+Multiplayer,Multiplayer,Multijugador,Gra wieloosobowa
+Church,Church,Iglesia,Kościół
+Leaderboards,Leaderboards,Clasificaciones,Rankingi
+Join the game,Join the game,Únete al juego,Dołącz do gry
+Your name,Your name,Tu nombre,Twoje imię
+Room code,Room code,Código de sala,Kod pokoju
+Join,Join,Entrar,Dołącz
+Type or say a verse...,Type or say a verse...,Escribe o di un versículo...,Wpisz lub wypowiedz werset...
+Recite,Recite,Recitar,Recytuj
+Speak,Speak,Hablar,Mów
+Skip turn,Skip turn,Saltar turno,Pomiń turę
+Your turn!,Your turn!,¡Tu turno!,Twoja tura!
+Waiting for %s,Waiting for %s,Esperando a %s,Czekam na: %s
+Not in a battle,Not in a battle,No hay batalla,Brak walki
+Discovered verses,Discovered verses,Versículos descubiertos,Odkryte wersety
+Battle,Battle,Batalla,Walka
+Party,Party,Grupo,Drużyna
+used,used,usado,użyty
+Reconnecting...,Reconnecting...,Reconectando...,Ponowne łączenie...
+Knocked out,Knocked out,Fuera de combate,Nieprzytomny
+Tip: tap the microphone on your phone's keyboard to dictate a verse.,Tip: tap the microphone on your phone's keyboard to dictate a verse.,Consejo: toca el micrófono del teclado de tu teléfono para dictar un versículo.,"Wskazówka: dotknij mikrofonu na klawiaturze telefonu, aby podyktować werset."
+Listening...,Listening...,Escuchando...,Słucham...
+%d s left,%d s left,quedan %d s,zostało %d s
+Each verse can be used once per cycle (yours).,Each verse can be used once per cycle (yours).,Cada versículo se puede usar una vez por ciclo (el tuyo).,Każdy werset można użyć raz na cykl (twój).
+No messages yet,No messages yet,Aún no hay mensajes,Brak wiadomości
+No verses discovered yet,No verses discovered yet,Aún no has descubierto versículos,Nie odkryto jeszcze wersetów
+Couldn't start the server (port %d busy?),Couldn't start the server (port %d busy?),No se pudo iniciar el servidor (¿el puerto %d está ocupado?),Nie udało się uruchomić serwera (port %d zajęty?)
+Wrong room code,Wrong room code,Código de sala incorrecto,Zły kod pokoju
+Please type your name,Please type your name,Escribe tu nombre,Wpisz swoje imię
+The room is full (%d phone players),The room is full (%d phone players),La sala está llena (%d jugadores con teléfono),Pokój jest pełny (graczy z telefonem: %d)
+"Verses work in battles, on your turn","Verses work in battles, on your turn","Los versículos funcionan en las batallas, en tu turno","Wersety działają w walce, w twojej turze"
+Host,Host,Anfitrión,Gospodarz
+%s is disconnected - turn skipped,%s is disconnected - turn skipped,%s está desconectado: se salta su turno,%s jest rozłączony – tura pominięta
+%s's turn - waiting for their phone,%s's turn - waiting for their phone,Turno de %s: esperando su teléfono,Tura: %s – czekam na telefon
+%s skipped their turn,%s skipped their turn,%s saltó su turno,%s pomija turę
+%s ran out of time - turn skipped,%s ran out of time - turn skipped,A %s se le acabó el tiempo: se salta su turno,%s nie zdążył – tura pominięta
+disconnected,disconnected,desconectado,rozłączony
+connected,connected,conectado,połączony
+"On your phone: scan the QR code, or open this address in the browser:","On your phone: scan the QR code, or open this address in the browser:",En tu teléfono: escanea el código QR o abre esta dirección en el navegador:,Na telefonie: zeskanuj kod QR albo otwórz ten adres w przeglądarce:
+"Phones must be on the same Wi-Fi as this computer. The first time, Windows asks to allow the game on networks: tick Private networks and click Allow.","Phones must be on the same Wi-Fi as this computer. The first time, Windows asks to allow the game on networks: tick Private networks and click Allow.","Los teléfonos deben estar en la misma red Wi-Fi que esta computadora. La primera vez, Windows pide permitir el juego en las redes: marca Redes privadas y haz clic en Permitir.",Telefony muszą być w tej samej sieci Wi-Fi co ten komputer. Za pierwszym razem Windows zapyta o zezwolenie grze na dostęp do sieci: zaznacz Sieci prywatne i kliknij Zezwalaj.
+Stop hosting,Stop hosting,Dejar de alojar,Zakończ hostowanie
+Start hosting,Start hosting,Empezar a alojar,Zacznij hostować
+Not hosting,Not hosting,No se está alojando,Nie hostujesz
+Room code: %s,Room code: %s,Código de sala: %s,Kod pokoju: %s
+Not working? Try:,Not working? Try:,¿No funciona? Prueba:,Nie działa? Spróbuj:
+Players (%d/%d):,Players (%d/%d):,Jugadores (%d/%d):,Gracze (%d/%d):
+waiting for a phone...,waiting for a phone...,esperando un teléfono...,czekam na telefon...
+Couldn't reach the server - showing saved churches,Couldn't reach the server - showing saved churches,No se pudo conectar con el servidor: se muestran las iglesias guardadas,Brak połączenia z serwerem – pokazuję zapisane kościoły
+"Please fill in the name, city and country","Please fill in the name, city and country","Escribe el nombre, la ciudad y el país","Wpisz nazwę, miasto i kraj"
+Choose your church first to see State and Country rankings,Choose your church first to see State and Country rankings,Primero elige tu iglesia para ver las clasificaciones de tu estado y país,"Najpierw wybierz swój kościół, aby zobaczyć rankingi stanu i kraju"
+Couldn't reach the server - showing only your own score,Couldn't reach the server - showing only your own score,No se pudo conectar con el servidor: solo se muestra tu propia puntuación,Brak połączenia z serwerem – pokazuję tylko twój wynik
+Offline: only your own score is shown until online leaderboards are turned on,Offline: only your own score is shown until online leaderboards are turned on,Sin conexión: solo se muestra tu propia puntuación hasta que se activen las clasificaciones en línea,"Offline: widać tylko twój wynik, dopóki rankingi online nie zostaną włączone"
+World,World,Mundo,Świat
+Church & Profile,Church & Profile,Iglesia y perfil,Kościół i profil
+Your name (shown on leaderboards):,Your name (shown on leaderboards):,Tu nombre (se muestra en las clasificaciones):,Twoje imię (widoczne w rankingach):
+Find your church:,Find your church:,Busca tu iglesia:,Znajdź swój kościół:
+Search by name or city...,Search by name or city...,Busca por nombre o ciudad...,Szukaj po nazwie lub mieście...
+Choose this church,Choose this church,Elegir esta iglesia,Wybierz ten kościół
+No church,No church,Sin iglesia,Brak kościoła
+Submit your church,Submit your church,Envía tu iglesia,Zgłoś swój kościół
+Your church: %s,Your church: %s,Tu iglesia: %s,Twój kościół: %s
+(none),(none),(ninguna),(brak)
+waiting for approval,waiting for approval,pendiente de aprobación,czeka na zatwierdzenie
+Pick a church in the list first,Pick a church in the list first,Primero elige una iglesia de la lista,Najpierw wybierz kościół z listy
+Your church is now %s,Your church is now %s,Ahora tu iglesia es %s,Twój kościół to teraz %s
+Church name,Church name,Nombre de la iglesia,Nazwa kościoła
+City,City,Ciudad,Miasto
+State / region,State / region,Estado / región,Stan / region
+Country,Country,País,Kraj
+New churches are checked by a moderator before they appear for everyone online. You can pick yours right away.,New churches are checked by a moderator before they appear for everyone online. You can pick yours right away.,Un moderador revisa las iglesias nuevas antes de que aparezcan para todos en línea. Puedes elegir la tuya enseguida.,"Nowe kościoły są sprawdzane przez moderatora, zanim pojawią się dla wszystkich online. Swój możesz wybrać od razu."
+Submit,Submit,Enviar,Wyślij
+Couldn't submit the church,Couldn't submit the church,No se pudo enviar la iglesia,Nie udało się zgłosić kościoła
+Thanks! %s was submitted and is now your church.,Thanks! %s was submitted and is now your church.,¡Gracias! Se envió %s y ahora es tu iglesia.,Dziękujemy! Zgłoszono %s i jest to teraz twój kościół.
+State,State,Estado,Stan
+Churches,Churches,Iglesias,Kościoły
+Players,Players,Jugadores,Gracze
+Your enemies defeated: %d,Your enemies defeated: %d,Enemigos que has derrotado: %d,Pokonani przez ciebie wrogowie: %d
+Loading...,Loading...,Cargando...,Wczytywanie...
+enemies defeated,enemies defeated,enemigos derrotados,pokonanych wrogów
+No entries yet,No entries yet,Aún no hay entradas,Brak wpisów
+Press Up to enter,Press Up to enter,Pulsa Arriba para entrar,"Naciśnij strzałkę w górę, aby wejść"
+Coins: %d,Coins: %d,Monedas: %d,Monety: %d
+Gold: %d (G to drop),Gold: %d (G to drop),Oro: %d (G para soltarlo),"Złoto: %d (G, aby upuścić)"
+Dropped the gold,Dropped the gold,Soltaste el oro,Upuszczono złoto
+I guess I am too heavy...,I guess I am too heavy...,Supongo que soy demasiado pesado…,Chyba jestem za ciężki…
+You fell... restarting the level,You fell... restarting the level,Te caíste... reiniciando el nivel,Spadłeś... poziom zaczyna się od nowa
+You defeated the forces of greed!,You defeated the forces of greed!,¡Derrotaste a las fuerzas de la avaricia!,Pokonałeś siły chciwości!
+Defeat the Greedwraith first!,Defeat the Greedwraith first!,¡Primero derrota al Espectro de la Avaricia!,Najpierw pokonaj Widmo Chciwości!
++ Gold,+ Gold,+ Oro,+ Złoto
+Speed up!,Speed up!,¡Más velocidad!,Przyspieszenie!
+itemHint,"Letter from V.: Thorns block the way. Hold the Ram key (X by default) until the bar fills, then ram them.",Carta de V.: Las espinas bloquean el camino. Mantén la tecla de embestir (X por defecto) hasta que se llene la barra y embístelas.,"List od V.: Ciernie blokują drogę. Przytrzymaj klawisz taranu (domyślnie X), aż pasek się napełni, i staranuj je."
+itemHint2,2nd Letter from V.: Sometimes Scripture can lead to secrets.,2ª Carta de V.: A veces la Escritura puede llevar a secretos.,2. list od V.: Czasem Pismo może prowadzić do tajemnic.
+itemHint3,3rd Letter from V.: And he took the calf... then he ground it to powder...,3ª Carta de V.: Y tomó el becerro... luego lo molió hasta hacerlo polvo...,3. list od V.: I wziął cielca... potem starł go na proch...
+Local Multiplayer (Phones),Local Multiplayer (Phones),Multijugador local (teléfonos),Gra lokalna (telefony)
+Music volume,Music volume,Volumen de la música,Głośność muzyki
+Sound effects volume,Sound effects volume,Volumen de efectos,Głośność efektów
+Controls (remap keys),Controls (remap keys),Controles (cambiar teclas),Sterowanie (zmień klawisze)
+Controls,Controls,Controles,Sterowanie
+"Click an action, then press the new key (Esc cancels).","Click an action, then press the new key (Esc cancels).",Haz clic en una acción y pulsa la nueva tecla (Esc cancela).,"Kliknij akcję, a potem naciśnij nowy klawisz (Esc anuluje)."
+Reset to defaults,Reset to defaults,Restablecer,Przywróć domyślne
+Press a key...,Press a key...,Pulsa una tecla...,Naciśnij klawisz...
+Move left,Move left,Mover a la izquierda,Ruch w lewo
+Move right,Move right,Mover a la derecha,Ruch w prawo
+Jump,Jump,Saltar,Skok
+Talk / enter door,Talk / enter door,Hablar / entrar por la puerta,Rozmowa / wejście do drzwi
+Ram (hold to charge),Ram (hold to charge),Embestir (mantén para cargar),"Taran (przytrzymaj, aby naładować)"
+Recite (type a verse),Recite (type a verse),Recitar (escribir un versículo),Recytuj (wpisz werset)
+Voice (hold and speak),Voice (hold and speak),Voz (mantén y habla),Głos (przytrzymaj i mów)
+Verse box,Verse box,Caja de versículos,Lista wersetów
+Inventory,Inventory,Inventario,Ekwipunek
+Choose target,Choose target,Elegir objetivo,Wybierz cel
+Run away,Run away,Huir,Ucieczka
+%s loses %s HP,%s loses %s HP,%s pierde %s PS,%s traci %s PŻ
+No effect - this verse only hurts Greed-type enemies,No effect - this verse only hurts Greed-type enemies,Sin efecto: este versículo solo daña a enemigos de tipo Avaricia,Bez efektu – ten werset rani tylko wrogów typu Chciwość
+Words of Jesus,Words of Jesus,Palabras de Jesús,Słowa Jezusa
+%d%% vs Greed,%d%% vs Greed,%d%% contra Avaricia,%d%% przeciw Chciwości
+%d%% vs any sin,%d%% vs any sin,%d%% contra cualquier pecado,%d%% przeciw każdemu grzechowi
+Heals %d%%,Heals %d%%,Cura %d%%,Leczy %d%%
+Costs you %d%% HP,Costs you %d%% HP,Te cuesta %d%% de PS,Kosztuje cię %d%% PŻ
+Mark,Mark,Marcos,Marka
+Luke,Luke,Lucas,Łukasza
+Acts,Acts,Hechos,Dzieje
+2 Corinthians,2 Corinthians,2 Corintios,2 Koryntian
+Ephesians,Ephesians,Efesios,Efezjan
+Philippians,Philippians,Filipenses,Filipian
+Colossians,Colossians,Colosenses,Kolosan
+1 Thessalonians,1 Thessalonians,1 Tesalonicenses,1 Tesaloniczan
+2 Thessalonians,2 Thessalonians,2 Tesalonicenses,2 Tesaloniczan
+1 Timothy,1 Timothy,1 Timoteo,1 Tymoteusza
+2 Timothy,2 Timothy,2 Timoteo,2 Tymoteusza
+Titus,Titus,Tito,Tytusa
+Philemon,Philemon,Filemón,Filemona
+Hebrews,Hebrews,Hebreos,Hebrajczyków
+James,James,Santiago,Jakuba
+2 Peter,2 Peter,2 Pedro,2 Piotra
+1 John,1 John,1 Juan,1 Jana
+2 John,2 John,2 Juan,2 Jana
+3 John,3 John,3 Juan,3 Jana
+Jude,Jude,Judas,Judy
+Revelation,Revelation,Apocalipsis,Apokalipsa
+Exodus,Exodus,Éxodo,Wyjścia
+Leviticus,Leviticus,Levítico,Kapłańska
+Numbers,Numbers,Números,Liczb
+Deuteronomy,Deuteronomy,Deuteronomio,Powtórzonego Prawa
+Joshua,Joshua,Josué,Jozuego
+Judges,Judges,Jueces,Sędziów
+Ruth,Ruth,Rut,Rut
+1 Samuel,1 Samuel,1 Samuel,1 Samuela
+2 Samuel,2 Samuel,2 Samuel,2 Samuela
+1 Kings,1 Kings,1 Reyes,1 Królewska
+2 Kings,2 Kings,2 Reyes,2 Królewska
+1 Chronicles,1 Chronicles,1 Crónicas,1 Kronik
+2 Chronicles,2 Chronicles,2 Crónicas,2 Kronik
+Ezra,Ezra,Esdras,Ezdrasza
+Nehemiah,Nehemiah,Nehemías,Nehemiasza
+Esther,Esther,Ester,Estery
+Job,Job,Job,Hioba
+Ecclesiastes,Ecclesiastes,Eclesiastés,Koheleta
+Song of Solomon,Song of Solomon,Cantares,Pieśń nad Pieśniami
+Jeremiah,Jeremiah,Jeremías,Jeremiasza
+Lamentations,Lamentations,Lamentaciones,Lamentacje
+Ezekiel,Ezekiel,Ezequiel,Ezechiela
+Daniel,Daniel,Daniel,Daniela
+Hosea,Hosea,Oseas,Ozeasza
+Joel,Joel,Joel,Joela
+Amos,Amos,Amós,Amosa
+Obadiah,Obadiah,Abdías,Abdiasza
+Jonah,Jonah,Jonás,Jonasza
+Micah,Micah,Miqueas,Micheasza
+Nahum,Nahum,Nahúm,Nahuma
+Habakkuk,Habakkuk,Habacuc,Habakuka
+Zephaniah,Zephaniah,Sofonías,Sofoniasza
+Haggai,Haggai,Hageo,Aggeusza
+Zechariah,Zechariah,Zacarías,Zachariasza
+Malachi,Malachi,Malaquías,Malachiasza

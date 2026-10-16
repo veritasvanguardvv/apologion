@@ -3861,7 +3861,7 @@ max_hp = 925
 attack_damage = 15
 defense = 0.65
 battle_speed = 5
-verses = Array[String](["Genesis 3:17"])
+verses = Array[String](["Genesis 3:17", "Hosea 12:8"])
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1804218673]
 position = Vector2(-1400.0659, -245.4702)

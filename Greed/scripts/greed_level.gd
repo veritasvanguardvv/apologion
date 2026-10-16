@@ -47,6 +47,7 @@ func _ready():
 		music_player = AudioStreamPlayer.new()
 		music_player.stream = music
 		music_player.volume_db = music_volume_db
+		music_player.bus = "Music"   # the Music volume slider in Settings
 		if "loop" in music_player.stream:
 			music_player.stream.loop = true
 		add_child(music_player)
@@ -85,7 +86,7 @@ func _unhandled_input(event):
 	var typing = player.verse_input and player.verse_input.has_focus()
 	if typing:
 		return
-	if event.is_action_pressed("ui_up") and room_to_enter != -1:
+	if event.is_action_pressed("interact") and room_to_enter != -1:
 		enter_room(room_to_enter)
 		get_viewport().set_input_as_handled()
 	elif event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_G and gold > 0:

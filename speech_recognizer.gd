@@ -46,6 +46,7 @@ var min_record_seconds = 0.3       # shorter than this = probably an accidental 
 var prompts = {
 	"en": "Bible verses: Psalm, Proverbs, Isaiah, Genesis, Galatians, Corinthians, Yahweh, the LORD.",
 	"es": "Versículos de la Biblia: Salmos, Proverbios, Isaías, Génesis, Gálatas, Corintios, Jehová.",
+	"pl": "Wersety biblijne: Psalm, Przysłów, Izajasza, Mateusza, Łukasza, Rzymian, Koryntian, Galacjan, Pan.",
 }
 
 var listening = false
@@ -276,7 +277,10 @@ func _finish(text: String):
 func _backend_transcribe(recording: PackedVector2Array, lang: String) -> String:
 	if stt.get("language_model") == null:
 		stt.set("language_model", load(model_path))   # loaded the first time it's needed
-	var language_name = "Spanish" if lang == "es" else "English"
+	# Whisper's language: English / Spanish / Polish (Auto if this build has no Polish)
+	var language_name = {"es": "Spanish", "pl": "Polish"}.get(lang, "English")
+	if not ClassDB.class_has_integer_constant("SpeechToText", language_name):
+		language_name = "Auto"
 	stt.set("language", ClassDB.class_get_integer_constant("SpeechToText", language_name))
 	var samples = to_16k_mono(recording, AudioServer.get_mix_rate())
 	if samples.is_empty():

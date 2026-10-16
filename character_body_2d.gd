@@ -10,19 +10,23 @@ var max_hp: int:            # (the same for every level, set in save_manager.gd)
 var speed = 200
 var jump_velocity = -400
 var gravity = 980
-# "en" or "es". The language lives in SaveManager (set with the main menu's
-# English / Español buttons); this just reads it so verse checks match.
+# "en", "es" or "pl". The language lives in SaveManager (set with the main
+# menu's English / Español / Polski buttons); this just reads it so verse checks match.
 var language: String:
 	get:
 		return SaveManager.language
 # Verse box filter (see _build_verse_panel). Four groups of verse types:
 const FILTER_GROUPS = {
-	"Attacks": ["sloth", "lust", "all"],        # 1st button ("all" = Universal: hurts any enemy type)
-	"Status": ["zeal", "guard", "faith", "fear"], # 2nd button
-	"Special": ["light"],                       # 3rd button
-	"Heal": ["heal"],                           # 4th (rightmost) button
+	"Attacks": ["sloth", "lust", "greed", "all"], # 1st button ("all" = Universal: hurts any enemy type)
+	"Greed": ["greed", "heal"],                 # 2nd button: every verse from the Greed table (data/greed_verses.json)
+	"Status": ["zeal", "guard", "faith", "fear"], # 3rd button
+	"Special": ["light"],                       # 4th button
+	"Heal": ["heal"],                           # 5th (rightmost) button
 }
-const ATTACK_TYPES = ["sloth", "lust", "all"]   # verse types that do damage
+const ATTACK_TYPES = ["sloth", "lust", "greed", "all"]   # verse types that do damage
+# The Greed verses live in a data file (made from the design table by
+# tools/greed_verses_from_table.py) and are added to all_verses in _ready.
+const GREED_VERSES_PATH = "res://data/greed_verses.json"
 var filter_group = "all"   # "all" (Show all), "Attacks", "Status" or "Special"
 var filter_type = "*"      # "*" = the whole group, or one type, e.g. "lust"
 
@@ -86,6 +90,24 @@ signal faith_maxed                   # emitted when Faith newly reaches the max
 # to pay, not an enemy attack.
 @export var skip_turn_cost = 0.1
 
+# Ram (like the headbutt in the Unity Greed level): hold the Ram key (X by
+# default, remappable in Settings > Controls) while standing on the ground.
+# You back up a little while it charges; when the bar is full you dash
+# forward and break thorn barriers (greed_barrier.gd) you run into.
+# Letting go before it's full cancels. Jump still works while charging/dashing.
+@export_group("Ram")
+@export var ram_charge_time = 0.7     # seconds to hold before the dash
+@export var ram_dash_time = 0.7       # how long the dash lasts at most
+@export var ram_speed_multiplier = 2.2
+@export var ram_backup_speed = 0.2    # backing up while charging (x walking speed)
+@export_group("")
+var ram_state = 0                     # 0 = nothing, 1 = charging, 2 = dashing
+var ram_timer = 0.0
+var facing = 1.0                      # 1 = right, -1 = left (last walking direction)
+var ram_bar: ProgressBar
+var ram_needs_release = false         # after a dash, let go of the key before charging again
+signal rammed(collider)               # something was hit by a dash
+
 var base_scale_light = 1.2
 var base_scale_near = 0.6
 var base_scale_halo = 2.5
@@ -110,37 +132,37 @@ var verse_text: RichTextLabel
 # (verse_manager.gd) so they survive scene changes and saving.
 # Attack verses (lust / sloth / all) use the "damage" number here.
 var all_verses = [
-	{"ref": "Matthew 5:28", "type": "lust", "damage": 100, "discovered": true, "en": "everyone who gazes at a woman to lust after her has committed adultery in his heart.", "es": "todo el que mira a una mujer para codiciarla ya cometió adulterio en su corazón."},
-	{"ref": "Psalm 18:28", "type": "light", "damage": 50, "discovered": false, "en": "the lord, my god, lights up my darkness.", "es": "Jehová mi Dios alumbrará mis tinieblas."},
-	{"ref": "Romans 12:11", "type": "zeal", "damage": 50, "discovered": false, "en": "never lag in diligence. let the spirit excite you as you serve the lord.", "es": "En lo que requiere diligencia, no perezosos; fervientes en espíritu, sirviendo al Señor."},
-	{"ref": "1 Corinthians 6:18", "type": "lust", "damage": 50, "discovered": false, "en": "flee sexual immorality!", "es": "¡huyan de la inmoralidad sexual!"},
-	{"ref": "Proverbs 6:32", "type": "lust", "damage": 50, "discovered": false, "en": "he who commits adultery is a fool who destroys himself.", "es": "el que comete adulterio es un necio que se destruye a sí mismo."},
-	{"ref": "Psalm 18:28a", "type": "light", "damage": 50, "discovered": false, "en": "you light a lamp for me.", "es": "Tú encenderás mi lámpara."},
-	{"ref": "Psalm 119:105", "type": "light", "damage": 50, "discovered": false, "en": "your word is a lamp to my feet, and a light for my path.", "es": "Lámpara es a mis pies tu palabra, y lumbrera a mi camino."},
+	{"ref": "Matthew 5:28", "type": "lust", "damage": 100, "discovered": true, "en": "everyone who gazes at a woman to lust after her has committed adultery in his heart.", "jesus": true, "pl": "każdy, kto patrzy na kobietę, aby jej pożądać, już popełnił z nią cudzołóstwo w swoim sercu.", "es": "todo el que mira a una mujer para codiciarla ya cometió adulterio en su corazón."},
+	{"ref": "Psalm 18:28", "type": "light", "damage": 50, "discovered": false, "en": "the lord, my god, lights up my darkness.", "pl": "Pan, mój Bóg, rozjaśnia moje ciemności.", "es": "Jehová mi Dios alumbrará mis tinieblas."},
+	{"ref": "Romans 12:11", "type": "zeal", "damage": 50, "discovered": false, "en": "never lag in diligence. let the spirit excite you as you serve the lord.", "pl": "W gorliwości nie ustawajcie, bądźcie płomiennego ducha, Panu służcie.", "es": "En lo que requiere diligencia, no perezosos; fervientes en espíritu, sirviendo al Señor."},
+	{"ref": "1 Corinthians 6:18", "type": "lust", "damage": 50, "discovered": false, "en": "flee sexual immorality!", "pl": "Uciekajcie przed nierządem!", "es": "¡huyan de la inmoralidad sexual!"},
+	{"ref": "Proverbs 6:32", "type": "lust", "damage": 50, "discovered": false, "en": "he who commits adultery is a fool who destroys himself.", "pl": "Kto cudzołoży, jest głupcem, który niszczy samego siebie.", "es": "el que comete adulterio es un necio que se destruye a sí mismo."},
+	{"ref": "Psalm 18:28a", "type": "light", "damage": 50, "discovered": false, "en": "you light a lamp for me.", "pl": "Ty zapalasz moją lampę.", "es": "Tú encenderás mi lámpara."},
+	{"ref": "Psalm 119:105", "type": "light", "damage": 50, "discovered": false, "en": "your word is a lamp to my feet, and a light for my path.", "pl": "Twoje słowo jest lampą dla moich stóp i światłem na mojej ścieżce.", "es": "Lámpara es a mis pies tu palabra, y lumbrera a mi camino."},
 	# Guard verse: "damage" isn't used for guard verses. "alt" = other wordings
 	# that also count (here the fuller KJV version).
-	{"ref": "Psalm 17:8", "type": "guard", "damage": 0, "discovered": false, "en": "hide me under the shadow of your wings.", "es": "guárdame como a la niña de tus ojos; escóndeme bajo la sombra de tus alas.", "alt": ["keep me as the apple of the eye, hide me under the shadow of thy wings."]},
+	{"ref": "Psalm 17:8", "type": "guard", "damage": 0, "discovered": false, "en": "hide me under the shadow of your wings.", "pl": "Strzeż mnie jak źrenicy oka, ukryj mnie w cieniu swoich skrzydeł.", "es": "guárdame como a la niña de tus ojos; escóndeme bajo la sombra de tus alas.", "alt": ["keep me as the apple of the eye, hide me under the shadow of thy wings."]},
 	# Faith verses (attack up). Spanish = RVR1960. "LORD" counts as "Yahweh" when matching.
-	{"ref": "Psalm 27:1b", "type": "faith", "damage": 0, "discovered": false, "en": "Whom shall I fear? Yahweh is the strength of my life.", "es": "Jehová es la fortaleza de mi vida; ¿de quién he de atemorizarme?", "alt": ["The LORD is the strength of my life; of whom shall I be afraid?", "Yahweh is the strength of my life. Of whom shall I be afraid?"]},
-	{"ref": "Psalm 29:11", "type": "faith", "damage": 0, "discovered": false, "en": "Yahweh will give strength to His people.", "es": "Jehová dará poder a su pueblo; Jehová bendecirá a su pueblo con paz.", "alt": ["The LORD will give strength unto his people; the LORD will bless his people with peace.", "Yahweh will give strength to his people. Yahweh will bless his people with peace."]},
-	{"ref": "Isaiah 40:29", "type": "faith", "damage": 0, "discovered": false, "en": "He gives power to the weak.", "es": "Él da esfuerzo al cansado, y multiplica las fuerzas al que no tiene ningunas.", "alt": ["He giveth power to the faint; and to them that have no might he increaseth strength.", "He gives power to the weak. He increases the strength of him who has no might."]},
+	{"ref": "Psalm 27:1b", "type": "faith", "damage": 0, "discovered": false, "en": "Whom shall I fear? Yahweh is the strength of my life.", "pl": "Pan jest twierdzą mego życia, przed kim mam się trwożyć?", "es": "Jehová es la fortaleza de mi vida; ¿de quién he de atemorizarme?", "alt": ["The LORD is the strength of my life; of whom shall I be afraid?", "Yahweh is the strength of my life. Of whom shall I be afraid?"]},
+	{"ref": "Psalm 29:11", "type": "faith", "damage": 0, "discovered": false, "en": "Yahweh will give strength to His people.", "pl": "Pan da siłę swojemu ludowi, Pan pobłogosławi swój lud pokojem.", "es": "Jehová dará poder a su pueblo; Jehová bendecirá a su pueblo con paz.", "alt": ["The LORD will give strength unto his people; the LORD will bless his people with peace.", "Yahweh will give strength to his people. Yahweh will bless his people with peace."]},
+	{"ref": "Isaiah 40:29", "type": "faith", "damage": 0, "discovered": false, "en": "He gives power to the weak.", "pl": "Daje siłę zmęczonemu i pomnaża moc bezsilnego.", "es": "Él da esfuerzo al cansado, y multiplica las fuerzas al que no tiene ningunas.", "alt": ["He giveth power to the faint; and to them that have no might he increaseth strength.", "He gives power to the weak. He increases the strength of him who has no might."]},
 	# Sloth attack verses (Spanish = RVR1960)
-	{"ref": "Genesis 2:15", "type": "sloth", "damage": 50, "discovered": false, "en": "God put man in the garden of Eden to work.", "es": "Tomó, pues, Jehová Dios al hombre, y lo puso en el huerto de Edén, para que lo labrara y lo guardase.", "alt": ["The LORD God took the man, and put him into the garden of Eden to dress it and to keep it.", "Yahweh God took the man, and put him into the garden of Eden to cultivate and keep it.", "God put the man in the garden of Eden to work it."]},
-	{"ref": "Psalm 126:5", "type": "sloth", "damage": 50, "discovered": false, "en": "Those who plant in tears will harvest with shouts of joy.", "es": "Los que sembraron con lágrimas, con regocijo segarán.", "alt": ["They that sow in tears shall reap in joy.", "Those who sow in tears will reap in joy."]},
-	{"ref": "Proverbs 18:9", "type": "sloth", "damage": 100, "discovered": false, "en": "Whoever is slack in his work is a brother to a destroyer.", "es": "También el que es negligente en su trabajo es hermano del hombre disipador.", "alt": ["He also that is slothful in his work is brother to him that is a great waster.", "One who is slack in his work is brother to him who is a master of destruction."]},
+	{"ref": "Genesis 2:15", "type": "sloth", "damage": 50, "discovered": false, "en": "God put man in the garden of Eden to work.", "pl": "Pan Bóg wziął człowieka i umieścił go w ogrodzie Eden, aby go uprawiał i strzegł.", "es": "Tomó, pues, Jehová Dios al hombre, y lo puso en el huerto de Edén, para que lo labrara y lo guardase.", "alt": ["The LORD God took the man, and put him into the garden of Eden to dress it and to keep it.", "Yahweh God took the man, and put him into the garden of Eden to cultivate and keep it.", "God put the man in the garden of Eden to work it."]},
+	{"ref": "Psalm 126:5", "type": "sloth", "damage": 50, "discovered": false, "en": "Those who plant in tears will harvest with shouts of joy.", "pl": "Ci, którzy sieją we łzach, żąć będą w radości.", "es": "Los que sembraron con lágrimas, con regocijo segarán.", "alt": ["They that sow in tears shall reap in joy.", "Those who sow in tears will reap in joy."]},
+	{"ref": "Proverbs 18:9", "type": "sloth", "damage": 100, "discovered": false, "en": "Whoever is slack in his work is a brother to a destroyer.", "pl": "Kto jest opieszały w swojej pracy, jest bratem niszczyciela.", "es": "También el que es negligente en su trabajo es hermano del hombre disipador.", "alt": ["He also that is slothful in his work is brother to him that is a great waster.", "One who is slack in his work is brother to him who is a master of destruction."]},
 	# Universal attack verse (type "all" = hurts any enemy type). Also the
 	# counter to the enemy verse Genesis 3 (see enemy_verses.gd).
-	{"ref": "Galatians 3:13", "type": "all", "damage": 50, "discovered": false, "en": "Christ redeemed us from the curse of the law, having become a curse for us by hanging on a tree.", "es": "Cristo nos redimió de la maldición de la ley, hecho por nosotros maldición (porque está escrito: Maldito todo el que es colgado en un madero).", "alt": ["Christ hath redeemed us from the curse of the law, being made a curse for us: for it is written, Cursed is every one that hangeth on a tree.", "Christ redeemed us from the curse of the law, having become a curse for us. For it is written, Cursed is everyone who hangs on a tree.", "Christ redeemed us from the curse of the law, having become a curse for us."]},
+	{"ref": "Galatians 3:13", "type": "all", "damage": 50, "discovered": false, "en": "Christ redeemed us from the curse of the law, having become a curse for us by hanging on a tree.", "pl": "Chrystus wykupił nas od przekleństwa zakonu, stawszy się za nas przekleństwem, bo napisano: Przeklęty każdy, który zawisł na drzewie.", "es": "Cristo nos redimió de la maldición de la ley, hecho por nosotros maldición (porque está escrito: Maldito todo el que es colgado en un madero).", "alt": ["Christ hath redeemed us from the curse of the law, being made a curse for us: for it is written, Cursed is every one that hangeth on a tree.", "Christ redeemed us from the curse of the law, having become a curse for us. For it is written, Cursed is everyone who hangs on a tree.", "Christ redeemed us from the curse of the law, having become a curse for us."]},
 	# Fear verse (enemy attack down)
 	# Healing verses: "heal" = % of max HP. By default it's split between you
 	# and your party member; choose one target (Alt / Target button) for the
 	# full amount. See targeting.gd.
-	{"ref": "John 3:16", "type": "heal", "heal": 100, "damage": 0, "discovered": false, "en": "For God so loved the world He gave His Son, whoever believes in Him will not perish but have eternal life.", "es": "Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna.", "alt": ["For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.", "For God so loved the world, that he gave his one and only Son, that whoever believes in him should not perish, but have eternal life.", "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life."]},
-	{"ref": "Romans 6:23b", "type": "heal", "heal": 100, "damage": 0, "discovered": false, "en": "But the free gift of God is eternal life in Christ Jesus our Lord.", "es": "mas la dádiva de Dios es vida eterna en Cristo Jesús Señor nuestro.", "alt": ["But the gift of God is eternal life through Jesus Christ our Lord.", "But the free gift of God is eternal life in Christ Jesus our Lord.", "But the gift of God is eternal life in Christ Jesus our Lord."]},
-	{"ref": "1 Peter 2:24b", "type": "heal", "heal": 50, "damage": 0, "discovered": false, "en": "You were healed by His wounds.", "es": "por cuya herida fuisteis sanados.", "alt": ["By whose stripes ye were healed.", "By his wounds you have been healed.", "By his wounds you were healed."]},
-	{"ref": "Psalm 34:18", "type": "heal", "heal": 50, "damage": 0, "discovered": false, "en": "Yahweh is near to the broken hearted and saves the crushed spirit.", "es": "Cercano está Jehová a los quebrantados de corazón; y salva a los contritos de espíritu.", "alt": ["The LORD is nigh unto them that are of a broken heart; and saveth such as be of a contrite spirit.", "Yahweh is near to those who have a broken heart, and saves those who have a crushed spirit.", "The LORD is close to the brokenhearted and saves those who are crushed in spirit."]},
-	{"ref": "Matthew 14:30", "type": "heal", "heal": 50, "damage": 0, "discovered": false, "en": "Save me, Lord!", "es": "¡Señor, sálvame!", "alt": ["Lord, save me.", "Lord, save me!"]},
-	{"ref": "Psalm 75:10", "type": "fear", "damage": 0, "discovered": false, "en": "God says, \"I will cut off the strength of the wicked.\"", "es": "Quebrantaré todo el poderío de los pecadores, y el poder del justo será exaltado.", "alt": ["I will cut off the strength of the wicked.", "All the horns of the wicked also will I cut off; but the horns of the righteous shall be exalted.", "All the horns of the wicked also will I cut off."]}
+	{"ref": "John 3:16", "type": "heal", "heal": 100, "damage": 0, "discovered": false, "en": "For God so loved the world He gave His Son, whoever believes in Him will not perish but have eternal life.", "jesus": true, "pl": "Tak bowiem Bóg umiłował świat, że dał swego jednorodzonego Syna, aby każdy, kto w Niego wierzy, nie zginął, ale miał życie wieczne.", "es": "Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna.", "alt": ["For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.", "For God so loved the world, that he gave his one and only Son, that whoever believes in him should not perish, but have eternal life.", "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life."]},
+	{"ref": "Romans 6:23b", "type": "heal", "heal": 100, "damage": 0, "discovered": false, "en": "But the free gift of God is eternal life in Christ Jesus our Lord.", "pl": "A darem łaski Bożej jest życie wieczne w Chrystusie Jezusie, Panu naszym.", "es": "mas la dádiva de Dios es vida eterna en Cristo Jesús Señor nuestro.", "alt": ["But the gift of God is eternal life through Jesus Christ our Lord.", "But the free gift of God is eternal life in Christ Jesus our Lord.", "But the gift of God is eternal life in Christ Jesus our Lord."]},
+	{"ref": "1 Peter 2:24b", "type": "heal", "heal": 50, "damage": 0, "discovered": false, "en": "You were healed by His wounds.", "pl": "Jego ranami zostaliście uzdrowieni.", "es": "por cuya herida fuisteis sanados.", "alt": ["By whose stripes ye were healed.", "By his wounds you have been healed.", "By his wounds you were healed."]},
+	{"ref": "Psalm 34:18", "type": "heal", "heal": 50, "damage": 0, "discovered": false, "en": "Yahweh is near to the broken hearted and saves the crushed spirit.", "pl": "Pan jest blisko tych, którzy mają złamane serce, i wybawia skruszonych na duchu.", "es": "Cercano está Jehová a los quebrantados de corazón; y salva a los contritos de espíritu.", "alt": ["The LORD is nigh unto them that are of a broken heart; and saveth such as be of a contrite spirit.", "Yahweh is near to those who have a broken heart, and saves those who have a crushed spirit.", "The LORD is close to the brokenhearted and saves those who are crushed in spirit."]},
+	{"ref": "Matthew 14:30", "type": "heal", "heal": 50, "damage": 0, "discovered": false, "en": "Save me, Lord!", "pl": "Panie, ratuj mnie!", "es": "¡Señor, sálvame!", "alt": ["Lord, save me.", "Lord, save me!"]},
+	{"ref": "Psalm 75:10", "type": "fear", "damage": 0, "discovered": false, "en": "God says, \"I will cut off the strength of the wicked.\"", "pl": "Złamię całą moc bezbożnych, a moc sprawiedliwego będzie wywyższona.", "es": "Quebrantaré todo el poderío de los pecadores, y el poder del justo será exaltado.", "alt": ["I will cut off the strength of the wicked.", "All the horns of the wicked also will I cut off; but the horns of the righteous shall be exalted.", "All the horns of the wicked also will I cut off."]}
 ]
 
 var light_verses = [
@@ -170,6 +192,7 @@ func _ready():
 	# If we just loaded a save, move to the saved position
 	SaveManager.apply_pending_player_state(self)
 	
+	_load_greed_verses()
 	# Tell VerseManager about the verses the player starts with
 	for v in all_verses:
 		if v.discovered:
@@ -189,6 +212,7 @@ func _ready():
 	_build_guard_effect()
 	_build_status_labels()
 	_build_bubble_and_speaker()
+	_build_ram_bar()
 	# Redraw text that's built in code when the language changes
 	SaveManager.language_changed.connect(_on_language_changed)
 	# Voice: Shift = mic on (speech_recognizer.gd), the result is recited like typed text
@@ -233,10 +257,14 @@ func _update_filter_buttons():
 			button.text = tr(group)
 			button.modulate = Color.WHITE
 
-# True if a verse type passes the current filter.
-func _passes_filter(type: String) -> bool:
+# True if a verse passes the current filter. The Greed button shows only the
+# verses from the Greed table (its types: "greed" = attacks, "heal").
+func _passes_filter(v) -> bool:
+	var type = v.type
 	if filter_group == "all":
 		return true
+	if filter_group == "Greed" and v.get("set", "") != "greed":
+		return false
 	if filter_type == "*":
 		return type in FILTER_GROUPS[filter_group]
 	return type == filter_type
@@ -247,11 +275,11 @@ static func type_name(t: String) -> String:
 	return "Universal" if t == "all" else t.capitalize()
 
 func _input(event):
-	if event is InputEventKey and event.pressed and event.keycode == KEY_ENTER and not verse_input.has_focus():
+	if event.is_action_pressed("recite") and not event.is_echo() and not verse_input.has_focus():
 		verse_input.grab_focus()
 		get_viewport().set_input_as_handled()
 	
-	if event.is_action_pressed("ui_up") and not verse_input.has_focus():
+	if event.is_action_pressed("interact") and not verse_input.has_focus():
 		var prompt = get_parent().get_node_or_null("NPC/PromptLabel")
 		if prompt and prompt.text == "Press Up to talk":
 			prompt.text = "Life's so stressful..."   # both translated automatically
@@ -352,7 +380,11 @@ func apply_verse_effects(lower: String, damage_scale := 1.0, can_counter := fals
 #   damage_scale = attack damage multiplier (Faith for you, 0.25 for party members)
 #   heal_scale   = healing multiplier (1 for you and scrolls, 0.25 for party members)
 #   use_choice   = false for party members: they always use the default targets
-func cast_verse(verse, damage_scale := 1.0, can_counter := false, use_choice := true, heal_scale := 1.0):
+#   caster       = who recited it (null = you). A negative heal hurts the caster.
+func cast_verse(verse, damage_scale := 1.0, can_counter := false, use_choice := true, heal_scale := 1.0, caster = null):
+	if verse.get("set", "") == "greed":
+		_cast_greed_verse(verse, damage_scale, can_counter, use_choice, heal_scale, caster)
+		return
 	match verse.type:
 		"sloth", "lust", "all":
 			# Attack: split between the targets (all enemies by default)
@@ -380,6 +412,70 @@ func cast_verse(verse, damage_scale := 1.0, can_counter := false, use_choice := 
 					e.apply_fear()
 		"zeal":
 			_zeal_boost()
+
+# A verse from the Greed table: it can attack (Greed % against Greed-type
+# enemies, "All Sin" % against any enemy, the higher one counts) AND heal
+# (Heal %, split like the other heal verses). A negative heal costs the
+# caster that much of their max HP.
+func _cast_greed_verse(verse, damage_scale, can_counter, use_choice, heal_scale, caster):
+	if verse.get("greed_damage", 0) > 0 or verse.get("all_damage", 0) > 0:
+		var targets = Targeting.attack_targets(use_choice)
+		for enemy in targets:
+			if is_instance_valid(enemy) and enemy.has_method("take_damage"):
+				_attack(verse, enemy, damage_scale / targets.size(), can_counter)
+	var heal_pct = float(verse.get("heal", 0))
+	if heal_pct > 0:
+		heal_targets(Targeting.heal_targets(use_choice), heal_pct * heal_scale)
+	elif heal_pct < 0:
+		var who = caster if caster != null and is_instance_valid(caster) else self
+		var cost = who.max_hp * (-heal_pct) / 100.0
+		if who == self:
+			set_hp(hp - cost)
+			PopupText.spawn(self, "-" + str(snapped(cost, 0.1)), Color(1, 0.45, 0.4))
+		elif who.has_method("take_damage"):
+			who.take_damage(cost)
+		if TurnManager.in_battle:
+			TurnManager.show_message(tr("%s loses %s HP") % [tr(who.display_name), str(snapped(cost, 0.1))])
+
+# How much a verse does to this enemy (before Faith / splitting / defense).
+# -1 = no effect.
+func verse_damage_against(verse, enemy) -> float:
+	if verse.get("set", "") == "greed":
+		var dmg = float(verse.get("all_damage", 0))
+		if enemy.has_method("is_greed") and enemy.is_greed():
+			dmg = max(dmg, float(verse.get("greed_damage", 0)))
+		return dmg if dmg > 0 else -1.0
+	if enemy.has_method("can_be_hurt_by") and not enemy.can_be_hurt_by(verse.type):
+		return -1.0
+	return float(verse.damage)
+
+# Loads the Greed verses (data/greed_verses.json) into all_verses.
+func _load_greed_verses():
+	for v in all_verses:
+		if v.get("set", "") == "greed":
+			return   # already loaded
+	var file = FileAccess.open(GREED_VERSES_PATH, FileAccess.READ)
+	if file == null:
+		push_warning("No Greed verses: " + GREED_VERSES_PATH)
+		return
+	var data = JSON.parse_string(file.get_as_text())
+	if not (data is Dictionary):
+		push_warning("Couldn't read " + GREED_VERSES_PATH)
+		return
+	for row in data.get("verses", []):
+		var greed = row.get("greed_damage", 0)
+		var all_sin = row.get("all_damage", 0)
+		var v = {
+			"ref": row.ref, "set": "greed",
+			"type": "greed" if greed > 0 or all_sin > 0 else "heal",
+			"damage": max(greed, all_sin), "greed_damage": greed, "all_damage": all_sin,
+			"heal": row.get("heal", 0), "jesus": row.get("jesus", false),
+			"translation": row.get("translation", ""),
+			"discovered": false,
+			"en": row.get("en", ""), "es": row.get("es", ""), "pl": row.get("pl", ""),
+		}
+		if get_verse(v.ref) == null:
+			all_verses.append(v)
 
 # Heals "percent" % of max HP, split between the targets: with two targets
 # each gets half of (percent % of THEIR max HP).
@@ -444,11 +540,105 @@ func _physics_process(delta):
 		velocity.y += gravity * delta
 	# During a battle you stay where you are (no walking or jumping)
 	var in_battle = TurnManager.in_battle
-	if Input.is_action_just_pressed("ui_select") and is_on_floor() and not verse_input.has_focus() and not in_battle:
+	var typing = verse_input.has_focus()
+	if Input.is_action_just_pressed("jump") and is_on_floor() and not typing and not in_battle:
 		velocity.y = jump_velocity
-	var direction = 0.0 if in_battle else Input.get_axis("ui_left", "ui_right")
-	velocity.x = direction * speed if direction else move_toward(velocity.x, 0, speed)
+		if ram_state == 1:
+			_end_ram(false)   # jumping cancels a charge (but not a dash)
+	var direction = 0.0 if in_battle or typing else Input.get_axis("move_left", "move_right")
+	if direction != 0.0 and ram_state == 0:
+		facing = sign(direction)
+	_process_ram(delta, in_battle or typing)
+	if ram_state == 1:
+		velocity.x = -facing * speed * ram_backup_speed          # backing up to take a run-up
+	elif ram_state == 2:
+		velocity.x = facing * speed * ram_speed_multiplier       # the dash
+	else:
+		velocity.x = direction * speed if direction else move_toward(velocity.x, 0, speed)
 	move_and_slide()
+	if ram_state == 2:
+		_check_ram_hits()
+
+# ---------------- Ram ----------------
+
+func _process_ram(delta, blocked: bool):
+	if blocked:
+		if ram_state != 0:
+			_end_ram(false)
+		return
+	match ram_state:
+		0:
+			if ram_needs_release:
+				ram_needs_release = Input.is_action_pressed("ram")
+			elif Input.is_action_pressed("ram") and is_on_floor():
+				ram_state = 1
+				ram_timer = 0.0
+		1:
+			if not Input.is_action_pressed("ram"):
+				_end_ram(false)   # let go too early
+				return
+			ram_timer += delta
+			if ram_timer >= ram_charge_time:
+				ram_state = 2
+				ram_timer = 0.0
+				modulate = Color(1.0, 0.85, 0.45)   # golden while dashing
+		2:
+			ram_timer += delta
+			if ram_timer >= ram_dash_time:
+				_end_ram(false)
+	_update_ram_bar()
+
+# After moving: did the dash run into something that can be rammed?
+func _check_ram_hits():
+	for i in get_slide_collision_count():
+		var collider = get_slide_collision(i).get_collider()
+		if collider and collider.has_method("on_rammed"):
+			collider.on_rammed(self)
+			rammed.emit(collider)
+			_end_ram(true)
+			return
+	if is_on_wall():
+		_end_ram(true)   # hit a plain wall
+
+# A barrier noticed the dash right next to it (greed_barrier.gd)
+func on_ram_target_reached(target):
+	target.on_rammed(self)
+	rammed.emit(target)
+	_end_ram(true)
+
+func _end_ram(hit: bool):
+	if ram_state == 2:
+		ram_needs_release = true
+		if hit:
+			velocity.x = -facing * 150.0   # small bounce back
+	ram_state = 0
+	ram_timer = 0.0
+	modulate = Color.WHITE
+	_update_ram_bar()
+
+func is_ramming() -> bool:
+	return ram_state == 2
+
+func _build_ram_bar():
+	ram_bar = ProgressBar.new()
+	ram_bar.name = "RamBar"
+	ram_bar.show_percentage = false
+	ram_bar.max_value = 1.0
+	ram_bar.size = Vector2(70, 8)
+	var body = get_node_or_null("CollisionShape2D")
+	ram_bar.position = (body.position if body else Vector2.ZERO) + Vector2(-35, -70)
+	ram_bar.z_index = 20
+	var fill = StyleBoxFlat.new()
+	fill.bg_color = Color(1.0, 0.8, 0.3)
+	ram_bar.add_theme_stylebox_override("fill", fill)
+	ram_bar.visible = false
+	add_child(ram_bar)
+
+func _update_ram_bar():
+	if ram_bar == null:
+		return
+	ram_bar.visible = ram_state == 1
+	ram_bar.value = clamp(ram_timer / ram_charge_time, 0.0, 1.0) if ram_state == 1 else 0.0
 
 func _process(delta):
 	_process_speaker_bob(delta)
@@ -495,7 +685,7 @@ func _update_verse_text():
 	var display = tr("Ready this cycle: %d of %d") % [VerseManager.remaining_count(), VerseManager.discovered.size()] + "\n\n"
 	var shown = 0
 	for v in all_verses:
-		if not _passes_filter(v.type):
+		if not _passes_filter(v):
 			continue   # hidden by the filter buttons
 		shown += 1
 		var is_found = VerseManager.is_discovered(v.ref)
@@ -507,7 +697,15 @@ func _update_verse_text():
 			var status = tr("(used)") if used else tr("(ready)")
 			var power = verse_power_text(v)
 			var kind = tr("Universal (All)") if v.type == "all" else tr(v.type.capitalize())
-			display += "[color=%s]%s  %s\n%s  |  %s\n%s[/color]\n\n" % [color, VerseManager.ref_text(v.ref), status, power, kind, body]
+			if v.get("set", "") == "greed":
+				kind = tr("Greed")
+			# Words of Jesus: a small red cross after the reference, and the text in red when ready (like red-letter Bibles)
+			var jesus_mark = ""
+			if v.get("jesus", false):
+				jesus_mark = "  [color=#ff6b6b]† %s[/color]" % tr("Words of Jesus")
+				if not used:
+					body = "[color=#ff9a9a]%s[/color]" % body
+			display += "[color=%s]%s  %s%s\n%s  |  %s\n%s[/color]\n\n" % [color, VerseManager.ref_text(v.ref), status, jesus_mark, power, kind, body]
 		else:
 			display += "???\n??%  |  ???\n\n"
 	if shown == 0:
@@ -517,6 +715,17 @@ func _update_verse_text():
 # The short "what it does" line shown for each verse in the verse box
 # (and in the inventory).
 func verse_power_text(v) -> String:
+	if v.get("set", "") == "greed":
+		var parts = []
+		if v.get("greed_damage", 0) > 0:
+			parts.append(tr("%d%% vs Greed") % v.greed_damage)
+		if v.get("all_damage", 0) > 0:
+			parts.append(tr("%d%% vs any sin") % v.all_damage)
+		if v.get("heal", 0) > 0:
+			parts.append(tr("Heals %d%%") % v.heal)
+		elif v.get("heal", 0) < 0:
+			parts.append(tr("Costs you %d%% HP") % (-v.heal))
+		return ", ".join(parts)
 	match v.type:
 		"heal":
 			return tr("Heals %d%% of max HP (split between you and your party)") % v.heal
@@ -605,7 +814,10 @@ func _find_verse(lower: String):
 # The text must be over 40% similar, or the reference over 60% similar.
 # The reference can be English or Spanish ("Psalm 17:8" or "Salmos 17:8").
 func _verse_score(lower: String, v) -> float:
-	var text_score = max(lower.similarity(_normalize(v.en)), lower.similarity(_normalize(v.get("es", ""))))
+	var text_score = lower.similarity(_normalize(v.en))
+	for lang in ["es", "pl"]:
+		if v.get(lang, "") != "":
+			text_score = max(text_score, lower.similarity(_normalize(v[lang])))
 	for alt in v.get("alt", []):
 		text_score = max(text_score, lower.similarity(_normalize(alt)))
 	var refs = [v.ref]
@@ -615,13 +827,18 @@ func _verse_score(lower: String, v) -> float:
 	for r in refs:
 		ref_score = max(ref_score, lower.similarity(_normalize(r)))
 		ref_score = max(ref_score, lower.similarity(_normalize(_spanish_ref(r))))
+		ref_score = max(ref_score, lower.similarity(_normalize(_localized_ref(r, "pl"))))
 	if text_score > 0.4 or ref_score > 0.6:
 		return max(text_score, ref_score)
 	return 0.0
 
 # "Psalm 17:8" -> "Salmos 17:8" (from the Spanish column of strings.csv)
 func _spanish_ref(ref: String) -> String:
-	var es = TranslationServer.get_translation_object("es")
+	return _localized_ref(ref, "es")
+
+# "Matthew 6:1" -> "Mateusza 6:1" ("pl") / "Mateo 6:1" ("es")
+func _localized_ref(ref: String, lang: String) -> String:
+	var es = TranslationServer.get_translation_object(lang)
 	var space = ref.rfind(" ")
 	if es == null or space == -1:
 		return ref
@@ -649,7 +866,8 @@ func _is_enemy_verse(lower: String) -> bool:
 #   - "17:8" -> "17 8" (so it matches the spoken version)
 func _normalize(text: String) -> String:
 	var t = text.to_lower()
-	for pair in [["á", "a"], ["é", "e"], ["í", "i"], ["ó", "o"], ["ú", "u"], ["ü", "u"], ["ñ", "n"]]:
+	for pair in [["á", "a"], ["é", "e"], ["í", "i"], ["ó", "o"], ["ú", "u"], ["ü", "u"], ["ñ", "n"],
+			["ą", "a"], ["ć", "c"], ["ę", "e"], ["ł", "l"], ["ń", "n"], ["ś", "s"], ["ź", "z"], ["ż", "z"]]:
 		t = t.replace(pair[0], pair[1])
 	var clean = ""
 	for c in t:
@@ -665,7 +883,7 @@ func _normalize(text: String) -> String:
 
 # What the LORD's name may look like after typing or speech recognition
 const YAHWEH_SOUNDALIKES = ["the lord", "lord", "yah way", "yah weh", "ya way", "yahway", "yaweh", "yahwe", "yawe",
-	"jehovah", "jehova", "el senor", "senor", "yave", "yahve", "jave"]
+	"jehovah", "jehova", "el senor", "senor", "yave", "yahve", "jave", "jahwe", "pan", "pana", "panu", "panie"]
 
 const NUMBER_WORDS = {
 	"zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9,
@@ -739,7 +957,7 @@ func _show_verse_message(msg: String):
 	if my_id == message_id and is_instance_valid(verse_input):
 		verse_input.placeholder_text = DEFAULT_PLACEHOLDER
 
-# Changes the whole game's language ("en" or "es"). Same as the menu buttons.
+# Changes the whole game's language ("en", "es" or "pl"). Same as the menu buttons.
 func set_language(new_language: String):
 	SaveManager.set_language(new_language)
 
@@ -781,15 +999,18 @@ func pay_skip_cost() -> float:
 #   of their type or Universal ("all") verses. Others do nothing.
 # - A counter verse on your next turn after a "!" verse does x counter_multiplier.
 func _attack(verse, enemy, damage_scale: float, can_counter: bool):
-	if enemy.has_method("can_be_hurt_by") and not enemy.can_be_hurt_by(verse.type):
+	var base_damage = verse_damage_against(verse, enemy)
+	if base_damage < 0:
 		var msg = tr("No effect - it's %s type now!") % tr(type_name(enemy.enemy_type))
+		if verse.get("set", "") == "greed" or enemy.enemy_type == "":
+			msg = tr("No effect - this verse only hurts Greed-type enemies")
 		enemy.show_popup(msg, Color(0.75, 0.75, 0.75))
 		_show_verse_message(msg)
 		if TurnManager.in_battle:
 			TurnManager.show_message(msg)
 		print(verse.ref, ": ", msg)
 		return 0.0
-	var damage = verse.damage * damage_scale
+	var damage = base_damage * damage_scale
 	if can_counter and enemy.has_method("is_countered_by") and enemy.is_countered_by(verse.ref):
 		damage *= counter_multiplier
 		var msg = tr("Countered! x%s") % str(snapped(counter_multiplier, 0.1)).trim_suffix(".0")
@@ -972,9 +1193,11 @@ func _build_verse_panel():
 
 # ---------------- Language ----------------
 
-# A verse's text in the current language (English if there's no Spanish)
+# A verse's text in the current language (English if that language has none)
 func verse_body(v) -> String:
-	return v.get("es", v.en) if language == "es" else v.en
+	if language != "en" and str(v.get(language, "")) != "":
+		return v[language]
+	return v.en
 
 # Text that's built in code doesn't switch by itself: redraw it
 func _on_language_changed(_new_language):
