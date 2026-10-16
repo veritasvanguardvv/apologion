@@ -29,10 +29,10 @@ fill_from = Vector2(0.5117647, 0.5088235)
 fill_to = Vector2(0.85882354, 0.84117645)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8f2bu"]
-size = Vector2(432, 536.5)
+size = Vector2(629, 536.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0hol4"]
-size = Vector2(1118.5, 625.5)
+size = Vector2(2175, 625.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plqir"]
 size = Vector2(209, 76)
@@ -121,7 +121,7 @@ position = Vector2(487, 427)
 position = Vector2(0, 570)
 
 [node name="Umbrid" parent="." unique_id=1129945107 instance=ExtResource("14_umbrid")]
-position = Vector2(950, 464.5)
+position = Vector2(2173, 465)
 
 [node name="(Darkness)CanvasModulate" type="CanvasModulate" parent="." unique_id=194229356]
 visible = false
@@ -131,14 +131,14 @@ color = Color(0, 0, 0, 1)
 position = Vector2(190, -77)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Floor (StaticBody2d)" unique_id=845245506]
-position = Vector2(34, 923.75)
+position = Vector2(-64.5, 923.75)
 shape = SubResource("RectangleShape2D_8f2bu")
 debug_color = Color(7.2196127e-07, 0.453731, 0.48487854, 1)
 
 [node name="Sprite2D" type="Sprite2D" parent="Floor (StaticBody2d)" unique_id=278943616]
 texture_repeat = 2
-position = Vector2(29, 970)
-scale = Vector2(0.4318059, 0.6106473)
+position = Vector2(-70.637024, 970)
+scale = Vector2(0.6264095, 0.6106473)
 skew = 0.017453292
 texture = ExtResource("7_5s80s")
 region_rect = Rect2(192.387, 704, 1.14, 2.2)
@@ -147,7 +147,7 @@ region_rect = Rect2(192.387, 704, 1.14, 2.2)
 position = Vector2(684, 2)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Floor2 (StaticBody2d)2" unique_id=1493365554]
-position = Vector2(545.25, 877.25)
+position = Vector2(1073.5, 877.25)
 shape = SubResource("RectangleShape2D_0hol4")
 debug_color = Color(7.2196127e-07, 0.453731, 0.48487854, 1)
 
