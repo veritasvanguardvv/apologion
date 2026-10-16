@@ -16,6 +16,10 @@ extends Node
 #   4. The battle ends when all the enemies in it are defeated.
 #      If the player's HP reaches 0 the level restarts at full health.
 #   During a battle the player and party can't walk or jump (typing still works).
+#   5. RUN: on your turn press the Run button (or R, when you're not typing) to
+#      leave the battle. Enemies keep their HP, type and status. The battle
+#      won't start again until you walk out of the enemy's range - or, if you
+#      stay close, after run_grace_time seconds.
 #
 # Every combatant needs:  battle_speed (number)  and  display_name (text).
 # Party members and enemies also need a take_turn() function.
@@ -25,6 +29,7 @@ var encounter_range = 450.0   # how close (pixels) an enemy must be to start a b
 var turn_delay = 1.0          # pause before a party member / enemy acts (seconds)
 var after_turn_pause = 0.6    # pause after each turn so you can read what happened
 var intro_time = 1.0          # how long "An enemy appears!" shows
+var run_grace_time = 5.0      # after running, an enemy you stay close to attacks again after this many seconds
 
 signal battle_started
 signal battle_ended
@@ -41,6 +46,8 @@ var battle_enemies = []       # enemies in this battle
 var battle_id = 0             # changes every battle; stops old battles if the scene changes
 
 var turn_label: Label
+var run_button: Button
+var escaped_from = {}         # enemy -> seconds left before it can start a battle again (after Run)
 
 
 func _ready():
@@ -62,6 +69,19 @@ func _ready():
 	turn_label.visible = false
 	layer.add_child(turn_label)
 	
+	# Run button, under the turn label. Only shown during battles.
+	run_button = Button.new()
+	run_button.text = "Run (R)"
+	run_button.anchor_left = 0.5
+	run_button.anchor_right = 0.5
+	run_button.offset_left = -50
+	run_button.offset_right = 50
+	run_button.offset_top = 60
+	run_button.focus_mode = Control.FOCUS_NONE   # so Enter/Space don't press it by accident
+	run_button.visible = false
+	run_button.pressed.connect(run_away)
+	layer.add_child(run_button)
+	
 	# Battle start sound (plays once, never loops)
 	battle_sound = AudioStreamPlayer.new()
 	battle_sound.stream = load(BATTLE_SOUND)
@@ -79,8 +99,35 @@ func is_players_turn() -> bool:
 	return in_battle and current != null and current.is_in_group("player")
 
 
-func _physics_process(_delta):
+# R (the "run_away" action in Project Settings > Input Map). When you're typing
+# in the verse box the LineEdit takes the key, so typing "r" never runs away.
+func _unhandled_input(event):
+	if event.is_action_pressed("run_away") and not event.is_echo():
+		var focus = get_viewport().gui_get_focus_owner()
+		if not (focus is LineEdit or focus is TextEdit):
+			run_away()
+
+
+# Leave the battle (only on the player's turn). Enemies stay as they are.
+func run_away():
+	if not is_players_turn():
+		return
+	for enemy in battle_enemies:
+		if _is_alive(enemy):
+			escaped_from[enemy] = run_grace_time
+	_end_battle()
+	show_message("Got away safely!")
+	print("Ran away")
+	await get_tree().create_timer(1.5).timeout
+	if not in_battle and turn_label.text == "Got away safely!":
+		turn_label.visible = false
+
+
+func _physics_process(delta):
 	var player = get_tree().get_first_node_in_group("player")
+	# Run button: visible in battles, usable on your turn
+	run_button.visible = in_battle
+	run_button.disabled = not is_players_turn()
 	if in_battle:
 		# The level changed or the player disappeared: forget the battle
 		if player == null or (current != null and not is_instance_valid(current)):
@@ -91,8 +138,21 @@ func _physics_process(_delta):
 	# Look for enemies close enough to start a battle
 	var enemies = []
 	for enemy in get_tree().get_nodes_in_group("enemies"):
-		if _is_alive(enemy) and player.get_body_center().distance_to(enemy.get_center()) <= encounter_range:
+		if not _is_alive(enemy):
+			continue
+		var in_range = player.get_body_center().distance_to(enemy.get_center()) <= encounter_range
+		# Recently escaped from? It waits until you leave its range or the grace time ends.
+		if escaped_from.has(enemy):
+			escaped_from[enemy] -= delta
+			if not in_range or escaped_from[enemy] <= 0.0:
+				escaped_from.erase(enemy)
+			continue
+		if in_range:
 			enemies.append(enemy)
+	# Forget enemies that were freed (level changed or defeated)
+	for enemy in escaped_from.keys():
+		if not is_instance_valid(enemy):
+			escaped_from.erase(enemy)
 	if not enemies.is_empty():
 		_run_battle(player, enemies)
 
@@ -153,6 +213,7 @@ func _run_battle(player, enemies):
 			if fighter == player:
 				show_message("Your turn - type a verse and press Enter")
 				await player_turn_finished
+				current = null   # your turn is over (no second verse or Run during the pause)
 			else:
 				show_message("%s's turn" % fighter.display_name)
 				await get_tree().create_timer(turn_delay).timeout

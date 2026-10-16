@@ -42,14 +42,22 @@ color = Color(0.18359044, 0.18359044, 0.18359044, 1)
 
 [node name="Parallax2D" type="Parallax2D" parent="Rainbow" unique_id=1819504106]
 scroll_scale = Vector2(0.5, 0.5)
-repeat_size = Vector2(1838.9, 0)
-repeat_times = 6
+repeat_size = Vector2(3677.8, 0)
+repeat_times = 4
 
 [node name="Sprite2D" type="Sprite2D" parent="Rainbow/Parallax2D" unique_id=1978254056]
 light_mask = 0
 position = Vector2(899.99994, 376.5)
 scale = Vector2(1.3412815, 1.18625)
 texture = ExtResource("1_lbodg")
+
+
+[node name="SpriteMirrored" type="Sprite2D" parent="Rainbow/Parallax2D" unique_id=545059325]
+light_mask = 0
+position = Vector2(2738.90, 376.5)
+scale = Vector2(1.3412815, 1.18625)
+texture = ExtResource("1_lbodg")
+flip_h = true
 
 [node name="ColorRect" type="ColorRect" parent="Rainbow/Parallax2D" unique_id=1215621137]
 offset_left = 105.0

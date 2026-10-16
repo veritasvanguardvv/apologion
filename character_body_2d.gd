@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+const EnemyVerses = preload("res://enemy_verses.gd")   # enemies' own verses (the player can't use them)
+
 var hp = 100
 var speed = 200
 var jump_velocity = -400
@@ -7,17 +9,22 @@ var gravity = 980
 var language = "en"
 # Verse box filter (see _build_verse_panel). Three groups of verse types:
 const FILTER_GROUPS = {
-	"Attacks": ["sloth", "lust"],               # left button (no Sloth verses exist yet)
+	"Attacks": ["sloth", "lust", "all"],        # left button ("all" = Universal: hurts any enemy type)
 	"Status": ["zeal", "guard", "faith", "fear"], # middle button
 	"Special": ["light"],                       # right button
 }
-var filter_group = "all"   # "all", "Attacks", "Status" or "Special"
-var filter_type = "all"    # "all" (whole group) or one type, e.g. "lust"
+const ATTACK_TYPES = ["sloth", "lust", "all"]   # verse types that do damage
+var filter_group = "all"   # "all" (Show all), "Attacks", "Status" or "Special"
+var filter_type = "*"      # "*" = the whole group, or one type, e.g. "lust"
 
 # Turn-based battles (see turn_manager.gd). Higher battle_speed = acts earlier
 # in each round. ("speed" above is walking speed - a different thing.)
 @export var battle_speed = 10
 var display_name = "You"
+# Countering: if an enemy recites a verse that can be countered (it shows a
+# "!" bubble), reciting the counter verse on your very next turn multiplies
+# the damage. Counters are listed in enemy_verses.gd.
+@export var counter_multiplier = 3.0
 
 # Guard (Psalm 17:8): while guarded, enemy damage is reduced.
 # "+50% defense" = take 50% less damage (there was no defense stat before).
@@ -68,8 +75,7 @@ var verse_text: RichTextLabel
 # "discovered": true here means "the player starts the game knowing this verse".
 # The live discovered / used-this-cycle lists are kept in VerseManager
 # (verse_manager.gd) so they survive scene changes and saving.
-# The last three entries were added so every verse that has an effect
-# (lust_verses / light_verses below) also shows up in the verse box.
+# Attack verses (lust / sloth / all) use the "damage" number here.
 var all_verses = [
 	{"ref": "Matthew 5:28", "type": "lust", "damage": 100, "discovered": true, "en": "everyone who gazes at a woman to lust after her has committed adultery in his heart.", "es": "todo el que mira a una mujer para codiciarla ya cometió adulterio en su corazón."},
 	{"ref": "Psalm 18:28", "type": "light", "damage": 50, "discovered": false, "en": "the lord, my god, lights up my darkness."},
@@ -85,14 +91,15 @@ var all_verses = [
 	{"ref": "Psalm 27:1b", "type": "faith", "damage": 0, "discovered": false, "en": "Whom shall I fear? Yahweh is the strength of my life.", "es": "Jehová es la fortaleza de mi vida; ¿de quién he de atemorizarme?", "alt": ["The LORD is the strength of my life; of whom shall I be afraid?", "Yahweh is the strength of my life. Of whom shall I be afraid?"]},
 	{"ref": "Psalm 29:11", "type": "faith", "damage": 0, "discovered": false, "en": "Yahweh will give strength to His people.", "es": "Jehová dará poder a su pueblo; Jehová bendecirá a su pueblo con paz.", "alt": ["The LORD will give strength unto his people; the LORD will bless his people with peace.", "Yahweh will give strength to his people. Yahweh will bless his people with peace."]},
 	{"ref": "Isaiah 40:29", "type": "faith", "damage": 0, "discovered": false, "en": "He gives power to the weak.", "es": "Él da esfuerzo al cansado, y multiplica las fuerzas al que no tiene ningunas.", "alt": ["He giveth power to the faint; and to them that have no might he increaseth strength.", "He gives power to the weak. He increases the strength of him who has no might."]},
+	# Sloth attack verses (Spanish = RVR1960)
+	{"ref": "Genesis 2:15", "type": "sloth", "damage": 50, "discovered": false, "en": "God put man in the garden of Eden to work.", "es": "Tomó, pues, Jehová Dios al hombre, y lo puso en el huerto de Edén, para que lo labrara y lo guardase.", "alt": ["The LORD God took the man, and put him into the garden of Eden to dress it and to keep it.", "Yahweh God took the man, and put him into the garden of Eden to cultivate and keep it.", "God put the man in the garden of Eden to work it."]},
+	{"ref": "Psalm 126:5", "type": "sloth", "damage": 50, "discovered": false, "en": "Those who plant in tears will harvest with shouts of joy.", "es": "Los que sembraron con lágrimas, con regocijo segarán.", "alt": ["They that sow in tears shall reap in joy.", "Those who sow in tears will reap in joy."]},
+	{"ref": "Proverbs 18:9", "type": "sloth", "damage": 100, "discovered": false, "en": "Whoever is slack in his work is a brother to a destroyer.", "es": "También el que es negligente en su trabajo es hermano del hombre disipador.", "alt": ["He also that is slothful in his work is brother to him that is a great waster.", "One who is slack in his work is brother to him who is a master of destruction."]},
+	# Universal attack verse (type "all" = hurts any enemy type). Also the
+	# counter to the enemy verse Genesis 3 (see enemy_verses.gd).
+	{"ref": "Galatians 3:13", "type": "all", "damage": 50, "discovered": false, "en": "Christ redeemed us from the curse of the law, having become a curse for us by hanging on a tree.", "es": "Cristo nos redimió de la maldición de la ley, hecho por nosotros maldición (porque está escrito: Maldito todo el que es colgado en un madero).", "alt": ["Christ hath redeemed us from the curse of the law, being made a curse for us: for it is written, Cursed is every one that hangeth on a tree.", "Christ redeemed us from the curse of the law, having become a curse for us. For it is written, Cursed is everyone who hangs on a tree.", "Christ redeemed us from the curse of the law, having become a curse for us."]},
 	# Fear verse (enemy attack down)
 	{"ref": "Psalm 75:10", "type": "fear", "damage": 0, "discovered": false, "en": "God says, \"I will cut off the strength of the wicked.\"", "es": "Quebrantaré todo el poderío de los pecadores, y el poder del justo será exaltado.", "alt": ["I will cut off the strength of the wicked.", "All the horns of the wicked also will I cut off; but the horns of the righteous shall be exalted.", "All the horns of the wicked also will I cut off."]}
-]
-
-var lust_verses = [
-	{"ref": "matthew 5:28", "en": "Everyone who gazes at a woman to lust after her has committed adultery in his heart.", "es": "todo el que mira a una mujer para codiciarla ya cometió adulterio en su corazón.", "damage": 100},
-	{"ref": "1 corinthians 6:18a", "en": "Flee sexual immorality!", "es": "¡huyan de la inmoralidad sexual!", "damage": 50},
-	{"ref": "proverbs 6:32", "en": "He who commits adultery is a fool who destroys himself.", "es": "el que comete adulterio es un necio que se destruye a sí mismo.", "damage": 50}
 ]
 
 var light_verses = [
@@ -149,18 +156,18 @@ func _on_group_pressed(group: String):
 	var types = FILTER_GROUPS[group]
 	if filter_group != group:
 		filter_group = group
-		filter_type = "all"
-	elif filter_type == "all":
+		filter_type = "*"
+	elif filter_type == "*":
 		filter_type = types[0]
 	else:
 		var i = types.find(filter_type)
-		filter_type = "all" if i + 1 >= types.size() else types[i + 1]
+		filter_type = "*" if i + 1 >= types.size() else types[i + 1]
 	_update_filter_buttons()
 	_update_verse_text()
 
 func _on_show_all_pressed():
 	filter_group = "all"
-	filter_type = "all"
+	filter_type = "*"
 	_update_filter_buttons()
 	_update_verse_text()
 
@@ -169,7 +176,8 @@ func _update_filter_buttons():
 	for group in FILTER_GROUPS:
 		var button = verse_panel.get_node("FilterRow/" + group + "Button")
 		if group == filter_group:
-			button.text = group + ": " + ("All" if filter_type == "all" else filter_type.capitalize())
+			# e.g. "Attacks (all)" for the whole group, "Attacks: Universal" for one type
+			button.text = (group + " (all)") if filter_type == "*" else group + ": " + type_name(filter_type)
 			button.modulate = Color(1, 0.9, 0.5)
 		else:
 			button.text = group
@@ -179,9 +187,14 @@ func _update_filter_buttons():
 func _passes_filter(type: String) -> bool:
 	if filter_group == "all":
 		return true
-	if filter_type == "all":
+	if filter_type == "*":
 		return type in FILTER_GROUPS[filter_group]
 	return type == filter_type
+
+# Nice name for a verse type. "all" is shown as "Universal" so it isn't
+# confused with "show all".
+static func type_name(t: String) -> String:
+	return "Universal" if t == "all" else t.capitalize()
 
 func _input(event):
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ENTER and not verse_input.has_focus():
@@ -218,6 +231,11 @@ func _on_verse_submitted(text):
 	# Figure out which verse was typed. A new verse gets discovered (and can be
 	# used right away). A verse already used this cycle is blocked until all
 	# the other discovered verses have been used too.
+	# Enemy verses (enemy_verses.gd) can't be discovered or used by the player
+	if _is_enemy_verse(lower):
+		_show_verse_message("That's an enemy's verse - you can't use it")
+		_finish_typing()
+		return   # in a battle this does NOT use up your turn
 	var typed_verse = _find_verse(lower)
 	if typed_verse:
 		if VerseManager.discover(typed_verse.ref):
@@ -240,7 +258,8 @@ func _on_verse_submitted(text):
 	
 	# The player's verses hit the nearest enemy (no range limit, like before).
 	# Faith boosts the damage (x1.5 at +50%, x2 at +100%).
-	apply_verse_effects(lower, get_nearest_enemy(), 1.0 + faith_bonus)
+	# Only the player can counter (true at the end).
+	apply_verse_effects(lower, get_nearest_enemy(), 1.0 + faith_bonus, true)
 	
 	# A real verse was recited: if it was our battle turn, the turn is over
 	if TurnManager.is_players_turn():
@@ -256,22 +275,19 @@ func _finish_typing():
 # members like Pastor Ramuel (party_member.gd), so the effects live in one place.
 #   lower        = the verse text in lowercase
 #   enemy        = the enemy lust verses should hit (can be null)
-#   damage_scale = multiplies lust damage (party members can hit softer/harder)
+#   damage_scale = multiplies attack damage (party members can hit softer/harder)
+#   can_counter  = true only for the player: Pastor Ramuel's recitals never
+#                  count as a counter (countering is the player's skill)
 # Light and zeal verses always power up the player.
-func apply_verse_effects(lower: String, enemy, damage_scale := 1.0):
+func apply_verse_effects(lower: String, enemy, damage_scale := 1.0, can_counter := false):
 	# Only run the effect type of the verse that matches best. (Without this,
 	# Matthew 5:28 was similar enough to Romans 12:11 to also trigger zeal.)
 	var best = _find_verse(lower)
 	var only_type = best.type if best else ""   # "" = unknown, try them all like before
 	
-	# Lust damage
-	for verse in (lust_verses if only_type in ["", "lust"] else []):
-		var target = verse.en if language == "en" else verse.es
-		if lower.similarity(target) > 0.5 or lower.similarity(verse.ref) > 0.6:
-			if enemy and is_instance_valid(enemy) and enemy.has_method("take_damage"):
-				enemy.take_damage(verse.damage * damage_scale)
-				print("Hit for ", verse.damage * damage_scale, "%")
-			break
+	# Attack verses (Lust, Sloth, Universal) damage the enemy
+	if best and best.type in ATTACK_TYPES and enemy and is_instance_valid(enemy) and enemy.has_method("take_damage"):
+		_attack(best, enemy, damage_scale, can_counter)
 	
 	# Light
 	var matched = false
@@ -391,7 +407,8 @@ func _update_verse_text():
 			var color = "gray" if used else "lightgreen"
 			var status = "(used)" if used else "(ready)"
 			var power = _verse_power_text(v)
-			display += "[color=%s]%s  %s\n%s  |  %s\n%s[/color]\n\n" % [color, v.ref, status, power, v.type.capitalize(), verse_body]
+			var kind = "Universal (All)" if v.type == "all" else v.type.capitalize()
+			display += "[color=%s]%s  %s\n%s  |  %s\n%s[/color]\n\n" % [color, v.ref, status, power, kind, verse_body]
 		else:
 			display += "???\n??%  |  ???\n\n"
 	if shown == 0:
@@ -411,7 +428,17 @@ func _verse_power_text(v) -> String:
 			return "Speed + jump boost"
 		"light":
 			return "Lights up the dark"
-	return "%d%%" % v.damage
+	var text = "%d%%" % v.damage
+	if v.type == "all":
+		text += ", hurts any enemy type"
+	else:
+		text += ", hurts untyped and %s-type enemies" % v.type.capitalize()
+	# Which enemy verses does it counter? (from enemy_verses.gd)
+	for ref in EnemyVerses.VERSES:
+		var ev = EnemyVerses.VERSES[ref]
+		if v.ref in ev.get("counters", []):
+			text += ", counters %s (x%s)" % [ev.title, str(snapped(counter_multiplier, 0.1)).trim_suffix(".0")]
+	return text
 
 func discover_verse(ref_name: String):
 	for v in all_verses:
@@ -466,16 +493,37 @@ func _find_verse(lower: String):
 	var best_score = 0.0
 	lower = _normalize(lower)
 	for v in all_verses:
-		var text_score = max(lower.similarity(_normalize(v.en)), lower.similarity(_normalize(v.get("es", ""))))
-		for alt in v.get("alt", []):
-			text_score = max(text_score, lower.similarity(_normalize(alt)))
-		var ref_score = lower.similarity(v.ref.to_lower())
-		if text_score > 0.4 or ref_score > 0.6:
-			var score = max(text_score, ref_score)
-			if score > best_score:
-				best_score = score
-				best = v
+		var score = _verse_score(lower, v)
+		if score > best_score:
+			best_score = score
+			best = v
 	return best
+
+# How well typed text (already normalized) matches a verse, 0 = no match.
+# The text must be over 40% similar, or the reference over 60% similar.
+func _verse_score(lower: String, v) -> float:
+	var text_score = max(lower.similarity(_normalize(v.en)), lower.similarity(_normalize(v.get("es", ""))))
+	for alt in v.get("alt", []):
+		text_score = max(text_score, lower.similarity(_normalize(alt)))
+	var ref_score = lower.similarity(v.ref.to_lower())
+	if v.has("title"):
+		ref_score = max(ref_score, lower.similarity(v.title.to_lower()))
+	if text_score > 0.4 or ref_score > 0.6:
+		return max(text_score, ref_score)
+	return 0.0
+
+# True if the text matches an ENEMY verse better than any player verse.
+func _is_enemy_verse(lower: String) -> bool:
+	lower = _normalize(lower)
+	var player_best = 0.0
+	for v in all_verses:
+		player_best = max(player_best, _verse_score(lower, v))
+	for ref in EnemyVerses.VERSES:
+		var ev = EnemyVerses.VERSES[ref].duplicate()
+		ev["ref"] = ref
+		if _verse_score(lower, ev) > player_best:
+			return true
+	return false
 
 # Lowercases text and treats "LORD" and "Yahweh" as the same word, so either
 # wording matches.
@@ -515,6 +563,31 @@ func take_damage(amount):
 	return amount
 
 # ---------------- Guard (Psalm 17:8) ----------------
+
+# Hits an enemy with an attack verse.
+# - Typed enemies (e.g. "Sloth" after Genesis 3) only take damage from verses
+#   of their type or Universal ("all") verses. Others do nothing.
+# - A counter verse on your next turn after a "!" verse does x counter_multiplier.
+func _attack(verse, enemy, damage_scale: float, can_counter: bool):
+	if enemy.has_method("can_be_hurt_by") and not enemy.can_be_hurt_by(verse.type):
+		var msg = "No effect - it's %s type now!" % type_name(enemy.enemy_type)
+		enemy.show_popup(msg, Color(0.75, 0.75, 0.75))
+		_show_verse_message(msg)
+		if TurnManager.in_battle:
+			TurnManager.show_message(msg)
+		print(verse.ref, ": ", msg)
+		return 0.0
+	var damage = verse.damage * damage_scale
+	if can_counter and enemy.has_method("is_countered_by") and enemy.is_countered_by(verse.ref):
+		damage *= counter_multiplier
+		var msg = "Countered! x%s" % str(snapped(counter_multiplier, 0.1)).trim_suffix(".0")
+		enemy.show_popup(msg, Color(1, 0.85, 0.3))
+		if TurnManager.in_battle:
+			TurnManager.show_message(msg + " -" + str(snapped(damage, 0.1)))
+		print(msg)
+	enemy.take_damage(damage)
+	print("Hit for ", damage, "%")
+	return damage
 
 # Turns the guard on (or refreshes it back to the full guard_rounds - it
 # doesn't stack). Outside a battle it doesn't count down, so it covers the
