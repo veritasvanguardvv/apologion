@@ -9,6 +9,15 @@ func _ready():
 	# save), remove it so it stays defeated.
 	if SaveManager.is_enemy_defeated(self):
 		queue_free()
+		return
+	add_to_group("enemies")  # lets the player and party members find enemies
+	hp_bar.value = hp
+
+# Where the enemy's body actually is. In some scenes the sprite and collision
+# are moved away from the enemy's origin, so use the collision shape.
+func get_center() -> Vector2:
+	var shape = get_node_or_null("CollisionShape2D")
+	return shape.global_position if shape else global_position
 
 func take_damage(amount):
 	hp = max(hp - amount, 0)

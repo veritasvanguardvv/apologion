@@ -130,7 +130,6 @@ func _input(event):
 
 func _on_verse_submitted(text):
 	var lower = text.to_lower().strip_edges()
-	var enemy = get_parent().get_node_or_null("Enemy")
 	
 	# --- Verse cycle (see verse_manager.gd) ---
 	# Figure out which verse was typed. A new verse gets discovered (and can be
@@ -151,19 +150,28 @@ func _on_verse_submitted(text):
 			return
 		VerseManager.mark_used(typed_verse.ref)
 	
+	verse_input.clear()
+	verse_input.release_focus()
+	get_viewport().gui_release_focus()
+	
+	# The player's verses hit the nearest enemy (no range limit, like before)
+	apply_verse_effects(lower, get_nearest_enemy())
+
+# Runs the effects of a recited verse. Used by the player (above) and by party
+# members like Pastor Ramuel (party_member.gd), so the effects live in one place.
+#   lower        = the verse text in lowercase
+#   enemy        = the enemy lust verses should hit (can be null)
+#   damage_scale = multiplies lust damage (party members can hit softer/harder)
+# Light and zeal verses always power up the player.
+func apply_verse_effects(lower: String, enemy, damage_scale := 1.0):
 	# Lust damage
 	for verse in lust_verses:
 		var target = verse.en if language == "en" else verse.es
 		if lower.similarity(target) > 0.5 or lower.similarity(verse.ref) > 0.6:
-			if enemy and enemy.has_method("take_damage"):
-				enemy.take_damage(verse.damage)
-				print("Hit for ", verse.damage, "%")
+			if enemy and is_instance_valid(enemy) and enemy.has_method("take_damage"):
+				enemy.take_damage(verse.damage * damage_scale)
+				print("Hit for ", verse.damage * damage_scale, "%")
 			break
-	
-	
-	verse_input.clear()
-	verse_input.release_focus()
-	get_viewport().gui_release_focus()
 	
 	# Light
 	var matched = false
@@ -289,6 +297,27 @@ func mark_discovered_by_text(text: String):
 			print("Discovered: ", v.ref)
 			return
 
+
+# Finds the closest living enemy (every enemy using enemy.gd is in the
+# "enemies" group). Returns null if there are none. If max_distance is more
+# than 0, enemies further away than that are ignored.
+# from_position defaults to the player's body (its collision shape).
+func get_nearest_enemy(from_position = null, max_distance := 0.0):
+	if from_position == null:
+		var shape = get_node_or_null("CollisionShape2D")
+		from_position = shape.global_position if shape else global_position
+	var nearest = null
+	var nearest_distance = INF
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		if enemy.is_queued_for_deletion():
+			continue
+		var distance = from_position.distance_to(enemy.get_center())
+		if max_distance > 0.0 and distance > max_distance:
+			continue
+		if distance < nearest_distance:
+			nearest_distance = distance
+			nearest = enemy
+	return nearest
 
 # Returns the entry from all_verses that best matches what the player typed
 # (by verse text or by reference), or null if nothing matches well enough.

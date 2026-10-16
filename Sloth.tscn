@@ -12,6 +12,8 @@
 [ext_resource type="Texture2D" uid="uid://cutqtfl477eop" path="res://Psalm sign.png" id="10_2wcv7"]
 [ext_resource type="Texture2D" uid="uid://54hygulk2b8a" path="res://Light tests/Pixel circle transparent.png" id="11_vopg8"]
 [ext_resource type="Script" uid="uid://bkw1wy34ffxqx" path="res://menu_layer.gd" id="12_5h0ix"]
+[ext_resource type="PackedScene" path="res://pastor_ramuel.tscn" id="13_ramuel"]
+[ext_resource type="PackedScene" path="res://umbrid.tscn" id="14_umbrid"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b7ju8"]
 size = Vector2(86, 69.5)
@@ -114,6 +116,12 @@ height = 100.0
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D" unique_id=1493917947]
 position = Vector2(487, 427)
+
+[node name="PastorRamuel" parent="." unique_id=1657203914 instance=ExtResource("13_ramuel")]
+position = Vector2(0, 525)
+
+[node name="Umbrid" parent="." unique_id=1129945107 instance=ExtResource("14_umbrid")]
+position = Vector2(950, 464.5)
 
 [node name="(Darkness)CanvasModulate" type="CanvasModulate" parent="." unique_id=194229356]
 visible = false

@@ -1,0 +1,29 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://cyeou4hdw3c22" path="res://enemy.gd" id="1_enemy"]
+[ext_resource type="Texture2D" uid="uid://cex3n10y88l4v" path="res://Umbrid_idle_1.png" id="2_umbrid"]
+[ext_resource type="Script" uid="uid://dxm35kh20hh0d" path="res://umbrid_idle.gd" id="3_idle"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_umbrid"]
+size = Vector2(165, 136)
+
+[node name="Umbrid" type="CharacterBody2D" unique_id=2001846573]
+script = ExtResource("1_enemy")
+
+[node name="UmbridIdle" type="Sprite2D" parent="." unique_id=1377012418]
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("2_umbrid")
+hframes = 3
+vframes = 3
+script = ExtResource("3_idle")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=973380155]
+position = Vector2(5, 34)
+shape = SubResource("RectangleShape2D_umbrid")
+
+[node name="EnemyHP" type="ProgressBar" parent="." unique_id=1203365842]
+offset_left = -75.0
+offset_top = -132.0
+offset_right = 75.0
+offset_bottom = -105.0
+value = 100.0

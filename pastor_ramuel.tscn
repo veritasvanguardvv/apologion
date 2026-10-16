@@ -1,0 +1,82 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://party_member.gd" id="1_party"]
+[ext_resource type="Texture2D" uid="uid://c1ps1oie4io16" path="res://Playerwalkanim.png" id="2_sheet"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk0"]
+atlas = ExtResource("2_sheet")
+region = Rect2(0, 0, 1280, 1280)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk1"]
+atlas = ExtResource("2_sheet")
+region = Rect2(1280, 0, 1280, 1280)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk2"]
+atlas = ExtResource("2_sheet")
+region = Rect2(2560, 0, 1280, 1280)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_idle0"]
+atlas = ExtResource("2_sheet")
+region = Rect2(3840, 0, 1280, 1280)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_idle1"]
+atlas = ExtResource("2_sheet")
+region = Rect2(5120, 0, 1280, 1280)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ramuel"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_idle0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_idle1")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_walk0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_walk1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_walk2")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ramuel"]
+size = Vector2(86, 69.5)
+
+[node name="PastorRamuel" type="CharacterBody2D" unique_id=1418823301]
+collision_layer = 0
+script = ExtResource("1_party")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1904415722]
+modulate = Color(0.85, 0.68, 0.5, 1)
+scale = Vector2(0.17, 0.17)
+sprite_frames = SubResource("SpriteFrames_ramuel")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=726450893]
+position = Vector2(4, 13)
+shape = SubResource("RectangleShape2D_ramuel")
+
+[node name="SpeechLabel" type="Label" parent="." unique_id=1588930021]
+z_index = 10
+offset_left = -150.0
+offset_top = -62.0
+offset_right = 150.0
+offset_bottom = -30.0
+theme_override_colors/font_color = Color(1, 0.95, 0.6, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20
+text = "Matthew 5:28!"
+horizontal_alignment = 1
