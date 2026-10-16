@@ -5,12 +5,22 @@ var speed = 200
 var jump_velocity = -400
 var gravity = 980
 var language = "en"
-var current_filter = "all"  # "all", "light", "zeal", "lust"
+var current_filter = "all"  # "all", "light", "zeal", "lust", "guard"
 
 # Turn-based battles (see turn_manager.gd). Higher battle_speed = acts earlier
 # in each round. ("speed" above is walking speed - a different thing.)
 @export var battle_speed = 10
 var display_name = "You"
+
+# Guard (Psalm 17:8): while guarded, enemy damage is reduced.
+# "+50% defense" = take 50% less damage (there was no defense stat before).
+@export var guard_reduction = 0.5    # 0.5 = enemies do half damage
+@export var guard_rounds = 3         # how many battle rounds the guard lasts
+@export var guard_fx_scale = 4.0     # size of the guard animation
+@export var guard_fx_fps = 12.0      # speed of the guard animation
+var guard_rounds_left = 0            # 0 = not guarded
+var guard_fx: AnimatedSprite2D       # the wings/dome animation (built in _ready)
+var guard_label: Label               # "Guard 50% up (3)" (built in _ready)
 
 var base_scale_light = 1.2
 var base_scale_near = 0.6
@@ -43,7 +53,10 @@ var all_verses = [
 	{"ref": "1 Corinthians 6:18", "type": "lust", "damage": 50, "discovered": false, "en": "flee sexual immorality!", "es": "¡huyan de la inmoralidad sexual!"},
 	{"ref": "Proverbs 6:32", "type": "lust", "damage": 50, "discovered": false, "en": "he who commits adultery is a fool who destroys himself.", "es": "el que comete adulterio es un necio que se destruye a sí mismo."},
 	{"ref": "Psalm 18:28a", "type": "light", "damage": 50, "discovered": false, "en": "you light a lamp for me."},
-	{"ref": "Psalm 119:105", "type": "light", "damage": 50, "discovered": false, "en": "your word is a lamp to my feet, and a light for my path."}
+	{"ref": "Psalm 119:105", "type": "light", "damage": 50, "discovered": false, "en": "your word is a lamp to my feet, and a light for my path."},
+	# Guard verse: "damage" isn't used for guard verses. "alt" = other wordings
+	# that also count (here the fuller KJV version).
+	{"ref": "Psalm 17:8", "type": "guard", "damage": 0, "discovered": false, "en": "hide me under the shadow of your wings.", "es": "guárdame como a la niña de tus ojos; escóndeme bajo la sombra de tus alas.", "alt": ["keep me as the apple of the eye, hide me under the shadow of thy wings."]}
 ]
 
 var lust_verses = [
@@ -100,13 +113,18 @@ func _ready():
 		filter_btn.pressed.connect(_on_filter_pressed)
 	if lamp:
 		lamp.energy = lamp_base_energy
+	
+	_build_guard_effect()
+	# Guard counts down at the end of every battle round
+	TurnManager.round_ended.connect(_on_round_ended)
 
 func _on_filter_pressed():
 	match current_filter:
 		"all": current_filter = "light"
 		"light": current_filter = "zeal"
 		"zeal": current_filter = "lust"
-		"lust": current_filter = "all"
+		"lust": current_filter = "guard"
+		"guard": current_filter = "all"
 	var filter_btn = verse_panel.get_node_or_null("FilterButton")
 	if filter_btn:
 		filter_btn.text = "Filter: " + current_filter.capitalize()
@@ -217,6 +235,10 @@ func apply_verse_effects(lower: String, enemy, damage_scale := 1.0):
 		if lamp:
 			lamp.energy = 0.8
 	
+	# Guard (Psalm 17:8)
+	if only_type == "guard":
+		activate_guard()
+	
 	# Zeal
 	for verse in (zeal_verses if only_type in ["", "zeal"] else []):
 		if lower.similarity(verse.text) > 0.4 or lower.similarity(verse.ref) > 0.6:
@@ -304,7 +326,10 @@ func _update_verse_text():
 			var used = VerseManager.is_used(v.ref)
 			var color = "gray" if used else "lightgreen"
 			var status = "(used)" if used else "(ready)"
-			display += "[color=%s]%s  %s\n%d%%  |  %s\n%s[/color]\n\n" % [color, v.ref, status, v.damage, v.type.capitalize(), verse_body]
+			var power = "%d%%" % v.damage
+			if v.type == "guard":
+				power = "+%d%% defense, %d rounds" % [int(guard_reduction * 100), guard_rounds]
+			display += "[color=%s]%s  %s\n%s  |  %s\n%s[/color]\n\n" % [color, v.ref, status, power, v.type.capitalize(), verse_body]
 		else:
 			display += "???\n??%  |  ???\n\n"
 	verse_text.text = display
@@ -362,6 +387,8 @@ func _find_verse(lower: String):
 	var best_score = 0.0
 	for v in all_verses:
 		var text_score = max(lower.similarity(v.en.to_lower()), lower.similarity(v.get("es", "").to_lower()))
+		for alt in v.get("alt", []):
+			text_score = max(text_score, lower.similarity(alt.to_lower()))
 		var ref_score = lower.similarity(v.ref.to_lower())
 		if text_score > 0.4 or ref_score > 0.6:
 			var score = max(text_score, ref_score)
@@ -395,8 +422,68 @@ func set_hp(value):
 	hp_bar.value = hp
 	SaveManager.player_hp = hp
 
+# Returns how much damage was actually taken (after guard).
 func take_damage(amount):
+	if guard_rounds_left > 0:
+		amount *= (1.0 - guard_reduction)
 	set_hp(hp - amount)
+	return amount
+
+# ---------------- Guard (Psalm 17:8) ----------------
+
+# Turns the guard on (or refreshes it back to the full guard_rounds - it
+# doesn't stack). Outside a battle it doesn't count down, so it covers the
+# first rounds of your next battle.
+func activate_guard():
+	guard_rounds_left = guard_rounds
+	_update_guard_label()
+	# Play the wings/dome animation once
+	guard_fx.visible = true
+	guard_fx.frame = 0
+	guard_fx.play("guard")
+	print("Guard up for ", guard_rounds, " rounds")
+
+func _on_round_ended():
+	if guard_rounds_left > 0:
+		guard_rounds_left -= 1
+		_update_guard_label()
+
+func _update_guard_label():
+	guard_label.visible = guard_rounds_left > 0
+	guard_label.text = "Guard %d%% up (%d)" % [int(guard_reduction * 100), guard_rounds_left]
+
+# Builds the guard animation (Guardeffect.png: 12 frames of 78x78 in one row)
+# and the "Guard 50% up" label under the HP bar.
+func _build_guard_effect():
+	var sheet = load("res://Guardeffect.png")
+	var frames = SpriteFrames.new()
+	frames.add_animation("guard")
+	frames.set_animation_loop("guard", false)   # play once, don't repeat
+	frames.set_animation_speed("guard", guard_fx_fps)
+	for i in 12:
+		var atlas = AtlasTexture.new()
+		atlas.atlas = sheet
+		atlas.region = Rect2(i * 78, 0, 78, 78)
+		frames.add_frame("guard", atlas)
+	guard_fx = AnimatedSprite2D.new()
+	guard_fx.sprite_frames = frames
+	guard_fx.scale = Vector2(guard_fx_scale, guard_fx_scale)
+	guard_fx.offset = Vector2(-11, -11)   # the dome is drawn a bit right/down of the frame centre
+	# Put it on the player's body (the body is moved away from the origin in the scenes)
+	var shape = get_node_or_null("CollisionShape2D")
+	guard_fx.position = (shape.position if shape else Vector2.ZERO) + Vector2(0, -23)
+	guard_fx.z_index = 5
+	guard_fx.visible = false
+	guard_fx.animation_finished.connect(func(): guard_fx.visible = false)   # hide when done
+	add_child(guard_fx)
+	
+	guard_label = Label.new()
+	guard_label.position = hp_bar.position + Vector2(0, hp_bar.size.y + 4)
+	guard_label.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
+	guard_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	guard_label.add_theme_constant_override("outline_size", 4)
+	guard_label.visible = false
+	hp_bar.get_parent().add_child.call_deferred(guard_label)
 
 # Builds the same verse box that Lust.tscn has, for scenes that don't have one.
 # (It's added under the player, so you won't see it in the editor's scene tree.)

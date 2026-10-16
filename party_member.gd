@@ -2,8 +2,9 @@ extends CharacterBody2D
 # Party member (used by pastor_ramuel.tscn)
 # ------------------------------------------
 # Follows the player a moment behind them, and fights in turn-based battles
-# (see turn_manager.gd). On his turn he recites a random verse the player has
-# discovered. The verse's effect is run by the player's own
+# (see turn_manager.gd). On his turn he recites a random verse from ALL the
+# verses (he knows them all). His recital never discovers a verse for the
+# player - the player still has to type it. The verse's effect is run by the player's own
 # apply_verse_effects() (character_body_2d.gd), so it works like when the
 # player types it, except:
 #   - it does NOT use up the player's verse cycle (VerseManager isn't touched)
@@ -31,7 +32,13 @@ extends CharacterBody2D
 @export_group("Fighting")
 @export var battle_speed = 8           # lower than the player's 10, so he acts right after you
 @export var damage_scale = 0.25        # 0.25 = a quarter of the verse's normal damage
-@export var speech_duration = 2.0      # how long the speech label stays up (seconds)
+
+@export_group("Speech bubble")
+@export var bubble_max_width = 340.0     # the bubble wraps text wider than this (pixels)
+@export var bubble_min_time = 2.5        # shortest time the bubble stays up (seconds)
+@export var bubble_time_per_char = 0.06  # extra time per letter, so long verses stay longer
+@export var bubble_max_time = 6.0        # longest time the bubble stays up
+@export var bubble_head_offset = -95.0   # where his head is, above his feet (pixels)
 
 @export_group("Sprite")
 @export var sprite_faces_right = true  # the Pastor art faces right
@@ -46,18 +53,22 @@ signal recited(verse_ref)
 var player = null
 var trail = []               # recent player positions: [time, position, facing]
 var clock = 0.0              # seconds since he appeared (game time)
-var speech_id = 0
 var anim_time = 0.0
 
 @onready var visual = $Visual
 @onready var idle_sprite = $Visual/IdleSprite
 @onready var walk_sprite = $Visual/WalkSprite
-@onready var speech_label = $SpeechLabel
+# Speech bubble: lives on a CanvasLayer so it can be kept on screen
+@onready var bubble = $BubbleLayer/SpeechBubble
+@onready var bubble_ref = $BubbleLayer/SpeechBubble/VBox/RefLabel
+@onready var bubble_text = $BubbleLayer/SpeechBubble/VBox/TextLabel
+@onready var bubble_tail = $BubbleLayer/Tail
 
 
 func _ready():
 	add_to_group("party")   # TurnManager puts everyone in "party" into battles
-	speech_label.visible = false
+	bubble.visible = false
+	bubble_tail.visible = false
 	_update_animation(0.0)
 
 
@@ -164,14 +175,16 @@ func _update_animation(delta):
 
 # ---------------- Battle turns ----------------
 
-# Called by TurnManager when it's his turn in a battle.
+# Called by TurnManager when it's his turn in a battle. Returns how long the
+# speech bubble stays up, so TurnManager waits before the next turn.
 func take_turn():
 	if not recite_random_verse():
-		_say("...")
+		return _say("", "...")
+	return bubble_time_left
 
 
-# Picks a random discovered verse and runs its effect on the nearest enemy
-# in the current battle. Returns true if he recited.
+# Picks a random verse (from all verses) and runs its effect on the nearest
+# enemy in the current battle. Returns true if he recited.
 func recite_random_verse() -> bool:
 	if not _find_player():
 		return false
@@ -183,14 +196,11 @@ func recite_random_verse() -> bool:
 	if target == null:
 		return false
 	
-	# Only verses the player has discovered (see verse_manager.gd)
-	var known = []
-	for v in player.all_verses:
-		if VerseManager.is_discovered(v.ref):
-			known.append(v)
-	if known.is_empty():
+	# Any verse at all. Nothing here calls VerseManager, so his recital does
+	# NOT discover the verse for the player.
+	if player.all_verses.is_empty():
 		return false
-	var verse = known.pick_random()
+	var verse = player.all_verses.pick_random()
 	
 	# Use the same language as the player so the effect matches
 	var text = verse.en
@@ -199,17 +209,56 @@ func recite_random_verse() -> bool:
 	player.apply_verse_effects(text.to_lower(), target, damage_scale)
 	
 	print("Pastor Ramuel recites ", verse.ref)
-	_say(verse.ref + "!")
+	_say(verse.ref, text.substr(0, 1).to_upper() + text.substr(1))
 	recited.emit(verse.ref)
 	return true
 
 
-# Shows text above his head for speech_duration seconds.
-func _say(text: String):
-	speech_id += 1
-	var my_id = speech_id
-	speech_label.text = text
-	speech_label.visible = true
-	await get_tree().create_timer(speech_duration).timeout
-	if my_id == speech_id and is_instance_valid(speech_label):
-		speech_label.visible = false
+var bubble_time_left = 0.0
+
+# Shows a speech bubble with the reference (title) and text above his head.
+# Returns how many seconds it will stay up.
+func _say(title: String, text: String) -> float:
+	bubble_ref.text = title
+	bubble_ref.visible = title != ""
+	bubble_text.text = text
+	# Width: as wide as the text needs, but no wider than bubble_max_width
+	var font = bubble_text.get_theme_font("font")
+	var font_size = bubble_text.get_theme_font_size("font_size")
+	var text_width = max(font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x,
+		font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x)
+	bubble_text.custom_minimum_size.x = min(text_width + 2, bubble_max_width)
+	bubble.reset_size()   # shrink/grow the panel to fit the text
+	bubble.visible = true
+	bubble_tail.visible = true
+	# Longer text stays up longer
+	bubble_time_left = clamp(bubble_time_per_char * (title.length() + text.length()), bubble_min_time, bubble_max_time)
+	_place_bubble()
+	return bubble_time_left
+
+
+func _process(delta):
+	if bubble.visible:
+		bubble_time_left -= delta
+		if bubble_time_left <= 0.0:
+			bubble.visible = false
+			bubble_tail.visible = false
+		else:
+			_place_bubble()
+
+
+# Puts the bubble above his head, but always inside the screen.
+func _place_bubble():
+	var screen_size = get_viewport().get_visible_rect().size
+	# His head position on the screen (works with the camera moving)
+	var head = get_global_transform_with_canvas() * Vector2(0, bubble_head_offset)
+	bubble.reset_size()
+	var size = bubble.size
+	var margin = 8.0
+	var tail_height = 12.0
+	var pos = Vector2(head.x - size.x / 2.0, head.y - size.y - tail_height)
+	pos.x = clamp(pos.x, margin, max(margin, screen_size.x - size.x - margin))
+	pos.y = clamp(pos.y, margin, max(margin, screen_size.y - size.y - margin))
+	bubble.position = pos
+	# The little tail points down at his head (kept under the bubble)
+	bubble_tail.position = Vector2(clamp(head.x, pos.x + 16.0, pos.x + size.x - 16.0), pos.y + size.y - 2.0)

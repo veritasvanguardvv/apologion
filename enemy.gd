@@ -28,9 +28,10 @@ func _ready():
 func take_turn():
 	var player = get_tree().get_first_node_in_group("player")
 	if can_attack and player and player.has_method("take_damage"):
-		player.take_damage(attack_damage)
-		TurnManager.show_message("%s attacks! -%d HP" % [display_name, attack_damage])
-		print(display_name, " attacks for ", attack_damage)
+		# take_damage returns the damage after the player's guard (Psalm 17:8)
+		var dealt = player.take_damage(attack_damage)
+		TurnManager.show_message("%s attacks! -%s HP" % [display_name, str(snapped(dealt, 0.1))])
+		print(display_name, " attacks for ", dealt)
 	else:
 		TurnManager.show_message("%s waits..." % display_name)
 

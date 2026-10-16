@@ -7,6 +7,23 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ramuel"]
 size = Vector2(100, 66)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bubble"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+bg_color = Color(0.1, 0.08, 0.16, 0.94)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.95, 0.88, 0.6, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+anti_aliasing = false
+
 [node name="PastorRamuel" type="CharacterBody2D" unique_id=1418823301]
 collision_layer = 0
 script = ExtResource("1_party")
@@ -32,15 +49,32 @@ vframes = 4
 position = Vector2(0, -33)
 shape = SubResource("RectangleShape2D_ramuel")
 
-[node name="SpeechLabel" type="Label" parent="." unique_id=1588930021]
-z_index = 10
-offset_left = -150.0
-offset_top = -132.0
-offset_right = 150.0
-offset_bottom = -100.0
-theme_override_colors/font_color = Color(1, 0.95, 0.6, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 20
-text = "Matthew 5:28!"
-horizontal_alignment = 1
+[node name="BubbleLayer" type="CanvasLayer" parent="." unique_id=1588930021]
+layer = 4
+
+[node name="SpeechBubble" type="PanelContainer" parent="BubbleLayer" unique_id=1093384712]
+offset_right = 200.0
+offset_bottom = 60.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_bubble")
+
+[node name="VBox" type="VBoxContainer" parent="BubbleLayer/SpeechBubble" unique_id=2067141590]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="RefLabel" type="Label" parent="BubbleLayer/SpeechBubble/VBox" unique_id=461927380]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.86, 0.35, 1)
+theme_override_font_sizes/font_size = 16
+text = "Psalm 17:8"
+
+[node name="TextLabel" type="Label" parent="BubbleLayer/SpeechBubble/VBox" unique_id=1785204336]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.97, 0.95, 0.9, 1)
+theme_override_font_sizes/font_size = 16
+text = "Hide me under the shadow of your wings."
+autowrap_mode = 3
+
+[node name="Tail" type="Polygon2D" parent="BubbleLayer" unique_id=1302518846]
+color = Color(0.95, 0.88, 0.6, 1)
+polygon = PackedVector2Array(-9, 0, 9, 0, 0, 12)

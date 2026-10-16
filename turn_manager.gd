@@ -30,6 +30,10 @@ signal battle_started
 signal battle_ended
 signal turn_started(combatant)
 signal player_turn_finished   # emitted by the player after a valid verse
+signal round_ended            # after everyone has had their turn (the guard counts these)
+
+const BATTLE_SOUND = "res://battle1low.mp3"   # plays once when a battle starts
+var battle_sound: AudioStreamPlayer
 
 var in_battle = false
 var current = null            # whose turn it is right now
@@ -57,6 +61,13 @@ func _ready():
 	turn_label.add_theme_constant_override("outline_size", 6)
 	turn_label.visible = false
 	layer.add_child(turn_label)
+	
+	# Battle start sound (plays once, never loops)
+	battle_sound = AudioStreamPlayer.new()
+	battle_sound.stream = load(BATTLE_SOUND)
+	if battle_sound.stream and "loop" in battle_sound.stream:
+		battle_sound.stream.loop = false
+	add_child(battle_sound)
 
 
 func show_message(text: String):
@@ -116,6 +127,7 @@ func _run_battle(player, enemies):
 	var my_battle = battle_id
 	battle_enemies = enemies
 	battle_started.emit()
+	battle_sound.play()
 	var first_name = enemies[0].display_name
 	show_message(("A %s appears!" % first_name) if enemies.size() == 1 else "%d enemies appear!" % enemies.size())
 	print("Battle started against ", enemies.size(), " enemy(s)")
@@ -137,6 +149,7 @@ func _run_battle(player, enemies):
 				continue
 			current = fighter
 			turn_started.emit(fighter)
+			var wait = after_turn_pause
 			if fighter == player:
 				show_message("Your turn - type a verse and press Enter")
 				await player_turn_finished
@@ -146,14 +159,22 @@ func _run_battle(player, enemies):
 				if my_battle != battle_id:
 					return
 				if _is_alive(fighter):
-					fighter.take_turn()
-			await get_tree().create_timer(after_turn_pause).timeout
+					# take_turn() may return how long to wait (e.g. Pastor's
+					# speech bubble) so the next turn doesn't start too soon
+					var asked = fighter.take_turn()
+					if asked is float or asked is int:
+						wait = max(wait, asked)
+			await get_tree().create_timer(wait).timeout
 			if my_battle != battle_id:
 				return
 			# Player out of HP? Restart the level at full health.
 			if _is_alive(player) and player.hp <= 0:
 				_player_defeated(my_battle)
 				return
+		
+		# Everyone has had a turn: the round is over
+		if my_battle == battle_id and _enemies_left():
+			round_ended.emit()
 
 	if my_battle != battle_id:
 		return  # an old battle from a previous scene: just stop
