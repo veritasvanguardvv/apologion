@@ -177,7 +177,54 @@ func _icon_texture(item: Dictionary) -> Texture2D:
 # ---------------- Money flies away ----------------
 
 # Every piece of money in the inventory flies off the screen in a random
-# direction; when it's out of sight it's removed from the inventory.
+# direction on WHITE WINGS; when it's out of sight it's removed from the
+# inventory. Port of Unity's UIBezierPath.cs + the UIMoney sprite animations:
+#   - sheet: Greed/flying_money.png ("Flying money loop.png" from the Unity
+#     project): 7 frames of 141x141 (sprite rects from its .meta), nearest filter
+#   - 0.13 s per frame (SpriteAnimData Speed). It first holds frame 0 (wings
+#     spread) for 10 ticks ("UIMoney 1"), then loops the 7-frame flap ("UIMoney 2")
+#   - fades in over 2 s, waits 2 s, then flies for 2.5 s with InSine easing
+#     (DOTween ease 2) while growing from 1x to 1.1x
+#   - size: 325x321 on Unity's 1920x1080 reference canvas, scaled to our screen
+const MONEY_SHEET = "res://Greed/flying_money.png"
+const MONEY_FRAME = 141
+const MONEY_FRAME_TIME = 0.13
+const MONEY_HOLD_TICKS = 10
+const MONEY_FADE_TIME = 2.0
+const MONEY_WAIT_TIME = 2.0
+const MONEY_FLY_TIME = 2.5
+const MONEY_UNITY_SIZE = 325.0        # pixels on a 1920-wide screen
+const MONEY_END_SCALE = 1.1
+var money_frames: SpriteFrames
+
+func _money_sprite_frames() -> SpriteFrames:
+	if money_frames:
+		return money_frames
+	var sheet = load(MONEY_SHEET)
+	money_frames = SpriteFrames.new()
+	money_frames.remove_animation("default")
+	# Unity's rects count y from the bottom: frame 0-2 = top row, 3-5 = middle, 6 = bottom left
+	var regions = []
+	for i in 7:
+		regions.append(Rect2((i % 3) * MONEY_FRAME, (i / 3) * MONEY_FRAME, MONEY_FRAME, MONEY_FRAME))
+	money_frames.add_animation("hover")      # "UIMoney 1": frame 0 held for 10 ticks
+	money_frames.set_animation_loop("hover", false)
+	money_frames.set_animation_speed("hover", 1.0 / MONEY_FRAME_TIME)
+	for t in MONEY_HOLD_TICKS:
+		money_frames.add_frame("hover", _atlas(sheet, regions[0]))
+	money_frames.add_animation("flap")       # "UIMoney 2": the 7-frame wing flap, looping
+	money_frames.set_animation_loop("flap", true)
+	money_frames.set_animation_speed("flap", 1.0 / MONEY_FRAME_TIME)
+	for r in regions:
+		money_frames.add_frame("flap", _atlas(sheet, r))
+	return money_frames
+
+static func _atlas(sheet: Texture2D, region: Rect2) -> AtlasTexture:
+	var a = AtlasTexture.new()
+	a.atlas = sheet
+	a.region = region
+	return a
+
 func _fly_money_away():
 	var waiting = count("money") - money_flying
 	if waiting <= 0 or layer == null:
@@ -187,27 +234,27 @@ func _fly_money_away():
 	if slot:
 		start = slot.global_position + slot.size / 2.0
 	var screen = get_viewport().get_visible_rect().size
-	var far = screen.length() + 150.0
+	var base_scale = MONEY_UNITY_SIZE / MONEY_FRAME * screen.x / 1920.0
+	var far = screen.length() + MONEY_UNITY_SIZE
 	for i in waiting:
 		money_flying += 1
-		var bill = TextureRect.new()
-		bill.texture = _icon_texture(get_item("money"))
+		var bill = AnimatedSprite2D.new()
+		bill.name = "FlyingMoney"
+		bill.sprite_frames = _money_sprite_frames()
 		bill.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		bill.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		bill.size = Vector2(64, 40)
-		bill.pivot_offset = bill.size / 2.0
-		bill.position = start - bill.size / 2.0
-		bill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		bill.scale = Vector2.ONE * base_scale
+		bill.position = start
+		bill.modulate.a = 0.0
 		layer.add_child(bill)
-		var angle = randf() * TAU
-		var target = start + Vector2.RIGHT.rotated(angle) * far - bill.size / 2.0
-		var time = randf_range(1.3, 2.0)
+		bill.play("hover")
+		bill.animation_finished.connect(func(): bill.play("flap"))
+		var target = start + Vector2.RIGHT.rotated(randf() * TAU) * far
+		var stagger = i * 0.12
 		var tween = bill.create_tween()
-		tween.set_parallel(true)
-		tween.tween_property(bill, "position", target, time).set_delay(i * 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-		tween.tween_property(bill, "rotation", randf_range(-1.0, 1.0) * TAU * 1.5, time).set_delay(i * 0.12)
-		# a little flutter: shrink and grow like flapping wings
-		tween.tween_property(bill, "scale", Vector2(0.7, 1.0), time / 2.0).set_delay(i * 0.12)
+		tween.tween_property(bill, "modulate:a", 1.0, MONEY_FADE_TIME).set_delay(stagger)
+		var fly = tween.parallel()
+		fly.tween_property(bill, "position", target, MONEY_FLY_TIME).set_delay(stagger + MONEY_WAIT_TIME).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		tween.parallel().tween_property(bill, "scale", Vector2.ONE * base_scale * MONEY_END_SCALE, MONEY_FLY_TIME).set_delay(stagger + MONEY_WAIT_TIME).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 		tween.chain().tween_callback(_money_gone.bind(bill))
 
 func _fly_money_away_soon():
