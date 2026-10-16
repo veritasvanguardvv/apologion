@@ -24,6 +24,9 @@ var defeated_enemies: Dictionary = {}
 # menu_layer.gd uses this same array, so unlocking a level is remembered.
 var unlocked_levels = ["Sloth", "Gluttony", "Lust"]
 
+# "en" or "es" - set by the language button in the main menu (menu_layer.gd)
+var language = "en"
+
 # When a save is loaded we switch scenes first; the player then picks up
 # its saved position from here in its _ready() (see apply_pending_player_state).
 var pending_position = null
@@ -90,6 +93,7 @@ func save_game() -> bool:
 	if player:
 		config.set_value("progress", "player_position", player.global_position)
 	config.set_value("progress", "unlocked_levels", unlocked_levels)
+	config.set_value("progress", "language", language)
 
 	var verses = VerseManager.get_save_data()
 	config.set_value("verses", "discovered", verses.discovered)
@@ -122,6 +126,8 @@ func load_game(change_level := true) -> bool:
 	# Change the contents (not the array itself) so menu_layer keeps sharing it.
 	unlocked_levels.clear()
 	unlocked_levels.append_array(config.get_value("progress", "unlocked_levels", ["Sloth", "Gluttony", "Lust"]))
+
+	language = config.get_value("progress", "language", "en")
 
 	VerseManager.load_save_data({
 		"discovered": config.get_value("verses", "discovered", []),

@@ -22,17 +22,21 @@ func _ready():
 	_connect_if_exists("PauseMenu/QuitToMenuButton", _on_quit_to_menu)
 	
 	_connect_if_exists("MainMenu/PlayButton", _on_play_pressed)
-	_connect_if_exists("MainMenu/QuitButton", _on_quit_pressed)
+	_connect_if_exists("MainMenu/Quit", _on_quit_pressed)  # the node is named "Quit" in the scenes
 	
 	_connect_if_exists("ModeSelect/StoryModeButton", _on_story_mode_pressed)
 	_connect_if_exists("ModeSelect/EndlessModeButton", _on_endless_pressed)
-	_connect_if_exists("ModeSelect/BackButton", _on_mode_back_pressed)
+	_connect_if_exists("ModeSelect/Back", _on_mode_back_pressed)  # the node is named "Back" in the scenes
 	
 	_connect_if_exists("StorySelect/BackButton", _on_story_back_pressed)
 	
-	var lang_button = get_node_or_null("CanvasLayer/LanguageButton")  # adjust the path
+	# The language button sits in the main menu (only Lust.tscn has one so far).
+	# get_node_or_null = no error in scenes that don't have it.
+	language = SaveManager.language  # keep the language chosen in an earlier scene
+	var lang_button = get_node_or_null("MainMenu/LanguageButton")
 	if lang_button:
 		lang_button.pressed.connect(_on_language_button_pressed)
+		_update_language_button()
 	
 	for child in story_select.get_children():
 		if child is Button and child.name != "BackButton":
@@ -128,13 +132,26 @@ func unlock_next_level(completed: String):
 			_update_story_buttons()
 			print("Unlocked: ", next_level)
 
+# Switches between English and Spanish verses. The choice is stored in
+# SaveManager (so it carries over to other levels and into saves) and is
+# passed to the player, which uses it to check typed verses and to show
+# the verse box in that language.
 func _on_language_button_pressed():
 	if language == "en":
 		language = "es"
-		$LanguageButton.text = "English"
 	else:
 		language = "en"
-		$LanguageButton.text = "Español"
+	SaveManager.language = language
+	var player = get_tree().get_first_node_in_group("player")
+	if player and player.has_method("set_language"):
+		player.set_language(language)
+	_update_language_button()
+
+# The button shows the language you'd switch TO.
+func _update_language_button():
+	var lang_button = get_node_or_null("MainMenu/LanguageButton")
+	if lang_button:
+		lang_button.text = "English" if language == "es" else "Español"
 
 # ---------------- Save / Load ----------------
 

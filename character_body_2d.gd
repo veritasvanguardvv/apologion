@@ -70,6 +70,7 @@ func _ready():
 	# Health comes from SaveManager (full HP on a new level, saved HP after loading)
 	hp = SaveManager.player_hp
 	hp_bar.value = hp
+	language = SaveManager.language  # "en" or "es", chosen with the menu's language button
 	# If we just loaded a save, move to the saved position
 	SaveManager.apply_pending_player_state(self)
 	
@@ -314,6 +315,13 @@ func _show_verse_message(msg: String):
 	await get_tree().create_timer(3.0).timeout
 	if my_id == message_id and is_instance_valid(verse_input):
 		verse_input.placeholder_text = DEFAULT_PLACEHOLDER
+
+# Called by the menu's language button ("en" or "es").
+# Typed lust verses are then checked against the Spanish text, and the
+# verse box shows Spanish where a translation exists.
+func set_language(new_language: String):
+	language = new_language
+	_update_verse_text()
 
 # Player health. Use this (instead of changing hp directly) so the HP bar
 # and SaveManager stay up to date. Nothing damages the player yet, but
