@@ -118,7 +118,7 @@ height = 100.0
 position = Vector2(487, 427)
 
 [node name="PastorRamuel" parent="." unique_id=1657203914 instance=ExtResource("13_ramuel")]
-position = Vector2(0, 525)
+position = Vector2(0, 570)
 
 [node name="Umbrid" parent="." unique_id=1129945107 instance=ExtResource("14_umbrid")]
 position = Vector2(950, 464.5)

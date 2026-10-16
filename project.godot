@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 VerseManager="*res://verse_manager.gd"
 SaveManager="*res://save_manager.gd"
+TurnManager="*res://turn_manager.gd"
 
 [display]
 
