@@ -1,8 +1,12 @@
 extends CharacterBody2D
 
 const EnemyVerses = preload("res://enemy_verses.gd")   # enemies' own verses (the player can't use them)
+const PopupText = preload("res://popup_text.gd")       # floating "+25" / "-10" numbers
 
 var hp = 100
+var max_hp: int:            # (the same for every level, set in save_manager.gd)
+	get:
+		return SaveManager.MAX_HP
 var speed = 200
 var jump_velocity = -400
 var gravity = 980
@@ -11,11 +15,12 @@ var gravity = 980
 var language: String:
 	get:
 		return SaveManager.language
-# Verse box filter (see _build_verse_panel). Three groups of verse types:
+# Verse box filter (see _build_verse_panel). Four groups of verse types:
 const FILTER_GROUPS = {
-	"Attacks": ["sloth", "lust", "all"],        # left button ("all" = Universal: hurts any enemy type)
-	"Status": ["zeal", "guard", "faith", "fear"], # middle button
-	"Special": ["light"],                       # right button
+	"Attacks": ["sloth", "lust", "all"],        # 1st button ("all" = Universal: hurts any enemy type)
+	"Status": ["zeal", "guard", "faith", "fear"], # 2nd button
+	"Special": ["light"],                       # 3rd button
+	"Heal": ["heal"],                           # 4th (rightmost) button
 }
 const ATTACK_TYPES = ["sloth", "lust", "all"]   # verse types that do damage
 var filter_group = "all"   # "all" (Show all), "Attacks", "Status" or "Special"
@@ -76,6 +81,11 @@ signal faith_maxed                   # emitted when Faith newly reaches the max
 
 # Fear (Psalm 75:10): lowers enemy attack - see enemy.gd (fear_reduction)
 
+# Skip Turn (button or K in a battle): ends your turn, but costs this much of
+# your max HP (0.1 = 10%). Guard doesn't reduce it - it's a price you choose
+# to pay, not an enemy attack.
+@export var skip_turn_cost = 0.1
+
 var base_scale_light = 1.2
 var base_scale_near = 0.6
 var base_scale_halo = 2.5
@@ -122,6 +132,14 @@ var all_verses = [
 	# counter to the enemy verse Genesis 3 (see enemy_verses.gd).
 	{"ref": "Galatians 3:13", "type": "all", "damage": 50, "discovered": false, "en": "Christ redeemed us from the curse of the law, having become a curse for us by hanging on a tree.", "es": "Cristo nos redimió de la maldición de la ley, hecho por nosotros maldición (porque está escrito: Maldito todo el que es colgado en un madero).", "alt": ["Christ hath redeemed us from the curse of the law, being made a curse for us: for it is written, Cursed is every one that hangeth on a tree.", "Christ redeemed us from the curse of the law, having become a curse for us. For it is written, Cursed is everyone who hangs on a tree.", "Christ redeemed us from the curse of the law, having become a curse for us."]},
 	# Fear verse (enemy attack down)
+	# Healing verses: "heal" = % of max HP. By default it's split between you
+	# and your party member; choose one target (Alt / Target button) for the
+	# full amount. See targeting.gd.
+	{"ref": "John 3:16", "type": "heal", "heal": 100, "damage": 0, "discovered": false, "en": "For God so loved the world He gave His Son, whoever believes in Him will not perish but have eternal life.", "es": "Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna.", "alt": ["For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.", "For God so loved the world, that he gave his one and only Son, that whoever believes in him should not perish, but have eternal life.", "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life."]},
+	{"ref": "Romans 6:23b", "type": "heal", "heal": 100, "damage": 0, "discovered": false, "en": "But the free gift of God is eternal life in Christ Jesus our Lord.", "es": "mas la dádiva de Dios es vida eterna en Cristo Jesús Señor nuestro.", "alt": ["But the gift of God is eternal life through Jesus Christ our Lord.", "But the free gift of God is eternal life in Christ Jesus our Lord.", "But the gift of God is eternal life in Christ Jesus our Lord."]},
+	{"ref": "1 Peter 2:24b", "type": "heal", "heal": 50, "damage": 0, "discovered": false, "en": "You were healed by His wounds.", "es": "por cuya herida fuisteis sanados.", "alt": ["By whose stripes ye were healed.", "By his wounds you have been healed.", "By his wounds you were healed."]},
+	{"ref": "Psalm 34:18", "type": "heal", "heal": 50, "damage": 0, "discovered": false, "en": "Yahweh is near to the broken hearted and saves the crushed spirit.", "es": "Cercano está Jehová a los quebrantados de corazón; y salva a los contritos de espíritu.", "alt": ["The LORD is nigh unto them that are of a broken heart; and saveth such as be of a contrite spirit.", "Yahweh is near to those who have a broken heart, and saves those who have a crushed spirit.", "The LORD is close to the brokenhearted and saves those who are crushed in spirit."]},
+	{"ref": "Matthew 14:30", "type": "heal", "heal": 50, "damage": 0, "discovered": false, "en": "Save me, Lord!", "es": "¡Señor, sálvame!", "alt": ["Lord, save me.", "Lord, save me!"]},
 	{"ref": "Psalm 75:10", "type": "fear", "damage": 0, "discovered": false, "en": "God says, \"I will cut off the strength of the wicked.\"", "es": "Quebrantaré todo el poderío de los pecadores, y el poder del justo será exaltado.", "alt": ["I will cut off the strength of the wicked.", "All the horns of the wicked also will I cut off; but the horns of the righteous shall be exalted.", "All the horns of the wicked also will I cut off."]}
 ]
 
@@ -292,10 +310,10 @@ func _on_verse_submitted(text):
 	if typed_verse:
 		say_verse(typed_verse)
 	
-	# The player's verses hit the nearest enemy (no range limit, like before).
-	# Faith boosts the damage (x1.5 at +50%, x2 at +100%).
-	# Only the player can counter (true at the end).
-	apply_verse_effects(lower, get_nearest_enemy(), 1.0 + faith_bonus, true)
+	# Who it hits / heals: see targeting.gd (all enemies split by default, or
+	# the one you chose with Alt). Faith boosts the damage (x1.5 at +50%,
+	# x2 at +100%). Only the player can counter (true).
+	apply_verse_effects(lower, 1.0 + faith_bonus, true, true)
 	
 	# A real verse was recited: if it was our battle turn, the turn is over
 	if TurnManager.is_players_turn():
@@ -307,77 +325,119 @@ func _finish_typing():
 	verse_input.release_focus()
 	get_viewport().gui_release_focus()
 
-# Runs the effects of a recited verse. Used by the player (above) and by party
-# members like Pastor Ramuel (party_member.gd), so the effects live in one place.
+# Runs the effects of a recited verse (from its text). Used by the player
+# above; party members and scrolls call cast_verse() directly.
 #   lower        = the verse text in lowercase
-#   enemy        = the enemy lust verses should hit (can be null)
-#   damage_scale = multiplies attack damage (party members can hit softer/harder)
-#   can_counter  = true only for the player: Pastor Ramuel's recitals never
-#                  count as a counter (countering is the player's skill)
-# Light and zeal verses always power up the player.
-func apply_verse_effects(lower: String, enemy, damage_scale := 1.0, can_counter := false):
-	# Only run the effect type of the verse that matches best. (Without this,
+#   damage_scale = multiplies attack damage (Faith)
+#   can_counter  = true only for the player
+#   use_choice   = use the target chosen with Alt (targeting.gd)
+func apply_verse_effects(lower: String, damage_scale := 1.0, can_counter := false, use_choice := false):
+	# Only run the effect of the verse that matches best. (Without this,
 	# Matthew 5:28 was similar enough to Romans 12:11 to also trigger zeal.)
 	var best = _find_verse(lower)
-	var only_type = best.type if best else ""   # "" = unknown, try them all like before
-	
-	# Attack verses (Lust, Sloth, Universal) damage the enemy
-	if best and best.type in ATTACK_TYPES and enemy and is_instance_valid(enemy) and enemy.has_method("take_damage"):
-		_attack(best, enemy, damage_scale, can_counter)
-	
-	# Light
-	var matched = false
-	var duration = 70.0
-	if only_type == "light":
-		matched = true   # (also works for the Spanish text)
-	for verse in (light_verses if only_type == "" else []):
+	if best:
+		cast_verse(best, damage_scale, can_counter, use_choice)
+		return
+	# Not a known verse: the old light / zeal checks still work out of battle
+	for verse in light_verses:
 		if lower.similarity(verse.text) > 0.4 or lower.similarity(verse.ref) > 0.6:
-			matched = true
+			_light_up()
 			break
-	if matched:
-		light_timer = 0.0
-		light_duration = duration
-		if light: light.energy = 1.0
-		if near_light: near_light.energy = 1.0
-		if halo: halo.energy = 0.8
-		if lamp:
-			lamp.energy = 0.8
-	
-	# Guard (Psalm 17:8)
-	if only_type == "guard":
-		activate_guard()
-	
-	# Faith: attack up for the player
-	if only_type == "faith":
-		activate_faith()
-	
-	# Fear: every enemy in the battle attacks weaker. Outside a battle it hits
-	# the nearest enemy (and only starts counting down once a battle starts).
-	if only_type == "fear":
-		var targets = []
-		for e in TurnManager.battle_enemies:
-			if TurnManager._is_alive(e):
-				targets.append(e)
-		if targets.is_empty() and enemy and is_instance_valid(enemy):
-			targets.append(enemy)
-		for e in targets:
-			if e.has_method("apply_fear"):
-				e.apply_fear()
-	
-	# Zeal
-	for verse in (zeal_verses if only_type in ["", "zeal"] else []):
-		if only_type == "zeal" or lower.similarity(verse.text) > 0.4 or lower.similarity(verse.ref) > 0.6:
-			jump_velocity = -700
-			speed = 400
-			var timer_label = get_parent().get_node_or_null("CanvasLayer/TimerLabel")
-			if timer_label:
-				for i in range(3, 0, -1):
-					timer_label.text = str(i)
-					await get_tree().create_timer(1.0).timeout
-				timer_label.text = ""
-			jump_velocity = -400
-			speed = 200
+	for verse in zeal_verses:
+		if lower.similarity(verse.text) > 0.4 or lower.similarity(verse.ref) > 0.6:
+			_zeal_boost()
 			break
+
+# The effect of one verse (an entry of all_verses).
+#   damage_scale = attack damage multiplier (Faith for you, 0.25 for party members)
+#   heal_scale   = healing multiplier (1 for you and scrolls, 0.25 for party members)
+#   use_choice   = false for party members: they always use the default targets
+func cast_verse(verse, damage_scale := 1.0, can_counter := false, use_choice := true, heal_scale := 1.0):
+	match verse.type:
+		"sloth", "lust", "all":
+			# Attack: split between the targets (all enemies by default)
+			var targets = Targeting.attack_targets(use_choice)
+			for enemy in targets:
+				if is_instance_valid(enemy) and enemy.has_method("take_damage"):
+					_attack(verse, enemy, damage_scale / targets.size(), can_counter)
+		"heal":
+			heal_targets(Targeting.heal_targets(use_choice), verse.heal * heal_scale)
+		"light":
+			_light_up()
+		"guard":
+			activate_guard()
+		"faith":
+			activate_faith()
+		"fear":
+			# Fear: every enemy in the battle attacks weaker. Outside a battle it
+			# hits the nearest enemy (it starts counting down once a battle starts).
+			var targets = Targeting.battle_enemies()
+			var nearest = get_nearest_enemy()
+			if targets.is_empty() and nearest:
+				targets.append(nearest)
+			for e in targets:
+				if e.has_method("apply_fear"):
+					e.apply_fear()
+		"zeal":
+			_zeal_boost()
+
+# Heals "percent" % of max HP, split between the targets: with two targets
+# each gets half of (percent % of THEIR max HP).
+func heal_targets(targets: Array, percent: float):
+	var parts = []
+	for t in targets:
+		if is_instance_valid(t) and t.has_method("heal"):
+			var healed = t.heal(t.max_hp * percent / 100.0 / targets.size())
+			parts.append("%s +%s" % [tr(t.display_name), str(snapped(healed, 0.1))])
+	if TurnManager.in_battle and not parts.is_empty():
+		TurnManager.show_message(tr("Healed: %s") % ", ".join(parts))
+	print("Healed ", parts)
+
+# Light (Psalm 18:28...): lights up the dark for a while
+func _light_up():
+	light_timer = 0.0
+	light_duration = 70.0
+	if light: light.energy = 1.0
+	if near_light: near_light.energy = 1.0
+	if halo: halo.energy = 0.8
+	if lamp:
+		lamp.energy = 0.8
+
+# Zeal (Romans 12:11): run faster and jump higher for 3 seconds
+func _zeal_boost():
+	jump_velocity = -700
+	speed = 400
+	var timer_label = get_parent().get_node_or_null("CanvasLayer/TimerLabel")
+	if timer_label:
+		for i in range(3, 0, -1):
+			timer_label.text = str(i)
+			await get_tree().create_timer(1.0).timeout
+		timer_label.text = ""
+	jump_velocity = -400
+	speed = 200
+
+# Using a scroll from the inventory (inventory.gd). Like reciting its verse,
+# but the verse cycle isn't touched and the verse isn't discovered.
+func use_scroll(verse, item_name: String):
+	say_verse(verse)
+	_show_verse_message(tr("You read the %s") % item_name)
+	cast_verse(verse, 1.0 + faith_bonus, true, true)
+	if TurnManager.is_players_turn():
+		TurnManager.player_turn_finished.emit()
+
+# The entry of all_verses with this ref (or null)
+func get_verse(ref: String):
+	for v in all_verses:
+		if v.ref == ref:
+			return v
+	return null
+
+# True if you or your party member could use some healing
+func anyone_hurt() -> bool:
+	for t in Targeting.heal_targets(false):
+		if t.hp < t.max_hp:
+			return true
+	return false
 
 func _physics_process(delta):
 	if not is_on_floor():
@@ -445,7 +505,7 @@ func _update_verse_text():
 			var used = VerseManager.is_used(v.ref)
 			var color = "gray" if used else "lightgreen"
 			var status = tr("(used)") if used else tr("(ready)")
-			var power = _verse_power_text(v)
+			var power = verse_power_text(v)
 			var kind = tr("Universal (All)") if v.type == "all" else tr(v.type.capitalize())
 			display += "[color=%s]%s  %s\n%s  |  %s\n%s[/color]\n\n" % [color, VerseManager.ref_text(v.ref), status, power, kind, body]
 		else:
@@ -454,9 +514,12 @@ func _update_verse_text():
 		display += tr("(No verses of this kind yet)")
 	verse_text.text = display
 
-# The short "what it does" line shown for each verse in the verse box.
-func _verse_power_text(v) -> String:
+# The short "what it does" line shown for each verse in the verse box
+# (and in the inventory).
+func verse_power_text(v) -> String:
 	match v.type:
+		"heal":
+			return tr("Heals %d%% of max HP (split between you and your party)") % v.heal
 		"guard":
 			return tr("+%d%% defense, %d rounds") % [int(guard_reduction * 100), guard_rounds]
 		"faith":
@@ -695,6 +758,22 @@ func take_damage(amount):
 	set_hp(hp - amount)
 	return amount
 
+# Healing (never above max HP). Returns how much was really healed.
+func heal(amount) -> float:
+	var before = hp
+	set_hp(hp + amount)
+	var healed = hp - before
+	PopupText.spawn(self, "+" + str(snapped(healed, 0.1)), Color(0.45, 1.0, 0.5))
+	return healed
+
+# Skip Turn: costs skip_turn_cost of your max HP. Guard does NOT reduce it.
+# Returns the HP lost.
+func pay_skip_cost() -> float:
+	var cost = max_hp * skip_turn_cost
+	set_hp(hp - cost)
+	PopupText.spawn(self, "-" + str(snapped(cost, 0.1)), Color(1, 0.45, 0.4))
+	return cost
+
 # ---------------- Guard (Psalm 17:8) ----------------
 
 # Hits an enemy with an attack verse.
@@ -718,8 +797,9 @@ func _attack(verse, enemy, damage_scale: float, can_counter: bool):
 		if TurnManager.in_battle:
 			TurnManager.show_message(msg + " -" + str(snapped(damage, 0.1)))
 		print(msg)
-	enemy.take_damage(damage)
-	print("Hit for ", damage, "%")
+	var dealt = enemy.take_damage(damage)   # (after the enemy's hidden defense)
+	PopupText.spawn(enemy, "-" + str(snapped(dealt, 0.1)), Color.WHITE, Vector2(0, -100))
+	print("Hit ", enemy.display_name, " for ", damage, " (", dealt, " after defense)")
 	return damage
 
 # Turns the guard on (or refreshes it back to the full guard_rounds - it

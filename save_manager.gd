@@ -5,6 +5,8 @@ extends Node
 #   - player_hp            (player health)
 #   - defeated_enemies     (which enemies were beaten, per level)
 #   - unlocked_levels      (shared with menu_layer.gd)
+#   - collected_pickups    (items picked up from the floor, per level)
+#   (the inventory itself is in inventory.gd, party HP in party_manager.gd)
 # ...and writes everything (plus VerseManager's verse lists, the current
 # level and the player's position) to a save file.
 #
@@ -16,6 +18,10 @@ const SAVE_PATH = "user://savegame.cfg"
 const MAX_HP = 100
 
 var player_hp = MAX_HP
+
+# Same idea for items picked up from the floor (item_pickup.gd), so they stay
+# gone after saving and loading: { "res://Sloth.tscn": ["HealingScroll"] }
+var collected_pickups: Dictionary = {}
 
 # Example: { "res://Lust.tscn": ["Enemy"] }
 # Key = level scene file, value = names/paths of enemies beaten in that level.
@@ -72,6 +78,21 @@ func is_enemy_defeated(enemy: Node) -> bool:
 	return defeated_enemies.has(id[0]) and id[1] in defeated_enemies[id[0]]
 
 
+# ---------------- Picked-up items ----------------
+
+func mark_pickup_collected(pickup: Node) -> void:
+	var id = _enemy_id(pickup)   # (same "level + node path" id as enemies)
+	if not collected_pickups.has(id[0]):
+		collected_pickups[id[0]] = []
+	if not (id[1] in collected_pickups[id[0]]):
+		collected_pickups[id[0]].append(id[1])
+
+
+func is_pickup_collected(pickup: Node) -> bool:
+	var id = _enemy_id(pickup)
+	return collected_pickups.has(id[0]) and id[1] in collected_pickups[id[0]]
+
+
 func get_defeated_count() -> int:
 	var count = 0
 	for level in defeated_enemies:
@@ -86,6 +107,7 @@ func get_defeated_count() -> int:
 func start_new_level() -> void:
 	player_hp = MAX_HP
 	pending_position = null
+	PartyManager.reset_hp()   # party members back to full health too
 
 
 # Called by the player in _ready(). Puts the player where the save said.
@@ -112,6 +134,9 @@ func save_game() -> bool:
 	config.set_value("progress", "unlocked_levels", unlocked_levels)
 	config.set_value("progress", "language", language)
 	config.set_value("progress", "party", PartyManager.current)
+	config.set_value("progress", "party_hp", PartyManager.member_hp)
+	config.set_value("items", "inventory", Inventory.get_save_data())
+	config.set_value("items", "collected_pickups", collected_pickups)
 
 	var verses = VerseManager.get_save_data()
 	config.set_value("verses", "discovered", verses.discovered)
@@ -147,6 +172,9 @@ func load_game(change_level := true) -> bool:
 
 	set_language(config.get_value("progress", "language", "en"))
 	PartyManager.current = config.get_value("progress", "party", PartyManager.DEFAULT_MEMBER)
+	PartyManager.member_hp = config.get_value("progress", "party_hp", {})
+	Inventory.load_save_data(config.get_value("items", "inventory", {}))
+	collected_pickups = config.get_value("items", "collected_pickups", {})
 
 	VerseManager.load_save_data({
 		"discovered": config.get_value("verses", "discovered", []),

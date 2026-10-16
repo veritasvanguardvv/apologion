@@ -21,6 +21,7 @@ const DEFAULT_MEMBER = "ramuel"
 signal party_changed(member_id)
 
 var current = DEFAULT_MEMBER   # id from MEMBERS
+var member_hp = {}             # id -> HP (missing = full health). Saved by SaveManager.
 var spawn_distance = 90.0      # how far behind the player a new member appears
 
 var layer: CanvasLayer
@@ -75,6 +76,26 @@ func set_member(member_id: String) -> bool:
 	return true
 
 
+# ---------------- Health ----------------
+
+# "res://baana.tscn" -> "baana"
+func id_for_scene(path: String) -> String:
+	for id in MEMBERS:
+		if MEMBERS[id].scene == path:
+			return id
+	return path.get_file().get_basename()
+
+func get_hp(id: String, max_hp: float) -> float:
+	return member_hp.get(id, max_hp)
+
+func set_hp(id: String, hp: float):
+	member_hp[id] = hp
+
+# Everyone back to full health (a level started fresh, or you were defeated)
+func reset_hp():
+	member_hp = {}
+
+
 # ---------------- Selector window ----------------
 
 func open_selector():
@@ -89,6 +110,10 @@ func is_selector_open() -> bool:
 
 # P = open/close the selector (not while typing in the verse box)
 func _unhandled_input(event):
+	if event.is_action_pressed("ui_cancel") and panel.visible:
+		close_selector()   # (normally menu_layer.gd handles Esc first)
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("change_party") and not event.is_echo():
 		var focus = get_viewport().gui_get_focus_owner()
 		if focus is LineEdit or focus is TextEdit:

@@ -5,10 +5,18 @@ extends CharacterBody2D
 # (see turn_manager.gd). On his turn he recites a random verse from ALL the
 # verses (he knows them all). His recital never discovers a verse for the
 # player - the player still has to type it. The verse's effect is run by the player's own
-# apply_verse_effects() (character_body_2d.gd), so it works like when the
+# cast_verse() (character_body_2d.gd), so it works like when the
 # player types it, except:
 #   - it does NOT use up the player's verse cycle (VerseManager isn't touched)
-#   - lust damage is multiplied by damage_scale
+#   - attack damage AND healing are multiplied by damage_scale (25%)
+#   - he always uses the default targets (all enemies / you + him, split),
+#     never the one you chose with Alt (that's for your own verses)
+#
+# HP: party members have their own health (small bar above the head).
+# Enemies sometimes attack them (party_target_chance in enemy.gd). At 0 HP
+# they're knocked out: they skip their turns until a healing verse brings
+# them back. Their HP is kept between levels and in the save, and goes back
+# to full when a level is started fresh.
 #
 # Everything with @export can be changed in the Inspector when you click the
 # party member's root node in pastor_ramuel.tscn (or in a level).
@@ -33,7 +41,9 @@ extends CharacterBody2D
 
 @export_group("Fighting")
 @export var battle_speed = 8           # lower than the player's 10, so he acts right after you
-@export var damage_scale = 0.25        # 0.25 = a quarter of the verse's normal damage
+@export var damage_scale = 0.25        # 0.25 = a quarter of the verse's normal damage (and healing)
+@export var max_hp = 100
+@export var hp_bar_width = 70.0        # the small health bar above the head
 
 @export_group("Speech bubble")
 @export var bubble_max_width = 340.0     # the bubble wraps text wider than this (pixels)
@@ -64,10 +74,18 @@ var anim_time = 0.0
 @onready var walk_sprite = $Visual/WalkSprite
 # Speech bubble (white, see speech_bubble.gd). Built in _ready.
 var bubble
+const PopupText = preload("res://popup_text.gd")
+var hp = 100.0
+var knocked_out = false
+var member_id = ""            # "ramuel" / "baana" (see party_manager.gd)
+var hp_bar: ProgressBar
 
 
 func _ready():
 	add_to_group("party")   # TurnManager puts everyone in "party" into battles
+	member_id = PartyManager.id_for_scene(scene_file_path)
+	hp = PartyManager.get_hp(member_id, max_hp)
+	_build_hp_bar()
 	bubble = preload("res://speech_bubble.gd").new()
 	bubble.set_light_style()   # party members and the player have white bubbles
 	bubble.target = self
@@ -183,6 +201,9 @@ func _update_animation(delta):
 # Called by TurnManager when it's his turn in a battle. Returns how long the
 # speech bubble stays up, so TurnManager waits before the next turn.
 func take_turn():
+	if knocked_out:
+		TurnManager.show_message(tr("%s is knocked out...") % display_name)
+		return 0.0
 	if not recite_random_verse():
 		return _say("", "...")
 	return bubble_time_left
@@ -193,12 +214,7 @@ func take_turn():
 func recite_random_verse() -> bool:
 	if not _find_player():
 		return false
-	var target = null
-	for enemy in TurnManager.battle_enemies:
-		if TurnManager._is_alive(enemy):
-			if target == null or global_position.distance_to(enemy.get_center()) < global_position.distance_to(target.get_center()):
-				target = enemy
-	if target == null:
+	if Targeting.battle_enemies().is_empty():
 		return false
 	
 	# Any verse at all. Nothing here calls VerseManager, so his recital does
@@ -209,7 +225,8 @@ func recite_random_verse() -> bool:
 	
 	# Use the same language as the game so the effect matches
 	var text = player.verse_body(verse)
-	player.apply_verse_effects(text.to_lower(), target, damage_scale)
+	# Default targets (use_choice = false), 25% damage and 25% healing
+	player.cast_verse(verse, damage_scale, false, false, damage_scale)
 	
 	print(display_name, " recites ", verse.ref)
 	_say(VerseManager.ref_text(verse.ref), text.substr(0, 1).to_upper() + text.substr(1))
@@ -229,3 +246,48 @@ func _say(title: String, text: String) -> float:
 
 func _process(delta):
 	bubble_time_left = max(bubble_time_left - delta, 0.0)
+
+
+# ---------------- Health ----------------
+
+func _build_hp_bar():
+	hp_bar = ProgressBar.new()
+	hp_bar.name = "HPBar"
+	hp_bar.show_percentage = false
+	hp_bar.max_value = max_hp
+	hp_bar.size = Vector2(hp_bar_width, 10)
+	hp_bar.position = Vector2(-hp_bar_width / 2.0, bubble_head_offset + 4)
+	var fill = StyleBoxFlat.new()
+	fill.bg_color = Color(0.35, 0.85, 0.4)
+	hp_bar.add_theme_stylebox_override("fill", fill)
+	var back = StyleBoxFlat.new()
+	back.bg_color = Color(0.1, 0.1, 0.1, 0.8)
+	hp_bar.add_theme_stylebox_override("background", back)
+	add_child(hp_bar)
+	_update_hp()
+
+func _update_hp():
+	hp_bar.value = hp
+	knocked_out = hp <= 0.0
+	# Knocked out: greyed out and lying down
+	visual.modulate.a = 0.45 if knocked_out else 1.0
+	visual.rotation_degrees = 90.0 if knocked_out else 0.0
+	PartyManager.set_hp(member_id, hp)
+
+# Returns the damage taken. (Guard and Faith are the player's own.)
+func take_damage(amount) -> float:
+	var before = hp
+	hp = max(hp - amount, 0.0)
+	_update_hp()
+	PopupText.spawn(self, "-" + str(snapped(before - hp, 0.1)), Color(1, 0.45, 0.4), Vector2(0, -60))
+	if knocked_out:
+		print(display_name, " is knocked out")
+	return before - hp
+
+# Returns how much was really healed. Healing a knocked-out member revives them.
+func heal(amount) -> float:
+	var before = hp
+	hp = min(hp + amount, max_hp)
+	_update_hp()
+	PopupText.spawn(self, "+" + str(snapped(hp - before, 0.1)), Color(0.45, 1.0, 0.5), Vector2(0, -60))
+	return hp - before

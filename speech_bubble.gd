@@ -21,9 +21,14 @@ var ref_label: Label
 var text_label: Label
 var tail: Polygon2D
 var badge: Label
+# Several bubbles at once (e.g. two enemies): a newer bubble that would
+# cover an older one moves up above it.
+static var shown_counter = 0
+var shown_order = 0
 
 func _init():
 	layer = 4
+	add_to_group("speech_bubbles")
 	panel = PanelContainer.new()
 	style = StyleBoxFlat.new()
 	style.bg_color = Color(0.1, 0.08, 0.16, 0.94)
@@ -92,6 +97,8 @@ func say(title: String, text: String, show_badge := false, time := 3.0):
 	badge.visible = show_badge
 	stays_up = time <= 0.0
 	time_left = time
+	shown_counter += 1
+	shown_order = shown_counter
 	_place()
 
 func hide_bubble():
@@ -128,6 +135,13 @@ func _place():
 	var pos = Vector2(head.x - s.x / 2.0, head.y - s.y - 12.0)
 	pos.x = clamp(pos.x, margin + 14.0, max(margin, screen.x - s.x - margin))
 	pos.y = clamp(pos.y, margin + 14.0, max(margin, screen.y - s.y - margin))
+	# Don't cover an older bubble: go above it
+	for other in get_tree().get_nodes_in_group("speech_bubbles"):
+		if other != self and other.is_showing() and other.shown_order < shown_order:
+			var other_rect = Rect2(other.panel.position, other.panel.size).grow(6)
+			if other_rect.intersects(Rect2(pos, s)):
+				pos.y = other_rect.position.y - s.y - 8.0
+	pos.y = max(pos.y, margin)
 	panel.position = pos
 	tail.position = Vector2(clamp(head.x, pos.x + 16.0, pos.x + s.x - 16.0), pos.y + s.y - 2.0)
 	badge.position = pos + Vector2(-14, -14)

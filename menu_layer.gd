@@ -10,6 +10,7 @@ extends CanvasLayer
 var unlocked_levels = ["Sloth", "Gluttony", "Lust"]
 
 func _ready():
+	add_to_group("menus")   # so the inventory can check if a menu is open
 	# Use SaveManager's list so unlocked levels are remembered between
 	# scenes and get saved (it starts with the same three levels as above).
 	unlocked_levels = SaveManager.unlocked_levels
@@ -50,12 +51,34 @@ func _connect_if_exists(path: String, callable: Callable):
 	else:
 		print("Missing button: ", path)
 
+# Esc works like the "Back" button of whatever is open (top-most first):
+#   party selector / inventory -> closed
+#   Story Select -> Mode Select -> Main Menu
+#   pause menu -> closed (same as Continue)
+#   playing with nothing open -> pause menu (the game keeps running)
 func _input(event):
-	if event.is_action_pressed("ui_cancel"):
-		if pause_menu.visible:
-			_show_only(null)
-		elif not main_menu.visible and not mode_select.visible and not story_select.visible:
-			_show_only(pause_menu)
+	if not event.is_action_pressed("ui_cancel") or event.is_echo():
+		return
+	if PartyManager.is_selector_open():
+		PartyManager.close_selector()
+	elif Inventory.is_open():
+		Inventory.close()
+	elif story_select.visible:
+		_on_story_back_pressed()
+	elif mode_select.visible:
+		_on_mode_back_pressed()
+	elif pause_menu.visible:
+		_on_continue_pressed()
+	elif main_menu.visible:
+		return   # nothing to go back to
+	else:
+		_show_only(pause_menu)
+	get_viewport().set_input_as_handled()
+
+# True while the main menu, Mode Select or Story Select is on screen
+# (inventory.gd won't open over them)
+func is_main_menu_open() -> bool:
+	return main_menu.visible or mode_select.visible or story_select.visible
 
 func _on_continue_pressed():
 	_show_only(null)

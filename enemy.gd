@@ -3,7 +3,9 @@ extends CharacterBody2D
 const EnemyVerses = preload("res://enemy_verses.gd")
 const SpeechBubble = preload("res://speech_bubble.gd")
 
-var max_hp = 100
+const PopupText = preload("res://popup_text.gd")
+
+@export var max_hp = 100           # health (each enemy can have its own)
 var hp = 100
 
 # Hidden defense stat (never shown to the player): every verse that hits this
@@ -19,6 +21,9 @@ var hp = 100
 # Inspector to make enemies skip their turn instead.
 @export var can_attack = true
 @export var attack_damage = 5
+# Chance (0 to 1) that the basic attack hits your party member instead of you
+# (enemy VERSES always hit you). 0 = always attack the player.
+@export_range(0.0, 1.0, 0.05) var party_target_chance = 0.25
 
 # Fear (Psalm 75:10): this enemy's attack is lowered for a few rounds.
 # Recasting refreshes the duration (it doesn't stack).
@@ -54,6 +59,8 @@ func _ready():
 		queue_free()
 		return
 	add_to_group("enemies")  # lets the player and party members find enemies
+	hp = max_hp
+	hp_bar.max_value = max_hp
 	hp_bar.value = hp
 	if display_name == "":
 		display_name = str(name)
@@ -114,6 +121,13 @@ func take_turn():
 		var damage = attack_damage
 		if fear_rounds_left > 0:
 			damage *= (1.0 - fear_reduction)   # Fear: weaker attack
+		# Sometimes it goes for your party member (if they're still standing)
+		var party = _party_member_to_attack()
+		if party and randf() < party_target_chance:
+			var hit = party.take_damage(damage)
+			TurnManager.show_message(tr("%s attacks %s! -%s HP") % [display_name, party.display_name, str(snapped(hit, 0.1))])
+			print(display_name, " attacks ", party.display_name, " for ", hit)
+			return
 		# take_damage returns the damage after the player's guard (Psalm 17:8),
 		# so Fear and Guard together = 5 x 0.5 x 0.5 = 1.25
 		var dealt = player.take_damage(damage)
@@ -121,6 +135,13 @@ func take_turn():
 		print(display_name, " attacks for ", dealt)
 	else:
 		TurnManager.show_message(tr("%s waits...") % display_name)
+
+# The party member in this battle who can still be hit (or null)
+func _party_member_to_attack():
+	for member in get_tree().get_nodes_in_group("party"):
+		if TurnManager._is_alive(member) and member.has_method("take_damage") and not member.knocked_out:
+			return member
+	return null
 
 # Recites one of its verses: hurts the player, changes its type and maybe
 # opens a counter chance. Returns how long the battle should wait.
@@ -207,5 +228,5 @@ func take_damage(amount):
 		bubble.hide_bubble()
 		SaveManager.mark_enemy_defeated(self)  # remember it for saving
 		queue_free()  # enemy dies
-		print("Enemy defeated")
+		print(display_name, " defeated")
 	return amount

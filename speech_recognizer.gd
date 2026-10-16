@@ -28,6 +28,7 @@ signal transcribed(text)           # what was heard ("" = nothing understood)
 signal status(message)             # short messages like "Recognizing..."
 
 const MIC_BUS = "Mic"
+const EXTENSION_PATH = "res://addons/godot_whisper/godot_whisper.gdextension"
 
 # Model files to try, best first. Bigger = more accurate but slower.
 # ggml-tiny-q5_1.bin (32 MB) comes with the game; download base-q5_1 for
@@ -66,22 +67,84 @@ func _ready():
 	mic_player.bus = MIC_BUS
 	add_child(mic_player)
 	model_path = _find_model()
+	print_report()
 	if is_available():
 		stt = ClassDB.instantiate("SpeechToText")
 		add_child(stt)
-		print("Voice recognition ready (model: ", model_path.get_file(), ")")
-	else:
-		print("Voice recognition not available: ", _missing_reason())
 
 
 # True if speech-to-text can run (addon + model found)
 func is_available() -> bool:
 	return ClassDB.class_exists("SpeechToText") and model_path != ""
 
-func _missing_reason() -> String:
+
+# ---------------- Diagnostics ----------------
+# If voice doesn't work, the game says WHY (in the verse box) and the Output
+# panel / console shows a full "[Voice]" report. Tell whoever helps you what
+# it says.
+
+# The specific reason voice can't work, or "" if everything looks fine.
+# (English text with %s - translated with tr() where it's shown.)
+func problem() -> Array:
+	if not ProjectSettings.get_setting("audio/driver/enable_input", false):
+		return ["Voice: audio input is turned off (Project Settings > Audio > Driver > Enable Input)"]
+	if not FileAccess.file_exists(EXTENSION_PATH):
+		return ["Voice: the Godot Whisper addon is missing (%s)", EXTENSION_PATH]
+	var library = _library_path()
+	if library == "":
+		return ["Voice: the addon has no library for this computer (%s)", OS.get_name() + " " + Engine.get_architecture_name()]
+	if not FileAccess.file_exists(library):
+		return ["Voice: the addon's library file is missing: %s", library]
+	if not GDExtensionManager.is_extension_loaded(EXTENSION_PATH):
+		return ["Voice: the addon's library didn't load (%s). Restart Godot; if it still fails, look for 'Can't open dynamic library' in the Output panel", library.get_file()]
 	if not ClassDB.class_exists("SpeechToText"):
-		return "the Godot Whisper addon isn't loaded (addons/godot_whisper)"
-	return "no model file in res://models/"
+		return ["Voice: the addon loaded but has no SpeechToText class (wrong addon version?)"]
+	if model_path == "":
+		return ["Voice: no model file found. Put ggml-tiny-q5_1.bin in %s", "res://models/"]
+	if AudioServer.get_input_device_list().is_empty():
+		return ["Voice: no microphone found"]
+	return []
+
+# Same as problem(), translated and ready to show ("" = no problem)
+func problem_text() -> String:
+	var p = problem()
+	if p.is_empty():
+		return ""
+	return tr(p[0]) % p[1] if p.size() > 1 else tr(p[0])
+
+# Which library file the .gdextension wants on this computer, e.g.
+# res://addons/godot_whisper/bin/libgodot_whisper.windows.template_release.x86_64.dll
+func _library_path() -> String:
+	var config = ConfigFile.new()
+	if config.load(EXTENSION_PATH) != OK:
+		return ""
+	var os_name = OS.get_name().to_lower()   # "windows", "linux", "macos"...
+	if os_name in ["linux", "freebsd"]:
+		os_name = "linux"
+	var arch = Engine.get_architecture_name()   # "x86_64", "arm64"...
+	var build = "debug" if OS.is_debug_build() else "release"
+	for key in [os_name + "." + build + "." + arch, os_name + "." + arch, os_name + "." + build, os_name]:
+		if config.has_section_key("libraries", key):
+			var file = str(config.get_value("libraries", key))
+			return file if file.begins_with("res://") else EXTENSION_PATH.get_base_dir().path_join(file)
+	return ""
+
+# Prints everything we know about the voice setup (shown in Godot's Output panel)
+func print_report():
+	var library = _library_path()
+	print("[Voice] ---- voice recognition check ----")
+	print("[Voice] OS: ", OS.get_name(), " ", Engine.get_architecture_name(), (" (debug)" if OS.is_debug_build() else ""))
+	print("[Voice] audio/driver/enable_input: ", ProjectSettings.get_setting("audio/driver/enable_input", false))
+	print("[Voice] addon file: ", EXTENSION_PATH, " exists=", FileAccess.file_exists(EXTENSION_PATH))
+	print("[Voice] library: ", library, " exists=", library != "" and FileAccess.file_exists(library))
+	print("[Voice] library loaded: ", GDExtensionManager.is_extension_loaded(EXTENSION_PATH), "  SpeechToText class: ", ClassDB.class_exists("SpeechToText"))
+	print("[Voice] model: ", model_path if model_path != "" else "NONE (tried " + ", ".join(model_paths) + ")")
+	print("[Voice] microphones: ", AudioServer.get_input_device_list(), "  using: ", AudioServer.input_device)
+	var p = problem()
+	if p.is_empty():
+		print("[Voice] READY - hold Shift and speak")
+	else:
+		print("[Voice] NOT READY: ", (p[0] % p[1]) if p.size() > 1 else p[0])
 
 func _find_model() -> String:
 	for path in model_paths:
@@ -125,6 +188,10 @@ func start_listening():
 	if busy:
 		status.emit(tr("Still recognizing - wait a moment"))
 		return
+	if not problem().is_empty():
+		status.emit(problem_text())   # say exactly what's wrong
+		print("[Voice] ", problem_text())
+		return
 	listening = true
 	listen_time = 0.0
 	frames = PackedVector2Array()
@@ -142,10 +209,29 @@ func stop_listening():
 	mic_player.stop()
 	listening_changed.emit(false)
 	var seconds = frames.size() / AudioServer.get_mix_rate()
+	if listen_time >= min_record_seconds and frames.is_empty():
+		_mic_problem(tr("Voice: no sound came from the microphone (%s). Check Windows Settings > Privacy > Microphone") % AudioServer.input_device)
+		return
 	if seconds < min_record_seconds:
 		status.emit(tr("Hold Shift while you speak"))
 		return
+	if _loudest(frames) < silence_level:
+		_mic_problem(tr("Voice: the microphone only recorded silence (%s). Check it isn't muted and that apps may use it") % AudioServer.input_device)
+		return
 	transcribe_frames(frames)
+
+var silence_level = 0.002   # a recording quieter than this everywhere = the mic gives nothing
+
+func _mic_problem(message: String):
+	status.emit(message)
+	print("[Voice] ", message, "  microphones: ", AudioServer.get_input_device_list())
+
+# The loudest sample in a recording (0 = silence, 1 = maximum)
+static func _loudest(recording: PackedVector2Array) -> float:
+	var loudest = 0.0
+	for f in recording:
+		loudest = max(loudest, abs(f.x), abs(f.y))
+	return loudest
 
 
 func _process(delta):
@@ -166,7 +252,7 @@ func _collect_frames():
 # background thread, then emits "transcribed".
 func transcribe_frames(recording: PackedVector2Array):
 	if not is_available():
-		status.emit(tr("Voice recognition isn't set up (see VOICE_SETUP.md)"))
+		status.emit(problem_text())
 		return
 	if busy:
 		return

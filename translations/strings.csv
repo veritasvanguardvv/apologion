@@ -78,7 +78,6 @@ Listening... release Shift to recite,Listening... release Shift to recite,Escuch
 Didn't catch that - try again,Didn't catch that - try again,No te entendí: inténtalo de nuevo
 Still recognizing - wait a moment,Still recognizing - wait a moment,Aún reconociendo: espera un momento
 Hold Shift while you speak,Hold Shift while you speak,Mantén Shift mientras hablas
-Voice recognition isn't set up (see VOICE_SETUP.md),Voice recognition isn't set up (see VOICE_SETUP.md),El reconocimiento de voz no está instalado (ver VOICE_SETUP.md)
 Recognizing...,Recognizing...,Reconociendo...
 Psalm,Psalm,Salmos
 Genesis,Genesis,Génesis
@@ -88,3 +87,34 @@ Matthew,Matthew,Mateo
 Romans,Romans,Romanos
 1 Corinthians,1 Corinthians,1 Corintios
 Galatians,Galatians,Gálatas
+Heal,Heal,Curación
+Heals %d%% of max HP (split between you and your party),Heals %d%% of max HP (split between you and your party),Cura el %d%% de los PS máximos (repartido entre tú y tu compañero)
+Healed: %s,Healed: %s,Curación: %s
+You read the %s,You read the %s,Lees el %s
+Healing Scroll,Healing Scroll,Pergamino de sanación
+Battle Scroll,Battle Scroll,Pergamino de batalla
+Guard Scroll,Guard Scroll,Pergamino de protección
+Skip (K),Skip (K),Pasar (K)
+Target (Alt),Target (Alt),Objetivo (Alt)
+Target (Option),Target (Option),Objetivo (Option)
+You skipped your turn (-%s HP),You skipped your turn (-%s HP),Pasaste tu turno (-%s PS)
+%s attacks %s! -%s HP,%s attacks %s! -%s HP,¡%s ataca a %s! -%s PS
+%s is knocked out...,%s is knocked out...,%s está fuera de combate...
+Inventory (Ctrl),Inventory (Ctrl),Inventario (Ctrl)
+Use,Use,Usar
+No items yet. Look around the levels!,No items yet. Look around the levels!,Aún no tienes objetos. ¡Explora los niveles!
+You can't use that now,You can't use that now,Ahora no puedes usar eso
+Only in a battle,Only in a battle,Solo en batalla
+Everyone is at full health,Everyone is at full health,Todos tienen los PS al máximo
+Voice: audio input is turned off (Project Settings > Audio > Driver > Enable Input),Voice: audio input is turned off (Project Settings > Audio > Driver > Enable Input),Voz: la entrada de audio está desactivada (Configuración del proyecto > Audio > Driver > Enable Input)
+Voice: the Godot Whisper addon is missing (%s),Voice: the Godot Whisper addon is missing (%s),Voz: falta el complemento Godot Whisper (%s)
+Voice: the addon has no library for this computer (%s),Voice: the addon has no library for this computer (%s),Voz: el complemento no tiene una biblioteca para este ordenador (%s)
+Voice: the addon's library file is missing: %s,Voice: the addon's library file is missing: %s,Voz: falta el archivo de la biblioteca del complemento: %s
+"Voice: the addon's library didn't load (%s). Restart Godot; if it still fails, look for 'Can't open dynamic library' in the Output panel","Voice: the addon's library didn't load (%s). Restart Godot; if it still fails, look for 'Can't open dynamic library' in the Output panel","Voz: la biblioteca del complemento no se cargó (%s). Reinicia Godot; si sigue fallando, busca 'Can't open dynamic library' en el panel Salida"
+Voice: the addon loaded but has no SpeechToText class (wrong addon version?),Voice: the addon loaded but has no SpeechToText class (wrong addon version?),Voz: el complemento se cargó pero no tiene la clase SpeechToText (¿versión equivocada?)
+Voice: no model file found. Put ggml-tiny-q5_1.bin in %s,Voice: no model file found. Put ggml-tiny-q5_1.bin in %s,Voz: no se encontró ningún modelo. Pon ggml-tiny-q5_1.bin en %s
+Voice: no microphone found,Voice: no microphone found,Voz: no se encontró ningún micrófono
+Voice: no sound came from the microphone (%s). Check Windows Settings > Privacy > Microphone,Voice: no sound came from the microphone (%s). Check Windows Settings > Privacy > Microphone,Voz: no llegó sonido del micrófono (%s). Revisa Configuración de Windows > Privacidad > Micrófono
+Voice: the microphone only recorded silence (%s). Check it isn't muted and that apps may use it,Voice: the microphone only recorded silence (%s). Check it isn't muted and that apps may use it,Voz: el micrófono solo grabó silencio (%s). Comprueba que no esté silenciado y que las aplicaciones puedan usarlo
+John,John,Juan
+1 Peter,1 Peter,1 Pedro

@@ -14,6 +14,7 @@
 [ext_resource type="Script" uid="uid://bkw1wy34ffxqx" path="res://menu_layer.gd" id="12_5h0ix"]
 [ext_resource type="PackedScene" path="res://pastor_ramuel.tscn" id="13_ramuel"]
 [ext_resource type="PackedScene" path="res://umbrid.tscn" id="14_umbrid"]
+[ext_resource type="PackedScene" path="res://item_pickup.tscn" id="15_pickup"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b7ju8"]
 size = Vector2(86, 69.5)
@@ -130,6 +131,27 @@ position = Vector2(0, 570)
 
 [node name="Umbrid" parent="." unique_id=1129945107 instance=ExtResource("14_umbrid")]
 position = Vector2(2173, 465)
+
+[node name="Umbrid2" parent="." unique_id=1129945108 instance=ExtResource("14_umbrid")]
+position = Vector2(2400, 465)
+display_name = "Umbrid II"
+max_hp = 80
+battle_speed = 4
+attack_damage = 4
+defense = 0.6
+verse_every = 3
+
+[node name="HealingScroll" parent="." unique_id=1129945109 instance=ExtResource("15_pickup")]
+position = Vector2(-120, 548)
+item_id = "healing_scroll"
+
+[node name="BattleScroll" parent="." unique_id=1129945110 instance=ExtResource("15_pickup")]
+position = Vector2(240, 548)
+item_id = "battle_scroll"
+
+[node name="GuardScroll" parent="." unique_id=1129945111 instance=ExtResource("15_pickup")]
+position = Vector2(370, 548)
+item_id = "guard_scroll"
 
 [node name="(Darkness)CanvasModulate" type="CanvasModulate" parent="." unique_id=194229356]
 visible = false

@@ -16,6 +16,13 @@ extends Node
 #   4. The battle ends when all the enemies in it are defeated.
 #      If the player's HP reaches 0 the level restarts at full health.
 #   During a battle the player and party can't walk or jump (typing still works).
+#   SKIP: on your turn the Skip button (or K, when you're not typing) ends
+#      your turn without a verse, but costs 10% of your max HP
+#      (skip_turn_cost in character_body_2d.gd).
+#   TARGET: the Target button (or Alt / Option) chooses who your verse hits
+#      or heals - see targeting.gd.
+#   GROUPS: enemies standing close to an enemy that starts a battle join the
+#      same battle (group_join_range), so two Umbrids fight you together.
 #   5. RUN: on your turn press the Run button (or R, when you're not typing) to
 #      leave the battle. Enemies keep their HP, type and status. The battle
 #      won't start again until you walk out of the enemy's range - or, if you
@@ -30,6 +37,7 @@ var turn_delay = 1.0          # pause before a party member / enemy acts (second
 var after_turn_pause = 0.6    # pause after each turn so you can read what happened
 var intro_time = 1.0          # how long "An enemy appears!" shows
 var run_grace_time = 5.0      # after running, an enemy you stay close to attacks again after this many seconds
+var group_join_range = 400.0  # enemies this close to an enemy in the battle join it too
 
 signal battle_started
 signal battle_ended
@@ -47,6 +55,8 @@ var battle_id = 0             # changes every battle; stops old battles if the s
 
 var turn_label: Label
 var run_button: Button
+var skip_button: Button
+var target_button: Button
 var escaped_from = {}         # enemy -> seconds left before it can start a battle again (after Run)
 
 
@@ -85,6 +95,12 @@ func _ready():
 	run_button.visible = false
 	run_button.pressed.connect(run_away)
 	layer.add_child(run_button)
+	# Skip and Target buttons, stacked above Run
+	skip_button = _make_side_button("Skip (K)", -104, skip_turn)
+	layer.add_child(skip_button)
+	# (on a Mac the Alt key is called Option)
+	target_button = _make_side_button("Target (Option)" if OS.get_name() == "macOS" else "Target (Alt)", -152, Targeting.cycle)
+	layer.add_child(target_button)
 	
 	# Language switched mid-battle: redo the "your turn" message
 	# (and hide an old message like "Got away safely!" when not in a battle)
@@ -96,6 +112,24 @@ func _ready():
 	if battle_sound.stream and "loop" in battle_sound.stream:
 		battle_sound.stream.loop = false
 	add_child(battle_sound)
+
+
+# A button in the bottom-right corner (like Run), "top" pixels from the bottom
+func _make_side_button(text: String, top: float, action: Callable) -> Button:
+	var button = Button.new()
+	button.text = text
+	button.anchor_left = 1.0
+	button.anchor_right = 1.0
+	button.anchor_top = 1.0
+	button.anchor_bottom = 1.0
+	button.offset_left = -126
+	button.offset_right = -10
+	button.offset_top = top
+	button.offset_bottom = top + 44
+	button.focus_mode = Control.FOCUS_NONE
+	button.visible = false
+	button.pressed.connect(func(): action.call())
+	return button
 
 
 # Shows a message at the top of the screen. Pass text that's already
@@ -122,10 +156,23 @@ func is_players_turn() -> bool:
 # R (the "run_away" action in Project Settings > Input Map). When you're typing
 # in the verse box the LineEdit takes the key, so typing "r" never runs away.
 func _unhandled_input(event):
-	if event.is_action_pressed("run_away") and not event.is_echo():
-		var focus = get_viewport().gui_get_focus_owner()
-		if not (focus is LineEdit or focus is TextEdit):
-			run_away()
+	var focus = get_viewport().gui_get_focus_owner()
+	var typing = focus is LineEdit or focus is TextEdit
+	if event.is_action_pressed("run_away") and not event.is_echo() and not typing:
+		run_away()
+	elif event.is_action_pressed("skip_turn") and not event.is_echo() and not typing:
+		skip_turn()
+
+
+# Skip your turn (only on your turn): costs some HP, see character_body_2d.gd
+func skip_turn():
+	if not is_players_turn():
+		return
+	var player = get_tree().get_first_node_in_group("player")
+	var cost = player.pay_skip_cost()
+	show_message(tr("You skipped your turn (-%s HP)") % str(snapped(cost, 0.1)))
+	print("Skipped turn, -", cost, " HP")
+	player_turn_finished.emit()
 
 
 # Leave the battle (only on the player's turn). Enemies stay as they are.
@@ -149,10 +196,18 @@ func _physics_process(delta):
 	# Run button: visible in battles, usable on your turn
 	run_button.visible = in_battle
 	run_button.disabled = not is_players_turn()
+	skip_button.visible = in_battle
+	skip_button.disabled = not is_players_turn()
+	target_button.visible = in_battle
+	target_button.disabled = not is_players_turn() or Targeting.get_options().size() <= 1
 	if in_battle:
 		# The level changed or the player disappeared: forget the battle
 		if player == null or (current != null and not is_instance_valid(current)):
 			_end_battle()
+		# Every enemy was beaten while it was your turn (not by a verse of
+		# yours): your turn is over, so the battle can end with a Victory
+		elif is_players_turn() and not _enemies_left():
+			player_turn_finished.emit()
 		return
 	if player == null:
 		return
@@ -175,7 +230,23 @@ func _physics_process(delta):
 		if not is_instance_valid(enemy):
 			escaped_from.erase(enemy)
 	if not enemies.is_empty():
+		_add_nearby_enemies(enemies)
 		_run_battle(player, enemies)
+
+
+# Enemies close to the ones starting the battle join in (a group fight)
+func _add_nearby_enemies(enemies: Array):
+	var added = true
+	while added:
+		added = false
+		for other in get_tree().get_nodes_in_group("enemies"):
+			if other in enemies or not _is_alive(other) or escaped_from.has(other):
+				continue
+			for e in enemies:
+				if e.get_center().distance_to(other.get_center()) <= group_join_range:
+					enemies.append(other)
+					added = true
+					break
 
 
 func _is_alive(node) -> bool:
