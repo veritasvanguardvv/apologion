@@ -7,6 +7,11 @@ var gravity = 980
 var language = "en"
 var current_filter = "all"  # "all", "light", "zeal", "lust"
 
+# Turn-based battles (see turn_manager.gd). Higher battle_speed = acts earlier
+# in each round. ("speed" above is walking speed - a different thing.)
+@export var battle_speed = 10
+var display_name = "You"
+
 var base_scale_light = 1.2
 var base_scale_near = 0.6
 var base_scale_halo = 2.5
@@ -131,6 +136,13 @@ func _input(event):
 func _on_verse_submitted(text):
 	var lower = text.to_lower().strip_edges()
 	
+	# --- Battles (see turn_manager.gd) ---
+	# In a battle you can only recite on your own turn.
+	if TurnManager.in_battle and not TurnManager.is_players_turn():
+		_show_verse_message("Wait for your turn!")
+		_finish_typing()
+		return
+	
 	# --- Verse cycle (see verse_manager.gd) ---
 	# Figure out which verse was typed. A new verse gets discovered (and can be
 	# used right away). A verse already used this cycle is blocked until all
@@ -144,18 +156,29 @@ func _on_verse_submitted(text):
 		if not VerseManager.can_use(typed_verse.ref):
 			_show_verse_message("%s was already used - recite your other %d verse(s) first (Tab to see them)" % [typed_verse.ref, VerseManager.remaining_count()])
 			print(typed_verse.ref, " is on cooldown")
-			verse_input.clear()
-			verse_input.release_focus()
-			get_viewport().gui_release_focus()
-			return
+			_finish_typing()
+			return   # in a battle this does NOT use up your turn
 		VerseManager.mark_used(typed_verse.ref)
+	elif TurnManager.in_battle:
+		# Not a verse we recognise: let the player try again (turn not used)
+		_show_verse_message("That's not a verse you know - try again")
+		_finish_typing()
+		return
 	
-	verse_input.clear()
-	verse_input.release_focus()
-	get_viewport().gui_release_focus()
+	_finish_typing()
 	
 	# The player's verses hit the nearest enemy (no range limit, like before)
 	apply_verse_effects(lower, get_nearest_enemy())
+	
+	# A real verse was recited: if it was our battle turn, the turn is over
+	if TurnManager.is_players_turn():
+		TurnManager.player_turn_finished.emit()
+
+# Empties the verse box and gives keyboard control back to the game.
+func _finish_typing():
+	verse_input.clear()
+	verse_input.release_focus()
+	get_viewport().gui_release_focus()
 
 # Runs the effects of a recited verse. Used by the player (above) and by party
 # members like Pastor Ramuel (party_member.gd), so the effects live in one place.
@@ -164,8 +187,13 @@ func _on_verse_submitted(text):
 #   damage_scale = multiplies lust damage (party members can hit softer/harder)
 # Light and zeal verses always power up the player.
 func apply_verse_effects(lower: String, enemy, damage_scale := 1.0):
+	# Only run the effect type of the verse that matches best. (Without this,
+	# Matthew 5:28 was similar enough to Romans 12:11 to also trigger zeal.)
+	var best = _find_verse(lower)
+	var only_type = best.type if best else ""   # "" = unknown, try them all like before
+	
 	# Lust damage
-	for verse in lust_verses:
+	for verse in (lust_verses if only_type in ["", "lust"] else []):
 		var target = verse.en if language == "en" else verse.es
 		if lower.similarity(target) > 0.5 or lower.similarity(verse.ref) > 0.6:
 			if enemy and is_instance_valid(enemy) and enemy.has_method("take_damage"):
@@ -176,7 +204,7 @@ func apply_verse_effects(lower: String, enemy, damage_scale := 1.0):
 	# Light
 	var matched = false
 	var duration = 70.0
-	for verse in light_verses:
+	for verse in (light_verses if only_type in ["", "light"] else []):
 		if lower.similarity(verse.text) > 0.4 or lower.similarity(verse.ref) > 0.6:
 			matched = true
 			break
@@ -190,7 +218,7 @@ func apply_verse_effects(lower: String, enemy, damage_scale := 1.0):
 			lamp.energy = 0.8
 	
 	# Zeal
-	for verse in zeal_verses:
+	for verse in (zeal_verses if only_type in ["", "zeal"] else []):
 		if lower.similarity(verse.text) > 0.4 or lower.similarity(verse.ref) > 0.6:
 			jump_velocity = -700
 			speed = 400
@@ -207,9 +235,11 @@ func apply_verse_effects(lower: String, enemy, damage_scale := 1.0):
 func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += gravity * delta
-	if Input.is_action_just_pressed("ui_select") and is_on_floor() and not verse_input.has_focus():
+	# During a battle you stay where you are (no walking or jumping)
+	var in_battle = TurnManager.in_battle
+	if Input.is_action_just_pressed("ui_select") and is_on_floor() and not verse_input.has_focus() and not in_battle:
 		velocity.y = jump_velocity
-	var direction = Input.get_axis("ui_left", "ui_right")
+	var direction = 0.0 if in_battle else Input.get_axis("ui_left", "ui_right")
 	velocity.x = direction * speed if direction else move_toward(velocity.x, 0, speed)
 	move_and_slide()
 
@@ -298,14 +328,19 @@ func mark_discovered_by_text(text: String):
 			return
 
 
+# Where the player's body really is. The sprite and collision shape are moved
+# away from the player's origin in the scenes, so use the collision shape.
+func get_body_center() -> Vector2:
+	var shape = get_node_or_null("CollisionShape2D")
+	return shape.global_position if shape else global_position
+
 # Finds the closest living enemy (every enemy using enemy.gd is in the
 # "enemies" group). Returns null if there are none. If max_distance is more
 # than 0, enemies further away than that are ignored.
 # from_position defaults to the player's body (its collision shape).
 func get_nearest_enemy(from_position = null, max_distance := 0.0):
 	if from_position == null:
-		var shape = get_node_or_null("CollisionShape2D")
-		from_position = shape.global_position if shape else global_position
+		from_position = get_body_center()
 	var nearest = null
 	var nearest_distance = INF
 	for enemy in get_tree().get_nodes_in_group("enemies"):
