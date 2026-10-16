@@ -199,9 +199,6 @@ Loading...,Loading...,Cargando...,Wczytywanie...
 enemies defeated,enemies defeated,enemigos derrotados,pokonanych wrogów
 No entries yet,No entries yet,Aún no hay entradas,Brak wpisów
 Press Up to enter,Press Up to enter,Pulsa Arriba para entrar,"Naciśnij strzałkę w górę, aby wejść"
-Coins: %d,Coins: %d,Monedas: %d,Monety: %d
-Gold: %d (G to drop),Gold: %d (G to drop),Oro: %d (G para soltarlo),"Złoto: %d (G, aby upuścić)"
-Dropped the gold,Dropped the gold,Soltaste el oro,Upuszczono złoto
 I guess I am too heavy...,I guess I am too heavy...,Supongo que soy demasiado pesado…,Chyba jestem za ciężki…
 You fell... restarting the level,You fell... restarting the level,Te caíste... reiniciando el nivel,Spadłeś... poziom zaczyna się od nowa
 You defeated the forces of greed!,You defeated the forces of greed!,¡Derrotaste a las fuerzas de la avaricia!,Pokonałeś siły chciwości!
@@ -293,3 +290,10 @@ Zephaniah,Zephaniah,Sofonías,Sofoniasza
 Haggai,Haggai,Hageo,Aggeusza
 Zechariah,Zechariah,Zacarías,Zachariasza
 Malachi,Malachi,Malaquías,Malachiasza
+Money,Money,Dinero,Pieniądze
+Gold Bar,Gold Bar,Lingote de oro,Sztabka złota
+Drop,Drop,Soltar,Upuść
+Dropped: %s,Dropped: %s,Soltaste: %s,Upuszczono: %s
+"Click an item (or press 1-9): U = Use, Delete = Drop","Click an item (or press 1-9): U = Use, Delete = Drop","Haz clic en un objeto (o pulsa 1-9): U = Usar, Supr = Soltar","Kliknij przedmiot (lub naciśnij 1-9): U = Użyj, Delete = Upuść"
+Heavy: in some places you can't jump as high while you carry it.,Heavy: in some places you can't jump as high while you carry it.,Pesado: en algunos lugares no puedes saltar tan alto mientras lo llevas.,"Ciężka: w niektórych miejscach nie skoczysz tak wysoko, gdy ją niesiesz."
+Riches make themselves wings and fly away (Proverbs 23:5).,Riches make themselves wings and fly away (Proverbs 23:5).,Las riquezas se hacen alas y se van volando (Proverbios 23:5).,Bogactwo sprawia sobie skrzydła i odlatuje (Przysłów 23:5).

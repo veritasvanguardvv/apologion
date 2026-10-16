@@ -10,6 +10,7 @@ extends Area2D
 @export var bob_height = 4.0        # it floats up and down a little (pixels)
 @export var bob_speed = 3.0
 @export var icon_scale = 0.75       # size of the 64x64 icon
+@export var pickup_delay = 0.0      # seconds before it can be picked up (dropped items: 1 s)
 
 var time = 0.0
 @onready var icon = $Icon
@@ -27,6 +28,10 @@ func _ready():
 	icon.scale = Vector2.ONE * icon_scale
 	time = randf() * TAU   # so several pickups don't bob in sync
 	body_entered.connect(_on_body_entered)
+	if pickup_delay > 0:
+		monitoring = false
+		get_tree().create_timer(pickup_delay).timeout.connect(func():
+			if is_instance_valid(self): monitoring = true)
 
 
 func _process(delta):
@@ -38,7 +43,8 @@ func _on_body_entered(body):
 	if not body.is_in_group("player") or is_queued_for_deletion():
 		return
 	Inventory.add(item_id)
-	SaveManager.mark_pickup_collected(self)
+	if not has_meta("dropped"):
+		SaveManager.mark_pickup_collected(self)
 	_pop_text("+ " + tr(Inventory.get_item(item_id).name))
 	print("Picked up ", item_id)
 	queue_free()

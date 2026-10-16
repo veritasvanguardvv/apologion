@@ -6,8 +6,9 @@ extends Node2D
 # level-wide bits that Unity's Game.cs / JumpModifier.cs did:
 #   - rooms: the outdoor area and the treasure room (press Up at a door)
 #   - camera limits per room (Unity used camera "Bounds" polygons)
-#   - coins and gold you pick up (greed_pickup.gd) + a small counter
-#   - "burden": carrying gold makes you too heavy in some spots (G drops it)
+#   - "burden": carrying a gold bar (it's in your inventory) makes you too
+#     heavy in some spots. Drop it from the inventory (Ctrl > click it > Drop).
+#     Money you pick up goes in the inventory too and flies away (inventory.gd).
 #   - falling into a pit restarts the level
 #   - breaking the Golden Calf (after beating the Greedwraith) wins the level
 
@@ -29,13 +30,10 @@ const PopupText = preload("res://popup_text.gd")
 
 var current_room = 0
 var room_to_enter = -1
-var money = 0
-var gold = 0
 var in_burden_area = false
 var burden_hints = 0
 var base_gravity = -1.0
 var restarting = false
-var hud: Label
 var prompt: Label
 var music_player: AudioStreamPlayer
 
@@ -89,11 +87,6 @@ func _unhandled_input(event):
 	if event.is_action_pressed("interact") and room_to_enter != -1:
 		enter_room(room_to_enter)
 		get_viewport().set_input_as_handled()
-	elif event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_G and gold > 0:
-		gold -= 1
-		PopupText.spawn(player, tr("Dropped the gold"), Color(1, 0.85, 0.3))
-		_update_gravity()
-		_update_hud()
 
 
 # ---------------- Rooms (Game.CanEnterRoom / TryEnterRoom) ----------------
@@ -156,23 +149,21 @@ func _apply_camera_limits():
 	cam.limit_bottom = int(cx.y + h / 2.0)
 
 
-# ---------------- Coins, gold and the burden ----------------
+# ---------------- Gold and the burden ----------------
 
-func add_money(amount := 1):
-	money += amount
-	_update_hud()
-
-
-func add_gold(amount := 1):
-	gold += amount
-	_update_hud()
-	_update_gravity()
+# How many heavy items (gold bars) you carry (they're in the inventory)
+func carried_gold() -> int:
+	var n = 0
+	for id in Inventory.items:
+		if Inventory.get_item(id).get("heavy", false):
+			n += Inventory.count(id)
+	return n
 
 
 func set_burden_area(state: bool):
 	in_burden_area = state
 	_update_gravity()
-	if state and gold > 0:
+	if state and carried_gold() > 0:
 		var player = _player()
 		if player:
 			PopupText.spawn(player, tr("I guess I am too heavy..."), Color(1, 0.9, 0.6), Vector2(0, -110), 2.5)
@@ -188,7 +179,7 @@ func _update_gravity():
 		return
 	if base_gravity < 0:
 		base_gravity = player.gravity
-	player.gravity = base_gravity * (burden_gravity if in_burden_area and gold > 0 else 1.0)
+	player.gravity = base_gravity * (burden_gravity if in_burden_area and carried_gold() > 0 else 1.0)
 
 
 # ---------------- Letters / dialogs ----------------
@@ -237,13 +228,6 @@ func _build_hud():
 	var layer = CanvasLayer.new()
 	layer.name = "GreedHUD"
 	add_child(layer)
-	hud = Label.new()
-	hud.position = Vector2(15, 160)
-	hud.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	hud.add_theme_color_override("font_color", Color(1, 0.88, 0.35))
-	hud.add_theme_color_override("font_outline_color", Color.BLACK)
-	hud.add_theme_constant_override("outline_size", 5)
-	layer.add_child(hud)
 	prompt = Label.new()
 	prompt.text = "Press Up to enter"
 	prompt.anchor_left = 0.5
@@ -256,16 +240,9 @@ func _build_hud():
 	prompt.visible = false
 	layer.add_child(prompt)
 	SaveManager.language_changed.connect(_on_language_changed)
-	_update_hud()
-
-
-func _update_hud():
-	var text = tr("Coins: %d") % money
-	if gold > 0:
-		text += "   " + tr("Gold: %d (G to drop)") % gold
-	hud.text = text
+	# Picking up / dropping gold changes how heavy you are
+	Inventory.changed.connect(_update_gravity)
 
 
 func _on_language_changed(_new_language):
-	_update_hud()
 	prompt.text = tr("Press Up to enter")

@@ -32,12 +32,19 @@ extends Node
 # Party members and enemies also need a take_turn() function.
 # The numbers below can be changed right here in this file.
 
-var encounter_range = 450.0   # how close (pixels) an enemy must be to start a battle
+# A battle starts when an enemy's body (its collision shape) is close to
+# yours, measured edge to edge: at most encounter_range pixels of empty space
+# sideways AND at most encounter_height pixels above/below - so you have to be
+# at about the same height. Enemies on a ledge above you no longer start a
+# battle from far away. (Edge to edge, so big enemies and small ones work alike.)
+var encounter_range = 120.0   # sideways gap (pixels). 0 = no battles (used by tests)
+var encounter_height = 60.0   # up/down gap (pixels); 0 = the bodies must overlap in height
 var turn_delay = 1.0          # pause before a party member / enemy acts (seconds)
 var after_turn_pause = 0.6    # pause after each turn so you can read what happened
 var intro_time = 1.0          # how long "An enemy appears!" shows
 var run_grace_time = 5.0      # after running, an enemy you stay close to attacks again after this many seconds
-var group_join_range = 400.0  # enemies this close to an enemy in the battle join it too
+var group_join_range = 250.0  # enemies within this sideways gap of an enemy in the battle join it too...
+var group_join_height = 60.0  # ...if they're also within this up/down gap
 
 signal battle_started
 signal battle_ended
@@ -219,7 +226,7 @@ func _physics_process(delta):
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		if not _is_alive(enemy):
 			continue
-		var in_range = player.get_body_center().distance_to(enemy.get_center()) <= encounter_range
+		var in_range = in_encounter_range(player, enemy)
 		# Recently escaped from? It waits until you leave its range or the grace time ends.
 		if escaped_from.has(enemy):
 			escaped_from[enemy] -= delta
@@ -237,6 +244,30 @@ func _physics_process(delta):
 		_run_battle(player, enemies)
 
 
+# True if the enemy is close enough to the player to start a battle
+func in_encounter_range(player: Node2D, enemy: Node2D) -> bool:
+	if encounter_range <= 0.0:
+		return false
+	var gap = body_gap(player, enemy)
+	return gap.x <= encounter_range and gap.y <= encounter_height
+
+# Empty space between two bodies (x = sideways, y = up/down; 0 = they overlap)
+func body_gap(a: Node2D, b: Node2D) -> Vector2:
+	var ra = body_rect(a)
+	var rb = body_rect(b)
+	return Vector2(
+		max(0.0, max(ra.position.x - rb.end.x, rb.position.x - ra.end.x)),
+		max(0.0, max(ra.position.y - rb.end.y, rb.position.y - ra.end.y)))
+
+# A body's rectangle in the world (from its CollisionShape2D)
+static func body_rect(node: Node2D) -> Rect2:
+	var shape = node.get_node_or_null("CollisionShape2D")
+	if shape and shape.shape:
+		var r = shape.shape.get_rect()
+		var sc = shape.global_transform.get_scale().abs()
+		return Rect2(shape.global_position + r.position * sc, r.size * sc)
+	return Rect2(node.global_position - Vector2(30, 30), Vector2(60, 60))
+
 # Enemies close to the ones starting the battle join in (a group fight)
 func _add_nearby_enemies(enemies: Array):
 	var added = true
@@ -246,7 +277,8 @@ func _add_nearby_enemies(enemies: Array):
 			if other in enemies or not _is_alive(other) or escaped_from.has(other):
 				continue
 			for e in enemies:
-				if e.get_center().distance_to(other.get_center()) <= group_join_range:
+				var gap = body_gap(e, other)
+				if gap.x <= group_join_range and gap.y <= group_join_height:
 					enemies.append(other)
 					added = true
 					break

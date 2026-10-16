@@ -1,7 +1,9 @@
 extends Area2D
 # Port of Unity's InteractableItem.cs (+ RandomRot.cs) for the Greed level.
-#   money  - a coin (+1 to the coin counter)
-#   gold   - a gold bar: makes you heavy in some spots (greed_level.gd)
+#   money  - floating money: goes in your inventory (NOT a coin counter) and
+#            flies away when you open the inventory (inventory.gd, Proverbs 23:5)
+#   gold   - a gold bar for your inventory: makes you heavy in some spots
+#            (greed_level.gd) until you drop it (inventory: click it > Drop)
 #   heal   - heals value1 HP right away
 #   speed  - walk speed x value1 for value2 seconds
 #   spell  - a Battle Scroll for your inventory (Ctrl)
@@ -18,6 +20,7 @@ const PopupText = preload("res://popup_text.gd")
 @export var letter_key = ""
 @export var start_active = true
 @export var collect_sound: AudioStream
+@export var pickup_delay = 0.0   # seconds before it can be picked up (dropped gold: 1 s)
 
 var time = 0.0
 var icon: Node2D
@@ -25,7 +28,7 @@ var icon_y = 0.0
 
 
 func _ready():
-	if SaveManager.is_pickup_collected(self):
+	if not has_meta("dropped") and SaveManager.is_pickup_collected(self):
 		queue_free()
 		return
 	icon = get_node_or_null("Icon")
@@ -37,6 +40,10 @@ func _ready():
 	body_entered.connect(_on_body_entered)
 	if not start_active:
 		set_active(false)
+	elif pickup_delay > 0:
+		monitoring = false
+		get_tree().create_timer(pickup_delay).timeout.connect(func():
+			if is_instance_valid(self) and visible: monitoring = true)
 
 
 func _process(delta):
@@ -56,12 +63,10 @@ func _on_body_entered(body):
 	var level = owner if owner else get_tree().current_scene
 	match kind:
 		"money":
-			if level.has_method("add_money"):
-				level.add_money(1)
-			PopupText.spawn(body, "+1", Color(1, 0.9, 0.35))
+			Inventory.add("money")
+			PopupText.spawn(body, "+ " + tr("Money"), Color(1, 0.9, 0.35))
 		"gold":
-			if level.has_method("add_gold"):
-				level.add_gold(1)
+			Inventory.add("gold_bar")
 			PopupText.spawn(body, tr("+ Gold"), Color(1, 0.85, 0.2))
 		"heal":
 			body.heal(value1 if value1 > 0 else 25.0)
@@ -79,7 +84,8 @@ func _on_body_entered(body):
 		level.add_child(p)
 		p.play()
 		p.finished.connect(p.queue_free)
-	SaveManager.mark_pickup_collected(self)
+	if not has_meta("dropped"):
+		SaveManager.mark_pickup_collected(self)
 	queue_free()
 
 

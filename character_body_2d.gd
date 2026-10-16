@@ -16,12 +16,13 @@ var language: String:
 	get:
 		return SaveManager.language
 # Verse box filter (see _build_verse_panel). Four groups of verse types:
+# Pressing a button again cycles through its sub-filters, e.g.
+# Attacks (all) > Sloth > Lust > Greed > Universal > Attacks (all).
 const FILTER_GROUPS = {
-	"Attacks": ["sloth", "lust", "greed", "all"], # 1st button ("all" = Universal: hurts any enemy type)
-	"Greed": ["greed", "heal"],                 # 2nd button: every verse from the Greed table (data/greed_verses.json)
-	"Status": ["zeal", "guard", "faith", "fear"], # 3rd button
-	"Special": ["light"],                       # 4th button
-	"Heal": ["heal"],                           # 5th (rightmost) button
+	"Attacks": ["sloth", "lust", "greed", "all"], # 1st button ("all" = Universal: hurts any enemy type; "greed" = the Greed verses' attacks)
+	"Status": ["zeal", "guard", "faith", "fear"], # 2nd button
+	"Special": ["light"],                       # 3rd button
+	"Heal": ["heal"],                           # 4th (rightmost) button (includes Greed verses that only heal)
 }
 const ATTACK_TYPES = ["sloth", "lust", "greed", "all"]   # verse types that do damage
 # The Greed verses live in a data file (made from the design table by
@@ -257,14 +258,11 @@ func _update_filter_buttons():
 			button.text = tr(group)
 			button.modulate = Color.WHITE
 
-# True if a verse passes the current filter. The Greed button shows only the
-# verses from the Greed table (its types: "greed" = attacks, "heal").
+# True if a verse passes the current filter.
 func _passes_filter(v) -> bool:
 	var type = v.type
 	if filter_group == "all":
 		return true
-	if filter_group == "Greed" and v.get("set", "") != "greed":
-		return false
 	if filter_type == "*":
 		return type in FILTER_GROUPS[filter_group]
 	return type == filter_type

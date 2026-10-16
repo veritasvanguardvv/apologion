@@ -11,6 +11,17 @@ extends RefCounted
 #                     verse in your cycle and does NOT discover it.
 #   outside_battle  = can it be used when you're not in a battle?
 #                     (healing: yes, attacks: no - there's nobody to hit)
+#   icon_region     = (optional) only this part of the icon picture
+#   flies_away      = money: when you open the inventory it flies off the
+#                     screen and is gone ("Riches certainly make themselves
+#                     wings; they fly away as an eagle" - Proverbs 23:5)
+#   heavy           = gold: makes you too heavy in the Greed level's burden
+#                     spots (greed_level.gd). Drop it to be light again.
+#   drop_pickup     = what is left on the ground when you drop it:
+#                     "item" = an item_pickup.tscn you can pick up again,
+#                     "greed:<kind>" = a Greed pickup (greed_pickup.gd),
+#                     "" = it's just thrown away
+# Every item can be dropped (inventory: click it, then Drop).
 
 const ITEMS = {
 	"healing_scroll": {
@@ -18,17 +29,34 @@ const ITEMS = {
 		"icon": "res://Items/fc112.png",   # green scroll
 		"verse": "1 Peter 2:24b",          # heals 50% of max HP
 		"outside_battle": true,
+		"drop_pickup": "item",
 	},
 	"battle_scroll": {
 		"name": "Battle Scroll",
 		"icon": "res://Items/fc110.png",   # red scroll
 		"verse": "Galatians 3:13",         # Universal attack (hurts any enemy type)
 		"outside_battle": false,
+		"drop_pickup": "item",
 	},
 	"guard_scroll": {
 		"name": "Guard Scroll",
 		"icon": "res://Items/fc111.png",   # blue scroll
 		"verse": "Psalm 17:8",             # Guard: enemies do half damage for 3 rounds
 		"outside_battle": true,
+		"drop_pickup": "item",
+	},
+	# Greed level (greed_pickup.gd)
+	"money": {
+		"name": "Money",
+		"icon": "res://Greed/money.png",
+		"flies_away": true,
+		"drop_pickup": "",                 # dropped money is just gone
+	},
+	"gold_bar": {
+		"name": "Gold Bar",
+		"icon": "res://Greed/treasure_icons_16x16.png",
+		"icon_region": Rect2(49, 32, 15, 16),
+		"heavy": true,
+		"drop_pickup": "greed:gold",
 	},
 }
