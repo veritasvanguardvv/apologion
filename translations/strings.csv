@@ -54,11 +54,11 @@ Show all,Show all,Mostrar todo,Pokaż wszystko
 Attacks,Attacks,Ataques,Ataki
 Status,Status,Estados,Stany
 Special,Special,Especial,Specjalne
-%s (all),%s (all),%s (todos),%s (wszystkie)
+%s (all),%s (all),%s (todos),%s (wsz.)
 Ready this cycle: %d of %d,Ready this cycle: %d of %d,Listos en este ciclo: %d de %d,Gotowe w tym cyklu: %d z %d
 (used),(used),(usado),(użyty)
 (ready),(ready),(listo),(gotowy)
-Universal (All),Universal (All),Universal (todos),Uniwersalny (wszystkie)
+Universal (All),Universal (All),Universal (todos),Uniwersalny
 Universal,Universal,Universal,Uniwersalny
 (No verses of this kind yet),(No verses of this kind yet),(Aún no hay versículos de este tipo),(Brak jeszcze wersetów tego rodzaju)
 Zeal,Zeal,Celo,Gorliwość
@@ -108,7 +108,7 @@ Only in a battle,Only in a battle,Solo en batalla,Tylko podczas walki
 Everyone is at full health,Everyone is at full health,Todos tienen los PS al máximo,Wszyscy mają pełne zdrowie
 Voice: audio input is turned off (Project Settings > Audio > Driver > Enable Input),Voice: audio input is turned off (Project Settings > Audio > Driver > Enable Input),Voz: la entrada de audio está desactivada (Configuración del proyecto > Audio > Driver > Enable Input),Głos: wejście audio jest wyłączone (Ustawienia projektu > Audio > Driver > Enable Input)
 Voice: the Godot Whisper addon is missing (%s),Voice: the Godot Whisper addon is missing (%s),Voz: falta el complemento Godot Whisper (%s),Głos: brakuje dodatku Godot Whisper (%s)
-Voice: the addon has no library for this computer (%s),Voice: the addon has no library for this computer (%s),Voz: el complemento no tiene una biblioteca para este ordenador (%s),Głos: dodatek nie ma biblioteki dla tego komputera (%s)
+"Voice input isn't available on this computer yet (%s). Type the verse and press Enter instead.","Voice input isn't available on this computer yet (%s). Type the verse and press Enter instead.","La entrada por voz aún no está disponible en este ordenador (%s). Escribe el versículo y pulsa Enter.","Wprowadzanie głosem nie jest jeszcze dostępne na tym komputerze (%s). Wpisz werset i naciśnij Enter."
 Voice: the addon's library file is missing: %s,Voice: the addon's library file is missing: %s,Voz: falta el archivo de la biblioteca del complemento: %s,Głos: brakuje pliku biblioteki dodatku: %s
 "Voice: the addon's library didn't load (%s). Restart Godot; if it still fails, look for 'Can't open dynamic library' in the Output panel","Voice: the addon's library didn't load (%s). Restart Godot; if it still fails, look for 'Can't open dynamic library' in the Output panel","Voz: la biblioteca del complemento no se cargó (%s). Reinicia Godot; si sigue fallando, busca 'Can't open dynamic library' en el panel Salida","Głos: biblioteka dodatku się nie wczytała (%s). Uruchom ponownie Godot; jeśli nadal nie działa, poszukaj 'Can't open dynamic library' w panelu Wyjście"
 Voice: the addon loaded but has no SpeechToText class (wrong addon version?),Voice: the addon loaded but has no SpeechToText class (wrong addon version?),Voz: el complemento se cargó pero no tiene la clase SpeechToText (¿versión equivocada?),"Głos: dodatek się wczytał, ale nie ma klasy SpeechToText (zła wersja dodatku?)"

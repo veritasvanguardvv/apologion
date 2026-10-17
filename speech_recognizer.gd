@@ -93,8 +93,9 @@ func problem() -> Array:
 		return ["Voice: the Godot Whisper addon is missing (%s)", EXTENSION_PATH]
 	var library = _library_path()
 	if library == "":
-		return ["Voice: the addon has no library for this computer (%s)", OS.get_name() + " " + Engine.get_architecture_name()]
-	if not FileAccess.file_exists(library):
+		# Not a fault the player can fix - say it kindly and point to typing
+		return ["Voice input isn't available on this computer yet (%s). Type the verse and press Enter instead.", OS.get_name() + " " + Engine.get_architecture_name()]
+	if not _library_exists(library):
 		return ["Voice: the addon's library file is missing: %s", library]
 	if not GDExtensionManager.is_extension_loaded(EXTENSION_PATH):
 		return ["Voice: the addon's library didn't load (%s). Restart Godot; if it still fails, look for 'Can't open dynamic library' in the Output panel", library.get_file()]
@@ -112,6 +113,10 @@ func problem_text() -> String:
 	if p.is_empty():
 		return ""
 	return tr(p[0]) % p[1] if p.size() > 1 else tr(p[0])
+
+# macOS libraries are .framework folders, the others single files
+func _library_exists(path: String) -> bool:
+	return FileAccess.file_exists(path) or DirAccess.dir_exists_absolute(path)
 
 # Which library file the .gdextension wants on this computer, e.g.
 # res://addons/godot_whisper/bin/libgodot_whisper.windows.template_release.x86_64.dll
@@ -137,7 +142,7 @@ func print_report():
 	print("[Voice] OS: ", OS.get_name(), " ", Engine.get_architecture_name(), (" (debug)" if OS.is_debug_build() else ""))
 	print("[Voice] audio/driver/enable_input: ", ProjectSettings.get_setting("audio/driver/enable_input", false))
 	print("[Voice] addon file: ", EXTENSION_PATH, " exists=", FileAccess.file_exists(EXTENSION_PATH))
-	print("[Voice] library: ", library, " exists=", library != "" and FileAccess.file_exists(library))
+	print("[Voice] library: ", library, " exists=", library != "" and _library_exists(library))
 	print("[Voice] library loaded: ", GDExtensionManager.is_extension_loaded(EXTENSION_PATH), "  SpeechToText class: ", ClassDB.class_exists("SpeechToText"))
 	print("[Voice] model: ", model_path if model_path != "" else "NONE (tried " + ", ".join(model_paths) + ")")
 	print("[Voice] microphones: ", AudioServer.get_input_device_list(), "  using: ", AudioServer.input_device)

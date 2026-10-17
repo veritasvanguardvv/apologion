@@ -373,7 +373,7 @@ radius = 98.5617
 size = Vector2(74.735, 78.9958)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_82"]
-size = Vector2(1394.4045, 78.9958)
+size = Vector2(1306.0423, 78.9958)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_83"]
 size = Vector2(4194.0704, 78.9958)
@@ -1569,7 +1569,7 @@ region_enabled = true
 region_rect = Rect2(96, 32, 32, 32)
 
 [node name="Square (13)" type="Sprite2D" parent="Decor"]
-position = Vector2(5073.6, 387.6)
+position = Vector2(5097.6, 387.6)
 scale = Vector2(2.3495, 2.3495)
 z_index = 1
 centered = false
@@ -2768,7 +2768,7 @@ position = Vector2(2354.4, 59.2)
 shape = SubResource("RectangleShape2D_15")
 
 [node name="Square (13)" type="CollisionShape2D" parent="Floors"]
-position = Vector2(5073.6, 387.6)
+position = Vector2(5097.6, 387.6)
 shape = SubResource("RectangleShape2D_16")
 
 [node name="Square (14)" type="CollisionShape2D" parent="Floors"]
@@ -3052,7 +3052,7 @@ offset = Vector2(-32, -32)
 texture = ExtResource("37_g")
 
 [node name="CollectSpell2" type="Area2D" parent="Pickups"]
-position = Vector2(4639.6396, 398.8)
+position = Vector2(4639.6396, 280)
 script = ExtResource("30_g")
 kind = "money"
 value1 = 33
@@ -3531,7 +3531,7 @@ position = Vector2(0, 0)
 shape = SubResource("RectangleShape2D_81")
 
 [node name="DamageArea (1)" type="Area2D" parent="Triggers"]
-position = Vector2(5701.84, 472)
+position = Vector2(5746.0211, 472)
 script = ExtResource("48_g")
 damage = 1000
 hide_on_enter = false
@@ -3581,7 +3581,7 @@ teleport_to = Vector2(4712, -1292)
 use_teleport = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Triggers/Teleport"]
-position = Vector2(-28.0828, 0)
+position = Vector2(24.2, 0)
 shape = SubResource("RectangleShape2D_85")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="Triggers/Teleport"]
@@ -3739,7 +3739,7 @@ shape = SubResource("RectangleShape2D_116")
 [node name="Enemies" type="Node2D" parent="."]
 
 [node name="Greedog_GreedogWeak-" parent="Enemies" instance=ExtResource("51_g")]
-position = Vector2(1704, 242.4846)
+position = Vector2(1704, 250.4846)
 display_name = "Greedog"
 max_hp = 39
 attack_damage = 2
@@ -3771,7 +3771,7 @@ defense = 0.5
 battle_speed = 5
 
 [node name="Greedog_Greedog" parent="Enemies" instance=ExtResource("51_g")]
-position = Vector2(4718.4, 370.8)
+position = Vector2(4718.4, 382.8)
 display_name = "Greedog"
 max_hp = 69
 attack_damage = 2
@@ -3779,7 +3779,7 @@ defense = 0.5
 battle_speed = 5
 
 [node name="Greedog_GreedogWeak_2" parent="Enemies" instance=ExtResource("51_g")]
-position = Vector2(5722.4, 245.6)
+position = Vector2(5722.4, 249.6)
 display_name = "Greedog"
 max_hp = 50
 attack_damage = 2
@@ -3795,7 +3795,7 @@ defense = 0.5
 battle_speed = 5
 
 [node name="Greedwolf_Greedwolf" parent="Enemies" instance=ExtResource("52_g")]
-position = Vector2(10698.8, -30.4)
+position = Vector2(10698.8, -25.6)
 display_name = "Greedwolf"
 max_hp = 183
 attack_damage = 5
@@ -3811,7 +3811,7 @@ defense = 0.5
 battle_speed = 5
 
 [node name="Greedwolf_GreedwolfWeak_2" parent="Enemies" instance=ExtResource("52_g")]
-position = Vector2(10552.8, -30.4)
+position = Vector2(10552.8, -25.6)
 display_name = "Greedwolf"
 max_hp = 100
 attack_damage = 2

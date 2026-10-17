@@ -257,7 +257,19 @@ func _on_show_all_pressed():
 	_update_verse_text()
 
 # The active group's button shows what it's filtering and is highlighted.
+# Sizes the "Show all" button to its (translated) text and keeps it inside the panel's right edge
+func _fit_show_all_button():
+	var b = verse_panel.get_node_or_null("ShowAllButton") if verse_panel else null
+	if b == null:
+		return
+	var want = b.get_combined_minimum_size().x
+	var x = VERSE_PANEL_SIZE.x - 8 - want
+	if not is_equal_approx(b.size.x, want) or not is_equal_approx(b.position.x, x):
+		b.set_deferred("size", Vector2(want, 22))
+		b.set_deferred("position", Vector2(x, 3))
+
 func _update_filter_buttons():
+	_fit_show_all_button.call_deferred()
 	for group in FILTER_GROUPS:
 		var button = verse_panel.get_node("FilterRow/" + group + "Button")
 		if group == filter_group:
@@ -1431,6 +1443,7 @@ func _build_verse_panel():
 	show_all.position = Vector2(w - 86, 3)
 	show_all.size = Vector2(78, 22)
 	show_all.add_theme_font_size_override("font_size", 12)
+	show_all.item_rect_changed.connect(_fit_show_all_button)   # stays inside the panel in every language
 	show_all.focus_mode = Control.FOCUS_NONE   # so Enter/Space don't press it by accident
 	show_all.pressed.connect(_on_show_all_pressed)
 	verse_panel.add_child(show_all)
@@ -1448,6 +1461,10 @@ func _build_verse_panel():
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.focus_mode = Control.FOCUS_NONE
 		button.add_theme_font_size_override("font_size", 12)
+		# A long label (e.g. Polish) is cut with "…" instead of pushing the row past the panel edge
+		button.clip_text = true
+		button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		button.custom_minimum_size.x = 40
 		button.pressed.connect(_on_group_pressed.bind(group))
 		row.add_child(button)
 	
