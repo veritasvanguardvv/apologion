@@ -32,10 +32,16 @@ const ACTIONS = [
 	["skip_turn", "Skip turn", KEY_K],
 	["run_away", "Run away", KEY_R],
 	["change_party", "Change Party", KEY_P],
+	["scroll_verses_up", "Scroll verses up", KEY_UP],
+	["scroll_verses_down", "Scroll verses down", KEY_DOWN],
 ]
+# These only work while the Tab verse list is open, so they may share a key
+# with another action (Up = Talk / enter door): rebinding doesn't swap them.
+const SHAREABLE = ["scroll_verses_up", "scroll_verses_down"]
 
 var music_volume = 0.8   # 0..1
 var sfx_volume = 1.0     # 0..1
+var scroll_verses_with_arrows = true   # hold Up/Down to scroll the Tab verse list
 var bindings = {}        # action -> physical keycode
 
 signal bindings_changed
@@ -98,6 +104,11 @@ func _apply_volumes():
 		AudioServer.set_bus_volume_db(i, linear_to_db(max(pair[1], 0.001)))
 
 
+func set_scroll_verses_with_arrows(on: bool):
+	scroll_verses_with_arrows = on
+	_save()
+
+
 # ---------------- Key bindings ----------------
 
 func action_label(action: String) -> String:
@@ -122,6 +133,9 @@ func key_name(action: String) -> String:
 func rebind(action: String, physical_keycode: int):
 	var old = int(bindings.get(action, 0))
 	for other in bindings:
+		# (a scroll action and a normal action may share a key)
+		if (action in SHAREABLE) != (other in SHAREABLE):
+			continue
 		if other != action and int(bindings[other]) == physical_keycode:
 			bindings[other] = old
 			_apply_binding(other)
@@ -165,6 +179,7 @@ func _save():
 	var c = ConfigFile.new()
 	c.set_value("audio", "music", music_volume)
 	c.set_value("audio", "sfx", sfx_volume)
+	c.set_value("controls", "scroll_verses_with_arrows", scroll_verses_with_arrows)
 	for action in bindings:
 		c.set_value("keys", action, int(bindings[action]))
 	c.save(PATH)
@@ -176,5 +191,6 @@ func _load():
 		return
 	music_volume = float(c.get_value("audio", "music", music_volume))
 	sfx_volume = float(c.get_value("audio", "sfx", sfx_volume))
+	scroll_verses_with_arrows = bool(c.get_value("controls", "scroll_verses_with_arrows", scroll_verses_with_arrows))
 	for action in bindings.keys():
 		bindings[action] = int(c.get_value("keys", action, bindings[action]))

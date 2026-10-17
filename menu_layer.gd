@@ -425,6 +425,15 @@ func _build_settings_menu():
 	save_row.add_child(load_button)
 	_add_volume_slider(column, "MusicSlider", "Music volume", GameSettings.music_volume, GameSettings.set_music_volume)
 	_add_volume_slider(column, "SfxSlider", "Sound effects volume", GameSettings.sfx_volume, GameSettings.set_sfx_volume)
+	var scroll_toggle = CheckButton.new()
+	scroll_toggle.name = "ScrollVersesToggle"
+	scroll_toggle.text = "Scroll verses with arrow keys"
+	scroll_toggle.button_pressed = GameSettings.scroll_verses_with_arrows
+	scroll_toggle.focus_mode = Control.FOCUS_NONE
+	scroll_toggle.add_theme_font_override("font", _get_bold_font())
+	scroll_toggle.add_theme_font_size_override("font_size", 22)
+	scroll_toggle.toggled.connect(GameSettings.set_scroll_verses_with_arrows)
+	column.add_child(scroll_toggle)
 	column.add_child(_make_menu_button("ControlsButton", "Controls (remap keys)", _open_remap))
 	column.add_child(_make_menu_button("BackButton", "Back", _close_settings))
 

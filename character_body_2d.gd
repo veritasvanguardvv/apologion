@@ -298,6 +298,14 @@ func _input(event):
 		verse_input.grab_focus()
 		get_viewport().set_input_as_handled()
 	
+	# Up/Down (scroll_verses_up/down) scroll the open verse list; then they
+	# do nothing else (no talking / entering doors, no caret moves in the box)
+	if verses_scrolling_active() and (event.is_action("scroll_verses_up") or event.is_action("scroll_verses_down")):
+		get_viewport().set_input_as_handled()
+		if event.is_pressed() and not event.is_echo():
+			_scroll_verses(-VERSE_SCROLL_STEP if event.is_action("scroll_verses_up") else VERSE_SCROLL_STEP)
+		return
+	
 	if event.is_action_pressed("interact") and not verse_input.has_focus():
 		var prompt = get_parent().get_node_or_null("NPC/PromptLabel")
 		if prompt and prompt.text == "Press Up to talk":
@@ -313,6 +321,24 @@ func _input(event):
 			print("Tab pressed - panel visible: ", verse_panel.visible)
 			if verse_panel.visible:
 				_update_verse_text()
+
+# ---------------- Scrolling the verse list with the arrow keys ----------------
+# Tap = a small step; hold = smooth scrolling (Settings can turn it off).
+const VERSE_SCROLL_STEP = 22.0     # pixels per tap
+const VERSE_SCROLL_SPEED = 320.0   # pixels per second while held
+
+func verses_scrolling_active() -> bool:
+	return verse_panel != null and verse_panel.visible and GameSettings.scroll_verses_with_arrows
+
+func _scroll_verses(amount: float):
+	var bar = verse_text.get_v_scroll_bar()
+	bar.value = clamp(bar.value + amount, bar.min_value, bar.max_value)
+
+func _process_verse_scroll(delta):
+	if verses_scrolling_active():
+		var dir = Input.get_action_strength("scroll_verses_down") - Input.get_action_strength("scroll_verses_up")
+		if dir != 0.0:
+			_scroll_verses(dir * VERSE_SCROLL_SPEED * delta)
 
 func _on_verse_submitted(text):
 	var lower = text.to_lower().strip_edges()
@@ -710,6 +736,7 @@ func _update_ram_bar():
 
 func _process(delta):
 	_process_speaker_bob(delta)
+	_process_verse_scroll(delta)
 	flicker_time += delta
 	var flicker_amount = 0.94 + sin(flicker_time * 8.0) * 0.04 + randf_range(-0.02, 0.02)
 	
