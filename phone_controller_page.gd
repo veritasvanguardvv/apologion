@@ -9,7 +9,8 @@ extends RefCounted
 #   __UI_JSON__  -> the page's texts, translated with tr() (see UI_KEYS)
 #
 # The phone and the game talk with small JSON messages over a WebSocket:
-#   phone -> game: {"t":"join","name":..,"room":..}  {"t":"verse","text":..}  {"t":"skip"}
+#   phone -> game: {"t":"join","name":..,"room":..}  {"t":"verse","text":..,"target":i}  {"t":"skip"}
+#                  (target = index in the state's party list: who a heal / Guard goes to)
 #   game -> phone: {"t":"joined",..}  {"t":"error","text":..}  {"t":"note","text":..}
 #                  {"t":"state", ...everything the page shows...}
 #
@@ -26,6 +27,9 @@ const UI_KEYS = [
 	"Tip: tap the microphone on your phone's keyboard to dictate a verse.",
 	"Listening...", "%d s left", "Each verse can be used once per cycle (yours).",
 	"No messages yet", "No verses discovered yet",
+	"Target for heal / Guard:", "(you)", "any time",
+	"Not your turn - heal, Guard and buff verses work now (1 per round)",
+	"You helped this round - wait for the next round",
 ]
 
 const HTML = r"""<!DOCTYPE html>
@@ -72,6 +76,11 @@ const HTML = r"""<!DOCTYPE html>
   .hint { color: #999; font-size: 14px; margin-top: 6px; }
   h2 { font-size: 17px; margin: 0 0 6px; color: #ccc; }
   .hidden { display: none !important; }
+  #targets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  #targets button { flex: 0 0 auto; font-size: 16px; padding: 10px 12px; background: #333; color: #eee; }
+  #targets button.sel { background: #5aa0ff; color: #000; }
+  #supportInfo { color: #8fd18f; font-size: 15px; margin-top: 6px; min-height: 18px; }
+  .tag { background: #2f5d2f; color: #cfc; border-radius: 6px; padding: 1px 6px; font-size: 12px; margin-left: 6px; }
 </style>
 </head>
 <body>
@@ -96,6 +105,9 @@ const HTML = r"""<!DOCTYPE html>
         <button id="speakButton" class="secondary hidden" data-ui="Speak"></button>
         <button id="skipButton" class="secondary" data-ui="Skip turn"></button>
       </div>
+      <div id="supportInfo"></div>
+      <div class="hint" data-ui="Target for heal / Guard:"></div>
+      <div id="targets"></div>
       <div id="speechHint" class="hint" data-ui="Tip: tap the microphone on your phone's keyboard to dictate a verse."></div>
       <div id="note"></div>
     </div>
@@ -110,7 +122,7 @@ const HTML = r"""<!DOCTYPE html>
 var WS_PORT = "__WS_PORT__";
 var lang = "__LANG__";
 var ui = __UI_JSON__;
-var ws = null, joined = false, myName = "", myRoom = "", lastState = null, retryTimer = null;
+var ws = null, joined = false, myName = "", myRoom = "", lastState = null, retryTimer = null, target = -1;
 var $ = function (id) { return document.getElementById(id); };
 
 function t(key) { return (ui && ui[key]) ? ui[key] : key; }
@@ -171,7 +183,7 @@ $("joinButton").onclick = function () {
 $("reciteButton").onclick = function () {
   var text = $("verseInput").value.trim();
   if (!text) return;
-  send({ t: "verse", text: text });
+  send({ t: "verse", text: text, target: target });
   $("note").textContent = "";
 };
 $("verseInput").addEventListener("keydown", function (e) {
@@ -213,8 +225,18 @@ function render(s) {
     turn.className = "";
     turn.textContent = s.in_battle ? t("Waiting for %s").replace("%s", s.turn_name) : t("Not in a battle");
   }
-  $("reciteButton").disabled = !s.your_turn;
+  $("reciteButton").disabled = !(s.your_turn || s.support_ready);
   $("skipButton").disabled = !s.your_turn;
+  $("supportInfo").textContent = (s.in_battle && !s.your_turn) ? (s.support_ready ? t("Not your turn - heal, Guard and buff verses work now (1 per round)") : t("You helped this round - wait for the next round")) : "";
+  var tg = "";
+  if (target < 0 || target >= s.party.length) target = s.me;
+  s.party.forEach(function (m) {
+    tg += '<button data-i="' + m.i + '" class="' + (m.i === target ? "sel" : "") + '">' + esc(m.name) + (m.i === s.me ? " " + esc(t("(you)")) : "") + "</button>";
+  });
+  $("targets").innerHTML = tg;
+  $("targets").querySelectorAll("button").forEach(function (b) {
+    b.onclick = function () { target = parseInt(b.getAttribute("data-i")); render(lastState); };
+  });
   var party = "";
   s.party.forEach(function (m) {
     party += '<div class="member"><div class="name"><span>' + (m.color ? '<span class="dot" style="width:10px;height:10px;background:' + m.color + '"></span> ' : '') +
@@ -226,7 +248,7 @@ function render(s) {
   $("messages").innerHTML = msgs || '<div class="hint">' + esc(t("No messages yet")) + "</div>";
   var verses = "";
   s.verses.forEach(function (v) {
-    verses += '<div class="verse' + (v.used ? " used" : "") + '"><b>' + esc(v.ref) + "</b>" + (v.used ? " (" + esc(t("used")) + ")" : "") +
+    verses += '<div class="verse' + (v.used ? " used" : "") + '"><b>' + esc(v.ref) + "</b>" + (v.support ? '<span class="tag">' + esc(t("any time")) + "</span>" : "") + (v.used ? " (" + esc(t("used")) + ")" : "") +
       "<small>" + esc(v.power) + "</small>" + esc(v.text) + "</div>";
   });
   $("verses").innerHTML = verses || '<div class="hint">' + esc(t("No verses discovered yet")) + "</div>";

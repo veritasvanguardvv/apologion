@@ -69,6 +69,8 @@ func _ready():
 	http_port = int(ProjectSettings.get_setting("phone/http_port", 8080))
 	turn_timeout = float(ProjectSettings.get_setting("phone/turn_timeout", 30.0))
 	TurnManager.message_shown.connect(_on_battle_message)
+	TurnManager.round_ended.connect(_reset_support)
+	TurnManager.battle_ended.connect(_reset_support)
 	_build_lobby()
 
 
@@ -270,7 +272,7 @@ func _on_message(s, text: String):
 			_join(s, str(msg.get("name", "")), str(msg.get("room", "")))
 		"verse":
 			if s.slot != 0:
-				var note = phone_verse(s.slot, str(msg.get("text", "")))
+				var note = phone_verse(s.slot, str(msg.get("text", "")), int(msg.get("target", -1)))
 				_send(s, {"t": "note", "text": note})
 				broadcast_state()
 		"skip":
@@ -362,13 +364,48 @@ func get_player_node(slot: int):
 # They share the host's DISCOVERED verses (VerseManager.discovered), so the
 # team's list grows together, but "used this cycle" is per person.
 
-func phone_verse(slot: int, text: String) -> String:
+func phone_verse(slot: int, text: String, target := -1) -> String:
 	var node = get_player_node(slot)
 	if node == null:
 		return tr("Wait for your turn!")
 	if not TurnManager.in_battle:
 		return tr("Verses work in battles, on your turn")
-	return node.phone_verse(text)
+	return node.phone_verse(text, target)
+
+
+# ---------------- Out-of-turn support verses ----------------
+# Anti-spam: each phone player can recite ONE support verse (heal, Guard,
+# Faith, Zeal) per battle round outside their own turn, on top of the usual
+# "each verse once per cycle". The round ends after everyone has had a turn.
+
+func support_ready(slot: int) -> bool:
+	return players.has(slot) and TurnManager.in_battle and not players[slot].get("support_used", false)
+
+func mark_support_used(slot: int):
+	if players.has(slot):
+		players[slot]["support_used"] = true
+	broadcast_state()
+
+func _reset_support():
+	for slot in players:
+		players[slot]["support_used"] = false
+	if hosting:
+		broadcast_state()
+
+# Everyone a support verse can go to, in the order the phones list them:
+# the host first, then the party (computer companion, phone players).
+func party_nodes() -> Array:
+	var list = []
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		list.append(player)
+	for member in get_tree().get_nodes_in_group("party"):
+		list.append(member)
+	return list
+
+func party_node(index: int):
+	var list = party_nodes()
+	return list[index] if index >= 0 and index < list.size() else null
 
 func can_use_verse(slot: int, ref: String) -> bool:
 	return players.has(slot) and VerseManager.is_discovered(ref) and not (ref in players[slot].used)
@@ -437,13 +474,19 @@ func state_for(slot: int) -> Dictionary:
 		turn_name = host_name() if current.is_in_group("player") else str(current.display_name)
 	# Everyone in the party with their HP
 	var party = []
-	if player:
-		party.append({"name": host_name(), "hp": player.hp, "max_hp": player.max_hp, "ko": false, "color": ""})
-	for member in get_tree().get_nodes_in_group("party"):
-		var color = ""
-		if member.player_controlled:
-			color = "#" + SLOT_COLORS[member.phone_slot - 1].to_html(false)
-		party.append({"name": member.display_name, "hp": snapped(member.hp, 0.1), "max_hp": member.max_hp, "ko": member.knocked_out, "color": color})
+	var me = -1
+	var index = 0
+	for who in party_nodes():
+		if who == player:
+			party.append({"i": index, "name": host_name(), "hp": player.hp, "max_hp": player.max_hp, "ko": false, "color": ""})
+		else:
+			var color = ""
+			if who.player_controlled:
+				color = "#" + SLOT_COLORS[who.phone_slot - 1].to_html(false)
+			if who == node:
+				me = index
+			party.append({"i": index, "name": who.display_name, "hp": snapped(who.hp, 0.1), "max_hp": who.max_hp, "ko": who.knocked_out, "color": color})
+		index += 1
 	# The team's discovered verses (with this player's own "used" marks)
 	var verses = []
 	if player:
@@ -451,7 +494,7 @@ func state_for(slot: int) -> Dictionary:
 			var v = player.get_verse(ref)
 			if v != null:
 				var body = player.verse_body(v)
-				verses.append({"ref": VerseManager.ref_text(ref), "text": body.substr(0, 1).to_upper() + body.substr(1), "power": player.verse_power_text(v), "used": ref in players[slot].used})
+				verses.append({"ref": VerseManager.ref_text(ref), "text": body.substr(0, 1).to_upper() + body.substr(1), "power": player.verse_power_text(v), "used": ref in players[slot].used, "support": node != null and node.is_support_verse(v)})
 	return {
 		"t": "state",
 		"lang": TranslationServer.get_locale().substr(0, 2),
@@ -464,6 +507,8 @@ func state_for(slot: int) -> Dictionary:
 		"time_left": int(ceil(node.phone_time_left)) if node else 0,
 		"turn_name": turn_name,
 		"party": party,
+		"me": me,
+		"support_ready": node != null and not node.knocked_out and support_ready(slot) and not node.waiting_for_phone,
 		"verses": verses,
 		"messages": messages,
 	}

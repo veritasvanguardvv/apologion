@@ -128,6 +128,8 @@ func _ready():
 	if player_controlled:
 		_build_name_label()
 	TurnManager.battle_ended.connect(_end_phone_turn.bind(0.0))
+	TurnManager.round_ended.connect(_on_round_ended)
+	TurnManager.battle_ended.connect(_on_battle_over)
 	bubble = preload("res://speech_bubble.gd").new()
 	bubble.set_light_style()   # party members and the player have white bubbles
 	bubble.target = self
@@ -476,8 +478,41 @@ func _update_hp():
 	visual.rotation_degrees = 90.0 if knocked_out else 0.0
 	PartyManager.set_hp(member_id, hp)
 
-# Returns the damage taken. (Guard and Faith are the player's own.)
+# Guard on a party member (a phone player can recite a Guard verse for any
+# ally, see phone_verse): enemies do less damage for a few rounds.
+var guard_rounds_left = 0
+var guard_reduction = 0.5
+var guard_tag: Label
+
+func activate_guard(rounds := 3, reduction := 0.5):
+	guard_rounds_left = rounds
+	guard_reduction = reduction
+	_update_guard_tag()
+	PopupText.spawn(self, tr("Guard"), Color(0.6, 0.85, 1.0), Vector2(0, -80))
+
+func _on_round_ended():
+	if guard_rounds_left > 0:
+		guard_rounds_left -= 1
+		_update_guard_tag()
+
+func _on_battle_over():
+	guard_rounds_left = 0
+	_update_guard_tag()
+
+func _update_guard_tag():
+	if guard_tag == null:
+		guard_tag = Label.new()
+		guard_tag.add_theme_color_override("font_color", Color(0.6, 0.85, 1.0))
+		guard_tag.add_theme_font_size_override("font_size", 14)
+		guard_tag.position = Vector2(-hp_bar_width / 2.0, bubble_head_offset - 16)
+		add_child(guard_tag)
+	guard_tag.visible = guard_rounds_left > 0
+	guard_tag.text = tr("Defense +%d%% (%d)") % [int(guard_reduction * 100), guard_rounds_left]
+
+# Returns the damage taken (less while guarded).
 func take_damage(amount) -> float:
+	if guard_rounds_left > 0:
+		amount *= (1.0 - guard_reduction)
 	var before = hp
 	hp = max(hp - amount, 0.0)
 	_update_hp()
@@ -532,17 +567,31 @@ func _end_phone_turn(wait: float):
 
 # Called by PhoneServer when the phone sends a verse. Returns "" if it was
 # recited, or a message for the phone (already translated).
-func phone_verse(text: String) -> String:
-	if not waiting_for_phone:
-		return tr("Wait for your turn!")
+# On their turn any verse works. Out of turn (anyone else's turn in a battle)
+# SUPPORT verses work right away - heals, Guard, Faith (attack up), Zeal -
+# at most one per battle round per phone player (PhoneServer.support_ready).
+# `target` = index in PhoneServer.party_nodes() (-1 = themselves): who a
+# heal / Guard goes to.
+func phone_verse(text: String, target := -1) -> String:
 	if not _find_player():
 		return tr("Wait for your turn!")
+	var my_turn = waiting_for_phone
+	if not my_turn and not TurnManager.in_battle:
+		return tr("Verses work in battles, on your turn")
+	if knocked_out:
+		return tr("You're knocked out - someone has to heal you first")
 	var lower = text.to_lower().strip_edges()
 	if player._is_enemy_verse(lower):
 		return tr("That's an enemy's verse - you can't use it")
 	var verse = player._find_verse(lower)
 	if verse == null:
 		return tr("That's not a verse you know - try again")
+	var support = is_support_verse(verse)
+	if not my_turn:
+		if not support:
+			return tr("Attack verses wait for your turn - heal, Guard and buff verses work any time")
+		if not PhoneServer.support_ready(phone_slot):
+			return tr("You already helped this round - wait for the next round")
 	var note = ""
 	if VerseManager.discover(verse.ref):   # shared with the whole team
 		verse.discovered = true
@@ -552,12 +601,64 @@ func phone_verse(text: String) -> String:
 	PhoneServer.mark_verse_used(phone_slot, verse.ref)
 	var body = player.verse_body(verse)
 	_say(VerseManager.ref_text(verse.ref), body.substr(0, 1).to_upper() + body.substr(1))
-	# Full damage (1.0) and healing (1.0), can counter, default targets
-	player.cast_verse(verse, 1.0, true, false, 1.0, self)
-	print(display_name, " (phone) recites ", verse.ref)
+	if support:
+		var who = PhoneServer.party_node(target)
+		if who == null:
+			who = self
+		apply_support_verse(verse, who)
+		if not my_turn:
+			PhoneServer.mark_support_used(phone_slot)
+			TurnManager.show_message(tr("%s helps out of turn: %s") % [display_name, VerseManager.ref_text(verse.ref)])
+	else:
+		# Full damage (1.0), can counter, default targets
+		player.cast_verse(verse, 1.0, true, false, 1.0, self)
+	print(display_name, " (phone) recites ", verse.ref, "" if my_turn else " (out of turn)")
 	recited.emit(verse.ref)
-	_end_phone_turn(bubble_time_left)
+	if my_turn:
+		_end_phone_turn(bubble_time_left)
 	return note
+
+
+# Heal / Guard / Faith / Zeal, with no attack in it
+static func is_support_verse(verse) -> bool:
+	if verse.get("set", "") == "sheet":
+		if not verse.get("sins", {}).is_empty() or verse.get("all_damage", 0) > 0:
+			return false
+		return verse.get("heal", 0) > 0 or verse.get("guard", false) or verse.get("zeal", false)
+	return verse.get("type", "") in ["heal", "guard", "faith", "zeal"]
+
+
+# A support verse's effect on ONE chosen party member (`who`: the player or a
+# party member). Faith boosts the whole team's attacks (they all go through
+# the player's cast_verse), Zeal is the player's run/jump boost.
+func apply_support_verse(verse, who):
+	var heal_pct = 0.0
+	var guard = false
+	var zeal = false
+	var faith = false
+	if verse.get("set", "") == "sheet":
+		heal_pct = float(verse.get("heal", 0))
+		guard = verse.get("guard", false)
+		zeal = verse.get("zeal", false)
+	else:
+		match verse.type:
+			"heal": heal_pct = float(verse.heal)
+			"guard": guard = true
+			"zeal": zeal = true
+			"faith": faith = true
+	if heal_pct > 0:
+		player.heal_targets([who], heal_pct)
+	if guard:
+		if who == player:
+			player.activate_guard()
+		elif who.has_method("activate_guard"):
+			who.activate_guard(player.guard_rounds, player.guard_reduction)
+		if TurnManager.in_battle:
+			TurnManager.show_message(tr("%s is guarded") % (PhoneServer.host_name() if who == player else tr(who.display_name)))
+	if faith:
+		player.activate_faith()
+	if zeal:
+		player._zeal_boost()
 
 func phone_skip() -> bool:
 	if not waiting_for_phone:
