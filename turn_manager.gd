@@ -542,6 +542,16 @@ func _end_battle():
 
 
 func _player_defeated(my_battle):
+	# Endless mode: no checkpoint or restart - the run ends (Game Over screen)
+	var level = get_tree().current_scene
+	if level and level.has_method("on_player_defeated"):
+		show_message(tr("You were defeated!"))
+		await get_tree().create_timer(2.0).timeout
+		if my_battle != battle_id:
+			return
+		_end_battle()
+		level.on_player_defeated()
+		return
 	var checkpoint = SaveManager.get_checkpoint() != null
 	show_message(tr("You were defeated... back to the checkpoint") if checkpoint else tr("You were defeated... restarting the level"))
 	await get_tree().create_timer(2.0).timeout

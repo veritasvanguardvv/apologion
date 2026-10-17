@@ -1,0 +1,5196 @@
+{
+ "source": "Unity Assets/Prefabs/Game/EndlessPart0-5.prefab (extract_endless_parts.py)",
+ "part_width": 1344.0,
+ "parts": [
+  {
+   "name": "EndlessPart0",
+   "tiles": [
+    {
+     "pos": [
+      -1400.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1344.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1288.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1232.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1176.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1120.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1064.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1008.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -952.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -896.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -840.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -784.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -728.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -616.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -560.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -504.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -448.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -168.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -112.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      224.0,
+      96.0,
+      32.0,
+      32.0
+     ]
+    }
+   ],
+   "solid": [
+    [
+     -1400.0,
+     336.0,
+     1344.0,
+     56.0
+    ]
+   ],
+   "pits": [
+    [
+     -1421.08,
+     769.37,
+     1410.96,
+     605.25
+    ]
+   ],
+   "traps": [
+    {
+     "name": "Spike2 (1)",
+     "damage": 25,
+     "rect": [
+      -711.98,
+      290.44,
+      12.37,
+      25.56
+     ],
+     "sprite": {
+      "tex": "res://Endless/2hand_weapons_32x64.png",
+      "region": [
+       32.0,
+       0.0,
+       32.0,
+       64.0
+      ],
+      "pos": [
+       -706.8,
+       334.4
+      ],
+      "scale": [
+       1.6,
+       1.6
+      ],
+      "offset": [
+       -16.0,
+       -32.0
+      ],
+      "rot": 0.835
+     }
+    },
+    {
+     "name": "Spike2 (2)",
+     "damage": 25,
+     "rect": [
+      -761.58,
+      290.44,
+      12.37,
+      25.56
+     ],
+     "sprite": {
+      "tex": "res://Endless/2hand_weapons_32x64.png",
+      "region": [
+       32.0,
+       0.0,
+       32.0,
+       64.0
+      ],
+      "pos": [
+       -756.4,
+       334.4
+      ],
+      "scale": [
+       1.6,
+       1.6
+      ],
+      "offset": [
+       -16.0,
+       -32.0
+      ],
+      "rot": -0.835
+     }
+    },
+    {
+     "name": "Spike2",
+     "damage": 25,
+     "rect": [
+      -737.18,
+      281.64,
+      12.37,
+      25.56
+     ],
+     "sprite": {
+      "tex": "res://Endless/2hand_weapons_32x64.png",
+      "region": [
+       32.0,
+       0.0,
+       32.0,
+       64.0
+      ],
+      "pos": [
+       -732.0,
+       325.6
+      ],
+      "scale": [
+       1.6,
+       1.6
+      ],
+      "offset": [
+       -16.0,
+       -32.0
+      ],
+      "rot": -0.0
+     }
+    }
+   ],
+   "spawns": [
+    [
+     -394.24,
+     268.4
+    ],
+    [
+     -873.04,
+     263.6
+    ]
+   ],
+   "decor": [],
+   "cell": 56.0,
+   "min_max_traps": [
+    0,
+    3
+   ],
+   "min_max_enemies": [
+    0,
+    2
+   ]
+  },
+  {
+   "name": "EndlessPart1",
+   "tiles": [
+    {
+     "pos": [
+      -392.0,
+      448.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      448.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      448.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      448.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -168.0,
+      448.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -112.0,
+      448.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -840.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      416.0,
+      480.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -784.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      480.0,
+      480.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -168.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -112.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1400.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1344.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1288.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1232.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1176.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1120.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1064.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1008.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -952.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -896.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -840.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -784.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      480.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -728.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      416.0,
+      480.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      480.0,
+      480.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -168.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -112.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -840.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -784.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      480.0,
+      416.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -728.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      480.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -616.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      416.0,
+      480.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -560.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      480.0,
+      480.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      192.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -168.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      192.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -112.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -728.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      480.0,
+      416.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -616.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -560.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      480.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -504.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      416.0,
+      480.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -448.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      480.0,
+      480.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -168.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -112.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -616.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -560.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      480.0,
+      416.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -504.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -448.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      480.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -168.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -112.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -504.0,
+      112.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -448.0,
+      112.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      480.0,
+      416.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      112.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      112.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      448.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      112.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      112.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -168.0,
+      112.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      448.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -112.0,
+      112.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      56.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      56.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      192.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      56.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      192.0,
+      352.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      56.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      192.0,
+      352.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -168.0,
+      56.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      192.0,
+      352.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -112.0,
+      56.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      -0.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      -0.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      224.0,
+      160.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      -0.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      352.0,
+      96.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      -0.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      224.0,
+      160.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -168.0,
+      -0.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      416.0,
+      96.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -112.0,
+      -0.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      -112.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      64.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      -224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      64.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -560.0,
+      -336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      64.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1120.0,
+      -448.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      64.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -728.0,
+      -448.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      64.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -616.0,
+      -560.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      64.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -504.0,
+      -672.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      64.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -840.0,
+      -728.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      288.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -784.0,
+      -728.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -728.0,
+      -728.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      -728.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      64.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    }
+   ],
+   "solid": [
+    [
+     -392.0,
+     448.0,
+     336.0,
+     56.0
+    ],
+    [
+     -840.0,
+     392.0,
+     112.0,
+     56.0
+    ],
+    [
+     -392.0,
+     392.0,
+     336.0,
+     56.0
+    ],
+    [
+     -1400.0,
+     336.0,
+     784.0,
+     56.0
+    ],
+    [
+     -392.0,
+     336.0,
+     336.0,
+     56.0
+    ],
+    [
+     -840.0,
+     280.0,
+     336.0,
+     56.0
+    ],
+    [
+     -392.0,
+     280.0,
+     336.0,
+     56.0
+    ],
+    [
+     -728.0,
+     224.0,
+     672.0,
+     56.0
+    ],
+    [
+     -616.0,
+     168.0,
+     560.0,
+     56.0
+    ],
+    [
+     -504.0,
+     112.0,
+     448.0,
+     56.0
+    ],
+    [
+     -392.0,
+     56.0,
+     336.0,
+     56.0
+    ],
+    [
+     -392.0,
+     -0.0,
+     336.0,
+     56.0
+    ],
+    [
+     -280.0,
+     -112.0,
+     56.0,
+     56.0
+    ],
+    [
+     -392.0,
+     -224.0,
+     56.0,
+     56.0
+    ],
+    [
+     -560.0,
+     -336.0,
+     56.0,
+     56.0
+    ],
+    [
+     -1120.0,
+     -448.0,
+     56.0,
+     56.0
+    ],
+    [
+     -728.0,
+     -448.0,
+     56.0,
+     56.0
+    ],
+    [
+     -616.0,
+     -560.0,
+     56.0,
+     56.0
+    ],
+    [
+     -504.0,
+     -672.0,
+     56.0,
+     56.0
+    ],
+    [
+     -840.0,
+     -728.0,
+     224.0,
+     56.0
+    ]
+   ],
+   "pits": [
+    [
+     -1499.46,
+     769.37,
+     1567.73,
+     605.25
+    ]
+   ],
+   "traps": [
+    {
+     "name": "Spike0 (4)",
+     "damage": 10,
+     "rect": [
+      -868.29,
+      299.31,
+      43.38,
+      43.38
+     ],
+     "sprite": {
+      "tex": "res://Greed/TX Dungeon Props.png",
+      "region": [
+       783.0,
+       675.0,
+       35.0,
+       29.0
+      ],
+      "pos": [
+       -846.6,
+       321.0
+      ],
+      "scale": [
+       1.3555,
+       1.3555
+      ],
+      "offset": [
+       -17.5,
+       -14.5
+      ],
+      "rot": -0.0
+     }
+    },
+    {
+     "name": "Spike1 (4)",
+     "damage": 20,
+     "rect": [
+      -751.9,
+      254.9,
+      36.6,
+      36.6
+     ],
+     "sprite": {
+      "tex": "res://Greed/TX Dungeon Props.png",
+      "region": [
+       787.0,
+       646.0,
+       27.0,
+       27.0
+      ],
+      "pos": [
+       -733.6,
+       273.2
+      ],
+      "scale": [
+       1.3555,
+       1.3555
+      ],
+      "offset": [
+       -13.5,
+       -13.5
+      ],
+      "rot": -0.0
+     }
+    },
+    {
+     "name": "Spike1 (6)",
+     "damage": 20,
+     "rect": [
+      -650.3,
+      -757.5,
+      36.6,
+      36.6
+     ],
+     "sprite": {
+      "tex": "res://Greed/TX Dungeon Props.png",
+      "region": [
+       787.0,
+       646.0,
+       27.0,
+       27.0
+      ],
+      "pos": [
+       -632.0,
+       -739.2
+      ],
+      "scale": [
+       1.3555,
+       1.3555
+      ],
+      "offset": [
+       -13.5,
+       -13.5
+      ],
+      "rot": -0.0
+     }
+    },
+    {
+     "name": "Spike1 (5)",
+     "damage": 20,
+     "rect": [
+      -578.7,
+      144.5,
+      36.6,
+      36.6
+     ],
+     "sprite": {
+      "tex": "res://Greed/TX Dungeon Props.png",
+      "region": [
+       787.0,
+       646.0,
+       27.0,
+       27.0
+      ],
+      "pos": [
+       -560.4,
+       162.8
+      ],
+      "scale": [
+       1.3555,
+       1.3555
+      ],
+      "offset": [
+       -13.5,
+       -13.5
+      ],
+      "rot": -0.0
+     }
+    }
+   ],
+   "spawns": [
+    [
+     -814.4,
+     -795.2
+    ],
+    [
+     -239.2,
+     -66.0
+    ],
+    [
+     -926.4,
+     267.2
+    ]
+   ],
+   "decor": [
+    {
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      320.0,
+      192.0,
+      32.0,
+      32.0
+     ],
+     "pos": [
+      -814.69,
+      367.25
+     ],
+     "scale": [
+      1.75,
+      1.75
+     ],
+     "offset": [
+      -16.0,
+      -16.0
+     ]
+    }
+   ],
+   "min_max_traps": [
+    1,
+    3
+   ],
+   "min_max_enemies": [
+    0,
+    2
+   ],
+   "cell": 56.0
+  },
+  {
+   "name": "EndlessPart2",
+   "tiles": [
+    {
+     "pos": [
+      -1400.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1344.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1288.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1232.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1176.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      480.0,
+      416.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1064.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      64.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -952.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      288.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -896.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      320.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -784.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      64.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -616.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      96.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -504.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      192.0,
+      160.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -448.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      448.0,
+      416.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -168.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -112.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      224.0,
+      96.0,
+      32.0,
+      32.0
+     ]
+    }
+   ],
+   "solid": [
+    [
+     -1400.0,
+     336.0,
+     280.0,
+     56.0
+    ],
+    [
+     -1064.0,
+     336.0,
+     56.0,
+     56.0
+    ],
+    [
+     -952.0,
+     336.0,
+     112.0,
+     56.0
+    ],
+    [
+     -784.0,
+     336.0,
+     56.0,
+     56.0
+    ],
+    [
+     -616.0,
+     336.0,
+     56.0,
+     56.0
+    ],
+    [
+     -504.0,
+     336.0,
+     448.0,
+     56.0
+    ]
+   ],
+   "pits": [
+    [
+     -1499.46,
+     769.37,
+     1567.73,
+     605.25
+    ]
+   ],
+   "traps": [
+    {
+     "name": "Spike2 (3)",
+     "damage": 25,
+     "rect": [
+      -515.9,
+      301.09,
+      8.36,
+      17.27
+     ],
+     "sprite": {
+      "tex": "res://Endless/2hand_weapons_32x64.png",
+      "region": [
+       32.0,
+       0.0,
+       32.0,
+       64.0
+      ],
+      "pos": [
+       -512.4,
+       330.8
+      ],
+      "scale": [
+       1.0815,
+       1.0815
+      ],
+      "offset": [
+       -16.0,
+       -32.0
+      ],
+      "rot": -0.764
+     }
+    }
+   ],
+   "spawns": [
+    [
+     -314.72,
+     265.6
+    ]
+   ],
+   "decor": [],
+   "min_max_traps": [
+    0,
+    1
+   ],
+   "min_max_enemies": [
+    0,
+    2
+   ],
+   "cell": 56.0
+  },
+  {
+   "name": "EndlessPart3",
+   "tiles": [
+    {
+     "pos": [
+      -1400.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1344.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1288.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1232.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1176.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      0.0,
+      128.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1120.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      192.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1064.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      320.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -952.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      0.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -784.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      0.0,
+      128.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -728.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      192.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      320.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      64.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      288.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      320.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -168.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      288.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -112.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      224.0,
+      96.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1176.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1064.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      320.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -952.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      0.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -784.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      320.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      160.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      288.0,
+      224.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      160.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1232.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      128.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1176.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      0.0,
+      96.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1120.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      224.0,
+      480.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1064.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      0.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -952.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      0.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -784.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      0.0,
+      96.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -728.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      224.0,
+      480.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      0.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -616.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      32.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -952.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      0.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1008.0,
+      112.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      192.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -952.0,
+      112.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      416.0,
+      192.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -952.0,
+      56.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      160.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1232.0,
+      -56.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      96.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1344.0,
+      -168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      96.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1176.0,
+      -280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      288.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1120.0,
+      -280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      320.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -896.0,
+      -280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      0.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -840.0,
+      -280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -784.0,
+      -280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      64.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -560.0,
+      -280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -504.0,
+      -280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      416.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    }
+   ],
+   "solid": [
+    [
+     -1400.0,
+     336.0,
+     392.0,
+     56.0
+    ],
+    [
+     -952.0,
+     336.0,
+     56.0,
+     56.0
+    ],
+    [
+     -784.0,
+     336.0,
+     168.0,
+     56.0
+    ],
+    [
+     -336.0,
+     336.0,
+     280.0,
+     56.0
+    ],
+    [
+     -1176.0,
+     280.0,
+     56.0,
+     56.0
+    ],
+    [
+     -1064.0,
+     280.0,
+     56.0,
+     56.0
+    ],
+    [
+     -952.0,
+     280.0,
+     56.0,
+     56.0
+    ],
+    [
+     -784.0,
+     280.0,
+     56.0,
+     56.0
+    ],
+    [
+     -672.0,
+     280.0,
+     56.0,
+     56.0
+    ],
+    [
+     -336.0,
+     280.0,
+     168.0,
+     56.0
+    ],
+    [
+     -1232.0,
+     224.0,
+     224.0,
+     56.0
+    ],
+    [
+     -952.0,
+     224.0,
+     56.0,
+     56.0
+    ],
+    [
+     -784.0,
+     224.0,
+     224.0,
+     56.0
+    ],
+    [
+     -952.0,
+     168.0,
+     56.0,
+     56.0
+    ],
+    [
+     -1008.0,
+     112.0,
+     112.0,
+     56.0
+    ],
+    [
+     -952.0,
+     56.0,
+     56.0,
+     56.0
+    ],
+    [
+     -1232.0,
+     -56.0,
+     56.0,
+     56.0
+    ],
+    [
+     -1344.0,
+     -168.0,
+     56.0,
+     56.0
+    ],
+    [
+     -1176.0,
+     -280.0,
+     112.0,
+     56.0
+    ],
+    [
+     -896.0,
+     -280.0,
+     168.0,
+     56.0
+    ],
+    [
+     -560.0,
+     -280.0,
+     112.0,
+     56.0
+    ]
+   ],
+   "pits": [
+    [
+     -1499.46,
+     769.37,
+     1567.73,
+     605.25
+    ]
+   ],
+   "traps": [
+    {
+     "name": "Spike0 (2)",
+     "damage": 10,
+     "rect": [
+      -895.69,
+      25.11,
+      43.38,
+      43.38
+     ],
+     "sprite": {
+      "tex": "res://Greed/TX Dungeon Props.png",
+      "region": [
+       783.0,
+       675.0,
+       35.0,
+       29.0
+      ],
+      "pos": [
+       -874.0,
+       46.8
+      ],
+      "scale": [
+       1.3555,
+       1.3555
+      ],
+      "offset": [
+       -17.5,
+       -14.5
+      ],
+      "rot": -0.0
+     }
+    },
+    {
+     "name": "Spike2 (2)",
+     "damage": 25,
+     "rect": [
+      -1046.38,
+      170.84,
+      12.37,
+      25.56
+     ],
+     "sprite": {
+      "tex": "res://Endless/2hand_weapons_32x64.png",
+      "region": [
+       32.0,
+       0.0,
+       32.0,
+       64.0
+      ],
+      "pos": [
+       -1041.2,
+       214.8
+      ],
+      "scale": [
+       1.6,
+       1.6
+      ],
+      "offset": [
+       -16.0,
+       -32.0
+      ],
+      "rot": -0.254
+     }
+    },
+    {
+     "name": "Spike0 (3)",
+     "damage": 10,
+     "rect": [
+      -703.69,
+      189.11,
+      43.38,
+      43.38
+     ],
+     "sprite": {
+      "tex": "res://Greed/TX Dungeon Props.png",
+      "region": [
+       783.0,
+       675.0,
+       35.0,
+       29.0
+      ],
+      "pos": [
+       -682.0,
+       210.8
+      ],
+      "scale": [
+       1.3555,
+       1.3555
+      ],
+      "offset": [
+       -17.5,
+       -14.5
+      ],
+      "rot": -0.0
+     }
+    },
+    {
+     "name": "Spike1 (3)",
+     "damage": 20,
+     "rect": [
+      -313.9,
+      270.1,
+      36.6,
+      36.6
+     ],
+     "sprite": {
+      "tex": "res://Greed/TX Dungeon Props.png",
+      "region": [
+       787.0,
+       646.0,
+       27.0,
+       27.0
+      ],
+      "pos": [
+       -295.6,
+       288.4
+      ],
+      "scale": [
+       1.3555,
+       1.3555
+      ],
+      "offset": [
+       -13.5,
+       -13.5
+      ],
+      "rot": -0.0
+     }
+    }
+   ],
+   "spawns": [
+    [
+     -1049.2,
+     150.8
+    ],
+    [
+     -646.8,
+     151.2
+    ]
+   ],
+   "decor": [],
+   "cell": 56.0,
+   "min_max_traps": [
+    2,
+    3
+   ],
+   "min_max_enemies": [
+    0,
+    2
+   ]
+  },
+  {
+   "name": "EndlessPart4",
+   "tiles": [
+    {
+     "pos": [
+      -1120.0,
+      560.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      352.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1064.0,
+      560.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      256.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1008.0,
+      560.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      352.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -896.0,
+      560.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -840.0,
+      560.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      224.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1120.0,
+      504.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1064.0,
+      504.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      256.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1008.0,
+      504.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      352.0,
+      352.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -896.0,
+      504.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -840.0,
+      504.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      416.0,
+      192.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1120.0,
+      448.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1064.0,
+      448.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      256.0,
+      352.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -896.0,
+      448.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      0.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -840.0,
+      448.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      416.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -784.0,
+      448.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      320.0,
+      128.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1176.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      96.0,
+      128.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1120.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      128.0,
+      128.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1064.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      96.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -840.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      96.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -784.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      0.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -728.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      32.0,
+      32.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1400.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1344.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1288.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      480.0,
+      96.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1232.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      128.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1176.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      96.0,
+      96.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1120.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      0.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1064.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      32.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -728.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      160.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      288.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -616.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      320.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -168.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -112.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      224.0,
+      96.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      288.0,
+      352.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -616.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      320.0,
+      352.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -448.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      192.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      280.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      416.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -896.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      64.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      288.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -616.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      320.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -448.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      224.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      416.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      288.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -616.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      320.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -448.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      168.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      416.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      112.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      288.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -616.0,
+      112.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      320.0,
+      256.0,
+      32.0,
+      32.0
+     ]
+    }
+   ],
+   "solid": [
+    [
+     -1120.0,
+     560.0,
+     168.0,
+     56.0
+    ],
+    [
+     -896.0,
+     560.0,
+     112.0,
+     56.0
+    ],
+    [
+     -1120.0,
+     504.0,
+     168.0,
+     56.0
+    ],
+    [
+     -896.0,
+     504.0,
+     112.0,
+     56.0
+    ],
+    [
+     -1120.0,
+     448.0,
+     112.0,
+     56.0
+    ],
+    [
+     -896.0,
+     448.0,
+     168.0,
+     56.0
+    ],
+    [
+     -1176.0,
+     392.0,
+     168.0,
+     56.0
+    ],
+    [
+     -840.0,
+     392.0,
+     168.0,
+     56.0
+    ],
+    [
+     -392.0,
+     392.0,
+     56.0,
+     56.0
+    ],
+    [
+     -1400.0,
+     336.0,
+     392.0,
+     56.0
+    ],
+    [
+     -728.0,
+     336.0,
+     168.0,
+     56.0
+    ],
+    [
+     -392.0,
+     336.0,
+     336.0,
+     56.0
+    ],
+    [
+     -672.0,
+     280.0,
+     112.0,
+     56.0
+    ],
+    [
+     -448.0,
+     280.0,
+     112.0,
+     56.0
+    ],
+    [
+     -896.0,
+     224.0,
+     56.0,
+     56.0
+    ],
+    [
+     -672.0,
+     224.0,
+     112.0,
+     56.0
+    ],
+    [
+     -448.0,
+     224.0,
+     112.0,
+     56.0
+    ],
+    [
+     -672.0,
+     168.0,
+     112.0,
+     56.0
+    ],
+    [
+     -448.0,
+     168.0,
+     112.0,
+     56.0
+    ],
+    [
+     -672.0,
+     112.0,
+     112.0,
+     56.0
+    ]
+   ],
+   "pits": [
+    [
+     -1499.46,
+     769.37,
+     1567.73,
+     605.25
+    ]
+   ],
+   "traps": [
+    {
+     "name": "Spike1 (2)",
+     "damage": 20,
+     "rect": [
+      -454.3,
+      139.7,
+      36.6,
+      36.6
+     ],
+     "sprite": {
+      "tex": "res://Greed/TX Dungeon Props.png",
+      "region": [
+       787.0,
+       646.0,
+       27.0,
+       27.0
+      ],
+      "pos": [
+       -436.0,
+       158.0
+      ],
+      "scale": [
+       1.3555,
+       1.3555
+      ],
+      "offset": [
+       -13.5,
+       -13.5
+      ],
+      "rot": -0.0
+     }
+    },
+    {
+     "name": "Spike2 (2)",
+     "damage": 25,
+     "rect": [
+      -253.58,
+      285.64,
+      12.37,
+      25.56
+     ],
+     "sprite": {
+      "tex": "res://Endless/2hand_weapons_32x64.png",
+      "region": [
+       32.0,
+       0.0,
+       32.0,
+       64.0
+      ],
+      "pos": [
+       -248.4,
+       329.6
+      ],
+      "scale": [
+       1.6,
+       1.6
+      ],
+      "offset": [
+       -16.0,
+       -32.0
+      ],
+      "rot": -0.764
+     }
+    },
+    {
+     "name": "Spike0 (1)",
+     "damage": 10,
+     "rect": [
+      -864.89,
+      181.91,
+      43.38,
+      43.38
+     ],
+     "sprite": {
+      "tex": "res://Greed/TX Dungeon Props.png",
+      "region": [
+       783.0,
+       675.0,
+       35.0,
+       29.0
+      ],
+      "pos": [
+       -843.2,
+       203.6
+      ],
+      "scale": [
+       1.3555,
+       1.3555
+      ],
+      "offset": [
+       -17.5,
+       -14.5
+      ],
+      "rot": -0.0
+     }
+    }
+   ],
+   "spawns": [
+    [
+     -702.4,
+     318.8
+    ],
+    [
+     -1088.0,
+     264.0
+    ]
+   ],
+   "decor": [],
+   "min_max_traps": [
+    1,
+    2
+   ],
+   "min_max_enemies": [
+    0,
+    2
+   ],
+   "cell": 56.0
+  },
+  {
+   "name": "EndlessPart5",
+   "tiles": [
+    {
+     "pos": [
+      -1232.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      0.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1176.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      32.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1120.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      320.0,
+      0.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -952.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      96.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -896.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      0.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -840.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      160.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -784.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      192.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -728.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      0.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      32.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -616.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      64.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -560.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      96.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -504.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      128.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -448.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      160.0,
+      320.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      0.0,
+      416.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      32.0,
+      416.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      384.0,
+      64.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      392.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      320.0,
+      64.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1400.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1344.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1288.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1232.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      0.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1176.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      32.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -1120.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      64.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -952.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      96.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -896.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      128.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -840.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      160.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -784.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      192.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -728.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      0.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -672.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      32.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -616.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      64.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -560.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      96.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -504.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      128.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -448.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      160.0,
+      288.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -392.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      0.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -336.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Endless/TX Tileset - Dungeon Ground Extra.png",
+     "region": [
+      32.0,
+      384.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -280.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      0.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    },
+    {
+     "pos": [
+      -224.0,
+      336.0
+     ],
+     "size": 56.0,
+     "tex": "res://Greed/TX Tileset - Dungeon Ground.png",
+     "region": [
+      64.0,
+      448.0,
+      32.0,
+      32.0
+     ]
+    }
+   ],
+   "solid": [
+    [
+     -1232.0,
+     392.0,
+     168.0,
+     56.0
+    ],
+    [
+     -952.0,
+     392.0,
+     784.0,
+     56.0
+    ],
+    [
+     -1400.0,
+     336.0,
+     336.0,
+     56.0
+    ],
+    [
+     -952.0,
+     336.0,
+     784.0,
+     56.0
+    ]
+   ],
+   "pits": [
+    [
+     -1499.46,
+     769.37,
+     1567.73,
+     605.25
+    ]
+   ],
+   "traps": [
+    {
+     "name": "Spike2 (1)",
+     "damage": 25,
+     "rect": [
+      -574.1,
+      347.64,
+      12.37,
+      25.56
+     ],
+     "sprite": {
+      "tex": "res://Endless/2hand_weapons_32x64.png",
+      "region": [
+       32.0,
+       0.0,
+       32.0,
+       64.0
+      ],
+      "pos": [
+       -568.92,
+       391.6
+      ],
+      "scale": [
+       1.6,
+       1.6
+      ],
+      "offset": [
+       -16.0,
+       -32.0
+      ],
+      "rot": -0.0
+     }
+    },
+    {
+     "name": "Spike1 (1)",
+     "damage": 20,
+     "rect": [
+      -199.9,
+      278.1,
+      36.6,
+      36.6
+     ],
+     "sprite": {
+      "tex": "res://Greed/TX Dungeon Props.png",
+      "region": [
+       787.0,
+       646.0,
+       27.0,
+       27.0
+      ],
+      "pos": [
+       -181.6,
+       296.4
+      ],
+      "scale": [
+       1.3555,
+       1.3555
+      ],
+      "offset": [
+       -13.5,
+       -13.5
+      ],
+      "rot": -0.0
+     }
+    },
+    {
+     "name": "Spike2",
+     "damage": 25,
+     "rect": [
+      -1182.78,
+      291.24,
+      12.37,
+      25.56
+     ],
+     "sprite": {
+      "tex": "res://Endless/2hand_weapons_32x64.png",
+      "region": [
+       32.0,
+       0.0,
+       32.0,
+       64.0
+      ],
+      "pos": [
+       -1177.6,
+       335.2
+      ],
+      "scale": [
+       1.6,
+       1.6
+      ],
+      "offset": [
+       -16.0,
+       -32.0
+      ],
+      "rot": -0.0
+     }
+    },
+    {
+     "name": "Spike1",
+     "damage": 20,
+     "rect": [
+      -1147.5,
+      351.7,
+      36.6,
+      36.6
+     ],
+     "sprite": {
+      "tex": "res://Greed/TX Dungeon Props.png",
+      "region": [
+       787.0,
+       646.0,
+       27.0,
+       27.0
+      ],
+      "pos": [
+       -1129.2,
+       370.0
+      ],
+      "scale": [
+       1.3555,
+       1.3555
+      ],
+      "offset": [
+       -13.5,
+       -13.5
+      ],
+      "rot": -0.0
+     }
+    },
+    {
+     "name": "Spike0",
+     "damage": 10,
+     "rect": [
+      -756.09,
+      298.71,
+      43.38,
+      43.38
+     ],
+     "sprite": {
+      "tex": "res://Greed/TX Dungeon Props.png",
+      "region": [
+       783.0,
+       675.0,
+       35.0,
+       29.0
+      ],
+      "pos": [
+       -734.4,
+       320.4
+      ],
+      "scale": [
+       1.3555,
+       1.3555
+      ],
+      "offset": [
+       -17.5,
+       -14.5
+      ],
+      "rot": -0.0
+     }
+    }
+   ],
+   "spawns": [
+    [
+     -234.0,
+     227.2
+    ]
+   ],
+   "decor": [],
+   "min_max_traps": [
+    1,
+    3
+   ],
+   "min_max_enemies": [
+    0,
+    2
+   ],
+   "cell": 56.0
+  }
+ ]
+}

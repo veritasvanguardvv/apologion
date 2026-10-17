@@ -91,6 +91,8 @@ func mark_enemy_defeated(enemy: Node) -> void:
 	if not enemy.has_meta("defeat_counted"):
 		enemy.set_meta("defeat_counted", true)
 		add_lifetime_defeats(1)
+	if enemy.get_meta("no_save", false):
+		return   # Endless mode enemies are made on the fly: nothing to remember
 	var id = _enemy_id(enemy)
 	if not defeated_enemies.has(id[0]):
 		defeated_enemies[id[0]] = []
@@ -99,6 +101,8 @@ func mark_enemy_defeated(enemy: Node) -> void:
 
 
 func is_enemy_defeated(enemy: Node) -> bool:
+	if enemy.get_meta("no_save", false):
+		return false
 	var id = _enemy_id(enemy)
 	return defeated_enemies.has(id[0]) and id[1] in defeated_enemies[id[0]]
 

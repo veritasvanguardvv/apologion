@@ -1,0 +1,325 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://pastor_ramuel.tscn" id="55_g"]
+[ext_resource type="AudioStream" path="res://Greed/05 - Bard Tales (loop version).ogg" id="56_g"]
+[ext_resource type="Script" uid="uid://bkw1wy34ffxqx" path="res://menu_layer.gd" id="t_12_5h0ix"]
+[ext_resource type="Script" uid="uid://xavj88eon4qj" path="res://character_body_2d.gd" id="t_2_d5c3b"]
+[ext_resource type="Texture2D" uid="uid://c1ps1oie4io16" path="res://Playerwalkanim.png" id="t_3_06w2x"]
+[ext_resource type="Script" uid="uid://clibt8yfiqmdr" path="res://sprite_2d.gd" id="t_4_t5073"]
+[ext_resource type="Texture2D" uid="uid://cjae4ede1ckiw" path="res://Light tests/Light2.png" id="t_5_4lvg6"]
+[ext_resource type="Texture2D" uid="uid://dg0o06xr4ed4x" path="res://Light tests/Halo ring.png" id="t_6_w3cbm"]
+[ext_resource type="Script" path="res://endless_level.gd" id="endless_level"]
+
+[sub_resource type="Gradient" id="t_Gradient_d5c3b"]
+offsets = PackedFloat32Array(0, 0.9386792)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="t_GradientTexture2D_n4u6y"]
+gradient = SubResource("t_Gradient_d5c3b")
+fill = 1
+fill_from = Vector2(0.5117647, 0.5088235)
+fill_to = Vector2(0.85882354, 0.84117645)
+
+[sub_resource type="RectangleShape2D" id="t_RectangleShape2D_b7ju8"]
+size = Vector2(86, 69.5)
+
+[node name="Endless" type="Node2D"]
+script = ExtResource("endless_level")
+music = ExtResource("56_g")
+
+[node name="BackgroundColor" type="CanvasLayer" parent="."]
+layer = -100
+
+[node name="ColorRect" type="ColorRect" parent="BackgroundColor"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.07, 0.06, 0.09, 1)
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1804218673]
+position = Vector2(-1401.1487, -222.7499)
+script = ExtResource("t_2_d5c3b")
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D" unique_id=1735905428]
+position = Vector2(102.00006, 507.00003)
+scale = Vector2(0.17, 0.17)
+texture = ExtResource("t_3_06w2x")
+hframes = 5
+script = ExtResource("t_4_t5073")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=1960045011]
+position = Vector2(106, 520)
+shape = SubResource("t_RectangleShape2D_b7ju8")
+
+[node name="PointLight2D" type="PointLight2D" parent="CharacterBody2D" unique_id=1115352800]
+modulate = Color(0, 0, 0, 0)
+texture_filter = 2
+position = Vector2(206, 619.99994)
+energy = 0.0
+texture = ExtResource("t_5_4lvg6")
+texture_scale = 0.85
+height = 100.0
+
+[node name="NearLight" type="PointLight2D" parent="CharacterBody2D" unique_id=1826772500]
+modulate = Color(0, 0, 0, 0)
+texture_filter = 2
+position = Vector2(107.99999, 517)
+scale = Vector2(5.096967, 4.586856)
+energy = 0.0
+shadow_color = Color(0.14044744, 0.14044744, 0.14044744, 0)
+texture = SubResource("t_GradientTexture2D_n4u6y")
+texture_scale = 0.85
+height = 100.0
+
+[node name="Halo" type="PointLight2D" parent="CharacterBody2D" unique_id=807773597]
+modulate = Color(0, 0, 0, 0)
+texture_filter = 2
+position = Vector2(105.99999, 526)
+scale = Vector2(0.41544116, 0.38867182)
+color = Color(0.84313726, 0.84313726, 0.7176471, 1)
+energy = 0.0
+texture = ExtResource("t_6_w3cbm")
+texture_scale = 0.85
+height = 100.0
+
+[node name="Camera2D" type="Camera2D" parent="CharacterBody2D" unique_id=1493917947]
+position = Vector2(487, 427)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=745870671]
+
+[node name="HPBar" type="ProgressBar" parent="CanvasLayer" unique_id=44744920]
+offset_left = 15.0
+offset_top = 128.0
+offset_right = 267.0
+offset_bottom = 155.0
+
+[node name="TimerLabel" type="Label" parent="CanvasLayer" unique_id=1699540943]
+offset_left = 40.0
+offset_top = 293.0
+offset_right = 80.0
+offset_bottom = 316.0
+
+[node name="DialogueLabel" type="Label" parent="CanvasLayer" unique_id=693238520]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="LineEdit" type="LineEdit" parent="CanvasLayer" unique_id=1956351668]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -438.0
+offset_top = -58.0
+offset_right = 438.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_placeholder_color = Color(0.8745098, 0.8745098, 0.8745098, 0.8980392)
+placeholder_text = "Press 'Enter' or click here to start Scripture recitation"
+
+[node name="MenuLayer" type="CanvasLayer" parent="." unique_id=1431695537]
+script = ExtResource("t_12_5h0ix")
+
+[node name="PauseMenu" type="Control" parent="MenuLayer" unique_id=841084077]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ContinueButton" type="Button" parent="MenuLayer/PauseMenu" unique_id=1504483974]
+layout_mode = 0
+offset_left = 427.0
+offset_top = 105.0
+offset_right = 711.0
+offset_bottom = 208.0
+text = "Continue"
+icon_alignment = 1
+
+[node name="SettingsButton" type="Button" parent="MenuLayer/PauseMenu" unique_id=2144734053]
+layout_mode = 0
+offset_left = 436.0
+offset_top = 283.0
+offset_right = 700.0
+offset_bottom = 379.0
+text = "Settings"
+
+[node name="QuitToMenuButton" type="Button" parent="MenuLayer/PauseMenu" unique_id=2135495480]
+layout_mode = 0
+offset_left = 443.0
+offset_top = 442.0
+offset_right = 702.0
+offset_bottom = 539.0
+text = "Quit to Menu"
+
+[node name="SaveButton" type="Button" parent="MenuLayer/PauseMenu" unique_id=795425564]
+layout_mode = 0
+offset_left = 750.0
+offset_top = 105.0
+offset_right = 1000.0
+offset_bottom = 208.0
+text = "Save Progress"
+
+[node name="LoadButton" type="Button" parent="MenuLayer/PauseMenu" unique_id=2135525362]
+layout_mode = 0
+offset_left = 750.0
+offset_top = 283.0
+offset_right = 1000.0
+offset_bottom = 379.0
+text = "Load Save"
+
+[node name="MainMenu" type="Control" parent="MenuLayer" unique_id=490688977]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayButton" type="Button" parent="MenuLayer/MainMenu" unique_id=476428683]
+layout_mode = 0
+offset_left = 433.0
+offset_top = 21.0
+offset_right = 717.0
+offset_bottom = 152.0
+text = "Play"
+icon_alignment = 1
+
+[node name="SettingsButton" type="Button" parent="MenuLayer/MainMenu" unique_id=1195293161]
+layout_mode = 0
+offset_left = 438.0
+offset_top = 233.0
+offset_right = 702.0
+offset_bottom = 398.0
+text = "Settings"
+
+[node name="Quit" type="Button" parent="MenuLayer/MainMenu" unique_id=164398817]
+layout_mode = 0
+offset_left = 431.0
+offset_top = 478.0
+offset_right = 727.0
+offset_bottom = 594.0
+text = "Quit"
+
+[node name="LoadButton" type="Button" parent="MenuLayer/MainMenu" unique_id=423946139]
+layout_mode = 0
+offset_left = 750.0
+offset_top = 21.0
+offset_right = 1000.0
+offset_bottom = 152.0
+text = "Continue (Load Save)"
+
+[node name="ModeSelect" type="Control" parent="MenuLayer" unique_id=1598766464]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StoryModeButton" type="Button" parent="MenuLayer/ModeSelect" unique_id=1016823044]
+layout_mode = 0
+offset_left = 443.0
+offset_top = 35.0
+offset_right = 727.0
+offset_bottom = 166.0
+text = "Story Mode"
+icon_alignment = 1
+
+[node name="EndlessModeButton Mode" type="Button" parent="MenuLayer/ModeSelect" unique_id=1931829663]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 247.0
+offset_right = 712.0
+offset_bottom = 412.0
+text = "Endless"
+
+[node name="Back" type="Button" parent="MenuLayer/ModeSelect" unique_id=302060647]
+layout_mode = 0
+offset_left = 441.0
+offset_top = 492.0
+offset_right = 737.0
+offset_bottom = 608.0
+text = "Back"
+
+[node name="StorySelect" type="Control" parent="MenuLayer" unique_id=1315306329]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SlothButton" type="Button" parent="MenuLayer/StorySelect" unique_id=236884426]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 30.0
+offset_right = 718.0
+offset_bottom = 78.0
+text = "Sloth"
+icon_alignment = 1
+
+[node name="GluttonyButton" type="Button" parent="MenuLayer/StorySelect" unique_id=1699181130]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 95.0
+offset_right = 714.0
+offset_bottom = 135.0
+text = "Gluttony"
+
+[node name="LustButton" type="Button" parent="MenuLayer/StorySelect" unique_id=427610837]
+layout_mode = 0
+offset_left = 454.0
+offset_top = 152.0
+offset_right = 718.0
+offset_bottom = 199.0
+text = "Lust"
+
+[node name="AngerButton" type="Button" parent="MenuLayer/StorySelect" unique_id=1224754674]
+layout_mode = 0
+offset_left = 453.0
+offset_top = 214.0
+offset_right = 717.0
+offset_bottom = 260.0
+text = "Anger"
+
+[node name="GreedButton" type="Button" parent="MenuLayer/StorySelect" unique_id=2111377158]
+layout_mode = 0
+offset_left = 453.0
+offset_top = 274.0
+offset_right = 717.0
+offset_bottom = 320.0
+text = "Greed"
+
+[node name="EnvyButton" type="Button" parent="MenuLayer/StorySelect" unique_id=166224148]
+layout_mode = 0
+offset_left = 452.0
+offset_top = 339.0
+offset_right = 716.0
+offset_bottom = 387.0
+text = "Envy"
+
+[node name="PrideButton" type="Button" parent="MenuLayer/StorySelect" unique_id=1122173893]
+layout_mode = 0
+offset_left = 458.0
+offset_top = 403.0
+offset_right = 706.0
+offset_bottom = 459.0
+text = "Pride"
+
+[node name="BackButton" type="Button" parent="MenuLayer/StorySelect" unique_id=1448989017]
+layout_mode = 0
+offset_left = 438.0
+offset_top = 497.0
+offset_right = 734.0
+offset_bottom = 556.0
+text = "Back"
+
+[node name="PastorRamuel" parent="." instance=ExtResource("55_g")]
+position = Vector2(-1385.1487, 332)

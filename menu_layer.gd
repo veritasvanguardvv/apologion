@@ -1,4 +1,5 @@
 extends CanvasLayer
+const EndlessScores = preload("res://endless_scores.gd")
 # All the menus. Text on buttons/labels is translated automatically by Godot
 # (translations/strings.csv), because the button text is the English "key".
 
@@ -27,7 +28,8 @@ func _ready():
 	_connect_if_exists("MainMenu/Quit", _on_quit_pressed)  # the node is named "Quit" in the scenes
 	
 	_connect_if_exists("ModeSelect/StoryModeButton", _on_story_mode_pressed)
-	_connect_if_exists("ModeSelect/EndlessModeButton", _on_endless_pressed)
+	# (the button is called "EndlessModeButton Mode" in the level scenes)
+	_connect_if_exists("ModeSelect/EndlessModeButton Mode" if has_node("ModeSelect/EndlessModeButton Mode") else "ModeSelect/EndlessModeButton", _on_endless_pressed)
 	_connect_if_exists("ModeSelect/Back", _on_mode_back_pressed)  # the node is named "Back" in the scenes
 	
 	_connect_if_exists("StorySelect/BackButton", _on_story_back_pressed)
@@ -40,6 +42,7 @@ func _ready():
 	_build_multiplayer_menu()
 	_build_settings_menu()
 	_build_remap_menu()
+	_build_endless_scores_button()
 	_connect_if_exists("MainMenu/SettingsButton", _open_settings.bind(false))
 	_connect_if_exists("PauseMenu/SettingsButton", _open_settings.bind(true))
 	_style_pause_menu()
@@ -122,9 +125,36 @@ func _on_play_pressed():
 func _on_story_mode_pressed():
 	_show_only(story_select)
 
+# Endless mode (Endless.tscn, endless_level.gd): run right through random
+# parts for as long as you can. Fresh health; your verses and items stay.
 func _on_endless_pressed():
-	print("Endless Mode selected (not implemented yet)")
+	print("Starting Endless mode")
 	_show_only(null)
+	SaveManager.start_new_level()
+	call_deferred("change_scene", "res://Endless.tscn")
+
+# Mode Select > "Endless high scores": the local leaderboard (endless_scores.gd)
+func _build_endless_scores_button():
+	var endless = get_node_or_null("ModeSelect/EndlessModeButton Mode")
+	if endless == null:
+		endless = get_node_or_null("ModeSelect/EndlessModeButton")
+	if endless == null or mode_select.has_node("EndlessScoresButton"):
+		return
+	var b = Button.new()
+	b.name = "EndlessScoresButton"
+	b.text = "Endless high scores"
+	b.position = endless.position + Vector2(0, endless.size.y + 8)   # just under "Endless"
+	b.size = Vector2(endless.size.x, 50)
+	b.pressed.connect(_open_endless_scores)
+	mode_select.add_child(b)
+
+func _open_endless_scores():
+	var board = EndlessScores.build_board_panel(self, "")
+	board.name = "EndlessScoresPanel"
+	var close = Button.new()
+	close.text = "Close"
+	close.pressed.connect(board.queue_free)
+	board.get_node("Box").add_child(close)
 
 func _on_quit_pressed():
 	get_tree().quit()

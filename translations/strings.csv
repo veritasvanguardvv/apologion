@@ -334,3 +334,23 @@ You were defeated... back to the checkpoint,You were defeated... back to the che
 Speed + jump,Speed + jump,Velocidad + salto,Szybkość + skok
 +%d%% atk,+%d%% atk,+%d%% atq,+%d%% atk
 -50% enemy atk,-50% enemy atk,-50% atq enemigo,-50% atk wroga
+You were defeated!,You were defeated!,¡Has sido derrotado!,Przegrałeś!
+You fell!,You fell!,¡Te has caído!,Spadłeś!
+Game over,Game over,Fin del juego,Koniec gry
+Distance: %s,Distance: %s,Distancia: %s,Dystans: %s
+Level %d,Level %d,Nivel %d,Poziom %d
+Defeated: %d,Defeated: %d,Derrotados: %d,Pokonani: %d
+Best: %s,Best: %s,Récord: %s,Rekord: %s
+New record!,New record!,¡Nuevo récord!,Nowy rekord!
+Place %d in the high scores,Place %d in the high scores,Puesto %d en las mejores puntuaciones,Miejsce %d w rankingu
+Save score,Save score,Guardar,Zapisz wynik
+Try again,Try again,Reintentar,Jeszcze raz
+Main menu,Main menu,Menú principal,Menu główne
+Endless high scores,Endless high scores,Mejores puntuaciones (Sin fin),Najlepsze wyniki (bez końca)
+Name,Name,Nombre,Imię
+Distance,Distance,Distancia,Dystans
+Level (enemies),Level (enemies),Nivel (enemigos),Poziom (wrogowie)
+No scores yet,No scores yet,Aún no hay puntuaciones,Brak wyników
++%d exp,+%d exp,+%d exp,+%d dośw.
+Level up! Level %d,Level up! Level %d,¡Subes de nivel! Nivel %d,Awans! Poziom %d
+#,#,#,#
