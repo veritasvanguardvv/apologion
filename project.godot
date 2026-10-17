@@ -11,6 +11,8 @@ config_version=5
 [application]
 
 config/name="Apologion personal copy prototype?"
+config/name.ios="Apologion"
+config/name.web="Apologion"
 run/main_scene="uid://yobqlpxvpfqj"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
@@ -32,11 +34,15 @@ Targeting="*res://targeting.gd"
 Inventory="*res://inventory.gd"
 PhoneServer="*res://phone_server.gd"
 OnlineService="*res://online_service.gd"
+TouchControls="*res://touch_controls.gd"
 
 [display]
 
 window/stretch/mode="canvas_items"
 window/stretch/scale_mode="integer"
+window/stretch/scale_mode.mobile="fractional"
+window/stretch/scale_mode.web="fractional"
+window/handheld/orientation=4
 
 [input]
 
@@ -127,6 +133,7 @@ turn_timeout=30.0
 
 [rendering]
 
+textures/vram_compression/import_etc2_astc=true
 textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"

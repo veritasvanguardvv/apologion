@@ -42,6 +42,9 @@ const SHAREABLE = ["scroll_verses_up", "scroll_verses_down"]
 var music_volume = 0.8   # 0..1
 var sfx_volume = 1.0     # 0..1
 var scroll_verses_with_arrows = true   # hold Up/Down to scroll the Tab verse list
+var touch_controls = true               # on-screen buttons on phones / tablets (touch_controls.gd)
+
+signal touch_controls_changed(on)
 var bindings = {}        # action -> physical keycode
 
 signal bindings_changed
@@ -109,6 +112,12 @@ func set_scroll_verses_with_arrows(on: bool):
 	_save()
 
 
+func set_touch_controls(on: bool):
+	touch_controls = on
+	_save()
+	touch_controls_changed.emit(on)
+
+
 # ---------------- Key bindings ----------------
 
 func action_label(action: String) -> String:
@@ -123,7 +132,9 @@ func key_name(action: String) -> String:
 	var physical = int(bindings.get(action, 0))
 	if physical == 0:
 		return "-"
-	var keycode = DisplayServer.keyboard_get_keycode_from_physical(physical)
+	# (browsers, phones and headless runs can't map physical keys to layout keys)
+	var can_map = not (OS.get_name() in ["Web", "iOS", "Android"]) and DisplayServer.get_name() != "headless"
+	var keycode = DisplayServer.keyboard_get_keycode_from_physical(physical) if can_map else KEY_NONE
 	var text = OS.get_keycode_string(keycode if keycode != KEY_NONE else physical)
 	return text if text != "" else str(physical)
 
@@ -180,6 +191,7 @@ func _save():
 	c.set_value("audio", "music", music_volume)
 	c.set_value("audio", "sfx", sfx_volume)
 	c.set_value("controls", "scroll_verses_with_arrows", scroll_verses_with_arrows)
+	c.set_value("controls", "touch_controls", touch_controls)
 	for action in bindings:
 		c.set_value("keys", action, int(bindings[action]))
 	c.save(PATH)
@@ -192,5 +204,6 @@ func _load():
 	music_volume = float(c.get_value("audio", "music", music_volume))
 	sfx_volume = float(c.get_value("audio", "sfx", sfx_volume))
 	scroll_verses_with_arrows = bool(c.get_value("controls", "scroll_verses_with_arrows", scroll_verses_with_arrows))
+	touch_controls = bool(c.get_value("controls", "touch_controls", touch_controls))
 	for action in bindings.keys():
 		bindings[action] = int(c.get_value("keys", action, bindings[action]))

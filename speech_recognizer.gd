@@ -89,15 +89,23 @@ func is_available() -> bool:
 func problem() -> Array:
 	if not ProjectSettings.get_setting("audio/driver/enable_input", false):
 		return ["Voice: audio input is turned off (Project Settings > Audio > Driver > Enable Input)"]
+	var loaded = GDExtensionManager.is_extension_loaded(EXTENSION_PATH) and ClassDB.class_exists("SpeechToText")
+	if not loaded and (OS.has_feature("ios") or OS.has_feature("web")):
+		# Phones / browser: the voice library is inside the app (not in res://)
+		# or there is none, so nothing the player can fix - point to typing.
+		return ["Voice input isn't available on this phone (%s). Tap Type and use the keyboard's microphone key instead.", OS.get_name() + " " + OS.get_version()]
 	if not FileAccess.file_exists(EXTENSION_PATH):
 		return ["Voice: the Godot Whisper addon is missing (%s)", EXTENSION_PATH]
-	var library = _library_path()
-	if library == "":
-		# Not a fault the player can fix - say it kindly and point to typing
+	# (exported games keep the library next to the game, not in res://, so the
+	# file checks below are only for when it did NOT load)
+	var library = "" if loaded else _library_path()
+	if loaded:
+		pass
+	elif library == "":
 		return ["Voice input isn't available on this computer yet (%s). Type the verse and press Enter instead.", OS.get_name() + " " + Engine.get_architecture_name()]
-	if not _library_exists(library):
+	elif not _library_exists(library):
 		return ["Voice: the addon's library file is missing: %s", library]
-	if not GDExtensionManager.is_extension_loaded(EXTENSION_PATH):
+	elif not GDExtensionManager.is_extension_loaded(EXTENSION_PATH):
 		return ["Voice: the addon's library didn't load (%s). Restart Godot; if it still fails, look for 'Can't open dynamic library' in the Output panel", library.get_file()]
 	if not ClassDB.class_exists("SpeechToText"):
 		return ["Voice: the addon loaded but has no SpeechToText class (wrong addon version?)"]

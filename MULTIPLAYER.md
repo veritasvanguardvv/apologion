@@ -44,12 +44,29 @@ features of this app". Tick **Private networks** and click **Allow access**.
 - **Damage:** a phone player's verse does **full damage/healing** like yours (the
   computer companion does 25%), because a real person had to recite it.
   They always use the default targets (all enemies / whole party, split).
+- **Helping out of turn (heal / Guard / buff verses):** during anyone else's turn in a
+  battle, a phone player can recite a **support verse** right away. Support verses are heals,
+  Guard (Psalm 17:8...), Faith (attack up for the team) and Zeal. Pick who it's for with the
+  **Target** buttons on the phone (yourself, the host, the companion or another phone). Heals
+  and Guard go to that one person. Faith boosts the whole team's attacks, and Zeal is the
+  host's run/jump boost.
+  **Anti-spam:** each phone player gets **one out-of-turn support verse per battle round**
+  (a round ends after everyone has had a turn), and it still uses up that verse for their
+  cycle. Attack verses only work on your own turn. The phone shows when your out-of-turn
+  help is ready ("any time" verses are tagged in the list).
 - **Turn order:** by battle speed: you (10), phone players (9), companion (8), enemies.
 - **Enemies** still go for the party 25% of the time, picking any standing party member.
 - The phone page follows the game's language (English / Español).
 - Speech button: browsers only allow speech recognition on https pages, so on your
   home Wi-Fi (plain http) the page shows a tip to use the keyboard's microphone
   key instead. The button appears where the browser allows it.
+
+## iPhone as the host
+The iPhone app (see IOS_BUILD.md) can host too: tap Multiplayer, and friends open the
+address in Safari on the same Wi-Fi. Allow "find devices on your local network" the first
+time, and keep the app open on screen (iOS pauses apps in the background).
+Everything stays on your Wi-Fi: **no internet hosting is needed** for this. Playing with
+friends somewhere else (over the internet) would need a relay/server, which isn't set up.
 
 ## Settings
 Project Settings > Phone: **Http Port** (default 8080; the live connection uses

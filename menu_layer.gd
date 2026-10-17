@@ -479,6 +479,15 @@ func _build_settings_menu():
 	scroll_toggle.add_theme_font_size_override("font_size", 22)
 	scroll_toggle.toggled.connect(GameSettings.set_scroll_verses_with_arrows)
 	column.add_child(scroll_toggle)
+	var touch_toggle = CheckButton.new()
+	touch_toggle.name = "TouchControlsToggle"
+	touch_toggle.text = "Touch controls (phones and tablets)"
+	touch_toggle.button_pressed = GameSettings.touch_controls
+	touch_toggle.focus_mode = Control.FOCUS_NONE
+	touch_toggle.add_theme_font_override("font", _get_bold_font())
+	touch_toggle.add_theme_font_size_override("font_size", 22)
+	touch_toggle.toggled.connect(GameSettings.set_touch_controls)
+	column.add_child(touch_toggle)
 	column.add_child(_make_menu_button("ControlsButton", "Controls (remap keys)", _open_remap))
 	column.add_child(_make_menu_button("BackButton", "Back", _close_settings))
 

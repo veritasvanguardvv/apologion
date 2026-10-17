@@ -31,3 +31,10 @@ models/ggml-base*.bin
 models/ggml-small*.bin
 !translations/*.translation
 __pycache__/
+# Phone builds (export them yourself, see IOS_BUILD.md)
+build/
+*.ipa
+*.xcarchive
+*.keystore
+*.jks
+*.mobileprovision

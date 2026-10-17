@@ -354,3 +354,20 @@ No scores yet,No scores yet,Aún no hay puntuaciones,Brak wyników
 +%d exp,+%d exp,+%d exp,+%d dośw.
 Level up! Level %d,Level up! Level %d,¡Subes de nivel! Nivel %d,Awans! Poziom %d
 #,#,#,#
+Ram,Ram,Embestir,Taran
+Verses,Verses,Versículos,Wersety
+Bag,Bag,Bolsa,Torba
+Type,Type,Escribir,Pisz
+Mic,Mic,Mic,Mikr.
+Touch controls (phones and tablets),Touch controls (phones and tablets),Controles táctiles (móviles y tabletas),Sterowanie dotykowe (telefony i tablety)
+You're knocked out - someone has to heal you first,You're knocked out - someone has to heal you first,Estás fuera de combate: alguien tiene que curarte primero,Jesteś znokautowany - ktoś musi cię najpierw uleczyć
+"Attack verses wait for your turn - heal, Guard and buff verses work any time","Attack verses wait for your turn - heal, Guard and buff verses work any time","Los versículos de ataque esperan a tu turno; los de curación, Guardia y mejora funcionan en cualquier momento","Wersety ataku czekają na twoją turę - wersety leczenia, Ochrony i wzmocnienia działają zawsze"
+You already helped this round - wait for the next round,You already helped this round - wait for the next round,Ya ayudaste en esta ronda: espera a la siguiente,Już pomogłeś w tej rundzie - poczekaj na następną
+%s helps out of turn: %s,%s helps out of turn: %s,%s ayuda fuera de turno: %s,%s pomaga poza turą: %s
+%s is guarded,%s is guarded,%s está protegido,%s jest chroniony
+Target for heal / Guard:,Target for heal / Guard:,Objetivo de curación / Guardia:,Cel leczenia / Ochrony:
+(you),(you),(tú),(ty)
+any time,any time,cuando sea,zawsze
+"Not your turn - heal, Guard and buff verses work now (1 per round)","Not your turn - heal, Guard and buff verses work now (1 per round)","No es tu turno: ahora funcionan los versículos de curación, Guardia y mejora (1 por ronda)","To nie twoja tura - teraz działają wersety leczenia, Ochrony i wzmocnienia (1 na rundę)"
+You helped this round - wait for the next round,You helped this round - wait for the next round,Ya ayudaste en esta ronda: espera a la siguiente,Pomogłeś w tej rundzie - poczekaj na następną
+Voice input isn't available on this phone (%s). Tap Type and use the keyboard's microphone key instead.,Voice input isn't available on this phone (%s). Tap Type and use the keyboard's microphone key instead.,La entrada de voz no está disponible en este teléfono (%s). Toca Escribir y usa el micrófono del teclado.,Wprowadzanie głosowe nie jest dostępne na tym telefonie (%s). Dotknij Pisz i użyj mikrofonu na klawiaturze.
