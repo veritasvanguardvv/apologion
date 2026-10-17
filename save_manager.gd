@@ -58,6 +58,12 @@ var checkpoints: Dictionary = {}
 # its saved position from here in its _ready() (see apply_pending_player_state).
 var pending_position = null
 
+# Endless mode never saves. When a run starts, the story state that lives in
+# memory (inventory, verses used, health, checkpoints) is put aside here and
+# restored when you go back to a story level, so an Endless run can't leak
+# into (or overwrite) your story progress.
+var endless_snapshot = null
+
 
 func _ready():
 	TranslationServer.set_locale(language)
@@ -222,7 +228,47 @@ func has_save() -> bool:
 	return FileAccess.file_exists(SAVE_PATH)
 
 
+# True while in a scene that must never be saved (Endless mode).
+func is_no_save_scene() -> bool:
+	var scene = get_tree().current_scene
+	return scene != null and scene.is_in_group("no_save")
+
+
+func begin_endless() -> void:
+	if endless_snapshot != null:
+		return
+	endless_snapshot = {
+		"inventory": Inventory.get_save_data().duplicate(true),
+		"key_items": Inventory.get_key_save_data().duplicate(true),
+		"used_this_cycle": VerseManager.get_save_data().used_this_cycle.duplicate(true),
+		"player_hp": player_hp,
+		"party_hp": PartyManager.member_hp.duplicate(true),
+		"checkpoints": checkpoints.duplicate(true),
+	}
+
+
+# Back to the story: put the story state back the way it was before the run
+# (verses discovered during the run are kept - learning a verse is never lost).
+func end_endless() -> void:
+	if endless_snapshot == null:
+		return
+	var snap = endless_snapshot
+	endless_snapshot = null
+	Inventory.load_save_data(snap.inventory)
+	Inventory.load_key_save_data(snap.key_items)
+	VerseManager.load_save_data({
+		"discovered": VerseManager.get_save_data().discovered,
+		"used_this_cycle": snap.used_this_cycle,
+	})
+	player_hp = snap.player_hp
+	PartyManager.member_hp = snap.party_hp
+	checkpoints = snap.checkpoints
+
+
 func save_game() -> bool:
+	if is_no_save_scene() or endless_snapshot != null:
+		print("Not saved: Endless mode doesn't save")
+		return false
 	var config = ConfigFile.new()
 	var scene = get_tree().current_scene
 	config.set_value("progress", "level", scene.scene_file_path if scene else "")
@@ -266,6 +312,7 @@ func load_game(change_level := true) -> bool:
 		print("No save file found")
 		return false
 
+	endless_snapshot = null   # a loaded save replaces any Endless run state
 	player_hp = config.get_value("progress", "player_hp", MAX_HP)
 	pending_position = null
 	if config.has_section_key("progress", "player_position"):

@@ -44,6 +44,13 @@ const UNITS = 400.0   # px per Unity unit (distance is shown in Unity units, lik
 @export var exp_to_level_base = 100      # Player.expToLevelBase
 @export var exp_per_level = 15           # Player.expToLevel = base + (level-1) * 15
 @export var safe_first_part = true       # the part you start on has no traps or enemies
+# Floating blocks (see _prepare_part): never less than this between a block
+# and a floor/ledge it overlaps horizontally (player is 69.5 px tall and
+# jumps 201 px, so a smaller gap is a wedge you can get stuck in).
+@export var block_clearance = 200.0
+@export var block_side_margin = 43.0     # half the player's width: closer than this counts as overlapping
+@export var reach_rise = 185.0           # a moved block must stay reachable (gold jump: 172, steps are 56)
+@export var reach_cols = 5               # ...from a ledge at most this many columns away
 @export var death_y = 760.0              # feet below this = fell into a pit (top of Unity's pit DamageAreas: 769)
 
 var part_defs = []
@@ -63,6 +70,7 @@ var defeated = 0
 var game_over = false
 var best = 0.0
 var rng = RandomNumberGenerator.new()
+var prepared = {}              # part index -> part definition with floating blocks fixed
 
 var hud_label: Label
 var exp_bar: ProgressBar
@@ -71,6 +79,8 @@ var over_layer: CanvasLayer
 
 func _ready():
 	rng.randomize()
+	add_to_group("no_save")        # Endless never saves (save_manager.gd)
+	SaveManager.begin_endless()
 	rooms = []
 	use_camera_limits = false
 	super._ready()
@@ -165,7 +175,7 @@ func _spawn_new_part():
 		old.node.queue_free()
 	var first = spawned == 0
 	var index = 0 if (first and safe_first_part) else _next_index()
-	var def = part_defs[index]
+	var def = _prepare_part(index)
 	var node = Node2D.new()
 	node.name = "Part%d_%s" % [spawned, def.name]
 	node.position = Vector2(spawned * part_width, 0)
@@ -196,7 +206,370 @@ func _spawn_new_part():
 	spawned += 1
 
 
+# ---------------- Floating blocks ----------------
+# The Unity parts have squares floating in the air. Some float only 56-168 px
+# above a ledge: just enough room to get wedged under them. Here every
+# floating group of squares (not touching the ground structure) is checked:
+# it keeps at least block_clearance px of air above/below anything it overlaps
+# horizontally, else it is moved up (or down) a few rows if it stays reachable,
+# else removed. Groups that can't be reached any more are removed too. Spikes,
+# enemy spawns and decorations sitting on a block go with it. Ground-connected
+# squares (the floor, pillars, stepping stones) are never touched, so pits stay
+# crossable. Floating blocks become endless_block.gd bodies that a Ram breaks.
+
+func _prepare_part(index: int) -> Dictionary:
+	if prepared.has(index):
+		return prepared[index]
+	var def = prepare_part_def(part_defs[index], part_width, block_clearance, block_side_margin, reach_rise, reach_cols)
+	if def.block_log.size() > 0:
+		print("Endless ", def.name, ": ", ", ".join(def.block_log))
+	prepared[index] = def
+	return def
+
+
+# Static so tests can run it on every part without a level.
+static func prepare_part_def(src: Dictionary, width: float, clearance: float, margin: float, rise: float, cols_reach: int) -> Dictionary:
+	var def = src.duplicate(true)
+	var c = float(src.get("cell", 56.0))
+	var ox = -width - c                       # local x of column 0
+	var ncols = int(round(width / c))
+	var cells = {}
+	for r in src.get("solid", []):
+		var x0 = int(round((r[0] - ox) / c))
+		var y0 = int(round(r[1] / c))
+		for i in int(round(r[2] / c)):
+			for j in int(round(r[3] / c)):
+				cells[Vector2i(x0 + i, y0 + j)] = true
+	# groups of touching squares
+	var seen = {}
+	var groups = []
+	var keys = cells.keys()
+	keys.sort()
+	for k in keys:
+		if seen.has(k):
+			continue
+		var g = []
+		var stack = [k]
+		seen[k] = true
+		while stack.size() > 0:
+			var a = stack.pop_back()
+			g.append(a)
+			for n in [a + Vector2i(1, 0), a + Vector2i(-1, 0), a + Vector2i(0, 1), a + Vector2i(0, -1)]:
+				if cells.has(n) and not seen.has(n):
+					seen[n] = true
+					stack.append(n)
+		groups.append(g)
+	var ground_row = -1000
+	for k in keys:
+		if k.x == 0:
+			ground_row = max(ground_row, k.y)
+	if ground_row == -1000:
+		for k in keys:
+			ground_row = max(ground_row, k.y)
+	var ground = {}
+	var floating = []
+	for g in groups:
+		var bottom = -1000
+		for a in g:
+			bottom = max(bottom, a.y)
+		if bottom >= ground_row:
+			for a in g:
+				ground[a] = true
+		else:
+			floating.append(g)
+	floating.sort_custom(func(a, b): return _bottom_row(a) > _bottom_row(b))   # lowest first
+	var placed = ground.duplicate()
+	var kept = []      # [{ "src": group, "dy": rows moved, "cells": moved group }]
+	var notes = []
+	for g in floating:
+		var done = false
+		for dy in [0, -1, -2, -3, -4, 1, 2]:
+			var ng = []
+			for a in g:
+				ng.append(a + Vector2i(0, dy))
+			var min_x = 1000
+			var max_x = -1000
+			for a in ng:
+				min_x = min(min_x, a.x)
+				max_x = max(max_x, a.x)
+			if min_x < 1 or max_x > ncols - 2:
+				break       # next to the part's edge: the neighbour part is unknown
+			if _clear_of(ng, placed, c, clearance, margin) and (dy == 0 or _reachable(ng, placed, c, rise, cols_reach)):
+				for a in ng:
+					placed[a] = true
+				kept.append({"src": g, "dx": 0, "dy": dy, "cells": ng})
+				if dy != 0:
+					notes.append("block at %s moved %+d px" % [str(g[0]), dy * int(c)])
+				done = true
+				break
+		if not done:
+			notes.append("block at %s removed (too close to a ledge)" % str(g[0]))
+	# drop blocks you can't get to any more
+	var reach = _tops(ground.keys())
+	var changed = true
+	while changed:
+		changed = false
+		for k in kept:
+			var t = _tops(k.cells)
+			if reach.has(t.keys()[0]):
+				continue
+			var ok = false
+			for b in t:
+				for a in reach.keys():
+					var up = (a.y - b.y) * c
+					if (up <= rise and abs(a.x - b.x) <= cols_reach) or (up <= 0 and abs(a.x - b.x) <= cols_reach + 3):
+						ok = true
+						break
+				if ok:
+					break
+			if ok:
+				for b in t:
+					reach[b] = true
+				changed = true
+	var final = []
+	for k in kept:
+		if reach.has(_tops(k.cells).keys()[0]):
+			final.append(k)
+		else:
+			notes.append("block at %s removed (out of reach)" % str(k.src[0]))
+	# Never lose the way across: if the part could be crossed before but not
+	# now, a floating block was a stepping stone - put it somewhere nearby
+	# that keeps the clearance AND keeps the part crossable.
+	var cross_rise = 120.0      # stepping stones must stay easy to reach, also with gold (jump 172)
+	var stone_clear = 110.0     # player is 69.5 px tall
+	if _crossable(cells, cross_rise, ncols) and not _crossable(_with_blocks(ground, final), cross_rise, ncols):
+		var fixed = false
+		for g in floating:
+			var others = []
+			for k in final:
+				if k.src != g:
+					others.append(k)
+			var base = _with_blocks(ground, others)
+			for dy in [0, -1, 1, -2, 2, -3, 3]:
+				for dx in [0, -1, 1, -2, 2]:
+					var ng = []
+					for a in g:
+						ng.append(a + Vector2i(dx, dy))
+					if not _clear_of(ng, base, c, clearance, margin):
+						continue
+					var trial = base.duplicate()
+					for a in ng:
+						trial[a] = true
+					if _crossable(trial, cross_rise, ncols):
+						final = others
+						final.append({"src": g, "dx": dx, "dy": dy, "cells": ng})
+						notes.append("stepping stone at %s placed at %+d,%+d px" % [str(g[0]), dx * int(c), dy * int(c)])
+						fixed = true
+						break
+				if fixed:
+					break
+			if fixed:
+				break
+		if not fixed:
+			# No spot keeps the full clearance: the stepping stone stays where
+			# Unity had it, as long as there's still far more room under it than
+			# the player is tall (stone_clearance), so you can't get wedged.
+			for g in floating:
+				var others = []
+				for k in final:
+					if k.src != g:
+						others.append(k)
+				var base = _with_blocks(ground, others)
+				if not _clear_of(g, base, c, stone_clear, margin):
+					continue
+				var trial = base.duplicate()
+				for a in g:
+					trial[a] = true
+				if _crossable(trial, cross_rise, ncols):
+					final = others
+					final.append({"src": g, "dx": 0, "dy": 0, "cells": g, "stone": true})
+					notes.append("stepping stone at %s kept in place (needed to cross; at least %d px of room)" % [str(g[0]), int(stone_clear)])
+					fixed = true
+					break
+		if not fixed:
+			notes.append("could not keep the clearance without blocking the way: original kept")
+			final = []
+			for g in floating:
+				final.append({"src": g, "dx": 0, "dy": 0, "cells": g, "stone": true})
+	# build the new solid boxes, tiles, blocks; move or drop what sits on blocks
+	var src_of = {}      # original cell -> index in final (or -1 = removed)
+	for g in floating:
+		for a in g:
+			src_of[a] = -1
+	for i in final.size():
+		for a in final[i].src:
+			src_of[a] = i
+	def.solid = _row_runs(ground.keys(), ox, c)
+	def.blocks = []
+	for k in final:
+		def.blocks.append({"solid": _row_runs(k.cells, ox, c), "tiles": [], "dx": k.dx, "dy": k.dy, "stone": k.get("stone", false)})
+	var tiles = []
+	for t in src.get("tiles", []):
+		var cell = Vector2i(int(round((t.pos[0] - ox) / c)), int(round(t.pos[1] / c)))
+		if not src_of.has(cell):
+			tiles.append(t)
+		elif src_of[cell] >= 0:
+			var nt = t.duplicate(true)
+			nt.pos = [t.pos[0] + final[src_of[cell]].dx * c, t.pos[1] + final[src_of[cell]].dy * c]
+			def.blocks[src_of[cell]].tiles.append(nt)
+	def.tiles = tiles
+	var on_block = func(px: float, py: float) -> int:
+		# -2 = not on a floating block, else the src_of value of the block under it
+		var cx = int(floor((px - ox) / c))
+		var first_row = int(ceil(py / c))       # the first square whose top is below the point
+		for row in range(first_row, first_row + 3):
+			var a = Vector2i(cx, row)
+			if cells.has(a):
+				return src_of[a] if src_of.has(a) else -2
+		return -2
+	var traps = []
+	for t in src.get("traps", []):
+		var w = on_block.call(t.rect[0] + t.rect[2] / 2.0, t.rect[1] + t.rect[3] / 2.0)
+		if w == -2:
+			traps.append(t)
+		elif w >= 0:
+			var nt = t.duplicate(true)
+			var sx = final[w].dx * c
+			var shift = final[w].dy * c
+			nt.rect = [t.rect[0] + sx, t.rect[1] + shift, t.rect[2], t.rect[3]]
+			if nt.has("sprite"):
+				nt.sprite.pos = [t.sprite.pos[0] + sx, t.sprite.pos[1] + shift]
+			traps.append(nt)
+	def.traps = traps
+	var spawns = []
+	for p in src.get("spawns", []):
+		var w = on_block.call(p[0], p[1])
+		if w == -2:
+			spawns.append(p)
+		elif w >= 0:
+			spawns.append([p[0] + final[w].dx * c, p[1] + final[w].dy * c])
+	def.spawns = spawns
+	var decor = []
+	for d in src.get("decor", []):
+		var w = on_block.call(d.pos[0], d.pos[1])
+		if w == -2:
+			decor.append(d)
+		elif w >= 0:
+			var nd = d.duplicate(true)
+			nd.pos = [d.pos[0] + final[w].dx * c, d.pos[1] + final[w].dy * c]
+			decor.append(nd)
+	def.decor = decor
+	def.block_log = notes
+	return def
+
+
+static func _with_blocks(ground: Dictionary, blocks: Array) -> Dictionary:
+	var out = ground.duplicate()
+	for k in blocks:
+		for a in k.cells:
+			out[a] = true
+	return out
+
+
+# Coarse: can you get from the floor at the left edge to the floor at the
+# right edge? Up to `rise` px up; how far across depends on how high
+# (with gold: 56 px up -> 6 columns, 112 -> 5, 168 -> 3), dropping down is easy.
+static func _crossable(cells: Dictionary, rise: float, ncols: int) -> bool:
+	var tops = []
+	for k in cells.keys():
+		if not cells.has(k + Vector2i(0, -1)) and not cells.has(k + Vector2i(0, -2)):
+			tops.append(k)
+	var start = null
+	for t in tops:
+		if t.x == 0 and (start == null or t.y < start.y):
+			start = t
+	if start == null:
+		return false
+	var seen = {start: true}
+	var queue = [start]
+	while queue.size() > 0:
+		var a = queue.pop_front()
+		if a.x >= ncols - 4:
+			return true
+		for b in tops:
+			if seen.has(b):
+				continue
+			var up = (a.y - b.y) * 56.0
+			var dx = abs(a.x - b.x)
+			if (up > 0 and up <= rise and dx <= _jump_cols(up)) or (up <= 0 and dx <= 6 + int(-up / 56.0)):
+				seen[b] = true
+				queue.append(b)
+	return false
+
+
+static func _jump_cols(up: float) -> int:
+	if up <= 60.0:
+		return 6
+	if up <= 115.0:
+		return 5
+	return 3
+
+
+static func _bottom_row(g: Array) -> int:
+	var b = -1000
+	for a in g:
+		b = max(b, a.y)
+	return b
+
+
+# The top squares of a group (nothing right above them): where you stand.
+static func _tops(g: Array) -> Dictionary:
+	var members = {}
+	for a in g:
+		members[a] = true
+	var tops = {}
+	for a in g:
+		if not members.has(a + Vector2i(0, -1)):
+			tops[a] = true
+	return tops
+
+
+# Is the group clear of everything placed so far? Squares overlapping it
+# horizontally (closer than margin) must be at least `clearance` px away
+# vertically; squares in the same row must not touch it.
+static func _clear_of(g: Array, placed: Dictionary, c: float, clearance: float, margin: float) -> bool:
+	for a in g:
+		for b in placed.keys():
+			if b.x * c < (a.x + 1) * c + margin and (b.x + 1) * c > a.x * c - margin:
+				if b.y == a.y:
+					if abs(b.x - a.x) <= 1:
+						return false
+					continue
+				var gap = (b.y - a.y - 1) * c if b.y > a.y else (a.y - b.y - 1) * c
+				if gap < clearance:
+					return false
+	return true
+
+
+# Can you jump onto the group from some surface already placed?
+static func _reachable(g: Array, placed: Dictionary, c: float, rise: float, cols_reach: int) -> bool:
+	var surfaces = _tops(placed.keys())
+	for b in _tops(g).keys():
+		for a in surfaces.keys():
+			var up = (a.y - b.y) * c
+			if up > 0 and up <= rise and abs(a.x - b.x) <= cols_reach:
+				return true
+	return false
+
+
+# Squares -> boxes [x, y, w, h], one per run of squares in a row
+static func _row_runs(g: Array, ox: float, c: float) -> Array:
+	var sorted = g.duplicate()
+	sorted.sort_custom(func(a, b): return a.y < b.y or (a.y == b.y and a.x < b.x))
+	var out = []
+	var i = 0
+	while i < sorted.size():
+		var start = sorted[i]
+		var n = 1
+		while i + n < sorted.size() and sorted[i + n].y == start.y and sorted[i + n].x == start.x + n:
+			n += 1
+		out.append([ox + start.x * c, start.y * c, n * c, c])
+		i += n
+	return out
+
+
 func _build_tiles(node: Node2D, def):
+	_build_blocks(node, def)
 	var body = StaticBody2D.new()
 	body.name = "Floors"
 	node.add_child(body)
@@ -208,18 +581,44 @@ func _build_tiles(node: Node2D, def):
 		cs.position = Vector2(r[0] + r[2] / 2.0, r[1] + r[3] / 2.0)
 		body.add_child(cs)
 	for t in def.get("tiles", []):
-		var s = Sprite2D.new()
-		s.texture = load(t.tex)
-		s.region_enabled = true
-		s.region_rect = Rect2(t.region[0], t.region[1], t.region[2], t.region[3])
-		s.centered = false
-		s.position = Vector2(t.pos[0], t.pos[1])
-		s.scale = Vector2.ONE * (float(t.size) / float(t.region[2]))
-		s.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		s.z_index = -1
-		node.add_child(s)
+		node.add_child(_tile_sprite(t))
 	for d in def.get("decor", []):
 		node.add_child(_sprite(d, -2))
+
+
+func _tile_sprite(t) -> Sprite2D:
+	var s = Sprite2D.new()
+	s.texture = load(t.tex)
+	s.region_enabled = true
+	s.region_rect = Rect2(t.region[0], t.region[1], t.region[2], t.region[3])
+	s.centered = false
+	s.position = Vector2(t.pos[0], t.pos[1])
+	s.scale = Vector2.ONE * (float(t.size) / float(t.region[2]))
+	s.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	s.z_index = -1
+	return s
+
+
+# Floating blocks: each one its own body so a Ram can break it
+func _build_blocks(node: Node2D, def):
+	var i = 0
+	for b in def.get("blocks", []):
+		var body = StaticBody2D.new()
+		body.name = "Block%d" % i
+		body.set_script(load("res://endless_block.gd"))
+		body.add_to_group("endless_blocks")
+		body.set_meta("stepping_stone", b.get("stone", false))
+		node.add_child(body)
+		for r in b.solid:
+			var cs = CollisionShape2D.new()
+			var shape = RectangleShape2D.new()
+			shape.size = Vector2(r[2], r[3])
+			cs.shape = shape
+			cs.position = Vector2(r[0] + r[2] / 2.0, r[1] + r[3] / 2.0)
+			body.add_child(cs)
+		for t in b.tiles:
+			body.add_child(_tile_sprite(t))
+		i += 1
 
 
 func _sprite(d, z := 0) -> Sprite2D:
@@ -258,7 +657,10 @@ func _build_trap(node: Node2D, t, damage: int):
 # Top of the floor right under a spawn point (from the part's solid boxes)
 func _floor_under(def, p: Vector2) -> float:
 	var top = INF
-	for r in def.get("solid", []):
+	var rects = def.get("solid", []).duplicate()
+	for b in def.get("blocks", []):
+		rects.append_array(b.solid)
+	for r in rects:
 		if p.x >= r[0] and p.x <= r[0] + r[2] and r[1] >= p.y - 60.0 and r[1] < top:
 			top = r[1]
 	return top

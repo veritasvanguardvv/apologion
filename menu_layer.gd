@@ -130,6 +130,7 @@ func _on_story_mode_pressed():
 func _on_endless_pressed():
 	print("Starting Endless mode")
 	_show_only(null)
+	SaveManager.begin_endless()    # story state is put aside; Endless never saves
 	SaveManager.start_new_level()
 	call_deferred("change_scene", "res://Endless.tscn")
 
@@ -172,6 +173,7 @@ func _on_level_selected(level_name: String):
 	
 	print("Starting level: ", level_name)
 	_show_only(null)
+	SaveManager.end_endless()      # back from Endless: story state as it was
 	SaveManager.start_new_level()  # fresh level = full health
 	
 	match level_name:
@@ -186,10 +188,23 @@ func _on_level_selected(level_name: String):
 		_:
 			print("No scene set up for ", level_name)
 
+# Endless mode never saves: no Save/Load buttons in its pause menu or Settings.
+func _update_save_buttons():
+	var no_save = SaveManager.is_no_save_scene()
+	for path in ["PauseMenu/SaveButton", "PauseMenu/LoadButton"]:
+		var b = get_node_or_null(path)
+		if b:
+			b.visible = not no_save
+	if settings_menu:
+		var row = settings_menu.find_child("SaveRow", true, false)
+		if row:
+			row.visible = not no_save
+
 func change_scene(path: String):
 	get_tree().change_scene_to_file(path)
 
 func _show_only(menu):
+	_update_save_buttons()
 	if pause_menu: pause_menu.visible = (menu == pause_menu)
 	if main_menu: main_menu.visible = (menu == main_menu)
 	if mode_select: mode_select.visible = (menu == mode_select)
