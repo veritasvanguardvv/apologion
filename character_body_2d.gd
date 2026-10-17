@@ -15,6 +15,9 @@ var gravity = 980
 # your speed. Set by the level whenever the inventory changes.
 var carry_max_jump_height = 0.0
 var carry_speed_scale = 1.0
+# Top sideways speed in the air while carrying something heavy (0 = no limit).
+# It holds for every way of moving: walking, the ram dash, Zeal, speed boosts.
+var carry_air_speed = 0.0
 # "en", "es" or "pl". The language lives in SaveManager (set with the main
 # menu's English / Español / Polski buttons); this just reads it so verse checks match.
 var language: String:
@@ -656,7 +659,11 @@ func _physics_process(delta):
 		velocity.x = facing * speed * ram_speed_multiplier       # the dash
 	else:
 		velocity.x = direction * speed * carry_speed_scale if direction else move_toward(velocity.x, 0, speed)
+	if carry_air_speed > 0.0 and (velocity.y < 0.0 or not is_on_floor()):
+		velocity.x = clamp(velocity.x, -carry_air_speed, carry_air_speed)
 	move_and_slide()
+	if carry_air_speed > 0.0 and not is_on_floor():
+		velocity.x = clamp(velocity.x, -carry_air_speed, carry_air_speed)
 	if ram_state == 2:
 		_check_ram_hits()
 
@@ -795,7 +802,15 @@ func _update_verse_text():
 	if not verse_text:
 		return
 	if cycle_label:
-		cycle_label.text = tr("Ready this cycle: %d of %d") % [VerseManager.remaining_count(), VerseManager.discovered.size()]
+		# Counts the verses the filter buttons show (all of them on "Show all")
+		var ready = 0
+		var found = 0
+		for v in all_verses:
+			if VerseManager.is_discovered(v.ref) and _passes_filter(v):
+				found += 1
+				if not VerseManager.is_used(v.ref):
+					ready += 1
+		cycle_label.text = tr("Ready this cycle: %d of %d") % [ready, found]
 	# One row per verse: Index | Verse | Effects (alternating row shading)
 	var display = "[table=3]"
 	var shown = 0
@@ -824,19 +839,18 @@ func _update_verse_text():
 			if instant != "":   # in gold in the Effects column
 				power = power.replace(instant, "[color=#ffd84a]%s[/color]" % instant)
 			var kind = tr("Universal (All)") if v.type == "all" else tr(v.type.capitalize())
+			if v.type in ["guard", "zeal"]:
+				kind = ""   # "50% def" / "Speed + jump" already say it
 			if v.get("set", "") == "sheet":
 				var kinds = []
 				for sin in v.get("sins", {}):
 					kinds.append(tr(sin.capitalize()))
 				if v.get("all_damage", 0) > 0:
 					kinds.append(tr("Universal (All)"))
-				if v.get("zeal", false):
-					kinds.append(tr("Zeal"))
-				if v.get("guard", false):
-					kinds.append(tr("Guard"))
-				if kinds.is_empty():
+				# (Zeal / Guard aren't repeated here: "Speed + jump" / "50% def" say it)
+				if kinds.is_empty() and v.get("heal", 0) != 0:
 					kinds.append(tr("Heal"))
-				kind = ", ".join(kinds)
+				kind = _pack_labels(kinds)
 			# Words of Jesus: a small red cross after the reference, and the text in red when ready (like red-letter Bibles)
 			var jesus_mark = ""
 			if v.get("jesus", false):
@@ -845,7 +859,7 @@ func _update_verse_text():
 					body = "[color=#ff9a9a]%s[/color]" % body
 			display += "[cell expand=2 %s][color=%s]%s%s\n[font_size=11]%s[/font_size][/color][/cell]" % [bg, color, VerseManager.ref_text(v.ref), jesus_mark, status]
 			display += "[cell expand=6 %s][color=%s]%s[/color][/cell]" % [bg, color, body]
-			display += "[cell expand=3 %s][color=%s][font_size=11]%s\n%s[/font_size][/color][/cell]" % [bg, color, power, kind]
+			display += "[cell expand=3 %s][color=%s][font_size=11]%s[/font_size][/color][/cell]" % [bg, color, power + ("\n" + kind if kind != "" else "")]
 		else:
 			display += "[cell expand=2 %s]???[/cell][cell expand=6 %s]???[/cell][cell expand=3 %s]??%%[/cell]" % [bg, bg, bg]
 	display += "[/table]"
@@ -855,6 +869,33 @@ func _update_verse_text():
 
 # The short "what it does" line shown for each verse in the verse box
 # (and in the inventory).
+# Puts short labels on as few lines as fit the Effects column, so a line
+# never has to wrap inside a label ("50% def" stays together): "25% vs Sloth," / "10% vs all, 50% def"
+func _pack_labels(parts: Array, max_chars := 18) -> String:
+	var lines = []
+	var line = ""
+	for p in parts:
+		if line != "" and line.length() + 2 + p.length() <= max_chars:
+			line += ", " + p
+			continue
+		if line != "":
+			lines.append(line + ",")
+			line = ""
+		# a label too long for one line is split between words
+		for w in p.split(" "):
+			if line == "":
+				line = w
+			elif line.length() + 1 + w.length() <= max_chars:
+				line += " " + w
+			else:
+				lines.append(line)
+				line = w
+	if line != "":
+		lines.append(line)
+	return "\n".join(lines)
+
+# The Effects column of the verse list: short labels ("25% vs Sloth",
+# "10% vs all", "50% def", "10% heal").
 func verse_power_text(v) -> String:
 	if v.get("set", "") == "sheet":
 		var parts = []
@@ -863,36 +904,34 @@ func verse_power_text(v) -> String:
 		for sin in v.get("sins", {}):
 			parts.append(tr("%d%% vs %s") % [v.sins[sin], tr(sin.capitalize())])
 		if v.get("all_damage", 0) > 0:
-			parts.append(tr("%d%% vs any sin") % v.all_damage)
+			parts.append(tr("%d%% vs all") % v.all_damage)
 		for kind in v.get("vs", {}):   # e.g. "+50% vs Atheist"
 			parts.append("+" + tr("%d%% vs %s") % [v.vs[kind], tr(kind.capitalize())])
 		if v.get("heal", 0) > 0:
-			parts.append(tr("Heals %d%%") % v.heal)
+			parts.append(tr("%d%% heal") % v.heal)
 		elif v.get("heal", 0) < 0:
-			parts.append(tr("Costs you %d%% HP") % (-v.heal))
+			parts.append(tr("-%d%% HP") % (-v.heal))
 		if v.get("zeal", false):
-			parts.append(tr("Speed + jump boost"))
+			parts.append(tr("Speed + jump"))
 		if v.get("guard", false):
-			parts.append(tr("+%d%% defense, %d rounds") % [int(guard_reduction * 100), guard_rounds])
-		return ", ".join(parts)
+			parts.append(tr("%d%% def") % int(guard_reduction * 100))
+		return _pack_labels(parts)
 	match v.type:
 		"heal":
-			return tr("Heals %d%% of max HP (split between you and your party)") % v.heal
+			return tr("%d%% heal") % v.heal
 		"guard":
-			return tr("+%d%% defense, %d rounds") % [int(guard_reduction * 100), guard_rounds]
+			return tr("%d%% def") % int(guard_reduction * 100)
 		"faith":
-			return tr("+%d%% attack (stacks to +%d%%), %d rounds") % [int(faith_step * 100), int(faith_max * 100), faith_rounds]
+			return tr("+%d%% atk") % int(faith_step * 100)
 		"fear":
-			return tr("All enemies in battle: attack -50%, 3 rounds")
+			return tr("-50% enemy atk")
 		"zeal":
-			return tr("Speed + jump boost")
+			return tr("Speed + jump")
 		"light":
 			return tr("Lights up the dark")
-	var text = "%d%%" % v.damage
-	if v.type == "all":
-		text += tr(", hurts any enemy type")
-	else:
-		text += tr(", hurts untyped and %s-type enemies") % tr(v.type.capitalize())
+	var text = tr("%d%% vs all") % v.damage
+	if v.type != "all":
+		text = tr("%d%% vs %s") % [v.damage, tr(v.type.capitalize())]
 	# Which enemy verses does it counter? (from enemy_verses.gd)
 	for ref in EnemyVerses.VERSES:
 		var ev = EnemyVerses.VERSES[ref]

@@ -11,8 +11,13 @@ extends Node2D
 #     tops out at carry_jump_height (172 px instead of 201). That still gets
 #     you onto the feather block before the hill (157 px up) and the normal
 #     1-tile steps (130.6 px), so every step of the hill can still be climbed
-#     with the gold - it just feels heavier. Drop the gold
-#     (Ctrl > click it > Drop) and you're back to normal at once.
+#     with the gold - it just feels heavier. In the air you also can't go
+#     sideways faster than carry_air_speed (340 instead of 400 - also when
+#     dashing (ram), with Zeal or a speed boost), so the jump from the hill top
+#     to the tree platform over the water (TileMaps/TreePlatform_Tilemap: 2
+#     tiles higher, 437 px gap) falls ~45 px short: you can't cross the water
+#     with gold. Without it the same jump clears with ~60 px to spare.
+#     Drop the gold (Ctrl > click it > Drop) and you're back to normal at once.
 #     (Unity's JumpModifier only did this in one spot.)
 #     Money you pick up goes in the inventory too and flies away (inventory.gd).
 #   - falling into a pit / the water restarts the level - or, once you've
@@ -28,6 +33,7 @@ const PopupText = preload("res://popup_text.gd")
 @export var music_volume_db = -10.0
 @export var carry_jump_height = 172.0  # highest jump with gold (pixels): feather block needs 156.8, hill steps 130.6, normal jump 201
 @export var carry_speed_scale = 0.95   # walking speed with gold
+@export var carry_air_speed = 340.0    # top sideways speed in the air with gold (px/s; normal 400): with it the jump from the hill to the tree platform falls short
 @export var checkpoint_feet = Vector2(5110, -855)   # where you respawn: on top of the hill (feet on the grass)
 @export var fall_margin = 500.0        # this far below the room's bottom edge = fell into a pit
 @export var use_camera_limits = true
@@ -175,6 +181,7 @@ func _update_weight():
 	var heavy = carried_gold() > 0
 	player.carry_max_jump_height = carry_jump_height if heavy else 0.0
 	player.carry_speed_scale = carry_speed_scale if heavy else 1.0
+	player.carry_air_speed = carry_air_speed if heavy else 0.0
 
 
 # ---------------- Letters / dialogs ----------------

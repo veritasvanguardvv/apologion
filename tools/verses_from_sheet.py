@@ -137,6 +137,13 @@ def main():
         path = root / "data/verses.json"
         verses = json.loads(path.read_text(encoding="utf-8"))["verses"]
         report = {}
+        # Start again from the sheet's own verses: drop the ones the lists added
+        # (the sheet only gives verses that attack or heal) and the list flags,
+        # so a verse taken out of a list (or renamed / split) doesn't linger.
+        verses = [v for v in verses if v.get("sins") or v.get("all_damage", 0) > 0 or v.get("heal", 0) != 0]
+        for v in verses:
+            v.pop("zeal", None)
+            v.pop("guard", None)
         for flag in ("zeal", "guard"):
             apply_list(verses, fills.get(flag, []), flag, report)
             print("%s verses: %d (new: %s)" % (flag, sum(1 for v in verses if v.get(flag)), ", ".join(report.get(flag + "_new", []))))

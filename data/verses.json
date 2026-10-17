@@ -10447,7 +10447,7 @@
    "guard": true
   },
   {
-   "ref": "Psalm 91:1a",
+   "ref": "Psalm 91:1",
    "translation": "Fragment",
    "en": "He who dwells in the secret place of the Most High will rest in the shadow of the Almighty.",
    "es": "El que habita al abrigo del Altísimo morará bajo la sombra del Omnipotente.",
@@ -11739,18 +11739,6 @@
    "zeal": true
   },
   {
-   "ref": "2 Corinthians 4:15",
-   "translation": "",
-   "en": "All this is for your sake, so that as grace reaches more and more people, thanksgiving overflows to the glory of God.",
-   "es": "Todo esto es por ustedes, para que, al alcanzar la gracia a más y más personas, abunde la gratitud para la gloria de Dios.",
-   "pl": "Wszystko to dla was, aby łaska, docierając do coraz większej liczby ludzi, pomnożyła dziękczynienie na chwałę Boga.",
-   "all_damage": 0,
-   "sins": {},
-   "heal": 0,
-   "jesus": false,
-   "zeal": true
-  },
-  {
    "ref": "2 Corinthians 4:16a",
    "translation": "",
    "en": "We never give up.",
@@ -12027,7 +12015,7 @@
    "guard": true
   },
   {
-   "ref": "Psalm 91:1b",
+   "ref": "Psalm 91:2",
    "translation": "Fragment",
    "en": "I will say of Yahweh, ‘He is my refuge and my fortress; my God, in whom I trust.",
    "es": "Diré del Señor: «Él es mi refugio y mi fortaleza; mi Dios, en quien confío».",
@@ -12075,11 +12063,11 @@
    "guard": true
   },
   {
-   "ref": "Psalm 118:6-7",
+   "ref": "Psalm 118:6",
    "translation": "",
-   "en": "The Lord is on my side; I will not fear. What can man do to me? The Lord is with me as my helper.",
-   "es": "El Señor está conmigo; no temeré. ¿Qué me puede hacer el hombre? El Señor está conmigo para ayudarme.",
-   "pl": "Pan jest po mojej stronie, nie będę się lękał. Cóż może mi zrobić człowiek? Pan jest ze mną jako mój pomocnik.",
+   "en": "The Lord is on my side; I will not fear. What can man do to me?",
+   "es": "El Señor está conmigo; no temeré. ¿Qué me puede hacer el hombre?",
+   "pl": "Pan jest po mojej stronie, nie będę się lękał. Cóż może mi zrobić człowiek?",
    "all_damage": 0,
    "sins": {},
    "heal": 0,
@@ -12207,11 +12195,23 @@
    "guard": true
   },
   {
-   "ref": "Romans 5:8-9",
+   "ref": "Romans 5:8",
    "translation": "",
-   "en": "God showed his love for us in that while we were still sinners, Christ died for us. Now that we are made right by his blood, how much more will we be saved from God's wrath through him!",
-   "es": "Dios demostró su amor por nosotros en que, siendo aún pecadores, Cristo murió por nosotros. Ahora que hemos sido justificados por su sangre, ¡con cuánta más razón seremos salvados por él de la ira de Dios!",
-   "pl": "Bóg okazał nam swoją miłość przez to, że Chrystus umarł za nas, gdy byliśmy jeszcze grzesznikami. Skoro teraz jesteśmy usprawiedliwieni Jego krwią, o ileż bardziej przez Niego zostaniemy zbawieni od gniewu Bożego!",
+   "en": "God showed his love for us in that while we were still sinners, Christ died for us.",
+   "es": "Dios demostró su amor por nosotros en que, siendo aún pecadores, Cristo murió por nosotros.",
+   "pl": "Bóg okazał nam swoją miłość przez to, że Chrystus umarł za nas, gdy byliśmy jeszcze grzesznikami.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "guard": true
+  },
+  {
+   "ref": "Romans 5:9",
+   "translation": "",
+   "en": "Now that we are made right by his blood, how much more will we be saved from God's wrath through him!",
+   "es": "Ahora que hemos sido justificados por su sangre, ¡con cuánta más razón seremos salvados por él de la ira de Dios!",
+   "pl": "Skoro teraz jesteśmy usprawiedliwieni Jego krwią, o ileż bardziej przez Niego zostaniemy zbawieni od gniewu Bożego!",
    "all_damage": 0,
    "sins": {},
    "heal": 0,

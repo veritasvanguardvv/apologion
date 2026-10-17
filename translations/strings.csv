@@ -299,7 +299,7 @@ Heavy: you can't jump as high while you carry it.,Heavy: you can't jump as high 
 Riches make themselves wings and fly away (Proverbs 23:5).,Riches make themselves wings and fly away (Proverbs 23:5).,Las riquezas se hacen alas y se van volando (Proverbios 23:5).,Bogactwo sprawia sobie skrzydła i odlatuje (Przysłów 23:5).
 Wrath,Wrath,Ira,Gniew
 Atheist,Atheist,Ateo,Ateista
-%d%% vs %s,%d%% vs %s,%d%% contra %s,%d%% przeciw: %s
+%d%% vs %s,%d%% vs %s,%d%% vs %s,%d%% vs %s
 No effect - this verse only hurts %s-type enemies,No effect - this verse only hurts %s-type enemies,Sin efecto: este versículo solo daña a enemigos de tipo %s,Bez efektu - ten werset rani tylko wrogów typu %s
 %s: -%s HP,%s: -%s HP,%s: -%s PS,%s: -%s PŻ
 Index,Index,Índice,Indeks
@@ -327,3 +327,10 @@ No key items yet.,No key items yet.,Aún no tienes objetos clave.,Nie masz jeszc
 Click a key item to read it,Click a key item to read it,Haz clic en un objeto clave para leerlo,"Kliknij przedmiot kluczowy, aby go przeczytać"
 You fell... back to the checkpoint,You fell... back to the checkpoint,Te caíste... de vuelta al punto de control,Spadłeś... powrót do punktu kontrolnego
 You were defeated... back to the checkpoint,You were defeated... back to the checkpoint,Has sido derrotado... de vuelta al punto de control,Przegrałeś... powrót do punktu kontrolnego
+%d%% vs all,%d%% vs all,%d%% vs todos,%d%% vs wszystkie
+%d%% def,%d%% def,%d%% def,%d%% obr
+%d%% heal,%d%% heal,%d%% cura,%d%% lecz.
+-%d%% HP,-%d%% HP,-%d%% PS,-%d%% PŻ
+Speed + jump,Speed + jump,Velocidad + salto,Szybkość + skok
++%d%% atk,+%d%% atk,+%d%% atq,+%d%% atk
+-50% enemy atk,-50% enemy atk,-50% atq enemigo,-50% atk wroga

@@ -2161,7 +2161,7 @@
    "pl": "Jesteś fanatykiem z religijnym OCD, idź się leczyć."
   }
  },
- "_about_zeal": "Zeal list (user's list, t40u): verses with the Zeal effect (speed + jump boost). Each entry marks the sheet verse with that reference (the row whose English matches, for repeated rows) as Zeal and uses this English text (and translation type / es / pl when given); a reference not in the sheet becomes a Zeal-only verse. sheet_ref = the sheet's reference when it's labelled wrong (the sheet's '1 Corinthians 14:2' text is 1 Corinthians 14:1).",
+ "_about_zeal": "Zeal list (user's list, t40u): verses with the Zeal effect (speed + jump boost). Each entry marks the sheet verse with that reference (the row whose English matches, for repeated rows) as Zeal and uses this English text (and translation type / es / pl when given); a reference not in the sheet becomes a Zeal-only verse. sheet_ref = the sheet's reference when it's labelled wrong (the sheet's '1 Corinthians 14:2' text is 1 Corinthians 14:1). 2 Corinthians 4:15 was taken out again (t42u).",
  "zeal": [
   {
    "ref": "Psalm 149:5",
@@ -2255,12 +2255,6 @@
    "en": "Work enthusiastically for the Lord, for nothing you do for the Lord is useless."
   },
   {
-   "ref": "2 Corinthians 4:15",
-   "en": "All this is for your sake, so that as grace reaches more and more people, thanksgiving overflows to the glory of God.",
-   "es": "Todo esto es por ustedes, para que, al alcanzar la gracia a más y más personas, abunde la gratitud para la gloria de Dios.",
-   "pl": "Wszystko to dla was, aby łaska, docierając do coraz większej liczby ludzi, pomnożyła dziękczynienie na chwałę Boga."
-  },
-  {
    "ref": "2 Corinthians 4:16a",
    "en": "We never give up.",
    "es": "Nunca nos damos por vencidos.",
@@ -2275,7 +2269,7 @@
    "ref": "Hebrews 10:36"
   }
  ],
- "_about_guard": "Guard list (user's list, t41u): same rules as the zeal list; these verses give Guard (+defense for a few rounds). Fixes: the 2nd 'Psalm 23:4a' row (Your rod and your staff) is Psalm 23:4b; the 'Psalm 46:1' row's text is Psalm 46:10; 'Ps 118:6-7' = Psalm 118:6-7.",
+ "_about_guard": "Guard list (user's list, t41u): same rules as the zeal list; these verses give Guard (+defense for a few rounds). Fixes: the 2nd 'Psalm 23:4a' row (Your rod and your staff) is Psalm 23:4b; the 'Psalm 46:1' row's text is Psalm 46:10; 'Ps 118:6-7' = Psalm 118:6-7. 'user_ref' = the reference as the user wrote it, when we corrected it: 2nd 'Psalm 23:4a' = 23:4b; 'Psalm 46:1' text = 46:10; 'Psalm 91:1b' text = 91:2 (so 91:1a is all of verse 1 = Psalm 91:1); 'Ps 118:6-7' trimmed to Psalm 118:6; 'Romans 5:8-9' split into 5:8 and 5:9.",
  "guard": [
   {
    "ref": "Psalm 3:3",
@@ -2351,6 +2345,7 @@
   },
   {
    "ref": "Psalm 23:4b",
+   "user_ref": "Psalm 23:4a",
    "translation": "Fragment",
    "en": "Your rod and your staff, they comfort me.",
    "es": "Tu vara y tu cayado me infunden aliento.",
@@ -2405,7 +2400,7 @@
   },
   {
    "ref": "Psalm 46:10",
-   "sheet_ref": "Psalm 46:1",
+   "user_ref": "Psalm 46:1",
    "translation": "Fragment",
    "en": "Be still, and know that I am God. I will be exalted among the nations.",
    "es": "Estén quietos y sepan que yo soy Dios; seré exaltado entre las naciones.",
@@ -2444,12 +2439,15 @@
    "pl": "Prowadzisz mnie swoją radą, a potem przyjmiesz mnie do chwały."
   },
   {
-   "ref": "Psalm 91:1a",
+   "ref": "Psalm 91:1",
+   "sheet_ref": "Psalm 91:1a",
+   "user_ref": "Psalm 91:1a",
    "translation": "Fragment",
    "en": "He who dwells in the secret place of the Most High will rest in the shadow of the Almighty."
   },
   {
-   "ref": "Psalm 91:1b",
+   "ref": "Psalm 91:2",
+   "user_ref": "Psalm 91:1b",
    "translation": "Fragment",
    "en": "I will say of Yahweh, ‘He is my refuge and my fortress; my God, in whom I trust.",
    "es": "Diré del Señor: «Él es mi refugio y mi fortaleza; mi Dios, en quien confío».",
@@ -2477,10 +2475,11 @@
    "pl": "Bo swoim aniołom każe cię strzec na wszystkich twoich drogach."
   },
   {
-   "ref": "Psalm 118:6-7",
-   "en": "The Lord is on my side; I will not fear. What can man do to me? The Lord is with me as my helper.",
-   "es": "El Señor está conmigo; no temeré. ¿Qué me puede hacer el hombre? El Señor está conmigo para ayudarme.",
-   "pl": "Pan jest po mojej stronie, nie będę się lękał. Cóż może mi zrobić człowiek? Pan jest ze mną jako mój pomocnik."
+   "ref": "Psalm 118:6",
+   "user_ref": "Ps 118:6-7",
+   "en": "The Lord is on my side; I will not fear. What can man do to me?",
+   "es": "El Señor está conmigo; no temeré. ¿Qué me puede hacer el hombre?",
+   "pl": "Pan jest po mojej stronie, nie będę się lękał. Cóż może mi zrobić człowiek?"
   },
   {
    "ref": "Psalm 118:8",
@@ -2557,10 +2556,18 @@
    "pl": "Usprawiedliwieni z wiary, mamy pokój z Bogiem przez naszego Pana Jezusa Chrystusa."
   },
   {
-   "ref": "Romans 5:8-9",
-   "en": "God showed his love for us in that while we were still sinners, Christ died for us. Now that we are made right by his blood, how much more will we be saved from God's wrath through him!",
-   "es": "Dios demostró su amor por nosotros en que, siendo aún pecadores, Cristo murió por nosotros. Ahora que hemos sido justificados por su sangre, ¡con cuánta más razón seremos salvados por él de la ira de Dios!",
-   "pl": "Bóg okazał nam swoją miłość przez to, że Chrystus umarł za nas, gdy byliśmy jeszcze grzesznikami. Skoro teraz jesteśmy usprawiedliwieni Jego krwią, o ileż bardziej przez Niego zostaniemy zbawieni od gniewu Bożego!"
+   "ref": "Romans 5:8",
+   "user_ref": "Romans 5:8-9",
+   "en": "God showed his love for us in that while we were still sinners, Christ died for us.",
+   "es": "Dios demostró su amor por nosotros en que, siendo aún pecadores, Cristo murió por nosotros.",
+   "pl": "Bóg okazał nam swoją miłość przez to, że Chrystus umarł za nas, gdy byliśmy jeszcze grzesznikami."
+  },
+  {
+   "ref": "Romans 5:9",
+   "user_ref": "Romans 5:8-9",
+   "en": "Now that we are made right by his blood, how much more will we be saved from God's wrath through him!",
+   "es": "Ahora que hemos sido justificados por su sangre, ¡con cuánta más razón seremos salvados por él de la ira de Dios!",
+   "pl": "Skoro teraz jesteśmy usprawiedliwieni Jego krwią, o ileż bardziej przez Niego zostaniemy zbawieni od gniewu Bożego!"
   },
   {
    "ref": "Romans 8:31",
