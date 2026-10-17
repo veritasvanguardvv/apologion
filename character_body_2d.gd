@@ -10,6 +10,11 @@ var max_hp: int:            # (the same for every level, set in save_manager.gd)
 var speed = 200
 var jump_velocity = -400
 var gravity = 980
+# Carrying something heavy (the gold in Greed, see greed_level.gd): you can
+# jump at most this high (pixels, 0 = no limit) and walk at this fraction of
+# your speed. Set by the level whenever the inventory changes.
+var carry_max_jump_height = 0.0
+var carry_speed_scale = 1.0
 # "en", "es" or "pl". The language lives in SaveManager (set with the main
 # menu's English / Español / Polski buttons); this just reads it so verse checks match.
 var language: String:
@@ -554,16 +559,19 @@ func _light_up():
 
 # Zeal (Romans 12:11): run faster and jump higher for 3 seconds
 func _zeal_boost():
-	jump_velocity = -700
-	speed = 400
+	# (relative to the current values, so the Greed level's tuning comes back after)
+	var old_jump = jump_velocity
+	var old_speed = speed
+	jump_velocity = old_jump * 1.75
+	speed = old_speed * 2
 	var timer_label = get_parent().get_node_or_null("CanvasLayer/TimerLabel")
 	if timer_label:
 		for i in range(3, 0, -1):
 			timer_label.text = str(i)
 			await get_tree().create_timer(1.0).timeout
 		timer_label.text = ""
-	jump_velocity = -400
-	speed = 200
+	jump_velocity = old_jump
+	speed = old_speed
 
 # Using a scroll from the inventory (inventory.gd). Like reciting its verse,
 # but the verse cycle isn't touched and the verse isn't discovered.
@@ -595,7 +603,7 @@ func _physics_process(delta):
 	var in_battle = TurnManager.in_battle
 	var typing = verse_input.has_focus()
 	if Input.is_action_just_pressed("jump") and is_on_floor() and not typing and not in_battle:
-		velocity.y = jump_velocity
+		velocity.y = current_jump_velocity()
 		if ram_state == 1:
 			_end_ram(false)   # jumping cancels a charge (but not a dash)
 	var direction = 0.0 if in_battle or typing else Input.get_axis("move_left", "move_right")
@@ -607,10 +615,17 @@ func _physics_process(delta):
 	elif ram_state == 2:
 		velocity.x = facing * speed * ram_speed_multiplier       # the dash
 	else:
-		velocity.x = direction * speed if direction else move_toward(velocity.x, 0, speed)
+		velocity.x = direction * speed * carry_speed_scale if direction else move_toward(velocity.x, 0, speed)
 	move_and_slide()
 	if ram_state == 2:
 		_check_ram_hits()
+
+# The jump's starting speed: weaker while carrying something heavy, so the
+# jump peaks at carry_max_jump_height (peak = v^2 / 2g)
+func current_jump_velocity() -> float:
+	if carry_max_jump_height > 0.0:
+		return max(jump_velocity, -sqrt(2.0 * gravity * carry_max_jump_height))
+	return jump_velocity
 
 # ---------------- Ram ----------------
 

@@ -9,6 +9,7 @@ size = Vector2(86, 69.5)
 [node name="Baana" type="CharacterBody2D"]
 collision_layer = 0
 script = ExtResource("1_party")
+can_jump = true
 display_name = "Baana"
 battle_speed = 7
 bubble_head_offset = -95.0

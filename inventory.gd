@@ -516,7 +516,7 @@ func _refresh():
 		if verse:
 			detail_info.text = "%s - %s" % [VerseManager.ref_text(verse.ref), player.verse_power_text(verse)]
 		elif item.get("heavy", false):
-			detail_info.text = tr("Heavy: in some places you can't jump as high while you carry it.")
+			detail_info.text = tr("Heavy: you can't jump as high while you carry it.")
 		elif item.get("flies_away", false):
 			detail_info.text = tr("Riches make themselves wings and fly away (Proverbs 23:5).")
 		else:

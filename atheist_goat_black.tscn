@@ -172,7 +172,7 @@ size = Vector2(110, 104)
 
 [node name="AtheistGoatBlack" type="CharacterBody2D"]
 script = ExtResource("1_enemy")
-display_name = "Black Atheist Goat"
+display_name = "Atheist #2"
 line_sets = Array[String](["atheist_goat"])
 base_type = "atheist"
 max_hp = 120

@@ -525,12 +525,6 @@ size = Vector2(162.7393, 46.8129)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_110"]
 size = Vector2(50.0918, 46.8129)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_111"]
-size = Vector2(579.535, 574.4158)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_112"]
-size = Vector2(541.8748, 79.3535)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_113"]
 size = Vector2(177.4968, 243.6944)
 
@@ -3647,28 +3641,6 @@ hide_on_enter = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Triggers/TriggerArea (7)"]
 position = Vector2(0, 0)
 shape = SubResource("RectangleShape2D_110")
-
-[node name="GoldCheckArea" type="Area2D" parent="Triggers"]
-position = Vector2(5192.84, -920.32)
-script = ExtResource("49_g")
-on_enter = [[NodePath("."), "set_burden_area", [true]]]
-on_exit = [[NodePath("."), "set_burden_area", [false]]]
-hide_on_enter = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Triggers/GoldCheckArea"]
-position = Vector2(0, 0)
-shape = SubResource("RectangleShape2D_111")
-
-[node name="GoldCheckArea (1)" type="Area2D" parent="Triggers"]
-position = Vector2(5211.68, -442.88)
-script = ExtResource("49_g")
-on_enter = [[NodePath("."), "add_burden_hint", []]]
-on_exit = []
-hide_on_enter = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Triggers/GoldCheckArea (1)"]
-position = Vector2(0, 0)
-shape = SubResource("RectangleShape2D_112")
 
 [node name="EnterRoomArea (0)" type="Area2D" parent="Triggers"]
 position = Vector2(9546.64, 70.64)

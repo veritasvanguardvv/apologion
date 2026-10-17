@@ -137,16 +137,16 @@ func take_turn():
 		var party = _party_member_to_attack()
 		if party and randf() < party_target_chance:
 			var hit = party.take_damage(damage)
-			TurnManager.show_message(tr("%s attacks %s! -%s HP") % [display_name, party.display_name, str(snapped(hit, 0.1))])
+			TurnManager.show_message(tr("%s attacks %s! -%s HP") % [tr(display_name), tr(party.display_name), str(snapped(hit, 0.1))])
 			print(display_name, " attacks ", party.display_name, " for ", hit)
 			return
 		# take_damage returns the damage after the player's guard (Psalm 17:8),
 		# so Fear and Guard together = 5 x 0.5 x 0.5 = 1.25
 		var dealt = player.take_damage(damage)
-		TurnManager.show_message(tr("%s attacks! -%s HP") % [display_name, str(snapped(dealt, 0.1))])
+		TurnManager.show_message(tr("%s attacks! -%s HP") % [tr(display_name), str(snapped(dealt, 0.1))])
 		print(display_name, " attacks for ", dealt)
 	else:
-		TurnManager.show_message(tr("%s waits...") % display_name)
+		TurnManager.show_message(tr("%s waits...") % tr(display_name))
 
 # A party member in this battle who can still be hit (or null). With phone
 # players in the party it picks one of them at random.
@@ -188,7 +188,7 @@ func recite_verse():
 		bubble.say(title, text, false, verse_bubble_time)
 	else:
 		bubble.say(title, text, true, 0.0)   # stays up through your next turn
-	TurnManager.show_message(tr("%s recites %s! -%s HP - it's %s type now!") % [display_name, title, str(snapped(dealt, 0.1)), tr(type_name(v.type))])
+	TurnManager.show_message(tr("%s recites %s! -%s HP - it's %s type now!") % [tr(display_name), title, str(snapped(dealt, 0.1)), tr(type_name(v.type))])
 	print(display_name, " recites ", ref, " for ", dealt, " (counters: ", counter_refs, ")")
 	return verse_read_time
 
@@ -225,7 +225,7 @@ func say_line(line: Dictionary):
 		bubble.say(title, text, false, verse_bubble_time)
 	else:
 		bubble.say(title, text, true, 0.0)
-	TurnManager.show_message(tr("%s: -%s HP") % [display_name, str(snapped(dealt, 0.1))])
+	TurnManager.show_message(tr("%s: -%s HP") % [tr(display_name), str(snapped(dealt, 0.1))])
 	print(display_name, " says [", line.set, "] ", line.en.substr(0, 60), " for ", dealt)
 	return verse_read_time
 

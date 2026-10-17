@@ -464,7 +464,7 @@ func _run_battle(player, enemies):
 	battle_enemies = enemies
 	battle_started.emit()
 	battle_sound.play()
-	var first_name = enemies[0].display_name
+	var first_name = tr(enemies[0].display_name)
 	show_message((tr("A %s appears!") % first_name) if enemies.size() == 1 else tr("%d enemies appear!") % enemies.size())
 	print("Battle started against ", enemies.size(), " enemy(s)")
 	await get_tree().create_timer(intro_time).timeout
@@ -491,7 +491,7 @@ func _run_battle(player, enemies):
 				await player_turn_finished
 				current = null   # your turn is over (no second verse or Run during the pause)
 			else:
-				show_message(tr("%s's turn") % fighter.display_name)
+				show_message(tr("%s's turn") % tr(fighter.display_name))
 				await get_tree().create_timer(turn_delay).timeout
 				if my_battle != battle_id:
 					return

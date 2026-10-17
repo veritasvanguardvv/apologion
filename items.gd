@@ -15,8 +15,8 @@ extends RefCounted
 #   flies_away      = money: when you open the inventory it flies off the
 #                     screen and is gone ("Riches certainly make themselves
 #                     wings; they fly away as an eagle" - Proverbs 23:5)
-#   heavy           = gold: makes you too heavy in the Greed level's burden
-#                     spots (greed_level.gd). Drop it to be light again.
+#   heavy           = gold: while you carry any, you can't jump quite as high
+#                     (greed_level.gd). Drop it to be light again.
 #   drop_pickup     = what is left on the ground when you drop it:
 #                     "item" = an item_pickup.tscn you can pick up again,
 #                     "greed:<kind>" = a Greed pickup (greed_pickup.gd),

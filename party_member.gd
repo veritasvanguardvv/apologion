@@ -40,9 +40,15 @@ var phone_slot = 0              # 1, 2 or 3 (which phone player this is)
 @export var move_speed = 200.0         # same as the player's normal speed
 @export var catch_up_speed = 320.0     # used when he's far behind
 @export var acceleration = 900.0       # how quickly he speeds up / eases to a stop
-@export var jump_velocity = -450.0     # negative = up
+# Pastor Ramuel never jumps (can_jump off). When he can't walk to the player (a gap, a ledge, a wall,
+# or the player is off screen) for stranded_time seconds, he fades out and
+# fades back in on the floor next to the player.
+@export var can_jump = false            # Baana (baana.tscn) still jumps gaps and ledges
+@export var jump_velocity = -450.0     # (only with can_jump) negative = up
+@export var stranded_time = 0.6        # seconds stuck before he pops over
+@export var fade_time = 0.18           # fade out / fade in (seconds each)
 @export var gravity = 980.0            # same as the player
-@export var teleport_distance = 700.0  # if he's this far away (or falls in a pit) he pops back next to the player
+@export var teleport_distance = 700.0  # if he's this far away (or falls in a pit) he pops over next to the player
 
 @export_group("Fighting")
 @export var battle_speed = 8           # lower than the player's 10, so he acts right after you
@@ -223,32 +229,91 @@ func _physics_process(delta):
 		velocity.x = move_toward(velocity.x, desired, acceleration * delta)
 		
 		var direction = sign(desired)
+		var blocked = false
 		if direction != 0 and abs(dx) > 60.0:
-			# How far the player is from him, in the direction he's walking
 			var player_ahead = (player_pos.x - global_position.x) * direction
 			if _gap_ahead(direction):
-				if player_ahead > 150.0:
-					# The player is on the other side: jump the gap at full speed
-					velocity.y = jump_velocity
+				if can_jump and player_ahead > 150.0:
+					velocity.y = jump_velocity     # (Baana) jump the gap at full speed
 					velocity.x = direction * catch_up_speed
 				else:
-					# The spot behind the player is over a pit: wait at the edge
+					# A pit in front of him: he waits at the edge
 					velocity.x = 0
-			elif is_on_wall() or player_pos.y < global_position.y - 120.0:
-				# Something in the way, or the player is up higher
-				velocity.y = jump_velocity
-	# (in the air he keeps his speed so he can make it across gaps)
+					# (stranded if the player is on the other side)
+					blocked = player_ahead > 150.0
+			elif can_jump and (is_on_wall() or player_pos.y < global_position.y - 120.0):
+				velocity.y = jump_velocity         # (Baana) over the obstacle / up to the player
+			elif is_on_wall() and abs(get_real_velocity().x) < 10.0:
+				blocked = true   # a wall or ledge in the way
+		# The player is up on a ledge (or down below) and he can't get there
+		if not can_jump and abs(player_pos.y - global_position.y) > 140.0 and abs(dx) > 60.0:
+			blocked = true
+		stranded_for = stranded_for + delta if blocked else 0.0
+	# (in the air he only falls - he never jumps)
 	
-	move_and_slide()
+	if not fading:
+		move_and_slide()
 	_update_footsteps(delta)
 	
-	# Stuck far away or fell into a pit? Pop back next to the player.
-	if global_position.distance_to(player_pos) > teleport_distance or global_position.y > player_pos.y + 250.0:
-		global_position = Vector2(player_pos.x - follow_distance * delayed_facing, player_pos.y - 20.0)
-		velocity = Vector2.ZERO
+	# Off screen for a moment, stranded, or fell into a pit / too far away:
+	# fade over to the player.
+	offscreen_for = offscreen_for + delta if not _on_screen() else 0.0
+	if not fading and (stranded_for >= stranded_time or offscreen_for >= 1.0 \
+			or global_position.distance_to(player_pos) > teleport_distance \
+			or global_position.y > player_pos.y + 250.0):
+		# Only when the player stands on solid ground (not mid-jump or falling)
+		var spot = _spot_near_player(delayed_facing) if player.is_on_floor() else null
+		if spot != null:
+			_fade_to_player(spot)
 	
 	_update_animation(delta)
 
+
+var stranded_for = 0.0
+var offscreen_for = 0.0
+var fading = false
+var catch_ups = 0      # how often he popped over (for the tests)
+
+func _on_screen() -> bool:
+	var screen = get_viewport().get_visible_rect().grow(40)
+	return screen.has_point(get_global_transform_with_canvas() * Vector2(0, -40))
+
+# Fade out, move next to the player (on the floor), fade in.
+func _fade_to_player(spot: Vector2):
+	fading = true
+	stranded_for = 0.0
+	offscreen_for = 0.0
+	velocity = Vector2.ZERO
+	var t = create_tween()
+	t.tween_property(visual, "modulate:a", 0.0, fade_time)
+	await t.finished
+	if not is_instance_valid(player):
+		fading = false
+		return
+	global_position = spot
+	velocity = Vector2.ZERO
+	trail.clear()
+	catch_ups += 1
+	print(display_name, " catches up (fade) to ", global_position)
+	t = create_tween()
+	t.tween_property(visual, "modulate:a", 0.45 if knocked_out else 1.0, fade_time)
+	await t.finished
+	fading = false
+
+# A spot on solid floor beside the player: behind them if there's floor
+# there, else in front, else right where they stand. null = no floor there.
+func _spot_near_player(facing):
+	var center = player.get_body_center()
+	var space = get_world_2d().direct_space_state
+	for x in [center.x - follow_distance * facing, center.x + follow_distance * facing, center.x - 40.0 * facing, center.x]:
+		var from = Vector2(x, center.y - 30.0)
+		var query = PhysicsRayQueryParameters2D.create(from, from + Vector2(0, 220))
+		query.exclude = [get_rid(), player.get_rid()]
+		query.collision_mask = collision_mask
+		var hit = space.intersect_ray(query)
+		if not hit.is_empty() and hit.normal.y < -0.5 and hit.position.y < center.y + 80.0:   # level with the player's feet, not down a pit
+			return hit.position - Vector2(0, 1)
+	return null
 
 # True if there's no floor a little way ahead of him.
 func _gap_ahead(direction) -> bool:
