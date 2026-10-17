@@ -21,6 +21,10 @@ Enemy tab columns: ENEMY SPELL ID | Enemy | Bible Index | Transl. | TEXT |
 
 Blank or clearly wrong English / Spanish / Polish cells are filled from
 tools/sheet_fills.json (our own brief translations; see that file).
+Its "zeal" and "guard" lists mark the Zeal verses ("zeal": true; speed +
+jump boost in the game) and Guard verses ("guard": true; +defense for a few
+rounds) and add the ones the sheet doesn't have.
+  python3 tools/verses_from_sheet.py --lists-only  # re-applies just those lists to data/verses.json
 Anything still blank is reported.
 """
 import json, re, sys, unicodedata, pathlib, urllib.request, io
@@ -88,6 +92,35 @@ def looks_like_ref(s):
     return bool(re.search(r"\d", s)) or s in ("Genesis 3", "John 2")
 
 
+def _norm(t):
+    return re.sub(r"[^a-z0-9]+", " ", (t or "").lower().replace("’", "'")).strip()
+
+
+def apply_list(verses, entries, flag, report=None):
+    """Marks the verses of a list (sheet_fills.json "zeal" / "guard") with
+    v[flag] = True and adds the ones the sheet lacks. Safe to run twice."""
+    for e in entries:
+        refs = {e["ref"], e.get("sheet_ref", e["ref"])}
+        cands = [v for v in verses if re.sub(r" \(\d+\)$", "", v["ref"]) in refs]
+        v = None
+        if cands:
+            v = next((c for c in cands if e.get("en") and _norm(c["en"]) == _norm(e["en"])), None) \
+                or next((c for c in cands if c.get("zeal")), None) or cands[0]
+        if v is None:
+            v = {"ref": e["ref"], "translation": "", "en": "", "es": "", "pl": "",
+                 "all_damage": 0, "sins": {}, "heal": 0, "jesus": False}
+            verses.append(v)
+            if report is not None:
+                report.setdefault(flag + "_new", []).append(e["ref"])
+        if e.get("sheet_ref") and re.sub(r" \(\d+\)$", "", v["ref"]) == e["sheet_ref"]:
+            v["ref"] = e["ref"]                 # relabel a wrong sheet reference
+        v[flag] = True
+        for k in ("translation", "en", "es", "pl"):
+            if e.get(k):
+                v[k] = e[k]
+    return verses
+
+
 def load_workbook(arg):
     import openpyxl
     if arg:
@@ -99,6 +132,16 @@ def load_workbook(arg):
 
 def main():
     root = pathlib.Path(__file__).resolve().parent.parent
+    if "--lists-only" in sys.argv or "--zeal-only" in sys.argv:
+        fills = json.loads((root / "tools/sheet_fills.json").read_text(encoding="utf-8"))
+        path = root / "data/verses.json"
+        verses = json.loads(path.read_text(encoding="utf-8"))["verses"]
+        report = {}
+        for flag in ("zeal", "guard"):
+            apply_list(verses, fills.get(flag, []), flag, report)
+            print("%s verses: %d (new: %s)" % (flag, sum(1 for v in verses if v.get(flag)), ", ".join(report.get(flag + "_new", []))))
+        path.write_text(json.dumps({"verses": verses}, ensure_ascii=False, indent=1), encoding="utf-8")
+        return
     wb = load_workbook(sys.argv[1] if len(sys.argv) > 1 else None)
     fills = json.loads((root / "tools/sheet_fills.json").read_text(encoding="utf-8"))
     pfill, efill = fills.get("player", {}), fills.get("enemy", {})
@@ -155,6 +198,9 @@ def main():
             elif not v[lang]:
                 report["blank"].append("player %s (%s)" % (v["ref"], lang))
 
+    for flag in ("zeal", "guard"):
+        apply_list(verses, fills.get(flag, []), flag, report)
+
     # ---------- Enemy ----------
     lines, group, n = [], "", {}
     for r in list(wb["Enemy"].iter_rows(values_only=True))[1:]:
@@ -188,6 +234,8 @@ def main():
     print("Wrote %d player verses, %d enemy lines" % (len(verses), len(lines)))
     for s in SINS:
         print("  %-9s %d" % (s, sum(1 for v in verses if s in v["sins"])))
+    for flag in ("zeal", "guard"):
+        print("  %-9s %d (new, not in the sheet: %s)" % (flag, sum(1 for v in verses if v.get(flag)), ", ".join(report.get(flag + "_new", []))))
     print("  all-sin   %d\n  heal      %d" % (sum(1 for v in verses if v["all_damage"] > 0), sum(1 for v in verses if v["heal"] != 0)))
     sets = {}
     for l in lines:

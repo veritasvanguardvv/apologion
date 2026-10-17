@@ -2160,5 +2160,556 @@
    "es": "Eres un fanático con TOC religioso; busca ayuda.",
    "pl": "Jesteś fanatykiem z religijnym OCD, idź się leczyć."
   }
- }
+ },
+ "_about_zeal": "Zeal list (user's list, t40u): verses with the Zeal effect (speed + jump boost). Each entry marks the sheet verse with that reference (the row whose English matches, for repeated rows) as Zeal and uses this English text (and translation type / es / pl when given); a reference not in the sheet becomes a Zeal-only verse. sheet_ref = the sheet's reference when it's labelled wrong (the sheet's '1 Corinthians 14:2' text is 1 Corinthians 14:1).",
+ "zeal": [
+  {
+   "ref": "Psalm 149:5",
+   "translation": "Full",
+   "en": "Let the saints rejoice in honor. Let them sing for joy on their beds.",
+   "es": "Que los santos se regocijen con honra; que canten de alegría sobre sus camas.",
+   "pl": "Niech święci radują się w chwale, niech śpiewają z radości na swoich posłaniach."
+  },
+  {
+   "ref": "Psalm 149:6",
+   "translation": "Fragment",
+   "en": "May the high praises of God be in their mouths, and a two-edged sword in their hand."
+  },
+  {
+   "ref": "Proverbs 6:6",
+   "translation": "Full",
+   "en": "Go to the ant, you sluggard. Consider her ways, and be wise."
+  },
+  {
+   "ref": "Proverbs 6:7-8",
+   "translation": "Fragment",
+   "en": "Ants have no one to make them work, yet they labor hard all summer, gathering food for the winter."
+  },
+  {
+   "ref": "Proverbs 6:9",
+   "translation": "Full",
+   "en": "How long will you sleep, sluggard? When will you wake up?"
+  },
+  {
+   "ref": "Proverbs 6:10-11",
+   "translation": "Fragment",
+   "en": "A little extra sleep, then your poverty will come like an armed robber."
+  },
+  {
+   "ref": "Proverbs 16:20a",
+   "en": "One who pays attention to the word will find good.",
+   "es": "El que atiende a la palabra hallará el bien.",
+   "pl": "Kto zważa na słowo, znajdzie dobro."
+  },
+  {
+   "ref": "Proverbs 16:20b",
+   "en": "Those who trust the Lord will be joyful.",
+   "es": "Los que confían en el Señor serán dichosos.",
+   "pl": "Kto ufa Panu, będzie szczęśliwy."
+  },
+  {
+   "ref": "Romans 8:25",
+   "en": "If we hope for what we do not see, through perseverance we wait eagerly for it.",
+   "es": "Si esperamos lo que no vemos, con perseverancia lo aguardamos con anhelo.",
+   "pl": "Jeśli spodziewamy się tego, czego nie widzimy, z wytrwałością gorliwie tego oczekujemy."
+  },
+  {
+   "ref": "Romans 12:11",
+   "en": "Never lag in diligence. Let the Spirit excite you as you serve the Lord."
+  },
+  {
+   "ref": "Romans 12:12",
+   "en": "Be joyful in hope, patient in affliction, persistent in prayer.",
+   "es": "Gócense en la esperanza, sean pacientes en el sufrimiento, perseverantes en la oración.",
+   "pl": "Radujcie się nadzieją, bądźcie cierpliwi w ucisku, wytrwali w modlitwie."
+  },
+  {
+   "ref": "Galatians 6:9",
+   "en": "We will reap in due season if we don’t give up.",
+   "es": "A su tiempo cosecharemos si no nos damos por vencidos.",
+   "pl": "W swoim czasie będziemy żąć, jeśli się nie poddamy."
+  },
+  {
+   "ref": "Ephesians 5:16",
+   "en": "Make the most of every opportunity in these evil days."
+  },
+  {
+   "ref": "1 Corinthians 9:24",
+   "translation": "Fragment",
+   "en": "Those who run in a race all run, but only one receives the prize. Run to win!"
+  },
+  {
+   "ref": "1 Corinthians 9:27"
+  },
+  {
+   "ref": "1 Corinthians 14:1",
+   "sheet_ref": "1 Corinthians 14:2",
+   "translation": "Full",
+   "en": "Follow after love and earnestly desire spiritual gifts, but especially that you may prophesy.",
+   "es": "Sigan el amor y deseen con ardor los dones espirituales, pero sobre todo que profeticen.",
+   "pl": "Dążcie do miłości i gorliwie pragnijcie darów duchowych, a zwłaszcza tego, abyście prorokowali."
+  },
+  {
+   "ref": "1 Corinthians 15:58",
+   "translation": "Fragment",
+   "en": "Work enthusiastically for the Lord, for nothing you do for the Lord is useless."
+  },
+  {
+   "ref": "2 Corinthians 4:15",
+   "en": "All this is for your sake, so that as grace reaches more and more people, thanksgiving overflows to the glory of God.",
+   "es": "Todo esto es por ustedes, para que, al alcanzar la gracia a más y más personas, abunde la gratitud para la gloria de Dios.",
+   "pl": "Wszystko to dla was, aby łaska, docierając do coraz większej liczby ludzi, pomnożyła dziękczynienie na chwałę Boga."
+  },
+  {
+   "ref": "2 Corinthians 4:16a",
+   "en": "We never give up.",
+   "es": "Nunca nos damos por vencidos.",
+   "pl": "Nigdy się nie poddajemy."
+  },
+  {
+   "ref": "Colossians 3:23",
+   "translation": "Paraphrase",
+   "en": "And whatever you do, work eagerly, because you are really serving the Lord, not man."
+  },
+  {
+   "ref": "Hebrews 10:36"
+  }
+ ],
+ "_about_guard": "Guard list (user's list, t41u): same rules as the zeal list; these verses give Guard (+defense for a few rounds). Fixes: the 2nd 'Psalm 23:4a' row (Your rod and your staff) is Psalm 23:4b; the 'Psalm 46:1' row's text is Psalm 46:10; 'Ps 118:6-7' = Psalm 118:6-7.",
+ "guard": [
+  {
+   "ref": "Psalm 3:3",
+   "translation": "Full",
+   "en": "But you, Yahweh, are a shield around me, my glory, and the one who lifts up my head.",
+   "es": "Pero tú, Señor, eres escudo alrededor de mí, mi gloria, y el que levanta mi cabeza.",
+   "pl": "Lecz Ty, Panie, jesteś tarczą wokół mnie, moją chwałą i Tym, który podnosi moją głowę."
+  },
+  {
+   "ref": "Psalm 5:12",
+   "translation": "Full",
+   "en": "For you will bless the righteous. Yahweh, you will surround him with favor as with a shield.",
+   "es": "Porque tú bendices al justo; Señor, como con un escudo lo rodeas de tu favor.",
+   "pl": "Bo Ty błogosławisz sprawiedliwemu, Panie, otaczasz go łaską jak tarczą."
+  },
+  {
+   "ref": "Psalm 9:9",
+   "translation": "Full",
+   "en": "Yahweh will also be a high tower for the oppressed; a high tower in times of trouble.",
+   "es": "El Señor será también refugio del oprimido, refugio en tiempos de angustia.",
+   "pl": "Pan będzie twierdzą dla uciśnionych, twierdzą w czasach niedoli."
+  },
+  {
+   "ref": "Psalm 11:1",
+   "translation": "Full",
+   "en": "In Yahweh, I take refuge. How can you say to my soul, “Flee as a bird to your mountain”?",
+   "es": "En el Señor me refugio. ¿Cómo dicen a mi alma: «Huye como ave a tu monte»?",
+   "pl": "W Panu szukam schronienia. Jak możecie mówić mojej duszy: «Uciekaj jak ptak na swoją górę»?"
+  },
+  {
+   "ref": "Psalm 16:1",
+   "translation": "Full",
+   "en": "Preserve me, God, for I take refuge in you.",
+   "es": "Guárdame, oh Dios, porque en ti me refugio.",
+   "pl": "Strzeż mnie, Boże, bo w Tobie szukam schronienia."
+  },
+  {
+   "ref": "Psalm 17:8",
+   "translation": "Fragment",
+   "en": "Hide me under the shadow of your wings."
+  },
+  {
+   "ref": "Psalm 18:2a",
+   "translation": "Fragment",
+   "en": "Yahweh is my rock, my fortress, and my deliverer, in whom I take refuge"
+  },
+  {
+   "ref": "Psalm 18:2b",
+   "translation": "Fragment",
+   "en": "God my shield, and the horn of my salvation, my high tower.",
+   "es": "Dios es mi escudo, la fuerza de mi salvación, mi alto refugio.",
+   "pl": "Bóg jest moją tarczą, mocą mojego zbawienia, moją twierdzą."
+  },
+  {
+   "ref": "Psalm 18:30",
+   "translation": "Fragment",
+   "en": "He is a shield to all those who take refuge in him.",
+   "es": "Él es escudo para todos los que en él se refugian.",
+   "pl": "On jest tarczą dla wszystkich, którzy w Nim szukają schronienia."
+  },
+  {
+   "ref": "Psalm 20:7",
+   "en": "Some trust in chariots and some in horses, but we trust in the name of the Lord our God.",
+   "es": "Algunos confían en carros y otros en caballos, pero nosotros confiamos en el nombre del Señor nuestro Dios.",
+   "pl": "Jedni ufają rydwanom, drudzy koniom, a my ufamy imieniu Pana, naszego Boga."
+  },
+  {
+   "ref": "Psalm 23:4a",
+   "translation": "Fragment",
+   "en": "Even though I walk through the valley of the shadow of death, I will fear no evil, for you are with me.",
+   "es": "Aunque camine por el valle de sombra de muerte, no temeré mal alguno, porque tú estás conmigo.",
+   "pl": "Choćbym szedł doliną cienia śmierci, zła się nie ulęknę, bo Ty jesteś ze mną."
+  },
+  {
+   "ref": "Psalm 23:4b",
+   "translation": "Fragment",
+   "en": "Your rod and your staff, they comfort me.",
+   "es": "Tu vara y tu cayado me infunden aliento.",
+   "pl": "Twój kij i Twoja laska mnie pocieszają."
+  },
+  {
+   "ref": "Psalm 28:7",
+   "translation": "Fragment",
+   "en": "Yahweh is my strength and my shield. My heart has trusted in him, and I am helped.",
+   "es": "El Señor es mi fuerza y mi escudo; en él confió mi corazón, y fui ayudado.",
+   "pl": "Pan jest moją siłą i moją tarczą. Moje serce Mu zaufało i otrzymałem pomoc."
+  },
+  {
+   "ref": "Psalm 31:2",
+   "translation": "Fragment",
+   "en": "Be to me a strong rock, a house of defense to save me."
+  },
+  {
+   "ref": "Psalm 32:7",
+   "translation": "Full",
+   "en": "You are my hiding place. You will preserve me from trouble. You will surround me with songs of deliverance.",
+   "es": "Tú eres mi escondite; me guardarás de la angustia; me rodearás con cánticos de liberación.",
+   "pl": "Ty jesteś moją kryjówką, strzeżesz mnie od niedoli, otaczasz mnie pieśniami wybawienia."
+  },
+  {
+   "ref": "Psalm 34:22",
+   "translation": "Full",
+   "en": "Yahweh redeems the soul of his servants. None of those who take refuge in him will be condemned.",
+   "es": "El Señor redime el alma de sus siervos; ninguno de los que en él se refugian será condenado.",
+   "pl": "Pan odkupuje dusze swoich sług; nikt, kto w Nim szuka schronienia, nie zostanie potępiony."
+  },
+  {
+   "ref": "Psalm 35:2",
+   "translation": "Fragment",
+   "en": "Take hold of shield and buckler and stand up for my help.",
+   "es": "Toma el escudo y el broquel, y levántate en mi ayuda.",
+   "pl": "Chwyć tarczę i puklerz i powstań mi na pomoc."
+  },
+  {
+   "ref": "Psalm 37:39",
+   "translation": "Full",
+   "en": "The salvation of the righteous is from Yahweh. He is their stronghold in the time of trouble.",
+   "es": "La salvación de los justos viene del Señor; él es su fortaleza en el tiempo de angustia.",
+   "pl": "Zbawienie sprawiedliwych pochodzi od Pana; On jest ich twierdzą w czasie niedoli."
+  },
+  {
+   "ref": "Psalm 37:40",
+   "translation": "Fragment",
+   "en": "Yahweh saves because they have taken refuge in Him.",
+   "es": "El Señor los salva, porque en él se refugiaron.",
+   "pl": "Pan ich wybawia, bo w Nim szukali schronienia."
+  },
+  {
+   "ref": "Psalm 46:10",
+   "sheet_ref": "Psalm 46:1",
+   "translation": "Fragment",
+   "en": "Be still, and know that I am God. I will be exalted among the nations.",
+   "es": "Estén quietos y sepan que yo soy Dios; seré exaltado entre las naciones.",
+   "pl": "Zatrzymajcie się i wiedzcie, że Ja jestem Bogiem; będę wywyższony wśród narodów."
+  },
+  {
+   "ref": "Psalm 57:1a",
+   "translation": "Fragment",
+   "en": "Be merciful to me, God... for my soul takes refuge in you.",
+   "es": "Ten misericordia de mí, oh Dios... porque en ti se refugia mi alma.",
+   "pl": "Zmiłuj się nade mną, Boże... bo w Tobie chroni się moja dusza."
+  },
+  {
+   "ref": "Psalm 57:1b",
+   "translation": "Fragment",
+   "en": "Yes, in the shadow of your wings, I will take refuge, until disaster has passed.",
+   "es": "Sí, a la sombra de tus alas me refugiaré hasta que pase la calamidad.",
+   "pl": "Tak, w cieniu Twoich skrzydeł się schronię, dopóki nie minie nieszczęście."
+  },
+  {
+   "ref": "Psalm 59:16",
+   "en": "I will sing of your strength and of your love each morning, for you have been my refuge in the day of trouble.",
+   "es": "Cantaré de tu poder y de tu amor cada mañana, porque has sido mi refugio en el día de la angustia.",
+   "pl": "Będę opiewał Twoją moc i każdego ranka Twoją miłość, bo byłeś moją ucieczką w dniu niedoli."
+  },
+  {
+   "ref": "Psalm 73:23",
+   "en": "Yet I am always with you; you hold me by my right hand.",
+   "es": "Sin embargo, siempre estoy contigo; tú me sostienes de la mano derecha.",
+   "pl": "Lecz ja zawsze jestem z Tobą; Ty trzymasz mnie za prawą rękę."
+  },
+  {
+   "ref": "Psalm 73:24",
+   "en": "You guide me with your counsel, and afterward you will receive me to glory.",
+   "es": "Me guías con tu consejo, y después me recibirás en gloria.",
+   "pl": "Prowadzisz mnie swoją radą, a potem przyjmiesz mnie do chwały."
+  },
+  {
+   "ref": "Psalm 91:1a",
+   "translation": "Fragment",
+   "en": "He who dwells in the secret place of the Most High will rest in the shadow of the Almighty."
+  },
+  {
+   "ref": "Psalm 91:1b",
+   "translation": "Fragment",
+   "en": "I will say of Yahweh, ‘He is my refuge and my fortress; my God, in whom I trust.",
+   "es": "Diré del Señor: «Él es mi refugio y mi fortaleza; mi Dios, en quien confío».",
+   "pl": "Powiem o Panu: «On jest moją ucieczką i twierdzą, moim Bogiem, któremu ufam»."
+  },
+  {
+   "ref": "Psalm 91:4a",
+   "translation": "Fragment",
+   "en": "He will cover you with his feathers. Under his wings you will take refuge.",
+   "es": "Con sus plumas te cubrirá, y bajo sus alas hallarás refugio.",
+   "pl": "Okryje cię swoimi piórami i pod Jego skrzydłami znajdziesz schronienie."
+  },
+  {
+   "ref": "Psalm 91:4b",
+   "translation": "Fragment",
+   "en": "God's faithfulness is your shield and rampart.",
+   "es": "La fidelidad de Dios es tu escudo y tu baluarte.",
+   "pl": "Wierność Boża jest twoją tarczą i murem obronnym."
+  },
+  {
+   "ref": "Psalm 91:11",
+   "translation": "Full",
+   "en": "For He will put his angels in charge of you, to guard you in all your ways.",
+   "es": "Porque él mandará a sus ángeles que te guarden en todos tus caminos.",
+   "pl": "Bo swoim aniołom każe cię strzec na wszystkich twoich drogach."
+  },
+  {
+   "ref": "Psalm 118:6-7",
+   "en": "The Lord is on my side; I will not fear. What can man do to me? The Lord is with me as my helper.",
+   "es": "El Señor está conmigo; no temeré. ¿Qué me puede hacer el hombre? El Señor está conmigo para ayudarme.",
+   "pl": "Pan jest po mojej stronie, nie będę się lękał. Cóż może mi zrobić człowiek? Pan jest ze mną jako mój pomocnik."
+  },
+  {
+   "ref": "Psalm 118:8",
+   "translation": "Full",
+   "en": "It is better to take refuge in Yahweh than to put confidence in man.",
+   "es": "Es mejor refugiarse en el Señor que confiar en el hombre.",
+   "pl": "Lepiej szukać schronienia w Panu, niż pokładać ufność w człowieku."
+  },
+  {
+   "ref": "Psalm 119:114",
+   "translation": "Full",
+   "en": "You are my hiding place and my shield. I hope in your word.",
+   "es": "Tú eres mi escondite y mi escudo; en tu palabra espero.",
+   "pl": "Ty jesteś moją kryjówką i tarczą; pokładam nadzieję w Twoim słowie."
+  },
+  {
+   "ref": "Proverbs 4:23",
+   "translation": "Fragment",
+   "en": "Guard your heart with all diligence, for out of it is the wellspring of life.",
+   "es": "Guarda tu corazón con toda diligencia, porque de él mana la vida.",
+   "pl": "Strzeż swego serca z całą pilnością, bo z niego wypływa życie."
+  },
+  {
+   "ref": "Proverbs 18:10",
+   "translation": "Full",
+   "en": "The name of Yahweh is a strong tower; the righteous run to him, and are safe.",
+   "es": "El nombre del Señor es torre fuerte; a él corre el justo y está a salvo.",
+   "pl": "Imię Pana jest potężną wieżą; sprawiedliwy do niej biegnie i jest bezpieczny."
+  },
+  {
+   "ref": "Proverbs 30:5",
+   "translation": "Full",
+   "en": "Every word of God is flawless. He is a shield to those who take refuge in him."
+  },
+  {
+   "ref": "Proverbs 22:5",
+   "translation": "Full",
+   "en": "Thorns and snares are in the path of the wicked; whoever guards his soul stays far from them.",
+   "es": "Espinas y lazos hay en el camino del perverso; el que guarda su alma se aleja de ellos.",
+   "pl": "Ciernie i sidła są na drodze przewrotnego; kto strzeże swojej duszy, trzyma się od nich z daleka."
+  },
+  {
+   "ref": "Isaiah 25:4c",
+   "translation": "Fragment",
+   "en": "For God has been a refuge from the storm, a shade from the heat of the dreaded ones.",
+   "es": "Porque Dios ha sido refugio contra la tormenta, sombra contra el calor de los temibles.",
+   "pl": "Bo Bóg był schronieniem przed burzą, cieniem przed żarem okrutników."
+  },
+  {
+   "ref": "Isaiah 54:17",
+   "translation": "Fragment",
+   "en": "No weapon that is formed against you will succeed.",
+   "es": "Ninguna arma forjada contra ti prosperará.",
+   "pl": "Żadna broń ukuta przeciwko tobie nie odniesie skutku."
+  },
+  {
+   "ref": "Nahum 1:7",
+   "translation": "Full",
+   "en": "Yahweh is good, a stronghold in the day of trouble, and he knows those who take refuge in him.",
+   "es": "Bueno es el Señor, fortaleza en el día de la angustia; y conoce a los que en él se refugian.",
+   "pl": "Dobry jest Pan, twierdzą w dniu niedoli, i zna tych, którzy w Nim szukają schronienia."
+  },
+  {
+   "ref": "Acts 20:28a",
+   "translation": "Fragment",
+   "en": "Be on guard for yourselves and for all the flock.",
+   "es": "Tengan cuidado de sí mismos y de todo el rebaño.",
+   "pl": "Uważajcie na samych siebie i na całe stado."
+  },
+  {
+   "ref": "Romans 5:1",
+   "en": "Since we have been made right with God by faith, we have peace with God through our Lord Jesus Christ.",
+   "es": "Ya que hemos sido justificados por la fe, tenemos paz con Dios por medio de nuestro Señor Jesucristo.",
+   "pl": "Usprawiedliwieni z wiary, mamy pokój z Bogiem przez naszego Pana Jezusa Chrystusa."
+  },
+  {
+   "ref": "Romans 5:8-9",
+   "en": "God showed his love for us in that while we were still sinners, Christ died for us. Now that we are made right by his blood, how much more will we be saved from God's wrath through him!",
+   "es": "Dios demostró su amor por nosotros en que, siendo aún pecadores, Cristo murió por nosotros. Ahora que hemos sido justificados por su sangre, ¡con cuánta más razón seremos salvados por él de la ira de Dios!",
+   "pl": "Bóg okazał nam swoją miłość przez to, że Chrystus umarł za nas, gdy byliśmy jeszcze grzesznikami. Skoro teraz jesteśmy usprawiedliwieni Jego krwią, o ileż bardziej przez Niego zostaniemy zbawieni od gniewu Bożego!"
+  },
+  {
+   "ref": "Romans 8:31",
+   "translation": "Fragment",
+   "en": "If God is for us, who can be against us?"
+  },
+  {
+   "ref": "Romans 13:12a",
+   "translation": "Fragment",
+   "en": "The night is far gone, and the day is near."
+  },
+  {
+   "ref": "Romans 13:12b",
+   "translation": "Fragment",
+   "en": "Let’s therefore throw off the deeds of darkness, and let’s put on the armor of light."
+  },
+  {
+   "ref": "1 Corinthians 10:12",
+   "translation": "Full",
+   "en": "Therefore let him who thinks he stands be careful that he doesn’t fall."
+  },
+  {
+   "ref": "Ephesians 6:11",
+   "translation": "Full",
+   "en": "Put on the whole armor of God, that you may be able to stand against the wiles of the devil.",
+   "es": "Vístanse de toda la armadura de Dios, para que puedan estar firmes contra las artimañas del diablo.",
+   "pl": "Przywdziejcie pełną zbroję Bożą, abyście mogli się ostać wobec podstępów diabła."
+  },
+  {
+   "ref": "Ephesians 6:13",
+   "translation": "Fragment",
+   "en": "Therefore put on the whole armor of God, that you may be able to withstand in the evil day.",
+   "es": "Por tanto, vístanse de toda la armadura de Dios, para que puedan resistir en el día malo.",
+   "pl": "Dlatego przywdziejcie pełną zbroję Bożą, abyście mogli stawić opór w dzień zły."
+  },
+  {
+   "ref": "Ephesians 6:14",
+   "translation": "Fragment",
+   "en": "Buckle the belt of truth, and put on the breastplate of righteousness",
+   "es": "Ajústense el cinturón de la verdad y pónganse la coraza de justicia.",
+   "pl": "Przepaszcie się pasem prawdy i włóżcie pancerz sprawiedliwości."
+  },
+  {
+   "ref": "Ephesians 6:15",
+   "translation": "Fragment",
+   "en": "Fit your feet with the preparation of the Good News of peace",
+   "es": "Calcen sus pies con la disposición del evangelio de la paz.",
+   "pl": "Obujcie nogi w gotowość głoszenia Dobrej Nowiny o pokoju."
+  },
+  {
+   "ref": "Ephesians 6:16",
+   "translation": "Fragment",
+   "en": "Equip the shield of faith, with which you can quench all the fiery darts of the evil one.",
+   "es": "Tomen el escudo de la fe, con el que podrán apagar todos los dardos de fuego del maligno.",
+   "pl": "Weźcie tarczę wiary, którą zdołacie zgasić wszystkie ogniste pociski złego."
+  },
+  {
+   "ref": "Ephesians 6:18",
+   "translation": "Fragment",
+   "en": "Praying at all times in the Spirit, and being watchful in all perseverance and requests for the saints.",
+   "es": "Oren en todo tiempo en el Espíritu, velando con toda perseverancia y súplica por todos los santos.",
+   "pl": "Módlcie się w każdym czasie w Duchu, czuwając z całą wytrwałością i prosząc za wszystkich świętych."
+  },
+  {
+   "ref": "Philippians 3:2",
+   "translation": "Fragment",
+   "en": "Watch out for those dogs who say you must be circumcised to be saved.",
+   "es": "Cuídense de esos perros que dicen que deben circuncidarse para ser salvos.",
+   "pl": "Strzeżcie się tych psów, którzy mówią, że trzeba się obrzezać, aby być zbawionym."
+  },
+  {
+   "ref": "Philippians 3:3",
+   "translation": "Fragment",
+   "en": "We... are truly saved. We rely on what Christ Jesus has done for us and put no confidence in human effort."
+  },
+  {
+   "ref": "Philippians 3:16",
+   "translation": "Fragment",
+   "en": "But we must hold on to the progress we have already made.",
+   "es": "Pero debemos aferrarnos al progreso que ya hemos alcanzado.",
+   "pl": "Musimy jednak trzymać się tego, do czego już doszliśmy."
+  },
+  {
+   "ref": "Philippians 4:6",
+   "translation": "Fragment",
+   "en": "In nothing be anxious, but in everything, pray and petition with thanksgiving to God."
+  },
+  {
+   "ref": "Philippians 4:7",
+   "translation": "Fragment",
+   "en": "Pray, and the peace of God, which surpasses all understanding, will guard your hearts and thoughts in Christ Jesus."
+  },
+  {
+   "ref": "2 Timothy 1:12",
+   "en": "God is able to guard that which I have committed to him against that day.",
+   "es": "Dios es poderoso para guardar lo que le he confiado hasta aquel día.",
+   "pl": "Bóg jest w stanie strzec tego, co Mu powierzyłem, aż do owego dnia."
+  },
+  {
+   "ref": "2 Timothy 1:14",
+   "en": "Guard your good deposit through the Holy Spirit who dwells in us.",
+   "es": "Guarda el buen depósito por medio del Espíritu Santo que habita en nosotros.",
+   "pl": "Strzeż powierzonego ci dobra przez Ducha Świętego, który w nas mieszka."
+  },
+  {
+   "ref": "1 Peter 5:9",
+   "translation": "Fragment",
+   "en": "Resist him firmly in your faith, knowing that your brothers are undergoing the same sufferings."
+  },
+  {
+   "ref": "1 John 5:21",
+   "translation": "Fragment",
+   "en": "Little children, guard yourselves from idols."
+  },
+  {
+   "ref": "Psalm 34:7",
+   "translation": "Full",
+   "en": "Yahweh’s angel encamps around those who fear him, and delivers them."
+  },
+  {
+   "ref": "Psalm 56:3",
+   "translation": "Full",
+   "en": "When I am afraid, I will put my trust in you.",
+   "es": "Cuando tenga miedo, en ti confiaré.",
+   "pl": "Gdy się lękam, Tobie ufam."
+  },
+  {
+   "ref": "Psalm 91:5",
+   "translation": "Full",
+   "en": "You shall not be afraid of the terror by night, nor of the arrow that flies by day."
+  },
+  {
+   "ref": "1 John 4:18a",
+   "translation": "Fragment",
+   "en": "Perfect love expels all fear.",
+   "es": "El amor perfecto echa fuera todo temor.",
+   "pl": "Doskonała miłość usuwa wszelki lęk."
+  },
+  {
+   "ref": "1 John 4:18b",
+   "translation": "Fragment",
+   "en": "If we are afraid, then we have not fully experienced God's perfect love.",
+   "es": "Si tenemos miedo, es que aún no hemos experimentado plenamente el amor perfecto de Dios.",
+   "pl": "Jeśli się boimy, to znaczy, że nie doświadczyliśmy jeszcze w pełni doskonałej miłości Boga."
+  },
+  {
+   "ref": "1 John 4:19",
+   "translation": "Full",
+   "en": "We love because He loved us first."
+  }
+ ]
 }

@@ -536,8 +536,8 @@ size = Vector2(89.877, 327.2558)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_116"]
 size = Vector2(89.877, 157.1482)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_weightledge"]
-size = Vector2(130.5984, 55.4016)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_checkpoint"]
+size = Vector2(320, 530)
 
 [node name="Greed" type="Node2D"]
 script = ExtResource("1_g")
@@ -882,7 +882,37 @@ region_rect = Rect2(105, 20, 85, 100)
 [node name="tree3 (1)" type="Sprite2D" parent="Decor"]
 texture_filter = 1
 position = Vector2(5632, -720.4)
-scale = Vector2(2.25, 2.25)
+scale = Vector2(3, 3)
+centered = false
+offset = Vector2(-45.0, -128)
+texture = ExtResource("11_g")
+region_enabled = true
+region_rect = Rect2(15, 0, 90, 128)
+
+[node name="moneyTree5" type="Sprite2D" parent="Decor"]
+texture_filter = 1
+position = Vector2(300, 324.4)
+scale = Vector2(3.3, 3.3)
+centered = false
+offset = Vector2(-29.5, -90)
+texture = ExtResource("11_g")
+region_enabled = true
+region_rect = Rect2(190, 32, 59, 90)
+
+[node name="moneyTree6" type="Sprite2D" parent="Decor"]
+texture_filter = 1
+position = Vector2(2830, 324.4)
+scale = Vector2(3, 3)
+centered = false
+offset = Vector2(-42.5, -100)
+texture = ExtResource("11_g")
+region_enabled = true
+region_rect = Rect2(105, 20, 85, 100)
+
+[node name="moneyTree7" type="Sprite2D" parent="Decor"]
+texture_filter = 1
+position = Vector2(6150, -459.2)
+scale = Vector2(3, 3)
 centered = false
 offset = Vector2(-29.5, -90)
 texture = ExtResource("11_g")
@@ -2337,20 +2367,6 @@ scale = Vector2(2.4414, 2.4414)
 tile_map_data = PackedByteArray(0, 0)
 tile_set = SubResource("TileSet_8")
 
-[node name="WeightLedge" type="StaticBody2D" parent="TileMaps"]
-position = Vector2(3852.6528, -61.5008)
-
-[node name="Sprite" type="Sprite2D" parent="TileMaps/WeightLedge"]
-z_index = 1
-scale = Vector2(4.0812, 4.0812)
-texture = ExtResource("17_g")
-region_enabled = true
-region_rect = Rect2(96, 32, 32, 32)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMaps/WeightLedge"]
-position = Vector2(0, -37.5984)
-shape = SubResource("RectangleShape2D_weightledge")
-
 [node name="tile" type="Sprite2D" parent="TileMaps"]
 position = Vector2(26482.1976, -13364.0748)
 scale = Vector2(12.5, 12.5)
@@ -3219,12 +3235,12 @@ region_enabled = true
 region_rect = Rect2(49, 32, 15, 16)
 
 [node name="CollectMoney" type="Area2D" parent="Pickups"]
-position = Vector2(918.8, 97.6)
+position = Vector2(845, 100)
 script = ExtResource("30_g")
 kind = "money"
 value1 = 0
 value2 = 0
-bob_height = 4
+bob_height = 2
 collision_mask = 1
 collect_sound = ExtResource("31_g")
 
@@ -3247,7 +3263,7 @@ script = ExtResource("30_g")
 kind = "money"
 value1 = 0
 value2 = 0
-bob_height = 4
+bob_height = 2
 collision_mask = 1
 collect_sound = ExtResource("31_g")
 
@@ -3265,12 +3281,12 @@ texture = ExtResource("40_g")
 
 
 [node name="CollectMoney (2)" type="Area2D" parent="Pickups"]
-position = Vector2(542.4, 46.8)
+position = Vector2(542.4, 62)
 script = ExtResource("30_g")
 kind = "money"
 value1 = 0
 value2 = 0
-bob_height = 4
+bob_height = 2
 collision_mask = 1
 collect_sound = ExtResource("31_g")
 
@@ -3293,7 +3309,7 @@ script = ExtResource("30_g")
 kind = "money"
 value1 = 0
 value2 = 0
-bob_height = 4
+bob_height = 2
 collision_mask = 1
 collect_sound = ExtResource("31_g")
 
@@ -3316,7 +3332,7 @@ script = ExtResource("30_g")
 kind = "money"
 value1 = 0
 value2 = 0
-bob_height = 4
+bob_height = 2
 collision_mask = 1
 collect_sound = ExtResource("31_g")
 
@@ -3339,7 +3355,7 @@ script = ExtResource("30_g")
 kind = "money"
 value1 = 0
 value2 = 0
-bob_height = 4
+bob_height = 2
 collision_mask = 1
 collect_sound = ExtResource("31_g")
 
@@ -3357,12 +3373,12 @@ texture = ExtResource("40_g")
 
 
 [node name="CollectMoney (7)" type="Area2D" parent="Pickups"]
-position = Vector2(5642.8, -1016)
+position = Vector2(5642.8, -992)
 script = ExtResource("30_g")
 kind = "money"
 value1 = 0
 value2 = 0
-bob_height = 4
+bob_height = 2
 collision_mask = 1
 collect_sound = ExtResource("31_g")
 
@@ -3385,7 +3401,7 @@ script = ExtResource("30_g")
 kind = "money"
 value1 = 0
 value2 = 0
-bob_height = 4
+bob_height = 2
 collision_mask = 1
 collect_sound = ExtResource("31_g")
 
@@ -3408,7 +3424,7 @@ script = ExtResource("30_g")
 kind = "money"
 value1 = 0
 value2 = 0
-bob_height = 4
+bob_height = 2
 collision_mask = 1
 collect_sound = ExtResource("31_g")
 
@@ -3551,6 +3567,17 @@ start_active = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Triggers/DamageArea (3)"]
 position = Vector2(0, 0)
 shape = SubResource("RectangleShape2D_84")
+
+[node name="CheckpointArea" type="Area2D" parent="Triggers"]
+position = Vector2(3560, 65)
+script = ExtResource("49_g")
+on_enter = [[NodePath("."), "reach_checkpoint", []]]
+on_exit = []
+hide_on_enter = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Triggers/CheckpointArea"]
+position = Vector2(0, 0)
+shape = SubResource("RectangleShape2D_checkpoint")
 
 [node name="Teleport" type="Area2D" parent="Triggers"]
 position = Vector2(4540.8, 257.6)

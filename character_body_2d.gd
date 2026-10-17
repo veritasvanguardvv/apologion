@@ -283,6 +283,10 @@ func _passes_filter(v) -> bool:
 				return sins.get(filter_type, 0) > 0
 			"Heal":
 				return v.get("heal", 0) > 0
+			"Status":
+				if filter_type == "*":
+					return v.get("zeal", false) or v.get("guard", false)
+				return filter_type in ["zeal", "guard"] and v.get(filter_type, false)
 		return false
 	if filter_type == "*":
 		return type in FILTER_GROUPS[filter_group]
@@ -468,6 +472,10 @@ func _cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale,
 		for enemy in targets:
 			if is_instance_valid(enemy) and enemy.has_method("take_damage"):
 				_attack(verse, enemy, damage_scale / targets.size(), can_counter)
+	if verse.get("zeal", false) and caster == null:
+		_zeal_boost()   # (the player's own boost; not when a party member recites it)
+	if verse.get("guard", false) and caster == null:
+		activate_guard()
 	var heal_pct = float(verse.get("heal", 0))
 	if heal_pct > 0:
 		heal_targets(Targeting.heal_targets(use_choice), heal_pct * heal_scale)
@@ -549,12 +557,18 @@ func _load_sheet_verses():
 				type = sin
 		if type == "heal" and all_sin > 0:
 			type = "all"
+		if type == "heal" and row.get("heal", 0) == 0 and row.get("zeal", false):
+			type = "zeal"   # only the Zeal effect
+		elif type == "heal" and row.get("heal", 0) == 0 and row.get("guard", false):
+			type = "guard"  # only the Guard effect
 		var v = {
 			"ref": row.ref, "set": "sheet", "type": type,
 			"damage": max(best, all_sin), "sins": sins, "all_damage": all_sin,
 			"vs": row.get("vs", {}),
 			"heal": row.get("heal", 0), "jesus": row.get("jesus", false),
 			"translation": row.get("translation", ""),
+			"zeal": row.get("zeal", false),   # Zeal list: also gives the speed + jump boost
+			"guard": row.get("guard", false), # Guard list: also raises your defense for a few rounds
 			"discovered": false,
 			"en": row.get("en", ""), "es": row.get("es", ""), "pl": row.get("pl", ""),
 		}
@@ -816,6 +830,10 @@ func _update_verse_text():
 					kinds.append(tr(sin.capitalize()))
 				if v.get("all_damage", 0) > 0:
 					kinds.append(tr("Universal (All)"))
+				if v.get("zeal", false):
+					kinds.append(tr("Zeal"))
+				if v.get("guard", false):
+					kinds.append(tr("Guard"))
 				if kinds.is_empty():
 					kinds.append(tr("Heal"))
 				kind = ", ".join(kinds)
@@ -852,6 +870,10 @@ func verse_power_text(v) -> String:
 			parts.append(tr("Heals %d%%") % v.heal)
 		elif v.get("heal", 0) < 0:
 			parts.append(tr("Costs you %d%% HP") % (-v.heal))
+		if v.get("zeal", false):
+			parts.append(tr("Speed + jump boost"))
+		if v.get("guard", false):
+			parts.append(tr("+%d%% defense, %d rounds") % [int(guard_reduction * 100), guard_rounds])
 		return ", ".join(parts)
 	match v.type:
 		"heal":

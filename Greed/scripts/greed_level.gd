@@ -10,12 +10,14 @@ extends Node2D
 #     level) makes you a little heavier: you walk 5% slower and your jump
 #     tops out at carry_jump_height (172 px instead of 201). That still gets
 #     you onto the feather block before the hill (157 px up) and the normal
-#     1-tile steps (130.6 px), but not over the raised step on the hill
-#     (WeightLedge in Greed.tscn, 186 px above the step before it). Drop the
-#     gold (Ctrl > click it > Drop) and you're back to normal at once.
+#     1-tile steps (130.6 px), so every step of the hill can still be climbed
+#     with the gold - it just feels heavier. Drop the gold
+#     (Ctrl > click it > Drop) and you're back to normal at once.
 #     (Unity's JumpModifier only did this in one spot.)
 #     Money you pick up goes in the inventory too and flies away (inventory.gd).
-#   - falling into a pit restarts the level
+#   - falling into a pit / the water restarts the level - or, once you've
+#     reached the hill (Triggers/CheckpointArea), puts you back on top of the
+#     hill (checkpoint_feet). Your inventory stays as it was (gold too).
 #   - breaking the Golden Calf (after beating the Greedwraith) wins the level
 
 const PopupText = preload("res://popup_text.gd")
@@ -24,8 +26,9 @@ const PopupText = preload("res://popup_text.gd")
 @export var rooms: Array = []
 @export var music: AudioStream
 @export var music_volume_db = -10.0
-@export var carry_jump_height = 172.0  # highest jump with gold (pixels): feather block needs 156.8, WeightLedge 186, normal jump 201
+@export var carry_jump_height = 172.0  # highest jump with gold (pixels): feather block needs 156.8, hill steps 130.6, normal jump 201
 @export var carry_speed_scale = 0.95   # walking speed with gold
+@export var checkpoint_feet = Vector2(5110, -855)   # where you respawn: on top of the hill (feet on the grass)
 @export var fall_margin = 500.0        # this far below the room's bottom edge = fell into a pit
 @export var use_camera_limits = true
 # The Unity level was built for a player that walks 1 Unity unit per second
@@ -209,10 +212,23 @@ func player_fell():
 	if restarting:
 		return
 	restarting = true
-	TurnManager.show_message(tr("You fell... restarting the level"))
+	var checkpoint = SaveManager.get_checkpoint() != null
+	TurnManager.show_message(tr("You fell... back to the checkpoint") if checkpoint else tr("You fell... restarting the level"))
 	await get_tree().create_timer(1.5).timeout
-	SaveManager.start_new_level()
+	SaveManager.respawn_after_death()
 	get_tree().reload_current_scene()
+
+
+# Triggers/CheckpointArea (at the foot of the hill): from now on dying puts
+# you on top of the hill. Stored as the player's position for SaveManager.
+func reach_checkpoint():
+	var player = _player()
+	if player == null or SaveManager.get_checkpoint() != null:
+		return
+	var cs = player.get_node("CollisionShape2D")
+	var feet_offset = cs.global_position + Vector2(0, cs.shape.size.y / 2.0 * cs.global_scale.y) - player.global_position
+	SaveManager.set_checkpoint(checkpoint_feet - feet_offset - Vector2(0, 2))
+	print("[Greed] checkpoint reached: respawn on top of the hill")
 
 
 func win():

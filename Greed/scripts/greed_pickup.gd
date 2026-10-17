@@ -35,7 +35,7 @@ func _ready():
 	if icon:
 		icon_y = icon.position.y
 		if kind == "money":
-			icon.rotation = deg_to_rad(randf_range(-30, 30))   # RandomRot.cs
+			icon.rotation = deg_to_rad(randf_range(-18, 18))   # RandomRot.cs (gentler: the bills hang on the trees)
 	time = randf() * bob_time
 	body_entered.connect(_on_body_entered)
 	if not start_active:

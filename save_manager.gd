@@ -48,6 +48,12 @@ var church = {}                  # {"id", "name", "city", "region", "country"} o
 var lifetime_defeats = 0         # every enemy you've ever defeated (never goes down)
 signal profile_changed
 
+# Checkpoints: { "res://Greed.tscn": Vector2(player position to respawn at) }.
+# Dying (a pit, water, losing a battle) in a level with a reached checkpoint
+# puts you back there instead of at the level start. Your inventory is kept
+# as it is. Starting a level from Story Select clears them.
+var checkpoints: Dictionary = {}
+
 # When a save is loaded we switch scenes first; the player then picks up
 # its saved position from here in its _ready() (see apply_pending_player_state).
 var pending_position = null
@@ -158,7 +164,30 @@ func get_defeated_count() -> int:
 func start_new_level() -> void:
 	player_hp = MAX_HP
 	pending_position = null
+	checkpoints.clear()       # a fresh level starts at its beginning
 	PartyManager.reset_hp()   # party members back to full health too
+
+
+# ---------------- Checkpoints ----------------
+
+func _level_path() -> String:
+	var scene = get_tree().current_scene
+	return scene.scene_file_path if scene else ""
+
+func set_checkpoint(player_position: Vector2) -> void:
+	checkpoints[_level_path()] = player_position
+
+func get_checkpoint():
+	return checkpoints.get(_level_path(), null)
+
+# After dying: full health (you and the party), and if this level has a
+# checkpoint the player is put there when the level reloads. Returns true
+# if there's a checkpoint. (The inventory is untouched.)
+func respawn_after_death() -> bool:
+	player_hp = MAX_HP
+	PartyManager.reset_hp()
+	pending_position = get_checkpoint()
+	return pending_position != null
 
 
 # Called by the player in _ready(). Puts the player where the save said.
@@ -166,6 +195,21 @@ func apply_pending_player_state(player: Node2D) -> void:
 	if pending_position != null:
 		player.global_position = pending_position
 		pending_position = null
+		_place_party_next_to.call_deferred(player)
+
+
+# The party member(s) appear right behind the player (no fade), e.g. after
+# respawning at a checkpoint or loading a save.
+func _place_party_next_to(player: Node2D) -> void:
+	if not is_instance_valid(player):
+		return
+	for member in get_tree().get_nodes_in_group("party"):
+		if member.is_in_group("phone_players") or not member is Node2D:
+			continue
+		var spot = member._spot_near_player(1) if member.has_method("_spot_near_player") and member.get("player") else null
+		member.global_position = spot if spot != null else PartyManager._spot_next_to(player)
+		if "velocity" in member:
+			member.velocity = Vector2.ZERO
 
 
 # ---------------- Save / Load ----------------
@@ -189,6 +233,7 @@ func save_game() -> bool:
 	config.set_value("items", "inventory", Inventory.get_save_data())
 	config.set_value("items", "key_items", Inventory.get_key_save_data())
 	config.set_value("items", "collected_pickups", collected_pickups)
+	config.set_value("progress", "checkpoints", checkpoints)
 
 	var verses = VerseManager.get_save_data()
 	config.set_value("verses", "discovered", verses.discovered)
@@ -235,6 +280,7 @@ func load_game(change_level := true) -> bool:
 	Inventory.load_save_data(config.get_value("items", "inventory", {}))
 	Inventory.load_key_save_data(config.get_value("items", "key_items", []))
 	collected_pickups = config.get_value("items", "collected_pickups", {})
+	checkpoints = config.get_value("progress", "checkpoints", {})
 
 	VerseManager.load_save_data({
 		"discovered": config.get_value("verses", "discovered", []),

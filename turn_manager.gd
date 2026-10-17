@@ -542,10 +542,11 @@ func _end_battle():
 
 
 func _player_defeated(my_battle):
-	show_message(tr("You were defeated... restarting the level"))
+	var checkpoint = SaveManager.get_checkpoint() != null
+	show_message(tr("You were defeated... back to the checkpoint") if checkpoint else tr("You were defeated... restarting the level"))
 	await get_tree().create_timer(2.0).timeout
 	if my_battle != battle_id:
 		return
 	_end_battle()
-	SaveManager.start_new_level()   # full health again
+	SaveManager.respawn_after_death()   # full health again (at the checkpoint, if any)
 	get_tree().reload_current_scene()
