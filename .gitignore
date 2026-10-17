@@ -30,3 +30,4 @@ addons/godot_whisper/bin/*.so
 models/ggml-base*.bin
 models/ggml-small*.bin
 !translations/*.translation
+__pycache__/
