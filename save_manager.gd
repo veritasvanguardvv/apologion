@@ -187,6 +187,7 @@ func save_game() -> bool:
 	config.set_value("progress", "party", PartyManager.current)
 	config.set_value("progress", "party_hp", PartyManager.member_hp)
 	config.set_value("items", "inventory", Inventory.get_save_data())
+	config.set_value("items", "key_items", Inventory.get_key_save_data())
 	config.set_value("items", "collected_pickups", collected_pickups)
 
 	var verses = VerseManager.get_save_data()
@@ -232,6 +233,7 @@ func load_game(change_level := true) -> bool:
 	PartyManager.current = config.get_value("progress", "party", PartyManager.DEFAULT_MEMBER)
 	PartyManager.member_hp = config.get_value("progress", "party_hp", {})
 	Inventory.load_save_data(config.get_value("items", "inventory", {}))
+	Inventory.load_key_save_data(config.get_value("items", "key_items", []))
 	collected_pickups = config.get_value("items", "collected_pickups", {})
 
 	VerseManager.load_save_data({

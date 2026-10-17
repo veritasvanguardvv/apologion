@@ -8,10 +8,12 @@ extends Node2D
 #   - camera limits per room (Unity used camera "Bounds" polygons)
 #   - weight: carrying gold (1 or more bars in your inventory, anywhere in the
 #     level) makes you a little heavier: you walk 5% slower and your jump
-#     tops out at carry_jump_height - just short of the hill's 1-tile steps
-#     (130.6 px) and the 157 px jump onto the block before the hill, right
-#     after the gold. Drop it (Ctrl > click it > Drop) and you're back to
-#     normal at once. (Unity's JumpModifier only did this in one spot.)
+#     tops out at carry_jump_height (172 px instead of 201). That still gets
+#     you onto the feather block before the hill (157 px up) and the normal
+#     1-tile steps (130.6 px), but not over the raised step on the hill
+#     (WeightLedge in Greed.tscn, 186 px above the step before it). Drop the
+#     gold (Ctrl > click it > Drop) and you're back to normal at once.
+#     (Unity's JumpModifier only did this in one spot.)
 #     Money you pick up goes in the inventory too and flies away (inventory.gd).
 #   - falling into a pit restarts the level
 #   - breaking the Golden Calf (after beating the Greedwraith) wins the level
@@ -22,7 +24,7 @@ const PopupText = preload("res://popup_text.gd")
 @export var rooms: Array = []
 @export var music: AudioStream
 @export var music_volume_db = -10.0
-@export var carry_jump_height = 118.0  # highest jump with gold (pixels); the steps need 130.6
+@export var carry_jump_height = 172.0  # highest jump with gold (pixels): feather block needs 156.8, WeightLedge 186, normal jump 201
 @export var carry_speed_scale = 0.95   # walking speed with gold
 @export var fall_margin = 500.0        # this far below the room's bottom edge = fell into a pit
 @export var use_camera_limits = true
@@ -174,10 +176,18 @@ func _update_weight():
 
 # ---------------- Letters / dialogs ----------------
 
+# Letters that become key items once read (Inventory > Key Items tab, where
+# you can read them again). letter_key in Greed.tscn -> items.gd KEY_ITEMS id
+const KEY_ITEM_LETTERS = {"itemHint": "letter_v_ram"}
+
 func show_letter(key: String):
 	var player = _player()
+	var text = tr(key)
+	if KEY_ITEM_LETTERS.has(key):
+		Inventory.add_key_item(KEY_ITEM_LETTERS[key])
+		text = Inventory.key_item_text(KEY_ITEM_LETTERS[key])   # "Press X to ram."
 	if player:
-		PopupText.spawn(player, tr(key), Color(1, 0.95, 0.75), Vector2(0, -130), 6.0)
+		PopupText.spawn(player, text, Color(1, 0.95, 0.75), Vector2(0, -130), 6.0)
 
 
 # Unity opens a cut-scene dialog here (DialogCanvas). Not ported yet.

@@ -205,7 +205,7 @@ You defeated the forces of greed!,You defeated the forces of greed!,¡Derrotaste
 Defeat the Greedwraith first!,Defeat the Greedwraith first!,¡Primero derrota al Espectro de la Avaricia!,Najpierw pokonaj Widmo Chciwości!
 + Gold,+ Gold,+ Oro,+ Złoto
 Speed up!,Speed up!,¡Más velocidad!,Przyspieszenie!
-itemHint,"Letter from V.: Thorns block the way. Hold the Ram key (X by default) until the bar fills, then ram them.",Carta de V.: Las espinas bloquean el camino. Mantén la tecla de embestir (X por defecto) hasta que se llene la barra y embístelas.,"List od V.: Ciernie blokują drogę. Przytrzymaj klawisz taranu (domyślnie X), aż pasek się napełni, i staranuj je."
+itemHint,Press X to ram.,Pulsa X para embestir.,"Naciśnij X, aby taranować."
 itemHint2,2nd Letter from V.: Sometimes Scripture can lead to secrets.,2ª Carta de V.: A veces la Escritura puede llevar a secretos.,2. list od V.: Czasem Pismo może prowadzić do tajemnic.
 itemHint3,3rd Letter from V.: And he took the calf... then he ground it to powder...,3ª Carta de V.: Y tomó el becerro... luego lo molió hasta hacerlo polvo...,3. list od V.: I wziął cielca... potem starł go na proch...
 Local Multiplayer (Phones),Local Multiplayer (Phones),Multijugador local (teléfonos),Gra lokalna (telefony)
@@ -319,3 +319,9 @@ Sindeath,Sindeath,Sindeath,Sindeath
 Scroll verses with arrow keys,Scroll verses with arrow keys,Desplazar versículos con las flechas,Przewijaj wersety strzałkami
 Scroll verses up,Scroll verses up,Desplazar versículos hacia arriba,Przewiń wersety w górę
 Scroll verses down,Scroll verses down,Desplazar versículos hacia abajo,Przewiń wersety w dół
+Press %s to ram.,Press %s to ram.,Pulsa %s para embestir.,"Naciśnij %s, aby taranować."
+Letter from V.,Letter from V.,Carta de V.,List od V.
+Items,Items,Objetos,Przedmioty
+Key Items,Key Items,Objetos clave,Przedmioty kluczowe
+No key items yet.,No key items yet.,Aún no tienes objetos clave.,Nie masz jeszcze przedmiotów kluczowych.
+Click a key item to read it,Click a key item to read it,Haz clic en un objeto clave para leerlo,"Kliknij przedmiot kluczowy, aby go przeczytać"

@@ -40,13 +40,18 @@ var phone_slot = 0              # 1, 2 or 3 (which phone player this is)
 @export var move_speed = 200.0         # same as the player's normal speed
 @export var catch_up_speed = 320.0     # used when he's far behind
 @export var acceleration = 900.0       # how quickly he speeds up / eases to a stop
-# Pastor Ramuel never jumps (can_jump off). When he can't walk to the player (a gap, a ledge, a wall,
-# or the player is off screen) for stranded_time seconds, he fades out and
-# fades back in on the floor next to the player.
+# Pastor Ramuel never jumps (can_jump off). When he can't walk to the player (a gap, a ledge, a wall),
+# falls behind or ends up off screen, he catches up WITHOUT fading (he's always
+# fully solid): as soon as he's out of view he's moved to the floor just past
+# the edge of the screen behind the player, and walks back in. If he's stuck
+# where you can see him he waits (you'll usually walk on and leave him out of
+# view a moment later); only after stuck_snap_time seconds (in view, or with no
+# walkable way back in from off screen) does he simply step over beside the player.
 @export var can_jump = false            # Baana (baana.tscn) still jumps gaps and ledges
 @export var jump_velocity = -450.0     # (only with can_jump) negative = up
-@export var stranded_time = 0.6        # seconds stuck before he pops over
-@export var fade_time = 0.18           # fade out / fade in (seconds each)
+@export var stranded_time = 0.6        # seconds stuck before he catches up (once he's out of view)
+@export var stuck_snap_time = 4.0      # stuck this long (and no hidden way in): he steps over next to the player anyway
+@export var offscreen_margin = 70.0    # how far past the screen edge he's placed to walk back in
 @export var gravity = 980.0            # same as the player
 @export var teleport_distance = 700.0  # if he's this far away (or falls in a pit) he pops over next to the player
 
@@ -251,54 +256,102 @@ func _physics_process(delta):
 		stranded_for = stranded_for + delta if blocked else 0.0
 	# (in the air he only falls - he never jumps)
 	
-	if not fading:
-		move_and_slide()
+	move_and_slide()
 	_update_footsteps(delta)
 	
-	# Off screen for a moment, stranded, or fell into a pit / too far away:
-	# fade over to the player.
-	offscreen_for = offscreen_for + delta if not _on_screen() else 0.0
-	if not fading and (stranded_for >= stranded_time or offscreen_for >= 1.0 \
+	# Stranded, too far, fell down a pit or simply out of view: catch up.
+	# Never fades; he's only moved while you can't see him (see the top).
+	var on_screen = _on_screen()
+	offscreen_for = offscreen_for + delta if not on_screen else 0.0
+	relocate_cooldown = max(relocate_cooldown - delta, 0.0)
+	var needs_catch_up = stranded_for >= stranded_time or offscreen_for >= 1.0 \
 			or global_position.distance_to(player_pos) > teleport_distance \
-			or global_position.y > player_pos.y + 250.0):
-		# Only when the player stands on solid ground (not mid-jump or falling)
-		var spot = _spot_near_player(delayed_facing) if player.is_on_floor() else null
+			or global_position.y > player_pos.y + 250.0
+	stuck_for = stuck_for + delta if needs_catch_up else 0.0
+	# Only when the player stands on solid ground (not mid-jump or falling)
+	if needs_catch_up and relocate_cooldown <= 0.0 and player.is_on_floor():
+		var spot = null
+		if not on_screen:
+			spot = _offscreen_spot_behind_player(delayed_facing)
+		# Still stuck after stuck_snap_time (in view, or no walkable way in from
+		# off screen, e.g. a pit right behind the player): step over beside them
+		if spot == null and stuck_for >= stuck_snap_time:
+			spot = _spot_near_player(delayed_facing)
 		if spot != null:
-			_fade_to_player(spot)
+			_move_to(spot)
 	
 	_update_animation(delta)
 
 
 var stranded_for = 0.0
 var offscreen_for = 0.0
-var fading = false
-var catch_ups = 0      # how often he popped over (for the tests)
+var stuck_for = 0.0
+var relocate_cooldown = 0.0
+var catch_ups = 0      # how often he was moved over (for the tests)
 
 func _on_screen() -> bool:
 	var screen = get_viewport().get_visible_rect().grow(40)
 	return screen.has_point(get_global_transform_with_canvas() * Vector2(0, -40))
 
-# Fade out, move next to the player (on the floor), fade in.
-func _fade_to_player(spot: Vector2):
-	fading = true
-	stranded_for = 0.0
-	offscreen_for = 0.0
-	velocity = Vector2.ZERO
-	var t = create_tween()
-	t.tween_property(visual, "modulate:a", 0.0, fade_time)
-	await t.finished
-	if not is_instance_valid(player):
-		fading = false
-		return
+# The part of the level the camera shows right now (world coordinates)
+func _visible_world_rect() -> Rect2:
+	var vp = get_viewport()
+	return vp.get_canvas_transform().affine_inverse() * vp.get_visible_rect()
+
+# Instantly moves him (no fade - he's always fully visible) and resets the
+# follow state. Called while he's off screen, so nobody sees the move.
+func _move_to(spot: Vector2):
 	global_position = spot
 	velocity = Vector2.ZERO
 	trail.clear()
+	stranded_for = 0.0
+	offscreen_for = 0.0
+	stuck_for = 0.0
+	relocate_cooldown = 0.8
 	catch_ups += 1
-	print(display_name, " catches up (fade) to ", global_position)
-	t = create_tween()
-	t.tween_property(visual, "modulate:a", 0.45 if knocked_out else 1.0, fade_time)
-	await t.finished
-	fading = false
+	visual.modulate.a = 1.0
+	print(display_name, " catches up (walks in from off screen) at ", global_position)
+
+# Floor height at x near height y (the top of the first floor below
+# y - 150, within 400 px), or null.
+func _floor_at(x: float, y: float):
+	var from = Vector2(x, y - 150.0)
+	var query = PhysicsRayQueryParameters2D.create(from, from + Vector2(0, 400))
+	query.exclude = [get_rid(), player.get_rid()]
+	query.collision_mask = collision_mask
+	var hit = get_world_2d().direct_space_state.intersect_ray(query)
+	if hit.is_empty() or hit.normal.y > -0.5:
+		return null
+	return hit.position.y
+
+# A spot on the floor just past the edge of the screen behind the player
+# (or ahead, if there's no way back there) from which he can WALK to the
+# player: the floor in between has no gaps and no steps he can't walk up.
+# null = no such spot right now (then he simply waits off screen).
+func _offscreen_spot_behind_player(facing):
+	var center = player.get_body_center()
+	var feet = _floor_at(center.x, center.y)
+	if feet == null:
+		return null
+	var view = _visible_world_rect()
+	for dir in [-facing, facing]:
+		var edge_x = view.position.x - offscreen_margin if dir < 0 else view.end.x + offscreen_margin
+		var last_y = feet
+		var x = center.x
+		var ok = true
+		var step = 25.0 * dir
+		while (x - edge_x) * dir < 0.0:
+			x += step
+			if (x - edge_x) * dir > 0.0:
+				x = edge_x
+			var y = _floor_at(x, last_y)
+			if y == null or abs(y - last_y) > 30.0:
+				ok = false
+				break
+			last_y = y
+		if ok:
+			return Vector2(edge_x, last_y - 1.0)
+	return null
 
 # A spot on solid floor beside the player: behind them if there's floor
 # there, else in front, else right where they stand. null = no floor there.
@@ -410,11 +463,16 @@ func _build_hp_bar():
 	add_child(hp_bar)
 	_update_hp()
 
+var base_modulate = null   # the Visual's own tint (Baana is golden)
+
 func _update_hp():
 	hp_bar.value = hp
 	knocked_out = hp <= 0.0
-	# Knocked out: greyed out and lying down
-	visual.modulate.a = 0.45 if knocked_out else 1.0
+	# Knocked out: darker and lying down (never see-through)
+	if base_modulate == null:
+		base_modulate = visual.modulate
+	visual.modulate = base_modulate.darkened(0.45) if knocked_out else base_modulate
+	visual.modulate.a = 1.0
 	visual.rotation_degrees = 90.0 if knocked_out else 0.0
 	PartyManager.set_hp(member_id, hp)
 

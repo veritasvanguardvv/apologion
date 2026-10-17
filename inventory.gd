@@ -20,10 +20,21 @@ extends Node
 #     attacks no - those are greyed out).
 #   - It does NOT use the verse in your verse cycle and does NOT discover it.
 # Your items are kept between levels and in the save file (SaveManager).
+#
+# KEY ITEMS tab (items.gd KEY_ITEMS, e.g. V.'s letter about ramming): story
+# items you keep for good. The inventory always opens on the regular Items
+# tab; click "Key Items" to see them. Click one to read it again. They have
+# no Use / Drop buttons, take no regular slot, weigh nothing, never fly away
+# and are saved with the game (save_manager.gd "key_items").
 
 const Items = preload("res://items.gd")
 
 var items = {}          # item id -> how many you have, e.g. {"healing_scroll": 1}
+var key_items = []      # key item ids you have (items.gd KEY_ITEMS), in the order you got them
+var tab = "items"       # "items" or "key" (the Key Items tab)
+var items_tab_button: Button
+var key_tab_button: Button
+var hint_label: Label
 signal changed
 
 var layer: CanvasLayer
@@ -67,6 +78,49 @@ func remove(id: String, amount := 1):
 		items.erase(id)
 	changed.emit()
 	_refresh()
+
+# ---------------- Key items ----------------
+
+func get_key_item(id: String) -> Dictionary:
+	return Items.KEY_ITEMS.get(id, {})
+
+func has_key_item(id: String) -> bool:
+	return id in key_items
+
+# Adds a key item (once - you can't have two of the same letter)
+func add_key_item(id: String):
+	if id in key_items or not Items.KEY_ITEMS.has(id):
+		return
+	key_items.append(id)
+	changed.emit()
+	_refresh()
+
+# What the key item says, translated, with the player's current key filled in
+func key_item_text(id: String) -> String:
+	var item = get_key_item(id)
+	var text = tr(item.get("text", ""))
+	if item.has("text_key_action") and "%s" in text:
+		var gs = get_node_or_null("/root/GameSettings")
+		var key = gs.key_name(item.text_key_action) if gs else "X"
+		text = text % (key if key != "-" else "X")
+	return text
+
+func get_key_save_data() -> Array:
+	return key_items.duplicate()
+
+func load_key_save_data(data):
+	key_items.clear()
+	for id in data:
+		if Items.KEY_ITEMS.has(id) and not id in key_items:
+			key_items.append(id)
+	changed.emit()
+	_refresh()
+
+func set_tab(new_tab: String):
+	tab = new_tab
+	selected_id = ""
+	_refresh()
+
 
 # For SaveManager
 func get_save_data() -> Dictionary:
@@ -296,6 +350,8 @@ func _money_gone(bill: Node):
 # ---------------- Window ----------------
 
 func open():
+	tab = "items"        # always opens on the regular items; Key Items is a click away
+	selected_id = ""
 	_refresh()
 	panel.visible = true
 	await get_tree().process_frame   # let the slots get their places first (the money starts from its slot)
@@ -315,7 +371,10 @@ func is_open() -> bool:
 	return panel.visible
 
 func select(id: String):
-	selected_id = id if count(id) > 0 else ""
+	if tab == "key":
+		selected_id = id if has_key_item(id) else ""
+	else:
+		selected_id = id if count(id) > 0 else ""
 	_refresh()
 
 # Ctrl = open/close. Not while typing, not on the main menu, and not with Alt
@@ -344,6 +403,8 @@ func _unhandled_input(event):
 			if n < ids.size():
 				select(ids[n])
 				get_viewport().set_input_as_handled()
+		elif tab == "key":
+			pass   # key items: no Use / Drop
 		elif event.keycode == KEY_U and selected_id != "":
 			use(selected_id)
 			get_viewport().set_input_as_handled()
@@ -356,6 +417,8 @@ func _process(_delta):
 		_update_buttons()   # e.g. your turn started while it was open
 
 func _owned_ids() -> Array:
+	if tab == "key":
+		return key_items.duplicate()
 	var ids = []
 	for id in Items.ITEMS:   # same order as items.gd
 		if count(id) > 0:
@@ -390,6 +453,23 @@ func _build_panel():
 	title.position = Vector2(16, 10)
 	title.add_theme_font_size_override("font_size", 20)
 	panel.add_child(title)
+	# Tabs: regular Items / Key Items (mouse only; it always opens on Items)
+	items_tab_button = Button.new()
+	items_tab_button.name = "ItemsTab"
+	items_tab_button.text = "Items"
+	items_tab_button.toggle_mode = true
+	items_tab_button.position = Vector2(196, 8)
+	items_tab_button.focus_mode = Control.FOCUS_NONE
+	items_tab_button.pressed.connect(func(): set_tab("items"))
+	panel.add_child(items_tab_button)
+	key_tab_button = Button.new()
+	key_tab_button.name = "KeyItemsTab"
+	key_tab_button.text = "Key Items"
+	key_tab_button.toggle_mode = true
+	key_tab_button.position = Vector2(280, 8)
+	key_tab_button.focus_mode = Control.FOCUS_NONE
+	key_tab_button.pressed.connect(func(): set_tab("key"))
+	panel.add_child(key_tab_button)
 	var close_button = Button.new()
 	close_button.name = "CloseButton"
 	close_button.text = "Close"
@@ -411,6 +491,7 @@ func _build_panel():
 	empty_label.position = Vector2(16, 230)
 	panel.add_child(empty_label)
 	var hint = Label.new()
+	hint_label = hint
 	hint.text = "Click an item (or press 1-9): U = Use, Delete = Drop"
 	hint.position = Vector2(16, 216)
 	hint.add_theme_font_size_override("font_size", 12)
@@ -458,9 +539,14 @@ func _refresh():
 		list.remove_child(child)
 		child.queue_free()
 	var player = get_tree().get_first_node_in_group("player") if is_inside_tree() else null
+	var key_tab = tab == "key"
 	var ids = _owned_ids()
 	empty_label.visible = ids.is_empty()
-	if selected_id != "" and count(selected_id) <= 0:
+	empty_label.text = "No key items yet." if key_tab else "No items yet. Look around the levels!"
+	hint_label.text = "Click a key item to read it" if key_tab else "Click an item (or press 1-9): U = Use, Delete = Drop"
+	items_tab_button.button_pressed = not key_tab
+	key_tab_button.button_pressed = key_tab
+	if selected_id != "" and (not has_key_item(selected_id) if key_tab else count(selected_id) <= 0):
 		selected_id = ""
 	for n in SLOT_COUNT:
 		var slot = Button.new()
@@ -474,7 +560,7 @@ func _refresh():
 			slot.disabled = true
 			continue
 		var id = ids[n]
-		var item = get_item(id)
+		var item = get_key_item(id) if key_tab else get_item(id)
 		slot.name = id
 		# icon (a TextureRect so we know exactly where it's drawn - the flying money starts there)
 		var icon = TextureRect.new()
@@ -489,7 +575,7 @@ func _refresh():
 		slot.add_child(icon)
 		var amount = Label.new()
 		amount.name = "Count"
-		amount.text = "x%d" % count(id)
+		amount.text = "" if key_tab else "x%d" % count(id)
 		amount.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		amount.position = Vector2(0, 48)
 		amount.size = Vector2(72, 22)
@@ -497,7 +583,7 @@ func _refresh():
 		amount.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		slot.add_child(amount)
 		slot.pressed.connect(select.bind(id))
-		var verse = player.get_verse(item.verse) if player and item.has("verse") else null
+		var verse = player.get_verse(item.verse) if player and item.has("verse") and not key_tab else null
 		slot.tooltip_text = tr(item.name)
 		if verse:
 			slot.tooltip_text = "%s\n%s\n\"%s\"\n%s" % [tr(item.name), VerseManager.ref_text(verse.ref), player.verse_body(verse), player.verse_power_text(verse)]
@@ -507,9 +593,12 @@ func _refresh():
 	var has_sel = selected_id != ""
 	detail_name.visible = has_sel
 	detail_info.visible = has_sel
-	use_button.visible = has_sel and is_usable_kind(selected_id)
-	drop_button.visible = has_sel
-	if has_sel:
+	use_button.visible = has_sel and not key_tab and is_usable_kind(selected_id)
+	drop_button.visible = has_sel and not key_tab
+	if has_sel and key_tab:
+		detail_name.text = tr(get_key_item(selected_id).name)
+		detail_info.text = key_item_text(selected_id)
+	elif has_sel:
 		var item = get_item(selected_id)
 		detail_name.text = "%s  x%d" % [tr(item.name), count(selected_id)]
 		var verse = player.get_verse(item.verse) if player and item.has("verse") else null

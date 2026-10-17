@@ -647,10 +647,13 @@ func _physics_process(delta):
 		_check_ram_hits()
 
 # The jump's starting speed: weaker while carrying something heavy, so the
-# jump peaks at carry_max_jump_height (peak = v^2 / 2g)
+# jump peaks at carry_max_jump_height. With gravity added once per physics
+# tick (dt) the feet rise h = v^2/2g + v*dt/2, so solve that for v.
 func current_jump_velocity() -> float:
 	if carry_max_jump_height > 0.0:
-		return max(jump_velocity, -sqrt(2.0 * gravity * carry_max_jump_height))
+		var half = gravity / float(Engine.physics_ticks_per_second) / 2.0
+		var v = -half + sqrt(half * half + 2.0 * gravity * carry_max_jump_height)
+		return max(jump_velocity, -v)
 	return jump_velocity
 
 # ---------------- Ram ----------------

@@ -60,3 +60,19 @@ const ITEMS = {
 		"drop_pickup": "greed:gold",
 	},
 }
+
+# KEY ITEMS: permanent story items (letters...). They live in the inventory's
+# "Key Items" tab, not in the regular slots: no Use, no Drop, no weight, and
+# the flying money never touches them. Clicking one shows its text again.
+#   name    = shown in the tab (translated with strings.csv)
+#   icon    = picture (icon_region optional, like ITEMS)
+#   text    = what it says (translated). A %s in it is replaced by the key
+#             currently bound to text_key_action (Settings > key remapping).
+const KEY_ITEMS = {
+	"letter_v_ram": {
+		"name": "Letter from V.",
+		"icon": "res://Greed/Letter1.png",
+		"text": "Press %s to ram.",
+		"text_key_action": "ram",
+	},
+}

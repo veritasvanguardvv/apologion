@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" path="res://Greed/Square.png" id="7_g"]
 [ext_resource type="Texture2D" path="res://Greed/TX Tileset - Dungeon Ground Dirt.png" id="9_g"]
 [ext_resource type="Texture2D" uid="uid://cbfiepteob5fh" path="res://Money_trees.png" id="10_g"]
+[ext_resource type="Texture2D" uid="uid://cjj5sbdx6ph5m" path="res://Crooked_trees.png" id="11_g"]
 [ext_resource type="Texture2D" path="res://Greed/treasure_icons_16x16.png" id="13_g"]
 [ext_resource type="Texture2D" path="res://Greed/stainedglass.png" id="14_g"]
 [ext_resource type="Texture2D" path="res://Greed/old-dark-castle-interior-tileset.png" id="15_g"]
@@ -535,6 +536,9 @@ size = Vector2(89.877, 327.2558)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_116"]
 size = Vector2(89.877, 157.1482)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_weightledge"]
+size = Vector2(130.5984, 55.4016)
+
 [node name="Greed" type="Node2D"]
 script = ExtResource("1_g")
 rooms = [{"name": "ENVIRO", "start": Vector2(9546.64, 143.992), "rect": Rect2(-1400, -1400, 13400, 1940)}, {"name": "ROOM1", "start": Vector2(15166.8, -7536.6944), "rect": Rect2(15042.9315, -8054.1464, 902.9798, 650.8675)}]
@@ -848,42 +852,42 @@ axis_stretch_vertical = 1
 [node name="tree1" type="Sprite2D" parent="Decor"]
 texture_filter = 1
 position = Vector2(504, 324.4)
-scale = Vector2(6.0, 6.0)
+scale = Vector2(3.0, 3.0)
 centered = false
-offset = Vector2(-20.0, -64)
-texture = ExtResource("10_g")
+offset = Vector2(-45.0, -128)
+texture = ExtResource("11_g")
 region_enabled = true
-region_rect = Rect2(63, 9, 40, 64)
+region_rect = Rect2(15, 0, 90, 128)
 
 [node name="tree2" type="Sprite2D" parent="Decor"]
 texture_filter = 1
 position = Vector2(-849.6, 324.4)
-scale = Vector2(6.0, 6.0)
+scale = Vector2(3.0, 3.0)
 centered = false
-offset = Vector2(-15.5, -49)
-texture = ExtResource("10_g")
+offset = Vector2(-29.5, -90)
+texture = ExtResource("11_g")
 region_enabled = true
-region_rect = Rect2(15, 24, 31, 49)
+region_rect = Rect2(190, 32, 59, 90)
 
 [node name="tree3" type="Sprite2D" parent="Decor"]
 texture_filter = 1
 position = Vector2(770, 324.4)
-scale = Vector2(6.0, 6.0)
+scale = Vector2(3.0, 3.0)
 centered = false
-offset = Vector2(-19.0, -54)
-texture = ExtResource("10_g")
+offset = Vector2(-42.5, -100)
+texture = ExtResource("11_g")
 region_enabled = true
-region_rect = Rect2(123, 19, 38, 54)
+region_rect = Rect2(105, 20, 85, 100)
 
 [node name="tree3 (1)" type="Sprite2D" parent="Decor"]
 texture_filter = 1
 position = Vector2(5632, -720.4)
-scale = Vector2(4.5, 4.5)
+scale = Vector2(2.25, 2.25)
 centered = false
-offset = Vector2(-15.5, -49)
-texture = ExtResource("10_g")
+offset = Vector2(-29.5, -90)
+texture = ExtResource("11_g")
 region_enabled = true
-region_rect = Rect2(15, 24, 31, 49)
+region_rect = Rect2(190, 32, 59, 90)
 
 [node name="Gold" type="Sprite2D" parent="Decor"]
 position = Vector2(7967.9996, 305.32)
@@ -2201,55 +2205,60 @@ mouse_filter = 2
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 
-[node name="farAwayProps (3)" type="Sprite2D" parent="Decor/bgLayer5"]
+[node name="moneyTreeBG0" type="Sprite2D" parent="Decor/bgLayer5"]
+texture_filter = 1
 position = Vector2(-726, 148)
 scale = Vector2(4, 4)
 z_index = -1000
 centered = false
 offset = Vector2(-15.5, -24.5)
-texture = ExtResource("27_g")
+texture = ExtResource("10_g")
 region_enabled = true
-region_rect = Rect2(360, 127, 31, 49)
+region_rect = Rect2(15, 24, 31, 49)
 
-[node name="farAwayProps (4)" type="Sprite2D" parent="Decor/bgLayer5"]
+[node name="moneyTreeBG1" type="Sprite2D" parent="Decor/bgLayer5"]
+texture_filter = 1
 position = Vector2(-372.8, 149.2)
 scale = Vector2(4, 4)
 z_index = -1000
 centered = false
-offset = Vector2(-20, -32)
-texture = ExtResource("27_g")
+offset = Vector2(-20.0, -32.0)
+texture = ExtResource("10_g")
 region_enabled = true
-region_rect = Rect2(408, 112, 40, 64)
+region_rect = Rect2(63, 9, 40, 64)
 
-[node name="farAwayProps (5)" type="Sprite2D" parent="Decor/bgLayer5"]
+[node name="moneyTreeBG2" type="Sprite2D" parent="Decor/bgLayer5"]
+texture_filter = 1
 position = Vector2(187.2, 123.2)
 scale = Vector2(4, 4)
 z_index = -1000
 centered = false
-offset = Vector2(-19, -27)
-texture = ExtResource("27_g")
+offset = Vector2(-19.0, -27.0)
+texture = ExtResource("10_g")
 region_enabled = true
-region_rect = Rect2(468, 122, 38, 54)
+region_rect = Rect2(123, 19, 38, 54)
 
-[node name="farAwayProps (6)" type="Sprite2D" parent="Decor/bgLayer5"]
+[node name="moneyTreeBG3" type="Sprite2D" parent="Decor/bgLayer5"]
+texture_filter = 1
 position = Vector2(665.6, 199.6)
 scale = Vector2(4, 4)
 z_index = -1000
 centered = false
 offset = Vector2(-15.5, -24.5)
-texture = ExtResource("27_g")
+texture = ExtResource("10_g")
 region_enabled = true
-region_rect = Rect2(360, 127, 31, 49)
+region_rect = Rect2(15, 24, 31, 49)
 
-[node name="farAwayProps (7)" type="Sprite2D" parent="Decor/bgLayer5"]
+[node name="moneyTreeBG4" type="Sprite2D" parent="Decor/bgLayer5"]
+texture_filter = 1
 position = Vector2(796.4, 146.4)
 scale = Vector2(4, 4)
 z_index = -1000
 centered = false
-offset = Vector2(-20, -32)
-texture = ExtResource("27_g")
+offset = Vector2(-20.0, -32.0)
+texture = ExtResource("10_g")
 region_enabled = true
-region_rect = Rect2(408, 112, 40, 64)
+region_rect = Rect2(63, 9, 40, 64)
 
 [node name="farAwayProps (8)" type="Sprite2D" parent="Decor/bgLayer5"]
 position = Vector2(961.6, 230)
@@ -2281,35 +2290,38 @@ texture = ExtResource("27_g")
 region_enabled = true
 region_rect = Rect2(113, 129, 65, 15)
 
-[node name="farAwayProps (11)" type="Sprite2D" parent="Decor/bgLayer5"]
+[node name="moneyTreeBG5" type="Sprite2D" parent="Decor/bgLayer5"]
+texture_filter = 1
 position = Vector2(-125.6, 107.6)
 scale = Vector2(4, 4)
 z_index = -1000
 centered = false
 offset = Vector2(-15.5, -24.5)
-texture = ExtResource("27_g")
+texture = ExtResource("10_g")
 region_enabled = true
-region_rect = Rect2(360, 127, 31, 49)
+region_rect = Rect2(15, 24, 31, 49)
 
-[node name="farAwayProps (12)" type="Sprite2D" parent="Decor/bgLayer5"]
+[node name="moneyTreeBG6" type="Sprite2D" parent="Decor/bgLayer5"]
+texture_filter = 1
 position = Vector2(94.4, 95.6)
 scale = Vector2(4, 4)
 z_index = -1000
 centered = false
-offset = Vector2(-20, -32)
-texture = ExtResource("27_g")
+offset = Vector2(-20.0, -32.0)
+texture = ExtResource("10_g")
 region_enabled = true
-region_rect = Rect2(408, 112, 40, 64)
+region_rect = Rect2(63, 9, 40, 64)
 
-[node name="farAwayProps (13)" type="Sprite2D" parent="Decor/bgLayer5"]
+[node name="moneyTreeBG7" type="Sprite2D" parent="Decor/bgLayer5"]
+texture_filter = 1
 position = Vector2(6254, -530)
 scale = Vector2(4, 4)
 z_index = -1000
 centered = false
-offset = Vector2(-20, -32)
-texture = ExtResource("27_g")
+offset = Vector2(-20.0, -32.0)
+texture = ExtResource("10_g")
 region_enabled = true
-region_rect = Rect2(408, 112, 40, 64)
+region_rect = Rect2(63, 9, 40, 64)
 
 [node name="TileMaps" type="Node2D" parent="."]
 
@@ -2324,6 +2336,20 @@ position = Vector2(12210.1976, -6004.0748)
 scale = Vector2(2.4414, 2.4414)
 tile_map_data = PackedByteArray(0, 0)
 tile_set = SubResource("TileSet_8")
+
+[node name="WeightLedge" type="StaticBody2D" parent="TileMaps"]
+position = Vector2(3852.6528, -61.5008)
+
+[node name="Sprite" type="Sprite2D" parent="TileMaps/WeightLedge"]
+z_index = 1
+scale = Vector2(4.0812, 4.0812)
+texture = ExtResource("17_g")
+region_enabled = true
+region_rect = Rect2(96, 32, 32, 32)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMaps/WeightLedge"]
+position = Vector2(0, -37.5984)
+shape = SubResource("RectangleShape2D_weightledge")
 
 [node name="tile" type="Sprite2D" parent="TileMaps"]
 position = Vector2(26482.1976, -13364.0748)
