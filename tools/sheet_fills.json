@@ -2164,6 +2164,13 @@
  "_about_zeal": "Zeal list (user's list, t40u): verses with the Zeal effect (speed + jump boost). Each entry marks the sheet verse with that reference (the row whose English matches, for repeated rows) as Zeal and uses this English text (and translation type / es / pl when given); a reference not in the sheet becomes a Zeal-only verse. sheet_ref = the sheet's reference when it's labelled wrong (the sheet's '1 Corinthians 14:2' text is 1 Corinthians 14:1). 2 Corinthians 4:15 was taken out again (t42u).",
  "zeal": [
   {
+   "ref": "Psalm 16:11b",
+   "translation": "Fragment",
+   "en": "In Your presence is fullness of joy.",
+   "es": "En tu presencia hay plenitud de gozo.",
+   "pl": "W Twojej obecności jest pełnia radości."
+  },
+  {
    "ref": "Psalm 149:5",
    "translation": "Full",
    "en": "Let the saints rejoice in honor. Let them sing for joy on their beds.",
