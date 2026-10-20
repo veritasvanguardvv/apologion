@@ -19,6 +19,20 @@
   {
    "id": "sloth_2",
    "set": "sloth",
+   "title": "Ecclesiastes 1:3",
+   "kind": "",
+   "type": "sloth",
+   "en": "What do people get for all their hard work under the sun?",
+   "es": "¿Qué gana la gente con todo su duro trabajo bajo el sol?",
+   "pl": "Co ludzie mają z całej swojej ciężkiej pracy pod słońcem?",
+   "damage_pct": 0,
+   "heal_pct": 0,
+   "jesus": false,
+   "counters": []
+  },
+  {
+   "id": "sloth_3",
+   "set": "sloth",
    "title": "Isaiah 59:9b",
    "kind": "",
    "type": "sloth",
@@ -31,7 +45,7 @@
    "counters": []
   },
   {
-   "id": "sloth_3",
+   "id": "sloth_4",
    "set": "sloth",
    "title": "Isaiah 59:11",
    "kind": "",
@@ -45,7 +59,7 @@
    "counters": []
   },
   {
-   "id": "sloth_4",
+   "id": "sloth_5",
    "set": "sloth",
    "title": "Jeremiah 2:25b",
    "kind": "",
@@ -59,7 +73,7 @@
    "counters": []
   },
   {
-   "id": "sloth_5",
+   "id": "sloth_6",
    "set": "sloth",
    "title": "Lamentations 3:19",
    "kind": "",
@@ -73,7 +87,7 @@
    "counters": []
   },
   {
-   "id": "sloth_6",
+   "id": "sloth_7",
    "set": "sloth",
    "title": "Jeremiah 18:12",
    "kind": "",
@@ -87,7 +101,7 @@
    "counters": []
   },
   {
-   "id": "sloth_7",
+   "id": "sloth_8",
    "set": "sloth",
    "title": "Lamentations 3:18",
    "kind": "",
@@ -101,7 +115,7 @@
    "counters": []
   },
   {
-   "id": "sloth_8",
+   "id": "sloth_9",
    "set": "sloth",
    "title": "Ezekiel 37:11b",
    "kind": "",
@@ -115,7 +129,7 @@
    "counters": []
   },
   {
-   "id": "sloth_9",
+   "id": "sloth_10",
    "set": "sloth",
    "title": "1 Thessalonians 4:11",
    "kind": "",
@@ -1180,9 +1194,7 @@
    "damage_pct": 26,
    "heal_pct": 0,
    "jesus": false,
-   "counters": [
-    "Romans 16:18b"
-   ]
+   "counters": []
   },
   {
    "id": "spell63",
@@ -1744,20 +1756,6 @@
    "es": "Bah. Si la gente muere en la calle, ayuda con la sobrepoblación. Total, son solo animales.",
    "pl": "Eh. Jak ludzie umierają na ulicy, to pomaga na przeludnienie. To tylko zwierzęta.",
    "damage_pct": 10,
-   "heal_pct": 0,
-   "jesus": false,
-   "counters": []
-  },
-  {
-   "id": "spell102",
-   "set": "bronze_wolf",
-   "title": "",
-   "kind": "Apathy",
-   "type": "greed",
-   "en": "Why does it matter? We're just specks on a rock anyway...",
-   "es": "¿Qué importa? Total, solo somos motas de polvo sobre una roca...",
-   "pl": "Jakie to ma znaczenie? I tak jesteśmy tylko pyłkami na skale...",
-   "damage_pct": 16,
    "heal_pct": 0,
    "jesus": false,
    "counters": []
@@ -3060,7 +3058,7 @@
    "counters": []
   },
   {
-   "id": "sloth_10",
+   "id": "sloth_11",
    "set": "sloth",
    "title": "",
    "kind": "",
@@ -3316,7 +3314,21 @@
    ]
   },
   {
-   "id": "atheist_goat_1",
+   "id": "spell102",
+   "set": "atheist_goat",
+   "title": "",
+   "kind": "Apathy",
+   "type": "",
+   "en": "Why does it matter? We're just specks on a rock anyway...",
+   "es": "¿Qué importa? Total, solo somos motas de polvo sobre una roca...",
+   "pl": "Jakie to ma znaczenie? I tak jesteśmy tylko pyłkami na skale...",
+   "damage_pct": 16,
+   "heal_pct": 0,
+   "jesus": false,
+   "counters": []
+  },
+  {
+   "id": "atheist_goat_2",
    "set": "atheist_goat",
    "title": "",
    "kind": "Tempt",
@@ -3330,7 +3342,7 @@
    "counters": []
   },
   {
-   "id": "atheist_goat_2",
+   "id": "atheist_goat_3",
    "set": "atheist_goat",
    "title": "",
    "kind": "Tempt",
@@ -3344,7 +3356,7 @@
    "counters": []
   },
   {
-   "id": "atheist_goat_3",
+   "id": "atheist_goat_4",
    "set": "atheist_goat",
    "title": "",
    "kind": "Denial",
@@ -3358,7 +3370,7 @@
    "counters": []
   },
   {
-   "id": "atheist_goat_4",
+   "id": "atheist_goat_5",
    "set": "atheist_goat",
    "title": "",
    "kind": "Misunderstanding",
@@ -3372,7 +3384,7 @@
    "counters": []
   },
   {
-   "id": "atheist_goat_5",
+   "id": "atheist_goat_6",
    "set": "atheist_goat",
    "title": "",
    "kind": "Insult",
@@ -3386,7 +3398,7 @@
    "counters": []
   },
   {
-   "id": "atheist_goat_6",
+   "id": "atheist_goat_7",
    "set": "atheist_goat",
    "title": "",
    "kind": "Insult",
@@ -3400,7 +3412,7 @@
    "counters": []
   },
   {
-   "id": "atheist_goat_7",
+   "id": "atheist_goat_8",
    "set": "atheist_goat",
    "title": "",
    "kind": "Insult",
@@ -3414,14 +3426,14 @@
    "counters": []
   },
   {
-   "id": "atheist_goat_8",
+   "id": "atheist_goat_9",
    "set": "atheist_goat",
    "title": "",
    "kind": "Insult",
    "type": "",
-   "en": "You just believe because you're helplessly afraid of death. I'm not afraid-- I'm stronger than you.",
-   "es": "Solo crees porque le tienes un miedo terrible a la muerte. Yo no tengo miedo, soy más fuerte que tú.",
-   "pl": "Wierzysz tylko dlatego, że bezradnie boisz się śmierci. Ja się nie boję — jestem silniejszy od ciebie.",
+   "en": "You just believe because you're afraid of dying. I'm not afraid-- I'm stronger than you.",
+   "es": "Solo crees porque tienes miedo de morir. Yo no tengo miedo, soy más fuerte que tú.",
+   "pl": "Wierzysz tylko dlatego, że boisz się umrzeć. Ja się nie boję — jestem silniejszy od ciebie.",
    "damage_pct": 26,
    "heal_pct": 26,
    "jesus": false,
@@ -3430,7 +3442,7 @@
    ]
   },
   {
-   "id": "atheist_goat_9",
+   "id": "atheist_goat_10",
    "set": "atheist_goat",
    "title": "",
    "kind": "Insult",
@@ -3444,7 +3456,7 @@
    "counters": []
   },
   {
-   "id": "atheist_goat_10",
+   "id": "atheist_goat_11",
    "set": "atheist_goat",
    "title": "",
    "kind": "Insult",
@@ -3458,7 +3470,7 @@
    "counters": []
   },
   {
-   "id": "atheist_goat_11",
+   "id": "atheist_goat_12",
    "set": "atheist_goat",
    "title": "",
    "kind": "Doubt",
@@ -3472,7 +3484,7 @@
    "counters": []
   },
   {
-   "id": "atheist_goat_12",
+   "id": "atheist_goat_13",
    "set": "atheist_goat",
    "title": "",
    "kind": "Fear",
@@ -3486,7 +3498,7 @@
    "counters": []
   },
   {
-   "id": "atheist_goat_13",
+   "id": "atheist_goat_14",
    "set": "atheist_goat",
    "title": "",
    "kind": "Fear",
