@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://xavj88eon4qj" path="res://character_body_2d.gd" id="1_qtonm"]
 [ext_resource type="Texture2D" uid="uid://c1ps1oie4io16" path="res://Playerwalkanim.png" id="2_2j17x"]
 [ext_resource type="Script" uid="uid://clibt8yfiqmdr" path="res://sprite_2d.gd" id="3_opkyj"]
-[ext_resource type="Texture2D" uid="uid://cjae4ede1ckiw" path="res://Light tests/Light2.png" id="4_7n08s"]
-[ext_resource type="Texture2D" uid="uid://dg0o06xr4ed4x" path="res://Light tests/Halo ring.png" id="5_0awj0"]
-[ext_resource type="Texture2D" uid="uid://bb7k81f5kpci4" path="res://BG pngs/Stonetest.png" id="6_rugqi"]
+[ext_resource type="Texture2D" uid="uid://cjae4ede1ckiw" path="res://Sloth/Light tests/Light2.png" id="4_7n08s"]
+[ext_resource type="Texture2D" uid="uid://dg0o06xr4ed4x" path="res://Sloth/Light tests/Halo ring.png" id="5_0awj0"]
+[ext_resource type="Texture2D" uid="uid://bb7k81f5kpci4" path="res://Sloth/BG pngs/Stonetest.png" id="6_rugqi"]
 [ext_resource type="Script" uid="uid://bkw1wy34ffxqx" path="res://menu_layer.gd" id="7_2j17x"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_coroa"]

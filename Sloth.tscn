@@ -1,22 +1,33 @@
 [gd_scene format=3 uid="uid://yobqlpxvpfqj"]
 
-[ext_resource type="Texture2D" uid="uid://n0j7mlufiltg" path="res://BG pngs/Gemini_Generated_Image_c007ihc007ihc007.jpg" id="1_2wcv7"]
+[ext_resource type="Texture2D" uid="uid://n0j7mlufiltg" path="res://Sloth/BG pngs/Gemini_Generated_Image_c007ihc007ihc007.jpg" id="1_2wcv7"]
+[ext_resource type="Texture2D" uid="uid://cpxru12d6xu18" path="res://Sloth/SProps/Serp Gate.png" id="1_5h0ix"]
+[ext_resource type="Texture2D" uid="uid://swnj6q8nviry" path="res://Sloth/BG pngs/Jail cell.jpg" id="1_wficu"]
 [ext_resource type="Script" uid="uid://xavj88eon4qj" path="res://character_body_2d.gd" id="2_d5c3b"]
+[ext_resource type="Texture2D" uid="uid://tdynk7qd73l2" path="res://Sloth/SProps/BMarbleGate.png" id="2_hdmgf"]
+[ext_resource type="Texture2D" uid="uid://cshw31lltcdrh" path="res://Sloth/BG pngs/Pixel-Art Green Marble Brick Wall.png" id="2_ld24x"]
 [ext_resource type="Texture2D" uid="uid://c1ps1oie4io16" path="res://Playerwalkanim.png" id="3_06w2x"]
 [ext_resource type="Script" uid="uid://clibt8yfiqmdr" path="res://sprite_2d.gd" id="4_t5073"]
-[ext_resource type="Texture2D" uid="uid://cjae4ede1ckiw" path="res://Light tests/Light2.png" id="5_4lvg6"]
-[ext_resource type="Texture2D" uid="uid://dg0o06xr4ed4x" path="res://Light tests/Halo ring.png" id="6_w3cbm"]
-[ext_resource type="Texture2D" uid="uid://dxcw80js8wsa6" path="res://BG pngs/Marble stone.JPG" id="7_5s80s"]
-[ext_resource type="Texture2D" uid="uid://dvty6nj3f3qw6" path="res://SlothNPCs/NPCalt.png" id="8_wficu"]
+[ext_resource type="Texture2D" uid="uid://cjae4ede1ckiw" path="res://Sloth/Light tests/Light2.png" id="5_4lvg6"]
+[ext_resource type="Texture2D" uid="uid://costwnjj0ytd3" path="res://Sloth/SProps/WMarbleGate.png" id="5_88k5m"]
+[ext_resource type="Texture2D" uid="uid://54s2wkv1kr1p" path="res://Sloth/BG pngs/Whitemarblebricks.jpg" id="6_k5etd"]
+[ext_resource type="Texture2D" uid="uid://dg0o06xr4ed4x" path="res://Sloth/Light tests/Halo ring.png" id="6_w3cbm"]
+[ext_resource type="Texture2D" uid="uid://dxcw80js8wsa6" path="res://Sloth/BG pngs/Marble stone.JPG" id="7_5s80s"]
+[ext_resource type="Texture2D" uid="uid://dvty6nj3f3qw6" path="res://Sloth/SlothNPCs/NPCalt.png" id="8_wficu"]
 [ext_resource type="Script" uid="uid://cnpi4tvi0j5yj" path="res://area_2d.gd" id="9_ld24x"]
 [ext_resource type="Texture2D" uid="uid://cutqtfl477eop" path="res://Psalm sign.png" id="10_2wcv7"]
-[ext_resource type="Texture2D" uid="uid://54hygulk2b8a" path="res://Light tests/Pixel circle transparent.png" id="11_vopg8"]
+[ext_resource type="Texture2D" uid="uid://54hygulk2b8a" path="res://Sloth/Light tests/Pixel circle transparent.png" id="11_vopg8"]
 [ext_resource type="Script" uid="uid://bkw1wy34ffxqx" path="res://menu_layer.gd" id="12_5h0ix"]
 [ext_resource type="PackedScene" path="res://pastor_ramuel.tscn" id="13_ramuel"]
 [ext_resource type="PackedScene" path="res://umbrid.tscn" id="14_umbrid"]
 [ext_resource type="PackedScene" path="res://item_pickup.tscn" id="15_pickup"]
 [ext_resource type="PackedScene" path="res://atheist_goat.tscn" id="16_goat"]
 [ext_resource type="PackedScene" path="res://atheist_goat_black.tscn" id="17_goatb"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bexxu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8f2bu"]
+size = Vector2(557, 452)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b7ju8"]
 size = Vector2(86, 69.5)
@@ -30,9 +41,6 @@ gradient = SubResource("Gradient_d5c3b")
 fill = 1
 fill_from = Vector2(0.5117647, 0.5088235)
 fill_to = Vector2(0.85882354, 0.84117645)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_8f2bu"]
-size = Vector2(629, 536.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0hol4"]
 size = Vector2(2175, 625.5)
@@ -48,32 +56,109 @@ size = Vector2(112, 74)
 
 [node name="Node2D (root node)" type="Node2D" unique_id=1093582211]
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=980699771]
+[node name="GateTest" type="StaticBody2D" parent="." unique_id=1744047153]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GateTest" unique_id=1718671302]
+shape = SubResource("RectangleShape2D_bexxu")
+
+[node name="Sprite2D" type="Sprite2D" parent="GateTest/CollisionShape2D" unique_id=676092741]
+top_level = true
+position = Vector2(-16505, 430)
+scale = Vector2(0.33618188, 0.2665076)
+texture = ExtResource("1_5h0ix")
+
+[node name="BGate" type="StaticBody2D" parent="." unique_id=1135337806]
+position = Vector2(361, -3)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BGate" unique_id=1150075783]
+shape = SubResource("RectangleShape2D_bexxu")
+
+[node name="Sprite2D" type="Sprite2D" parent="BGate/CollisionShape2D" unique_id=2088751281]
+top_level = true
+position = Vector2(-15125.001, 423)
+scale = Vector2(0.33618188, 0.2665076)
+texture = ExtResource("2_hdmgf")
+
+[node name="Jail cell" type="ColorRect" parent="." unique_id=2133821846]
+offset_left = -7944.0
+offset_top = -24.0
+offset_right = -7904.0
+offset_bottom = 16.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Jail cell" unique_id=909966789]
+position = Vector2(-9213, 410)
+texture = ExtResource("1_wficu")
+
+[node name="Serp bricks" type="ColorRect" parent="." unique_id=1654974971]
+offset_left = -7944.0
+offset_top = -24.0
+offset_right = -7904.0
+offset_bottom = 16.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Serp bricks" unique_id=1140523037]
+modulate = Color(0.46229059, 0.46229059, 0.46229059, 1)
+position = Vector2(-8567, 331.00003)
+scale = Vector2(0.33508006, 0.6494845)
+texture = ExtResource("2_ld24x")
+
+[node name="Marble" type="ColorRect" parent="." unique_id=407111711]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="WGate" type="StaticBody2D" parent="Marble" unique_id=1609831463]
+position = Vector2(-526, -37)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Marble/WGate" unique_id=828457129]
+shape = SubResource("RectangleShape2D_bexxu")
+
+[node name="Sprite2D" type="Sprite2D" parent="Marble/WGate/CollisionShape2D" unique_id=188875429]
+top_level = true
+position = Vector2(-15952, 431)
+scale = Vector2(0.33618188, 0.2665076)
+texture = ExtResource("5_88k5m")
+
+[node name="WMarb" type="StaticBody2D" parent="." unique_id=1256495617]
+position = Vector2(-15254, -810)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WMarb" unique_id=1123040880]
+position = Vector2(-79, 1091)
+shape = SubResource("RectangleShape2D_8f2bu")
+debug_color = Color(7.2196127e-07, 0.453731, 0.48487854, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="WMarb" unique_id=600797432]
+texture_repeat = 2
+position = Vector2(93, 1739.0001)
+scale = Vector2(0.7707037, 0.7513105)
+skew = 0.017453292
+texture = ExtResource("6_k5etd")
+region_rect = Rect2(192.387, 704, 1.14, 2.2)
+
+[node name="Purple Marble" type="ColorRect" parent="." unique_id=980699771]
 offset_left = 1.0
 offset_top = 98.0
 offset_right = 1804.0
 offset_bottom = 1102.0
 color = Color(0.18359044, 0.18359044, 0.18359044, 1)
 
-[node name="Parallax2D" type="Parallax2D" parent="ColorRect" unique_id=1382825806]
+[node name="Parallax2D" type="Parallax2D" parent="Purple Marble" unique_id=1382825806]
 scroll_scale = Vector2(0.5, 0.5)
 repeat_size = Vector2(3600, 0)
 repeat_times = 4
 
-[node name="Sprite2D" type="Sprite2D" parent="ColorRect/Parallax2D" unique_id=1438546449]
+[node name="Sprite2D" type="Sprite2D" parent="Purple Marble/Parallax2D" unique_id=1438546449]
 light_mask = 0
 position = Vector2(899.99994, 376.5)
 scale = Vector2(1.3412815, 1.18625)
 texture = ExtResource("1_2wcv7")
 
-[node name="SpriteMirrored" type="Sprite2D" parent="ColorRect/Parallax2D" unique_id=183016617]
+[node name="SpriteMirrored" type="Sprite2D" parent="Purple Marble/Parallax2D" unique_id=183016617]
 light_mask = 0
 position = Vector2(2700, 376.5)
 scale = Vector2(1.3412815, 1.18625)
 texture = ExtResource("1_2wcv7")
 flip_h = true
 
-[node name="ColorRect" type="ColorRect" parent="ColorRect/Parallax2D" unique_id=93389484]
+[node name="ColorRect" type="ColorRect" parent="Purple Marble/Parallax2D" unique_id=93389484]
 offset_top = -93.0
 offset_right = 3600.0
 offset_bottom = 1071.0
@@ -136,11 +221,11 @@ position = Vector2(2173, 465)
 
 [node name="Umbrid2" parent="." unique_id=1129945108 instance=ExtResource("14_umbrid")]
 position = Vector2(2400, 465)
-display_name = "Umbrid II"
 max_hp = 80
+defense = 0.6
+display_name = "Umbrid II"
 battle_speed = 4
 attack_damage = 4
-defense = 0.6
 verse_every = 3
 
 [node name="AtheistGoat" parent="." unique_id=1129945120 instance=ExtResource("16_goat")]
@@ -151,7 +236,6 @@ position = Vector2(1680, 496.5)
 
 [node name="HealingScroll" parent="." unique_id=1129945109 instance=ExtResource("15_pickup")]
 position = Vector2(-120, 548)
-item_id = "healing_scroll"
 
 [node name="BattleScroll" parent="." unique_id=1129945110 instance=ExtResource("15_pickup")]
 position = Vector2(240, 548)
@@ -165,17 +249,34 @@ item_id = "guard_scroll"
 visible = false
 color = Color(0, 0, 0, 1)
 
-[node name="Floor (StaticBody2d)" type="StaticBody2D" parent="." unique_id=826912871]
-position = Vector2(190, -77)
+[node name="Wall test?" type="StaticBody2D" parent="." unique_id=826912871]
+position = Vector2(-15860, -664)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor (StaticBody2d)" unique_id=845245506]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall test?" unique_id=845245506]
 position = Vector2(-64.5, 923.75)
 shape = SubResource("RectangleShape2D_8f2bu")
 debug_color = Color(7.2196127e-07, 0.453731, 0.48487854, 1)
 
-[node name="Sprite2D" type="Sprite2D" parent="Floor (StaticBody2d)" unique_id=278943616]
+[node name="Sprite2D" type="Sprite2D" parent="Wall test?" unique_id=278943616]
+modulate = Color(0.4045111, 0.40451115, 0.4045111, 1)
 texture_repeat = 2
 position = Vector2(-70.637024, 970)
+scale = Vector2(0.6264095, 0.6106473)
+skew = 0.017453292
+texture = ExtResource("7_5s80s")
+region_rect = Rect2(192.387, 704, 1.14, 2.2)
+
+[node name="Floor (StaticBody2d)3" type="StaticBody2D" parent="." unique_id=966696279]
+position = Vector2(190, -77)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor (StaticBody2d)3" unique_id=1976689661]
+position = Vector2(-64.5, 889)
+shape = SubResource("RectangleShape2D_8f2bu")
+debug_color = Color(7.2196127e-07, 0.453731, 0.48487854, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="Floor (StaticBody2d)3" unique_id=1932998602]
+texture_repeat = 2
+position = Vector2(-50, 977)
 scale = Vector2(0.6264095, 0.6106473)
 skew = 0.017453292
 texture = ExtResource("7_5s80s")
