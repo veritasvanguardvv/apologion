@@ -19,7 +19,7 @@ extends RefCounted
 # itself and the page suggests the microphone key on the phone's keyboard
 # (dictation), which works everywhere.
 
-# English keys; the host sends tr(key) for each one (translations/strings.csv)
+# English keys; the host sends tr(key) for each one (General/translations/strings.csv)
 const UI_KEYS = [
 	"Join the game", "Your name", "Room code", "Join", "Type or say a verse...",
 	"Recite", "Speak", "Skip turn", "Your turn!", "Waiting for %s", "Not in a battle",

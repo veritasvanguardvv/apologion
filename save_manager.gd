@@ -74,7 +74,7 @@ func _ready():
 
 # Switches ALL the game's text (menus, messages, verse box...) and the verse
 # language. Godot's TranslationServer picks the right column of
-# translations/strings.csv; scripts listen to language_changed to redraw.
+# General/translations/strings.csv; scripts listen to language_changed to redraw.
 func set_language(new_language: String) -> void:
 	language = new_language
 	TranslationServer.set_locale(new_language)

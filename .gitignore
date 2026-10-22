@@ -29,7 +29,7 @@ addons/godot_whisper/bin/*.so
 # Bigger optional voice models (download them yourself, see VOICE_SETUP.md)
 models/ggml-base*.bin
 models/ggml-small*.bin
-!translations/*.translation
+!General/translations/*.translation
 __pycache__/
 # Phone builds (export them yourself, see IOS_BUILD.md)
 build/

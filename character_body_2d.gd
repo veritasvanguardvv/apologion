@@ -85,7 +85,7 @@ var guard_label: Label               # "Guard 50% up (3)" (built in _ready)
 @export var faith_step = 0.5
 @export var faith_max = 1.0
 @export var faith_rounds = 3
-@export var shofar_sound_path = "res://shofar.mp3"   # plays when Faith reaches the max
+@export var shofar_sound_path = "res://General/Sounds/shofar.mp3"   # plays when Faith reaches the max
 var faith_bonus = 0.0                # 0.5 = +50% attack
 var faith_rounds_left = 0
 var faith_label: Label

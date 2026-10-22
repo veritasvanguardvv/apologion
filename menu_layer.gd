@@ -1,7 +1,7 @@
 extends CanvasLayer
 const EndlessScores = preload("res://endless_scores.gd")
 # All the menus. Text on buttons/labels is translated automatically by Godot
-# (translations/strings.csv), because the button text is the English "key".
+# (General/translations/strings.csv), because the button text is the English "key".
 
 @onready var pause_menu = $PauseMenu
 @onready var main_menu = $MainMenu

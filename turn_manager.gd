@@ -52,7 +52,7 @@ signal turn_started(combatant)
 signal player_turn_finished   # emitted by the player after a valid verse
 signal round_ended            # after everyone has had their turn (the guard counts these)
 
-const BATTLE_SOUND = "res://battle1low.mp3"   # plays once when a battle starts
+const BATTLE_SOUND = "res://General/Sounds/battle1low.mp3"   # plays once when a battle starts
 var battle_sound: AudioStreamPlayer
 
 var in_battle = false

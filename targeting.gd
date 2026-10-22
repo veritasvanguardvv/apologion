@@ -25,7 +25,7 @@ extends Node
 #
 # Enemy 1, Enemy 2... are numbered from left to right.
 
-const MARKER_TEXTURE = "res://UI/target-highlight.png"
+const MARKER_TEXTURE = "res://General/UI/target-highlight.png"
 
 @export var attack_color = Color(1.0, 0.35, 0.3)   # marker colour on attack targets
 @export var heal_color = Color(0.4, 1.0, 0.5)      # marker colour on heal targets

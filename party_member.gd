@@ -89,11 +89,11 @@ var phone_slot = 0              # 1, 2 or 3 (which phone player this is)
 @export var footstep_volume_db = 0.0
 @export var footstep_log = false           # print every step (bus, volume) to the Output panel
 const FOOTSTEP_SOUNDS = [
-	"res://Sounds/footsteps/footstep_01.wav", "res://Sounds/footsteps/footstep_02.wav",
-	"res://Sounds/footsteps/footstep_03.wav", "res://Sounds/footsteps/footstep_04.wav",
-	"res://Sounds/footsteps/footstep_05.wav", "res://Sounds/footsteps/footstep_06.wav",
-	"res://Sounds/footsteps/footstep_07.wav", "res://Sounds/footsteps/footstep_08.wav",
-	"res://Sounds/footsteps/footstep_09.wav", "res://Sounds/footsteps/footstep_10.wav",
+	"res://General/Sounds/footsteps/footstep_01.wav", "res://General/Sounds/footsteps/footstep_02.wav",
+	"res://General/Sounds/footsteps/footstep_03.wav", "res://General/Sounds/footsteps/footstep_04.wav",
+	"res://General/Sounds/footsteps/footstep_05.wav", "res://General/Sounds/footsteps/footstep_06.wav",
+	"res://General/Sounds/footsteps/footstep_07.wav", "res://General/Sounds/footsteps/footstep_08.wav",
+	"res://General/Sounds/footsteps/footstep_09.wav", "res://General/Sounds/footsteps/footstep_10.wav",
 ]
 var footstep_player: AudioStreamPlayer
 var stride_left = 0.0           # pixels until the next step

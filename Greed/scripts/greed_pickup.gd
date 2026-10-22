@@ -7,7 +7,7 @@ extends Area2D
 #   heal   - heals value1 HP right away
 #   speed  - walk speed x value1 for value2 seconds
 #   spell  - a Battle Scroll for your inventory (Ctrl)
-#   letter - shows a short letter (letter_key in translations/strings.csv)
+#   letter - shows a short letter (letter_key in General/translations/strings.csv)
 # Picked-up items stay gone after saving/loading (like item_pickup.gd).
 
 const PopupText = preload("res://popup_text.gd")

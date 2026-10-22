@@ -26,21 +26,21 @@ extends RefCounted
 const ITEMS = {
 	"healing_scroll": {
 		"name": "Healing Scroll",
-		"icon": "res://Items/fc112.png",   # green scroll
+		"icon": "res://General/Items/fc112.png",   # green scroll
 		"verse": "1 Peter 2:24b",          # heals 50% of max HP
 		"outside_battle": true,
 		"drop_pickup": "item",
 	},
 	"battle_scroll": {
 		"name": "Battle Scroll",
-		"icon": "res://Items/fc110.png",   # red scroll
+		"icon": "res://General/Items/fc110.png",   # red scroll
 		"verse": "Galatians 3:13",         # Universal attack (hurts any enemy type)
 		"outside_battle": false,
 		"drop_pickup": "item",
 	},
 	"guard_scroll": {
 		"name": "Guard Scroll",
-		"icon": "res://Items/fc111.png",   # blue scroll
+		"icon": "res://General/Items/fc111.png",   # blue scroll
 		"verse": "Psalm 17:8",             # Guard: enemies do half damage for 3 rounds
 		"outside_battle": true,
 		"drop_pickup": "item",

@@ -115,7 +115,7 @@ change_party={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://translations/strings.en.translation", "res://translations/strings.es.translation", "res://translations/strings.pl.translation")
+locale/translations=PackedStringArray("res://General/translations/strings.en.translation", "res://General/translations/strings.es.translation", "res://General/translations/strings.pl.translation")
 
 [online]
 

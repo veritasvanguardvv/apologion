@@ -17,7 +17,7 @@ extends Node2D
 # the talk (SaveManager.greed_sindeath_seen).
 #
 # Advance the talk with Enter / Space / a click / a tap. All lines are below
-# (English = the translation key in translations/strings.csv).
+# (English = the translation key in General/translations/strings.csv).
 
 const PopupText = preload("res://popup_text.gd")
 
