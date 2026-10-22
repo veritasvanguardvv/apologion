@@ -29,7 +29,7 @@ const VERSES = {
 		"pl": "Przeklęta niech będzie ziemia z twego powodu; w trudzie będziesz z niej jadł po wszystkie dni twego życia.",
 		"counters": ["Galatians 3:13"],
 	},
-	# Greed enemies' boast (Greedog, Greedwolf, Greedvorg, Greedwraith).
+	# Greed enemies' boast (Greedog, Greedwolf, Greedvorg, MammonGreedBoss).
 	# Countered by the Greed verse Matthew 6:19a ("Don't lay up treasures on earth").
 	"Hosea 12:8": {
 		"title": "Hosea 12:8",

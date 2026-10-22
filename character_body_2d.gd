@@ -312,7 +312,13 @@ func _passes_filter(v) -> bool:
 static func type_name(t: String) -> String:
 	return "Universal" if t == "all" else t.capitalize()
 
+# A cut-scene is playing (e.g. Greed's SinDeath scene): no walking, jumping,
+# ramming or opening the verse box. The cut-scene uses Enter/Space/clicks.
+var cutscene_lock = false
+
 func _input(event):
+	if cutscene_lock:
+		return
 	if event.is_action_pressed("recite") and not event.is_echo() and not verse_input.has_focus():
 		verse_input.grab_focus()
 		get_viewport().set_input_as_handled()
@@ -446,6 +452,7 @@ func apply_verse_effects(lower: String, damage_scale := 1.0, can_counter := fals
 #   use_choice   = false for party members: they always use the default targets
 #   caster       = who recited it (null = you). A negative heal hurts the caster.
 func cast_verse(verse, damage_scale := 1.0, can_counter := false, use_choice := true, heal_scale := 1.0, caster = null):
+	_attack_only_vs_targets(verse, damage_scale, can_counter, use_choice)
 	if verse.get("set", "") == "sheet":
 		_cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale, caster)
 		return
@@ -454,7 +461,7 @@ func cast_verse(verse, damage_scale := 1.0, can_counter := false, use_choice := 
 			# Attack: split between the targets (all enemies by default)
 			var targets = Targeting.attack_targets(use_choice)
 			for enemy in targets:
-				if is_instance_valid(enemy) and enemy.has_method("take_damage"):
+				if is_instance_valid(enemy) and enemy.has_method("take_damage") and not _hits_only_vs(verse, enemy):
 					_attack(verse, enemy, damage_scale / targets.size(), can_counter)
 		"heal":
 			heal_targets(Targeting.heal_targets(use_choice), verse.heal * heal_scale)
@@ -485,7 +492,7 @@ func _cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale,
 	if not verse.get("sins", {}).is_empty() or verse.get("all_damage", 0) > 0:
 		var targets = Targeting.attack_targets(use_choice)
 		for enemy in targets:
-			if is_instance_valid(enemy) and enemy.has_method("take_damage"):
+			if is_instance_valid(enemy) and enemy.has_method("take_damage") and not _hits_only_vs(verse, enemy):
 				_attack(verse, enemy, damage_scale / targets.size(), can_counter)
 	if verse.get("zeal", false) and caster == null:
 		_zeal_boost()   # (the player's own boost; not when a party member recites it)
@@ -508,6 +515,11 @@ func _cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale,
 # How much a verse does to this enemy (before Faith / splitting / defense).
 # -1 = no effect.
 func verse_damage_against(verse, enemy) -> float:
+	# Boss-only enemies (enemy.gd only_vs): only their sheet column counts
+	var only = enemy.get("only_vs") if enemy else null
+	if only != null and only != "":
+		var pct = float(verse.get("vs", {}).get(only, 0))
+		return pct if pct > 0 else -1.0
 	if verse.get("set", "") == "sheet":
 		var dmg = float(verse.get("all_damage", 0))
 		var sins: Dictionary = verse.get("sins", {})
@@ -561,6 +573,11 @@ func _load_sheet_verses():
 		known[v.ref] = true
 	for row in data.get("verses", []):
 		if known.has(row.ref):
+			# A built-in verse keeps its effect, but gets the sheet's boss
+			# columns (Dmg to SinDeath / Idol...) so e.g. John 3:16 hurts SinDeath
+			var builtin = get_verse(row.ref)
+			if builtin != null and not row.get("vs", {}).is_empty() and not builtin.has("vs"):
+				builtin["vs"] = row.vs
 			continue
 		var sins: Dictionary = row.get("sins", {})
 		var all_sin = row.get("all_damage", 0)
@@ -654,8 +671,8 @@ func anyone_hurt() -> bool:
 func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += gravity * delta
-	# During a battle you stay where you are (no walking or jumping)
-	var in_battle = TurnManager.in_battle
+	# During a battle (or a cut-scene) you stay where you are (no walking or jumping)
+	var in_battle = TurnManager.in_battle or cutscene_lock
 	var typing = verse_input.has_focus()
 	if Input.is_action_just_pressed("jump") and is_on_floor() and not typing and not in_battle:
 		velocity.y = current_jump_velocity()
@@ -928,6 +945,13 @@ func verse_power_text(v) -> String:
 		if v.get("guard", false):
 			parts.append(tr("%d%% def") % int(guard_reduction * 100))
 		return _pack_labels(parts)
+	var text = _builtin_power_text(v)
+	# Boss columns from the sheet (e.g. John 3:16 also hurts SinDeath)
+	for kind in v.get("vs", {}):
+		text += ", +" + tr("%d%% vs %s") % [v.vs[kind], tr(kind.capitalize())]
+	return text
+
+func _builtin_power_text(v) -> String:
 	match v.type:
 		"heal":
 			return tr("%d%% heal") % v.heal
@@ -1218,6 +1242,27 @@ func instant_kill_against(verse, enemy) -> bool:
 	var kind = INSTANT_KILLS.get(verse.get("ref", ""), "")
 	return kind != "" and enemy.has_method("is_kind") and enemy.is_kind(kind)
 
+# What "No effect" says on a boss-only enemy (enemy.gd only_vs)
+const ONLY_VS_MESSAGES = {
+	"sindeath": "No effect - only SinDeath verses can hurt it",
+	"idol": "No effect - only idolatry verses can hurt it",
+}
+
+# Does this verse hit a boss-only enemy (enemy.gd only_vs) through its column?
+func _hits_only_vs(verse, enemy) -> bool:
+	var only = enemy.get("only_vs")
+	return only != null and only != "" and float(verse.get("vs", {}).get(only, 0)) > 0
+
+# Boss-only enemies are hit by their column of ANY verse, even one that
+# otherwise only heals (e.g. Romans 6:23b vs SinDeath).
+func _attack_only_vs_targets(verse, damage_scale, can_counter, use_choice):
+	if verse.get("vs", {}).is_empty():
+		return
+	var targets = Targeting.attack_targets(use_choice)
+	for enemy in targets:
+		if is_instance_valid(enemy) and enemy.has_method("take_damage") and _hits_only_vs(verse, enemy):
+			_attack(verse, enemy, damage_scale / targets.size(), can_counter)
+
 func _attack(verse, enemy, damage_scale: float, can_counter: bool):
 	if instant_kill_against(verse, enemy):
 		var hp_before = enemy.hp
@@ -1231,7 +1276,10 @@ func _attack(verse, enemy, damage_scale: float, can_counter: bool):
 	var base_damage = verse_damage_against(verse, enemy)
 	if base_damage < 0:
 		var msg = tr("No effect - it's %s type now!") % tr(type_name(enemy.enemy_type))
-		if verse.get("set", "") == "sheet":
+		var only = enemy.get("only_vs")
+		if only != null and ONLY_VS_MESSAGES.has(only):
+			msg = tr(ONLY_VS_MESSAGES[only])
+		elif verse.get("set", "") == "sheet":
 			var names = []
 			for sin in verse.get("sins", {}):
 				names.append(tr(sin.capitalize()))

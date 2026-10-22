@@ -54,6 +54,22 @@ var enemy_type = ""
 # Greed type, and the sheet's Greed verses (data/verses.json) do their Greed %
 # damage to them even if a recited verse changed their type tag.
 @export var base_type = ""
+# --- Boss-fight extras (the SinDeath fight in Greed, sindeath_scene.gd) ---
+# only_vs: if set, ONLY verses with this sheet "Dmg to" column hurt it (e.g.
+#   "sindeath" = the 'Dmg to SinDeath boss' column, "idol" = 'Dmg to Idol');
+#   every other verse has no effect. See character_body_2d.gd verse_damage_against.
+@export var only_vs = ""
+# dormant: not in the level yet (hidden, can't start a battle) until awaken()
+@export var dormant = false
+# passive: never takes a turn (the Golden Calf just stands there)
+@export var passive = false
+# optional_target: the battle can be won without beating it
+@export var optional_target = false
+# survives_defeat: at 0 HP it isn't removed, it just leaves the battle
+#   ("cracked"); emits cracked. (The Golden Calf still has to be rammed.)
+@export var survives_defeat = false
+@export var hide_while_dormant = true   # false: stays visible (just no HP bar) while dormant
+signal cracked
 var counter_refs = []     # player verses that counter what it just recited (only during your next turn)
 var type_label: Label     # small "Sloth" tag under the HP bar
 var bubble                # speech bubble (speech_bubble.gd)
@@ -66,7 +82,11 @@ func _ready():
 	if SaveManager.is_enemy_defeated(self):
 		queue_free()
 		return
-	add_to_group("enemies")  # lets the player and party members find enemies
+	if not dormant:
+		add_to_group("enemies")  # lets the player and party members find enemies
+	else:
+		visible = not hide_while_dormant
+		_show_battle_ui.call_deferred(false)
 	hp = max_hp
 	hp_bar.max_value = max_hp
 	hp_bar.value = hp
@@ -107,6 +127,28 @@ func _ready():
 	# or if the battle ends (won or ran away).
 	TurnManager.player_turn_finished.connect(close_counter_window)
 	TurnManager.battle_ended.connect(close_counter_window)
+
+# Brings a dormant enemy into the level (it can be fought from now on)
+func awaken():
+	dormant = false
+	visible = true
+	_show_battle_ui(true)
+	if not is_in_group("enemies"):
+		add_to_group("enemies")
+
+func _show_battle_ui(on: bool):
+	if hp_bar:
+		hp_bar.visible = on
+	if type_label:
+		type_label.visible = on and type_label.text != ""
+
+# Takes it out of the fighting again (e.g. the calf after the boss is beaten,
+# so walking up to it doesn't start a new battle)
+func make_dormant():
+	dormant = true
+	_show_battle_ui(false)
+	if is_in_group("enemies"):
+		remove_from_group("enemies")
 
 func apply_fear():
 	fear_rounds_left = fear_rounds
@@ -301,7 +343,9 @@ func take_damage(amount):
 	amount *= (1.0 - clamp(defense, 0.0, 0.9))
 	hp = max(hp - amount, 0)
 	hp_bar.value = hp
-	if hp <= 0:
+	if hp <= 0 and survives_defeat:
+		_crack()
+	elif hp <= 0:
 		_die()
 	elif amount > 0:
 		play_anim("hurt")
@@ -343,6 +387,21 @@ func _death_anim():
 	t.tween_interval(1.4)
 	t.tween_property(ghost, "modulate:a", 0.0, 0.6)
 	t.tween_callback(ghost.queue_free)
+
+# survives_defeat: out of the battle, but stays in the level
+var is_cracked = false
+func _crack():
+	if is_cracked:
+		return
+	is_cracked = true
+	bubble.hide_bubble()
+	TurnManager.battle_enemies.erase(self)
+	make_dormant()
+	show_popup(tr("The idol is cracked!"), Color(1, 0.85, 0.3))
+	for c in get_children():
+		if c is Sprite2D or c is AnimatedSprite2D:
+			c.modulate = Color(0.75, 0.7, 0.6)
+	cracked.emit()
 
 func _die():
 	if not _instant:

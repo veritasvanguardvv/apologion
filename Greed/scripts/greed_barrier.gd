@@ -4,7 +4,7 @@ extends StaticBody2D
 # Controls) until the bar above your head fills, then you dash forward. A dash
 # that runs into the barrier breaks it (character_body_2d.gd calls on_rammed).
 # requires_group: it won't break while anything in that group is alive
-# (the Golden Calf waits for the Greedwraith). wins_level: breaking it wins.
+# (the Golden Calf waits for SinDeath, Greed/SinDeathScene.tscn). wins_level: breaking it wins.
 
 const PopupText = preload("res://popup_text.gd")
 
@@ -13,6 +13,10 @@ const PopupText = preload("res://popup_text.gd")
 @export var break_sound: AudioStream
 # A dash that gets this close also counts (in case the dash stops a hair short)
 @export var ram_reach = 40.0
+# What it says when rammed too early (sindeath_scene.gd sets "Defeat SinDeath first!")
+@export var blocked_message = "Defeat the Greedwraith first!"
+
+signal broken_by_ram   # e.g. the SinDeath scene shatters the calf
 
 var broken = false
 
@@ -41,9 +45,10 @@ func on_rammed(_player = null) -> bool:
 	if requires_group != "":
 		for n in get_tree().get_nodes_in_group(requires_group):
 			if is_instance_valid(n) and not n.is_queued_for_deletion():
-				PopupText.spawn(self, tr("Defeat the Greedwraith first!"), Color(1, 0.6, 0.5))
+				PopupText.spawn(self, tr(blocked_message), Color(1, 0.6, 0.5))
 				return false
 	broken = true
+	broken_by_ram.emit()
 	for c in get_children():
 		if c is CollisionShape2D or c is CollisionPolygon2D:
 			c.set_deferred("disabled", true)
