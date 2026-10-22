@@ -50,7 +50,8 @@
     "sloth": 25
    },
    "heal": -1,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 6:7-8",
@@ -63,7 +64,8 @@
     "sloth": 25
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 6:9",
@@ -76,7 +78,8 @@
     "sloth": 25
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 6:10-11",
@@ -89,7 +92,8 @@
     "sloth": 25
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 10:4",
@@ -102,7 +106,8 @@
     "sloth": 10
    },
    "heal": -10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 10:5a",
@@ -115,7 +120,8 @@
     "sloth": 20
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 10:5b",
@@ -128,7 +134,8 @@
     "sloth": 25
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 10:26a",
@@ -141,7 +148,8 @@
     "sloth": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 10:26b",
@@ -154,7 +162,8 @@
     "sloth": 25
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 12:11a",
@@ -167,7 +176,8 @@
     "sloth": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 12:11b",
@@ -180,7 +190,8 @@
     "sloth": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 12:24",
@@ -193,7 +204,8 @@
     "sloth": 25
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 12:27",
@@ -206,7 +218,8 @@
     "sloth": 20
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 13:4",
@@ -219,7 +232,8 @@
     "sloth": 10
    },
    "heal": -10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 14:23",
@@ -245,7 +259,8 @@
     "sloth": 50
    },
    "heal": -10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 18:9",
@@ -258,7 +273,8 @@
     "sloth": 50
    },
    "heal": -10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 19:15",
@@ -271,7 +287,8 @@
     "sloth": 40
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 19:23a",
@@ -297,7 +314,8 @@
     "sloth": 10
    },
    "heal": -10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 20:4",
@@ -310,7 +328,8 @@
     "sloth": 25
    },
    "heal": -5,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 20:13a",
@@ -336,7 +355,8 @@
     "sloth": 50
    },
    "heal": -5,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 24:16b",
@@ -362,7 +382,8 @@
     "sloth": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 24:31",
@@ -401,7 +422,8 @@
     "sloth": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 26:16",
@@ -726,7 +748,8 @@
     "sloth": 50
    },
    "heal": 50,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 10
   },
   {
    "ref": "Ephesians 5:20",
@@ -948,6 +971,18 @@
    },
    "heal": 0,
    "jesus": false
+  },
+  {
+   "ref": "Proverbs 24:14b",
+   "translation": "Fragment",
+   "en": "If you find wisdom, you will have a future, and your hope will not be cut off.",
+   "es": "",
+   "pl": "",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Romans 13:11a",
@@ -3036,7 +3071,8 @@
     "wrath": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Proverbs 14:17a",
@@ -3602,7 +3638,8 @@
    "jesus": true,
    "vs": {
     "false_teacher": 25
-   }
+   },
+   "wisdom": 20
   },
   {
    "ref": "Matthew 6:19a",
@@ -3618,7 +3655,8 @@
     "pride": 25
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 6:19b",
@@ -3646,7 +3684,8 @@
     "envy": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 6:20b",
@@ -3674,7 +3713,8 @@
     "envy": 200
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 6:22",
@@ -3690,7 +3730,8 @@
     "pride": 25
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 6:23",
@@ -3704,7 +3745,8 @@
     "envy": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 6:24a",
@@ -3717,7 +3759,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 6:24b",
@@ -3730,7 +3773,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 6:25",
@@ -3745,7 +3789,8 @@
     "envy": 50
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 6:28",
@@ -3758,7 +3803,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 6:31",
@@ -3771,7 +3817,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 6:32",
@@ -3786,7 +3833,8 @@
     "envy": 25
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 6:33a",
@@ -3799,7 +3847,8 @@
     "greed": 50
    },
    "heal": 10,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 6:33b",
@@ -3827,7 +3876,8 @@
     "pride": 25
    },
    "heal": 10,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 6:34b",
@@ -3840,7 +3890,8 @@
     "greed": 25
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 10:8",
@@ -3853,7 +3904,8 @@
     "greed": 100
    },
    "heal": 100,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 10
   },
   {
    "ref": "Matthew 10:10",
@@ -3866,7 +3918,8 @@
     "greed": 10
    },
    "heal": 10,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 13:22",
@@ -3881,7 +3934,8 @@
     "pride": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 16:24",
@@ -3894,7 +3948,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 16:25a",
@@ -3908,7 +3963,8 @@
     "pride": 50
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 16:25b",
@@ -3921,7 +3977,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 17:25-26",
@@ -3932,7 +3989,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 10,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 17:27",
@@ -3945,7 +4003,8 @@
     "greed": 25
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 19:21a",
@@ -3959,7 +4018,8 @@
     "pride": 50
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 19:21b",
@@ -3972,7 +4032,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 19:23",
@@ -3985,7 +4046,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 19:24",
@@ -3998,7 +4060,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 22:21",
@@ -4011,7 +4074,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 25:40",
@@ -4024,7 +4088,8 @@
     "greed": 50
    },
    "heal": 100,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Matthew 25:45",
@@ -4038,7 +4103,8 @@
     "pride": 50
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Mark 7:21-22",
@@ -4052,7 +4118,8 @@
     "envy": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 50
   },
   {
    "ref": "Mark 8:36",
@@ -4067,7 +4134,8 @@
     "pride": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 3:11a",
@@ -4080,7 +4148,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 10
   },
   {
    "ref": "Luke 3:11b",
@@ -4107,7 +4176,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 6:30a",
@@ -4120,7 +4190,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 6:30b",
@@ -4135,7 +4206,8 @@
     "envy": 50
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 6:34a",
@@ -4148,7 +4220,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 6:34b",
@@ -4161,7 +4234,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 6:35a",
@@ -4174,7 +4248,8 @@
     "greed": 50
    },
    "heal": -10,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 6:35b",
@@ -4187,7 +4262,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 6:35c",
@@ -4201,7 +4277,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 9:58",
@@ -4216,7 +4293,8 @@
     "pride": 25
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 10:35",
@@ -4229,7 +4307,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 10:37",
@@ -4242,7 +4321,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 11:39",
@@ -4255,7 +4335,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 12:15a",
@@ -4268,7 +4349,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 12:15b",
@@ -4281,7 +4363,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 12:20a",
@@ -4294,7 +4377,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 12:20b",
@@ -4307,7 +4391,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 12:21",
@@ -4323,7 +4408,8 @@
     "pride": 10
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 12:24a",
@@ -4349,7 +4435,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 12:33",
@@ -4362,7 +4449,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 12:34a",
@@ -4388,7 +4476,8 @@
     "greed": 110
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 14:33",
@@ -4401,7 +4490,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 16:9",
@@ -4414,7 +4504,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 16:10a",
@@ -4427,7 +4518,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 16:10b",
@@ -4440,7 +4532,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 16:11",
@@ -4453,7 +4546,8 @@
     "greed": 250
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 16:12",
@@ -4467,7 +4561,8 @@
     "envy": 50
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 16:13",
@@ -4483,7 +4578,8 @@
    "jesus": true,
    "vs": {
     "idol": 100
-   }
+   },
+   "wisdom": 20
   },
   {
    "ref": "Luke 16:14",
@@ -4496,7 +4592,8 @@
     "greed": 40
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 20
   },
   {
    "ref": "Luke 16:15a",
@@ -4509,7 +4606,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 16:15b",
@@ -4531,7 +4629,8 @@
    "jesus": true,
    "vs": {
     "idol": 100
-   }
+   },
+   "wisdom": 20
   },
   {
    "ref": "Luke 16:25",
@@ -4544,7 +4643,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Luke 22:42",
@@ -4566,7 +4666,8 @@
    "jesus": true,
    "vs": {
     "false_teacher": 50
-   }
+   },
+   "wisdom": 20
   },
   {
    "ref": "John 10:13",
@@ -4579,7 +4680,8 @@
     "greed": 90
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Acts 2:45",
@@ -4757,7 +4859,8 @@
     "greed": 100
    },
    "heal": 50,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "Romans 1:28-29",
@@ -5604,7 +5707,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "James 1:2 (2)",
@@ -5712,7 +5816,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "James 4:2",
@@ -6005,7 +6110,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 10
   },
   {
    "ref": "Titus 1:7",
@@ -6844,7 +6950,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 3:27",
@@ -6857,7 +6964,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 3:28",
@@ -6870,7 +6978,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 11:24",
@@ -6883,7 +6992,8 @@
     "greed": 50
    },
    "heal": 10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 11:26",
@@ -6896,7 +7006,8 @@
     "greed": 50
    },
    "heal": 10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 11:28",
@@ -6909,7 +7020,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 13:11",
@@ -6922,7 +7034,8 @@
     "greed": 50
    },
    "heal": 10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 14:21",
@@ -6935,7 +7048,8 @@
     "greed": 70
    },
    "heal": 10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 14:31a",
@@ -6948,7 +7062,8 @@
     "greed": 55
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 14:31b",
@@ -6961,7 +7076,8 @@
     "greed": 50
    },
    "heal": 10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 15:27",
@@ -6974,7 +7090,8 @@
     "greed": 50
    },
    "heal": 10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 16:16a",
@@ -6987,7 +7104,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Proverbs 16:16b",
@@ -7000,7 +7118,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Proverbs 16:19",
@@ -7013,7 +7132,8 @@
     "greed": 50
    },
    "heal": 10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 17:5",
@@ -7026,7 +7146,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 19:1",
@@ -7039,7 +7160,8 @@
     "greed": 25
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 19:17",
@@ -7052,7 +7174,8 @@
     "greed": 50
    },
    "heal": 10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 19:22",
@@ -7065,7 +7188,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 20:21",
@@ -7078,7 +7202,8 @@
     "greed": 25
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 21:6",
@@ -7091,7 +7216,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 21:13",
@@ -7104,7 +7230,8 @@
     "greed": 70
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 10
   },
   {
    "ref": "Proverbs 21:26b",
@@ -7117,7 +7244,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 22:1a",
@@ -7130,7 +7258,8 @@
     "greed": 100
    },
    "heal": 10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 22:2",
@@ -7143,7 +7272,8 @@
     "greed": 100
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 22:9a",
@@ -7156,7 +7286,8 @@
     "greed": 45
    },
    "heal": 10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 22:16",
@@ -7169,7 +7300,8 @@
     "greed": 80
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 22:22",
@@ -7182,7 +7314,8 @@
     "greed": 60
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 22:23",
@@ -7195,7 +7328,8 @@
     "greed": 50
    },
    "heal": 10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 22:28",
@@ -7208,7 +7342,8 @@
     "greed": 25
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 23:4",
@@ -7221,7 +7356,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 25
   },
   {
    "ref": "Proverbs 23:5",
@@ -7234,7 +7370,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 20
   },
   {
    "ref": "Proverbs 23:6 (2)",
@@ -7247,7 +7384,8 @@
     "greed": 45
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 10
   },
   {
    "ref": "Proverbs 27:20",
@@ -7273,7 +7411,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 28:22",
@@ -7286,7 +7425,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 28:24",
@@ -7299,7 +7439,8 @@
     "greed": 75
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 28:25",
@@ -7312,7 +7453,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Proverbs 30:8-9",
@@ -7325,7 +7467,8 @@
     "greed": 50
    },
    "heal": 50,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 40
   },
   {
    "ref": "Psalm 10:3",
@@ -7594,7 +7737,8 @@
     "envy": 100
    },
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "1 Samuel 15:23a",
@@ -7652,7 +7796,8 @@
     "pride": 7
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 25
   },
   {
    "ref": "Proverbs 16:18",
@@ -7663,7 +7808,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 25
   },
   {
    "ref": "Proverbs 18:12a",
@@ -7789,7 +7935,8 @@
    "all_damage": 50,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 20
   },
   {
    "ref": "1 Corinthians 13:4b",
@@ -7938,7 +8085,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Matthew 15:30",
@@ -8048,7 +8196,8 @@
     "demon": 20,
     "sindeath": 100,
     "idol": 50
-   }
+   },
+   "wisdom": 100
   },
   {
    "ref": "John 6:35a",
@@ -8293,7 +8442,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 100
   },
   {
    "ref": "2 Corinthians 3:6a",
@@ -8884,7 +9034,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 7
   },
   {
    "ref": "Psalm 103:3",
@@ -8917,7 +9068,8 @@
    "all_damage": 100,
    "sins": {},
    "heal": 50,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Psalm 147:3",
@@ -8939,7 +9091,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 45,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 10
   },
   {
    "ref": "Proverbs 4:22",
@@ -8953,7 +9106,8 @@
    "jesus": false,
    "vs": {
     "sindeath": 50
-   }
+   },
+   "wisdom": 10
   },
   {
    "ref": "Proverbs 12:18b",
@@ -8975,7 +9129,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 50,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 10
   },
   {
    "ref": "Proverbs 17:22",
@@ -8986,7 +9141,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 10
   },
   {
    "ref": "2 Chronicles 30:20",
@@ -9151,7 +9307,8 @@
    "all_damage": 50,
    "sins": {},
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 10
   },
   {
    "ref": "Luke 10:19",
@@ -9242,7 +9399,8 @@
    "jesus": true,
    "vs": {
     "demon": 100
-   }
+   },
+   "wisdom": 10
   },
   {
    "ref": "John 15:13",
@@ -9253,7 +9411,8 @@
    "all_damage": 50,
    "sins": {},
    "heal": 25,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 5
   },
   {
    "ref": "Romans 16:17 (2)",
@@ -9305,7 +9464,8 @@
     "pride": 25
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Proverbs 21:26 (2)",
@@ -9318,7 +9478,8 @@
     "pride": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 10
   },
   {
    "ref": "Proverbs 25:28",
@@ -9329,7 +9490,8 @@
    "all_damage": 20,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Galatians 3:5",
@@ -9416,7 +9578,8 @@
    "vs": {
     "false_teacher": 100,
     "demon": 100
-   }
+   },
+   "wisdom": 10
   },
   {
    "ref": "Philippians 3:8",
@@ -9438,7 +9601,8 @@
    "all_damage": 200,
    "sins": {},
    "heal": -50,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 100
   },
   {
    "ref": "Philippians 4:8",
@@ -9478,7 +9642,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 25,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 25
   },
   {
    "ref": "Romans 7:6b",
@@ -9544,7 +9709,8 @@
    "jesus": false,
    "vs": {
     "demon": 25
-   }
+   },
+   "wisdom": 5
   },
   {
    "ref": "Hebrews 2:18",
@@ -9625,7 +9791,8 @@
    "jesus": false,
    "vs": {
     "demon": 50
-   }
+   },
+   "wisdom": 7
   },
   {
    "ref": "James 4:4a",
@@ -9696,7 +9863,8 @@
    "jesus": false,
    "vs": {
     "demon": 25
-   }
+   },
+   "wisdom": 50
   },
   {
    "ref": "1 Corinthians 6:20b",
@@ -9987,7 +10155,8 @@
    "jesus": false,
    "vs": {
     "demon": 100
-   }
+   },
+   "wisdom": 10
   },
   {
    "ref": "1 John 4:1b",
@@ -10001,7 +10170,8 @@
    "jesus": false,
    "vs": {
     "false_teacher": 100
-   }
+   },
+   "wisdom": 10
   },
   {
    "ref": "1 John 4:4b",
@@ -10026,7 +10196,8 @@
    "all_damage": 100,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 10
   },
   {
    "ref": "Job 42:2",
@@ -10168,7 +10339,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Zechariah 4:6",
@@ -10201,7 +10373,8 @@
    "all_damage": 10,
    "sins": {},
    "heal": 100,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 10
   },
   {
    "ref": "Luke 5:20",
@@ -10237,7 +10410,8 @@
    "all_damage": 10,
    "sins": {},
    "heal": 100,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 10
   },
   {
    "ref": "Romans 4:14",
@@ -10377,7 +10551,8 @@
    "vs": {
     "false_teacher": 25,
     "demon": 50
-   }
+   },
+   "wisdom": 25
   },
   {
    "ref": "1 John 3:20",
@@ -10408,7 +10583,8 @@
     "false_teacher": 25,
     "demon": 25,
     "sindeath": 100
-   }
+   },
+   "wisdom": 100
   },
   {
    "ref": "Psalm 17:8",
@@ -10447,6 +10623,19 @@
    "guard": true
   },
   {
+   "ref": "Psalm 32:7",
+   "translation": "Full",
+   "en": "You are my hiding place. You will preserve me from trouble. You will surround me with songs of deliverance.",
+   "es": "Tú eres mi escondite; me guardarás de la angustia; me rodearás con cánticos de liberación.",
+   "pl": "Ty jesteś moją kryjówką, strzeżesz mnie od niedoli, otaczasz mnie pieśniami wybawienia.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 20,
+   "guard": true
+  },
+  {
    "ref": "Psalm 91:1",
    "translation": "Fragment",
    "en": "He who dwells in the secret place of the Most High will rest in the shadow of the Almighty.",
@@ -10459,6 +10648,32 @@
    "guard": true
   },
   {
+   "ref": "Proverbs 4:23",
+   "translation": "Fragment",
+   "en": "Guard your heart with all diligence, for out of it is the wellspring of life.",
+   "es": "Guarda tu corazón con toda diligencia, porque de él mana la vida.",
+   "pl": "Strzeż swego serca z całą pilnością, bo z niego wypływa życie.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 5,
+   "guard": true
+  },
+  {
+   "ref": "Proverbs 18:10",
+   "translation": "Full",
+   "en": "The name of Yahweh is a strong tower; the righteous run to him, and are safe.",
+   "es": "El nombre del Señor es torre fuerte; a él corre el justo y está a salvo.",
+   "pl": "Imię Pana jest potężną wieżą; sprawiedliwy do niej biegnie i jest bezpieczny.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 5,
+   "guard": true
+  },
+  {
    "ref": "Proverbs 30:5",
    "translation": "Full",
    "en": "Every word of God is flawless. He is a shield to those who take refuge in him.",
@@ -10468,6 +10683,19 @@
    "sins": {},
    "heal": 0,
    "jesus": false,
+   "guard": true
+  },
+  {
+   "ref": "Proverbs 22:5",
+   "translation": "Full",
+   "en": "Thorns and snares are in the path of the wicked; whoever guards his soul stays far from them.",
+   "es": "Espinas y lazos hay en el camino del perverso; el que guarda su alma se aleja de ellos.",
+   "pl": "Ciernie i sidła są na drodze przewrotnego; kto strzeże swojej duszy, trzyma się od nich z daleka.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 10,
    "guard": true
   },
   {
@@ -10506,6 +10734,7 @@
    },
    "heal": 0,
    "jesus": false,
+   "wisdom": 10,
    "guard": true
   },
   {
@@ -10518,6 +10747,7 @@
    "sins": {},
    "heal": 100,
    "jesus": false,
+   "wisdom": 100,
    "guard": true
   },
   {
@@ -10569,6 +10799,7 @@
    "vs": {
     "idol": 25
    },
+   "wisdom": 10,
    "guard": true
   },
   {
@@ -10593,6 +10824,20 @@
    "sins": {},
    "heal": 50,
    "jesus": false,
+   "wisdom": 50,
+   "guard": true
+  },
+  {
+   "ref": "1 John 4:18b",
+   "translation": "Fragment",
+   "en": "If we are afraid, then we have not fully experienced God's perfect love.",
+   "es": "Si tenemos miedo, es que aún no hemos experimentado plenamente el amor perfecto de Dios.",
+   "pl": "Jeśli się boimy, to znaczy, że nie doświadczyliśmy jeszcze w pełni doskonałej miłości Boga.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 50,
    "guard": true
   },
   {
@@ -10647,15 +10892,40 @@
    "jesus": false
   },
   {
-   "ref": "Psalm 12:3",
+   "ref": "Psalm 32:8",
    "translation": "Fragment",
-   "en": "May God cut off all flattering lips, and the tongue that boasts.",
-   "es": "Que Dios corte todo labio lisonjero y la lengua que se jacta.",
-   "pl": "Niech Bóg odetnie wszystkie pochlebne wargi i język, który się chełpi.",
-   "all_damage": 25,
+   "en": "I will teach you in the way which you shall go with my eye on you.",
+   "es": "Te enseñaré en el camino que debes seguir; te aconsejaré con mis ojos sobre ti.",
+   "pl": "Będę cię pouczał i nauczał drogi, którą masz iść. Będę ci doradzał, mając na ciebie oko.",
+   "all_damage": 0,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 100
+  },
+  {
+   "ref": "Psalm 119:105",
+   "translation": "",
+   "en": "Your word is a lamp to my feet, and a light for my path.",
+   "es": "Tu palabra es lámpara a mis pies y lumbrera a mi camino.",
+   "pl": "Twoje słowo jest lampą dla moich nóg i światłem na mojej ścieżce.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 100
+  },
+  {
+   "ref": "Psalm 119:125",
+   "translation": "Fragment",
+   "en": "I am Your servant, give me understanding",
+   "es": "Yo soy tu siervo; dame entendimiento.",
+   "pl": "Jestem Twoim sługą, daj mi zrozumienie.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Proverbs 1:7a",
@@ -10666,7 +10936,47 @@
    "all_damage": 10,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 150
+  },
+  {
+   "ref": "Proverbs 2:6",
+   "translation": "Fragment",
+   "en": "Yahweh gives wisdom, knowledge, and understanding.",
+   "es": "Jehová da sabiduría. De su boca proceden el conocimiento y el entendimiento.",
+   "pl": "Jahwe daje mądrość. Z Jego ust wychodzi wiedza i rozum.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 100,
+   "alt": [
+    "For the LORD gives wisdom; from his mouth come knowledge and understanding."
+   ]
+  },
+  {
+   "ref": "Proverbs 3:5",
+   "translation": "Full",
+   "en": "Trust in Yahweh with all your heart, and don’t lean on your own understanding.",
+   "es": "Confía en Yahvé de todo corazón, y no te apoyes en tu propio entendimiento.",
+   "pl": "",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 50
+  },
+  {
+   "ref": "Proverbs 3:6",
+   "translation": "Full",
+   "en": "In all your ways acknowledge Him, and he will make your paths straight.",
+   "es": "En todos tus caminos reconócelo, y él enderezará tus sendas.",
+   "pl": "Na wszystkich swoich drogach uznawaj Go, a On prostować będzie twoje ścieżki.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 100
   },
   {
    "ref": "Proverbs 3:13",
@@ -10677,7 +10987,20 @@
    "all_damage": 0,
    "sins": {},
    "heal": 25,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 25
+  },
+  {
+   "ref": "Proverbs 3:21",
+   "translation": "Full",
+   "en": "My son, let them not depart from your eyes. Keep sound wisdom and discretion.",
+   "es": "Hijo mío, no se aparten de tus ojos. Guarda la sabiduría y la discreción.",
+   "pl": "Synu mój, niech one nie odstępują od twoich oczu. Zachowaj zdrową mądrość i rozwagę.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Proverbs 3:22",
@@ -10691,7 +11014,32 @@
    "jesus": false,
    "vs": {
     "sindeath": 25
-   }
+   },
+   "wisdom": 50
+  },
+  {
+   "ref": "Proverbs 4:5a",
+   "translation": "Fragment",
+   "en": "Acquire wisdom! Acquire understanding!",
+   "es": "¡Adquiere sabiduría! ¡Adquiere entendimiento!",
+   "pl": "Zdobywaj mądrość! Zdobywaj rozum!",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 50
+  },
+  {
+   "ref": "Proverbs 4:6a",
+   "translation": "Fragment",
+   "en": "Do not abandon wisdom, and she will guard you.",
+   "es": "No abandones la sabiduría y ella te guardará.",
+   "pl": "Nie porzucaj mądrości, a ona będzie cię strzegła; kochaj ją, a będzie cię chroniła.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 20
   },
   {
    "ref": "Proverbs 4:7a",
@@ -10702,7 +11050,8 @@
    "all_damage": 50,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 20
   },
   {
    "ref": "Proverbs 4:7b",
@@ -10729,7 +11078,20 @@
    "jesus": false,
    "vs": {
     "sindeath": 10
-   }
+   },
+   "wisdom": 50
+  },
+  {
+   "ref": "Proverbs 4:11",
+   "translation": "Full",
+   "en": "I have taught you in the way of wisdom. I have led you in straight paths.",
+   "es": "Te he enseñado en el camino de la sabiduría. Te he guiado por sendas rectas.",
+   "pl": "Nauczyłem cię drogi mądrości. Poprowadziłem cię prostymi ścieżkami.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 20
   },
   {
    "ref": "Proverbs 4:19",
@@ -10740,7 +11102,20 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
+  },
+  {
+   "ref": "Proverbs 8:12a",
+   "translation": "Fragment",
+   "en": "I, wisdom, live together with good judgment.",
+   "es": "Yo, la sabiduría, hice de la prudencia mi morada.",
+   "pl": "Ja, mądrość, uczyniłam roztropność swoją siedzibą. Znajdziecie wiedzę i rozwagę.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 60
   },
   {
    "ref": "Proverbs 9:10a",
@@ -10751,7 +11126,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 100
   },
   {
    "ref": "Proverbs 10:14",
@@ -10762,7 +11138,8 @@
    "all_damage": 20,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 10
   },
   {
    "ref": "Proverbs 11:2",
@@ -10775,7 +11152,8 @@
     "pride": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 100
   },
   {
    "ref": "Proverbs 12:23a",
@@ -10786,7 +11164,8 @@
    "all_damage": 10,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Proverbs 13:20",
@@ -10797,7 +11176,8 @@
    "all_damage": 10,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 25
   },
   {
    "ref": "Proverbs 14:15",
@@ -10808,7 +11188,8 @@
    "all_damage": 10,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 10
   },
   {
    "ref": "Proverbs 17:24a",
@@ -10819,7 +11200,8 @@
    "all_damage": 10,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 80
   },
   {
    "ref": "Proverbs 19:2",
@@ -10830,7 +11212,8 @@
    "all_damage": 10,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 100
   },
   {
    "ref": "Proverbs 19:2 (2)",
@@ -10852,7 +11235,8 @@
    "all_damage": 10,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 100
   },
   {
    "ref": "Proverbs 19:29",
@@ -10863,7 +11247,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 25
   },
   {
    "ref": "Proverbs 22:3",
@@ -10874,7 +11259,32 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 10
+  },
+  {
+   "ref": "Proverbs 24:5a",
+   "translation": "",
+   "en": "A wise man has great power.",
+   "es": "Un hombre sabio tiene gran poder.",
+   "pl": "",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 15
+  },
+  {
+   "ref": "Proverbs 24:5b",
+   "translation": "",
+   "en": "A knowledgeable man increases strength.",
+   "es": "Un hombre de conocimiento aumenta la fuerza.",
+   "pl": "",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 15
   },
   {
    "ref": "Proverbs 28:23",
@@ -10885,7 +11295,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Proverbs 28:26",
@@ -10896,7 +11307,8 @@
    "all_damage": 77,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 77
   },
   {
    "ref": "Ecclesiastes 7:12a",
@@ -10907,7 +11319,8 @@
    "all_damage": 50,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Ecclesiastes 7:12b",
@@ -10921,7 +11334,8 @@
    "jesus": false,
    "vs": {
     "sindeath": 10
-   }
+   },
+   "wisdom": 20
   },
   {
    "ref": "Isaiah 5:20a",
@@ -10932,7 +11346,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 25
   },
   {
    "ref": "Isaiah 5:20b",
@@ -10943,7 +11358,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 25
   },
   {
    "ref": "Isaiah 5:20c",
@@ -10954,7 +11370,8 @@
    "all_damage": 30,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Isaiah 5:21",
@@ -10965,7 +11382,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 70
   },
   {
    "ref": "Jeremiah 17:9",
@@ -10976,7 +11394,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 90
   },
   {
    "ref": "Matthew 7:3",
@@ -10987,7 +11406,8 @@
    "all_damage": 50,
    "sins": {},
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 100
   },
   {
    "ref": "Matthew 7:6",
@@ -10998,7 +11418,8 @@
    "all_damage": 50,
    "sins": {},
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 50
   },
   {
    "ref": "Matthew 10:16",
@@ -11009,7 +11430,8 @@
    "all_damage": 10,
    "sins": {},
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 100
   },
   {
    "ref": "Luke 7:35",
@@ -11020,7 +11442,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 100
   },
   {
    "ref": "Romans 12:2a",
@@ -11031,7 +11454,8 @@
    "all_damage": 10,
    "sins": {},
    "heal": 50,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 25
   },
   {
    "ref": "Ephesians 5:15-16",
@@ -11044,7 +11468,8 @@
     "sloth": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 100
   },
   {
    "ref": "Ephesians 5:17",
@@ -11055,7 +11480,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 20
   },
   {
    "ref": "Philippians 1:9",
@@ -11066,7 +11492,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 25,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "Colossians 3:2",
@@ -11080,7 +11507,8 @@
    "jesus": false,
    "vs": {
     "idol": 50
-   }
+   },
+   "wisdom": 25
   },
   {
    "ref": "Colossians 3:16a",
@@ -11091,18 +11519,56 @@
    "all_damage": 10,
    "sins": {},
    "heal": 25,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 50
+  },
+  {
+   "ref": "Colossians 3:16b",
+   "translation": "Fragment",
+   "en": "Teach and correct one another with psalms, hymns, and spiritual songs.",
+   "es": "",
+   "pl": "",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 50
   },
   {
    "ref": "James 1:5",
    "translation": "Fragment",
-   "en": "If you lack wisdom, ask God, who gives to all liberally and without reproach, and it will be given to him.",
+   "en": "If you lack wisdom, ask God, and it will be given to you.",
    "es": "Si a alguno de ustedes le falta sabiduría, pídasela a Dios, que da a todos abundantemente y sin reproche, y le será dada.",
    "pl": "Jeśli komuś z was brakuje mądrości, niech prosi Boga, który daje wszystkim hojnie i bez zarzutu, i będzie mu dana.",
    "all_damage": 0,
    "sins": {},
    "heal": 10,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 100
+  },
+  {
+   "ref": "Psalm 12:3",
+   "translation": "Fragment",
+   "en": "May God cut off all flattering lips, and the tongue that boasts.",
+   "es": "Que Dios corte todo labio lisonjero y la lengua que se jacta.",
+   "pl": "Niech Bóg odetnie wszystkie pochlebne wargi i język, który się chełpi.",
+   "all_damage": 25,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 10
+  },
+  {
+   "ref": "Proverbs 21:30",
+   "translation": "Fragment",
+   "en": "There is no wisdom, no insight, no plan that can succeed against the Lord.",
+   "es": "No hay sabiduría, ni entendimiento, ni consejo que pueda prevalecer contra el Señor.",
+   "pl": "Nie ma mądrości, ani rozeznania, ani planu, który mógłby się powieść przeciwko Panu.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "wisdom": 5
   },
   {
    "ref": "Psalm 149:6a",
@@ -11393,7 +11859,7 @@
    "heal": 0,
    "jesus": false,
    "vs": {
-    "idol": 200
+    "idol": 6
    }
   },
   {
@@ -11407,7 +11873,7 @@
    "heal": 0,
    "jesus": false,
    "vs": {
-    "idol": 50
+    "idol": 6
    }
   },
   {
@@ -11421,7 +11887,7 @@
    "heal": 0,
    "jesus": false,
    "vs": {
-    "idol": 100
+    "idol": 6
    }
   },
   {
@@ -11435,7 +11901,7 @@
    "heal": 0,
    "jesus": false,
    "vs": {
-    "idol": 100
+    "idol": 6
    }
   },
   {
@@ -11449,7 +11915,7 @@
    "heal": 0,
    "jesus": false,
    "vs": {
-    "idol": 250
+    "idol": 10
    }
   },
   {
@@ -11463,19 +11929,25 @@
    "heal": 0,
    "jesus": false,
    "vs": {
-    "idol": 333
+    "idol": 10
    }
   },
   {
-   "ref": "Ezekiel 36:26-27",
-   "translation": "",
-   "en": "I will give you a new heart and put a new spirit in you; I will take out your heart of stone and give you a heart of flesh, and put my Spirit in you.",
-   "es": "Les daré un corazón nuevo y pondré un espíritu nuevo en ustedes; quitaré su corazón de piedra y les daré un corazón de carne, y pondré mi Espíritu en ustedes.",
-   "pl": "Dam wam nowe serce i nowego ducha włożę do waszego wnętrza; usunę serce kamienne, dam wam serce z ciała i tchnę w was mojego Ducha.",
+   "ref": "Ezekiel 36:26a",
+   "translation": "Fragment",
+   "en": "I will give you a new heart and put a new spirit in you.",
+   "es": "Les daré un corazón nuevo y pondré un espíritu nuevo dentro de ustedes.",
+   "pl": "Dam wam nowe serce i nowego ducha włożę do waszego wnętrza.",
    "all_damage": 0,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "vs": {
+    "idol": 60
+   },
+   "alt": [
+    "A new heart also will I give you, and a new spirit will I put within you."
+   ]
   },
   {
    "ref": "Jonah 2:8",
@@ -11488,7 +11960,7 @@
    "heal": 0,
    "jesus": false,
    "vs": {
-    "idol": 100
+    "idol": 6
    }
   },
   {
@@ -11517,6 +11989,21 @@
    }
   },
   {
+   "ref": "Mark 16:17",
+   "translation": "Full",
+   "en": "And these signs will accompany those who believe: in my name they will cast out demons,",
+   "es": "Y estas señales acompañarán a los que creen: en mi nombre echarán fuera demonios,",
+   "pl": "",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": true,
+   "vs": {
+    "demon": 250
+   },
+   "wisdom": 10
+  },
+  {
    "ref": "Romans 16:20",
    "translation": "Full",
    "en": "And the God of peace will quickly crush Satan under your feet.",
@@ -11543,7 +12030,8 @@
    "vs": {
     "false_teacher": 25,
     "demon": 50
-   }
+   },
+   "wisdom": 50
   },
   {
    "ref": "Jude 1:9",
@@ -11610,7 +12098,8 @@
    "all_damage": 50,
    "sins": {},
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "wisdom": 20
   },
   {
    "ref": "1 Corinthians 6:15a",
@@ -11623,7 +12112,8 @@
     "lust": 200
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 1000
   },
   {
    "ref": "1 Corinthians 6:15b",
@@ -11634,7 +12124,24 @@
    "all_damage": 1000,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "wisdom": 1000
+  },
+  {
+   "ref": "2 Corinthians 1:20",
+   "translation": "Fragment",
+   "en": "For no matter how many promises God has made, they are “Yes” in Christ.",
+   "es": "Porque todas las promesas de Dios son en Él «Sí».",
+   "pl": "Ile bowiem jest obietnic Bożych, w Nim są one „tak”.",
+   "all_damage": 1000,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "alt": [
+    "For no matter how many promises God has made, they are Yes in Christ.",
+    "For all the promises of God in him are yea, and in him Amen.",
+    "For all the promises of God find their Yes in him."
+   ]
   },
   {
    "ref": "Job 39:17",
@@ -11648,12 +12155,23 @@
    "jesus": false
   },
   {
+   "ref": "Exodus 34:7",
+   "translation": "Fragment",
+   "en": "The Lord forgives sin; yet He will by no means leave the guilty unpunished.",
+   "es": "",
+   "pl": "",
+   "all_damage": 1000,
+   "sins": {},
+   "heal": 0,
+   "jesus": false
+  },
+  {
    "ref": "Leviticus 18:6",
    "translation": "Fragment",
    "en": "No one shall approach close relatives to uncover their nakedness.",
    "es": "Nadie se acercará a un pariente cercano para descubrir su desnudez.",
    "pl": "Nikt nie zbliży się do bliskiego krewnego, aby odsłonić jego nagość.",
-   "all_damage": 0,
+   "all_damage": 1000,
    "sins": {
     "lust": 300
    },
@@ -11666,7 +12184,7 @@
    "en": "You shall not uncover the nakedness of your parents.",
    "es": "No descubrirás la desnudez de tus padres.",
    "pl": "Nie odsłonisz nagości swoich rodziców.",
-   "all_damage": 0,
+   "all_damage": 1000,
    "sins": {
     "lust": 300
    },
@@ -11906,18 +12424,6 @@
    "guard": true
   },
   {
-   "ref": "Psalm 32:7",
-   "translation": "Full",
-   "en": "You are my hiding place. You will preserve me from trouble. You will surround me with songs of deliverance.",
-   "es": "Tú eres mi escondite; me guardarás de la angustia; me rodearás con cánticos de liberación.",
-   "pl": "Ty jesteś moją kryjówką, strzeżesz mnie od niedoli, otaczasz mnie pieśniami wybawienia.",
-   "all_damage": 0,
-   "sins": {},
-   "heal": 0,
-   "jesus": false,
-   "guard": true
-  },
-  {
    "ref": "Psalm 34:22",
    "translation": "Full",
    "en": "Yahweh redeems the soul of his servants. None of those who take refuge in him will be condemned.",
@@ -12115,42 +12621,6 @@
    "en": "You are my hiding place and my shield. I hope in your word.",
    "es": "Tú eres mi escondite y mi escudo; en tu palabra espero.",
    "pl": "Ty jesteś moją kryjówką i tarczą; pokładam nadzieję w Twoim słowie.",
-   "all_damage": 0,
-   "sins": {},
-   "heal": 0,
-   "jesus": false,
-   "guard": true
-  },
-  {
-   "ref": "Proverbs 4:23",
-   "translation": "Fragment",
-   "en": "Guard your heart with all diligence, for out of it is the wellspring of life.",
-   "es": "Guarda tu corazón con toda diligencia, porque de él mana la vida.",
-   "pl": "Strzeż swego serca z całą pilnością, bo z niego wypływa życie.",
-   "all_damage": 0,
-   "sins": {},
-   "heal": 0,
-   "jesus": false,
-   "guard": true
-  },
-  {
-   "ref": "Proverbs 18:10",
-   "translation": "Full",
-   "en": "The name of Yahweh is a strong tower; the righteous run to him, and are safe.",
-   "es": "El nombre del Señor es torre fuerte; a él corre el justo y está a salvo.",
-   "pl": "Imię Pana jest potężną wieżą; sprawiedliwy do niej biegnie i jest bezpieczny.",
-   "all_damage": 0,
-   "sins": {},
-   "heal": 0,
-   "jesus": false,
-   "guard": true
-  },
-  {
-   "ref": "Proverbs 22:5",
-   "translation": "Full",
-   "en": "Thorns and snares are in the path of the wicked; whoever guards his soul stays far from them.",
-   "es": "Espinas y lazos hay en el camino del perverso; el que guarda su alma se aleja de ellos.",
-   "pl": "Ciernie i sidła są na drodze przewrotnego; kto strzeże swojej duszy, trzyma się od nich z daleka.",
    "all_damage": 0,
    "sins": {},
    "heal": 0,
@@ -12386,16 +12856,38 @@
    "guard": true
   },
   {
-   "ref": "1 John 4:18b",
+   "ref": "Ezekiel 36:26b",
    "translation": "Fragment",
-   "en": "If we are afraid, then we have not fully experienced God's perfect love.",
-   "es": "Si tenemos miedo, es que aún no hemos experimentado plenamente el amor perfecto de Dios.",
-   "pl": "Jeśli się boimy, to znaczy, że nie doświadczyliśmy jeszcze w pełni doskonałej miłości Boga.",
+   "en": "I will remove from you your heart of stone and give you a heart of flesh.",
+   "es": "Quitaré de ustedes el corazón de piedra y les daré un corazón de carne.",
+   "pl": "Usunę z was serce kamienne, a dam wam serce z ciała.",
    "all_damage": 0,
    "sins": {},
    "heal": 0,
    "jesus": false,
-   "guard": true
+   "vs": {
+    "idol": 80
+   },
+   "alt": [
+    "I will take away the stony heart out of your flesh, and I will give you an heart of flesh."
+   ]
+  },
+  {
+   "ref": "Ezekiel 36:27",
+   "translation": "Fragment",
+   "en": "I will put my Spirit in you and move you to be careful to keep my laws.",
+   "es": "Pondré mi Espíritu dentro de ustedes y haré que anden en mis estatutos y guarden mis leyes.",
+   "pl": "Ducha mojego włożę do waszego wnętrza i sprawię, że będziecie przestrzegać moich praw.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "vs": {
+    "idol": 80
+   },
+   "alt": [
+    "I will put my spirit within you, and cause you to walk in my statutes."
+   ]
   }
  ]
 }

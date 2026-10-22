@@ -131,6 +131,20 @@
   {
    "id": "sloth_10",
    "set": "sloth",
+   "title": "John 18:37",
+   "kind": "",
+   "type": "sloth",
+   "en": "What is truth?",
+   "es": "",
+   "pl": "",
+   "damage_pct": 0,
+   "heal_pct": 0,
+   "jesus": false,
+   "counters": []
+  },
+  {
+   "id": "sloth_11",
+   "set": "sloth",
    "title": "1 Thessalonians 4:11",
    "kind": "",
    "type": "sloth",
@@ -3058,7 +3072,7 @@
    "counters": []
   },
   {
-   "id": "sloth_11",
+   "id": "sloth_12",
    "set": "sloth",
    "title": "",
    "kind": "",

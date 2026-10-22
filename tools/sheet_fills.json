@@ -2739,5 +2739,67 @@
    "translation": "Full",
    "en": "We love because He loved us first."
   }
+ ],
+ "_about_extra": "Extra list (SinDeath boss counter, upd16): verses the game needs that the sheet's import skips or lacks texts for, plus extra matching wordings ('alt'). A missing verse is added with the fields given; a sheet verse only gets its blank texts and the fields it doesn't have. Ezekiel 36:26a / 36:26b / 36:27 (the sheet's 'Calf' rows; 26b and 27 only have Dmg to Idol, which the import skips, so they are added here with the sheet's 80%): reciting any of them in the SinDeath battle triggers SinDeath's counter; 2 Corinthians 1:20 answers it; Proverbs 2:6 and James 1:5 (Wisdom UP 100%) auto-fill 2 Cor 1:20.",
+ "extra": [
+  {
+   "ref": "Ezekiel 36:26a",
+   "translation": "Fragment",
+   "en": "I will give you a new heart and put a new spirit in you.",
+   "es": "Les daré un corazón nuevo y pondré un espíritu nuevo dentro de ustedes.",
+   "pl": "Dam wam nowe serce i nowego ducha włożę do waszego wnętrza.",
+   "alt": [
+    "A new heart also will I give you, and a new spirit will I put within you."
+   ]
+  },
+  {
+   "ref": "Ezekiel 36:26b",
+   "translation": "Fragment",
+   "vs": {
+    "idol": 80
+   },
+   "en": "I will remove from you your heart of stone and give you a heart of flesh.",
+   "es": "Quitaré de ustedes el corazón de piedra y les daré un corazón de carne.",
+   "pl": "Usunę z was serce kamienne, a dam wam serce z ciała.",
+   "alt": [
+    "I will take away the stony heart out of your flesh, and I will give you an heart of flesh."
+   ]
+  },
+  {
+   "ref": "Ezekiel 36:27",
+   "translation": "Fragment",
+   "vs": {
+    "idol": 80
+   },
+   "en": "I will put my Spirit in you and move you to be careful to keep my laws.",
+   "es": "Pondré mi Espíritu dentro de ustedes y haré que anden en mis estatutos y guarden mis leyes.",
+   "pl": "Ducha mojego włożę do waszego wnętrza i sprawię, że będziecie przestrzegać moich praw.",
+   "alt": [
+    "I will put my spirit within you, and cause you to walk in my statutes."
+   ]
+  },
+  {
+   "ref": "Proverbs 2:6",
+   "translation": "Full",
+   "wisdom": 100,
+   "en": "Yahweh gives wisdom. Out of his mouth comes knowledge and understanding.",
+   "es": "Jehová da sabiduría. De su boca proceden el conocimiento y el entendimiento.",
+   "pl": "Jahwe daje mądrość. Z Jego ust wychodzi wiedza i rozum.",
+   "alt": [
+    "For the LORD gives wisdom; from his mouth come knowledge and understanding."
+   ]
+  },
+  {
+   "ref": "2 Corinthians 1:20",
+   "translation": "Fragment",
+   "en": "For however many are the promises of God, in Him is the “Yes.”",
+   "es": "Porque todas las promesas de Dios son en Él «Sí».",
+   "pl": "Ile bowiem jest obietnic Bożych, w Nim są one „tak”.",
+   "alt": [
+    "For no matter how many promises God has made, they are Yes in Christ.",
+    "For all the promises of God in him are yea, and in him Amen.",
+    "For all the promises of God find their Yes in him."
+   ]
+  }
  ]
 }
