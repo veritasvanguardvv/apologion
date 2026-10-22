@@ -5,7 +5,7 @@ extends Node2D
 #     to the Golden Calf and the idol speaks.
 #  2. Mammon (Greed/MammonGreedBoss.tscn, the old Greedwraith Boss art)
 #     appears and talks.
-#  3. "Play of the Game": a replay of every money / gold pickup of this run
+#  3. "Idolatry Cam": a replay of every money / gold pickup of this run
 #     (play_of_the_game.gd). Skipped if you picked up none.
 #  4. Three answers; each branch ends with "Prepare to die!".
 #  5. Mammon becomes SinDeath -> battle against SinDeath + the Golden Calf.
@@ -69,6 +69,23 @@ const VICTORY = [
 	{ "who": "sheep", "text": "Now, time to destroy this idol…" },
 ]
 
+# ---------------- THE COUNTER (in the battle) ----------------
+# Reciting Ezekiel 36:26-27 (any of its three phrases) at the calf: SinDeath
+# slides over to cover it and counters. Answer with 2 Corinthians 1:20 and
+# the idol drops to 0 HP at once. James 1:5 / Proverbs 2:6 (or 100% Wisdom)
+# put 2 Cor 1:20 in your verse box - press Enter to recite it. Any other verse:
+# the counter hits you for counter_damage_mult x SinDeath's attack (it can't be
+# dodged - it's a counter, not an attack; Guard still reduces it).
+# Only YOUR verses (typed or spoken) trigger it, not phone players'.
+const EZEKIEL_REFS = ["Ezekiel 36:26a", "Ezekiel 36:26b", "Ezekiel 36:27"]
+const ANSWER_REF = "2 Corinthians 1:20"
+const WISDOM_REFS = ["James 1:5", "Proverbs 2:6"]
+const COUNTER_TEXT = "God was talking to a different people at a different time. You can't just claim that verse for yourself."
+@export var counter_damage_mult = 3.0
+@export var slide_time = 0.7        # SinDeath sliding over the calf (seconds)
+@export var counter_bubble_offset = Vector2(-300, -230)   # the counter bubble's spot, from SinDeath's feet
+var bubble_home_offset = Vector2.ZERO
+
 @export var barrier_path: NodePath = "Interactive/GoldenCalf"
 @export var pan_time = 2.4          # the slow pan to the idol (seconds)
 @export var zoom_in = 1.25          # camera zoom on the idol (x the normal zoom)
@@ -91,6 +108,11 @@ var bubbles = {}     # who -> SpeechBubble
 var hint_layer: CanvasLayer
 var hint: Label
 var choice_layer: CanvasLayer
+var counter_state = ""   # "" (none yet / over), "sliding", "waiting", "done" (idol at 0)
+var sindeath_home: Vector2
+var counters_shown = 0   # (counted for the tests)
+var counter_hits = 0
+var autofills = 0
 
 
 func _ready():
@@ -118,6 +140,8 @@ func _boss_alive() -> bool:
 func _exit_tree():
 	TurnManager.encounters_paused = false
 	TurnManager.no_escape = false
+	if is_instance_valid(player) and player.get("verse_interceptor") != null:
+		player.verse_interceptor = Callable()
 
 
 # ---------------- Input: advance the talk ----------------
@@ -191,7 +215,113 @@ func _run():
 	TurnManager.no_escape = true
 	TurnManager.battle_ended.connect(_on_battle_ended, CONNECT_ONE_SHOT)
 	idol.awaken()
+	sindeath_home = sindeath.position
+	bubble_home_offset = sindeath.bubble.head_offset
+	counter_state = ""
+	if is_instance_valid(player):
+		player.verse_interceptor = _intercept_verse
+		if not player.wisdom_changed.is_connected(_on_wisdom_changed):
+			player.wisdom_changed.connect(_on_wisdom_changed)
 	TurnManager.start_battle([sindeath, idol])
+
+
+# ---------------- The counter ----------------
+
+func _idol_standing() -> bool:
+	return is_instance_valid(idol) and not idol.is_cracked and idol.hp > 0
+
+# Called by the player for every verse they recite in this battle
+# (character_body_2d.gd verse_interceptor). "pre": true = skip the verse cycle
+# check; "post": what to do with the verse (null = the normal effects).
+func _intercept_verse(phase: String, verse):
+	var active = state == "battle" and _idol_standing() and _boss_alive()
+	if phase == "pre":
+		# The counter's answers can always be recited (even if used this cycle)
+		return active and counter_state in ["sliding", "waiting"] and (verse.ref == ANSWER_REF or verse.ref in WISDOM_REFS)
+	if not active:
+		return null
+	if counter_state == "":
+		if verse.ref in EZEKIEL_REFS:
+			_start_counter()
+			return {"effects": false, "end_turn": false}   # SinDeath covers the calf: no hit; answer now
+		return null
+	if counter_state in ["sliding", "waiting"]:
+		if verse.ref == ANSWER_REF:
+			_counter_answered()
+			return {"effects": false, "end_turn": true}
+		if verse.ref in WISDOM_REFS:
+			_autofill_answer()
+			return {"effects": true, "end_turn": false}    # its heal / wisdom still happen
+		_counter_wins()
+		return {"effects": false, "end_turn": true}
+	return null
+
+func _start_counter():
+	counter_state = "sliding"
+	counters_shown += 1
+	TurnManager.show_message(tr("SinDeath covers the calf!"))
+	var tw = create_tween()
+	tw.tween_property(sindeath, "position:x", idol.position.x, slide_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	await tw.finished
+	if counter_state != "sliding":
+		return   # already answered while it slid
+	counter_state = "waiting"
+	# (its usual bubble spot is above its tall HP bar, off the top of the
+	# screen under the enemy list: speak from beside its heads instead)
+	sindeath.bubble.head_offset = counter_bubble_offset
+	sindeath.bubble.say(tr("SinDeath counters!"), tr(COUNTER_TEXT), true, 0.0)   # the enemy counter style ("!")
+	if is_instance_valid(player) and player.wisdom >= 100.0:
+		_autofill_answer()   # full Wisdom: you already know the answer
+	else:
+		TurnManager.show_message(tr("Answer SinDeath with the right verse!"))
+
+func _on_wisdom_changed(value):
+	if value >= 100.0 and counter_state == "waiting":
+		_autofill_answer()
+
+# Puts 2 Corinthians 1:20 in the verse box: Enter recites it
+func _autofill_answer():
+	if not is_instance_valid(player):
+		return
+	var v = player.get_verse(ANSWER_REF)
+	if v == null:
+		push_warning("SinDeath counter: %s isn't in data/verses.json" % ANSWER_REF)
+		return
+	autofills += 1
+	var text = player.verse_body(v)
+	player.verse_input.text = text
+	player.verse_input.caret_column = text.length()
+	player.verse_input.grab_focus.call_deferred()
+	TurnManager.show_message(tr("Wisdom! %s is in your verse box - press Enter") % VerseManager.ref_text(ANSWER_REF))
+
+func _counter_answered():
+	counter_state = "done"
+	sindeath.bubble.hide_bubble()
+	idol.knock_out()   # "The idol is cracked!" (the ram is still needed after the battle)
+	_crack_look()
+	TurnManager.show_message(tr("God's promises are “Yes” in Christ!"))
+	_shake()
+	_slide_back()
+
+func _counter_wins():
+	counter_hits += 1
+	counter_state = ""   # it can be tried again
+	sindeath.bubble.hide_bubble()
+	var damage = sindeath.attack_damage * counter_damage_mult
+	var dealt = player.take_damage(damage) if is_instance_valid(player) else 0.0   # (not dodgeable)
+	if is_instance_valid(player):
+		PopupText.spawn(player, "-" + str(snapped(dealt, 0.1)), Color(1, 0.35, 0.3))
+	TurnManager.show_message(tr("SinDeath's counter hits! -%s HP") % String.num(snapped(dealt, 0.1)))
+	_shake()
+	_slide_back()
+
+func _slide_back():
+	if not _boss_alive():
+		return
+	sindeath.bubble.head_offset = bubble_home_offset
+	await get_tree().create_timer(0.5).timeout
+	if _boss_alive():
+		create_tween().tween_property(sindeath, "position:x", sindeath_home.x, slide_time).set_trans(Tween.TRANS_QUAD)
 
 
 func _lines(lines: Array):
@@ -338,6 +468,12 @@ func _unhandled_input(event):
 
 func _on_battle_ended():
 	TurnManager.no_escape = false
+	if is_instance_valid(player):
+		player.verse_interceptor = Callable()
+		if player.wisdom_changed.is_connected(_on_wisdom_changed):
+			player.wisdom_changed.disconnect(_on_wisdom_changed)
+	if counter_state in ["sliding", "waiting"]:
+		counter_state = ""
 	if _boss_alive():
 		# shouldn't happen (no running, and losing reloads the level)
 		state = "idle"

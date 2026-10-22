@@ -64,7 +64,7 @@ func _on_body_entered(body):
 		return
 	var level = owner if owner else get_tree().current_scene
 	if kind == "money" or kind == "gold":
-		# Mammon remembers: a 2-second clip for the "Play of the Game"
+		# Mammon remembers: a 2-second clip for the "Idolatry Cam"
 		get_tree().call_group("play_recorder", "note_pickup", kind)
 	match kind:
 		"money":

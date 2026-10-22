@@ -205,7 +205,7 @@ size = Vector2(220, 330)
 [node name="SinDeath" type="CharacterBody2D" groups=["greed_boss"]]
 z_index = 2
 script = ExtResource("1_s")
-max_hp = 900
+max_hp = 666
 defense = 0.25
 display_name = "SinDeath"
 attack_damage = 12

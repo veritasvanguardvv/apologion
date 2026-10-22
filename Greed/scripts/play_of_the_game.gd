@@ -219,8 +219,7 @@ func _build_overlay(parent: Node):
 	screen.material = mat
 	frame.add_child(screen)
 	var title = Label.new()
-	title.text = "Play of the Game"
-	title.uppercase = true
+	title.text = "Idolatry Cam"   # (translated: General/translations/strings.csv)
 	title.anchor_left = 0.0
 	title.anchor_right = 1.0
 	title.offset_top = 14
