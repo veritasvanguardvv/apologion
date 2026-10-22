@@ -184,11 +184,21 @@ func take_turn():
 			return
 		# take_damage returns the damage after the player's guard (Psalm 17:8),
 		# so Fear and Guard together = 5 x 0.5 x 0.5 = 1.25
-		var dealt = player.take_damage(damage)
+		# (enemy_hit: your Wisdom may dodge it - see character_body_2d.gd)
+		var dealt = _hit_player(player, damage)
+		if dealt < 0:
+			TurnManager.show_message(tr("%s attacks... Dodged!") % tr(display_name))
+			return
 		TurnManager.show_message(tr("%s attacks! -%s HP") % [tr(display_name), str(snapped(dealt, 0.1))])
 		print(display_name, " attacks for ", dealt)
 	else:
 		TurnManager.show_message(tr("%s waits...") % tr(display_name))
+
+# Hits the player: their Wisdom (evasion) may dodge it. -1 = dodged.
+func _hit_player(player, damage) -> float:
+	if player.has_method("enemy_hit"):
+		return player.enemy_hit(damage)
+	return player.take_damage(damage)
 
 # A party member in this battle who can still be hit (or null). With phone
 # players in the party it picks one of them at random.
@@ -221,7 +231,7 @@ func recite_verse():
 		var damage = v.damage
 		if fear_rounds_left > 0:
 			damage *= (1.0 - fear_reduction)
-		dealt = player.take_damage(damage)   # the player's Guard reduces it too
+		dealt = max(_hit_player(player, damage), 0.0)   # the player's Guard reduces it too (Wisdom may dodge it)
 	var text = v.get(SaveManager.language, v.en) if SaveManager.language != "en" else v.en
 	var title = VerseManager.ref_text(v.title)   # "Genesis 3" / "Génesis 3"
 	set_enemy_type(v.type)
@@ -246,7 +256,7 @@ func say_line(line: Dictionary):
 		var damage = EnemyVerses.line_damage(line)
 		if fear_rounds_left > 0:
 			damage *= (1.0 - fear_reduction)
-		dealt = player.take_damage(damage)
+		dealt = max(_hit_player(player, damage), 0.0)   # (Wisdom may dodge it)
 	var lang = SaveManager.language
 	var text = line.get(lang, "") if lang != "en" else ""
 	if text == "":
@@ -390,6 +400,16 @@ func _death_anim():
 
 # survives_defeat: out of the battle, but stays in the level
 var is_cracked = false
+# Straight to 0 HP (ignores defense): cracks a survives_defeat enemy (the
+# Golden Calf), defeats any other. Used by the SinDeath counter (2 Cor 1:20).
+func knock_out():
+	hp = 0
+	hp_bar.value = 0
+	if survives_defeat:
+		_crack()
+	else:
+		_die()
+
 func _crack():
 	if is_cracked:
 		return

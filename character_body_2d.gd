@@ -29,7 +29,7 @@ var language: String:
 const SINS = ["sloth", "lust", "greed", "wrath", "gluttony", "envy", "pride"]
 const FILTER_GROUPS = {
 	"Attacks": ["sloth", "lust", "greed", "wrath", "gluttony", "envy", "pride", "all"], # 1st button ("all" = Universal: hurts any enemy type)
-	"Status": ["zeal", "guard", "faith", "fear"], # 2nd button
+	"Status": ["zeal", "guard", "faith", "fear", "wisdom"], # 2nd button
 	"Special": ["light"],                       # 3rd button
 	"Heal": ["heal"],                           # 4th (rightmost) button (includes sheet verses that heal)
 }
@@ -89,6 +89,29 @@ var guard_label: Label               # "Guard 50% up (3)" (built in _ready)
 var faith_bonus = 0.0                # 0.5 = +50% attack
 var faith_rounds_left = 0
 var faith_label: Label
+
+# Wisdom (sheet "Wisdom UP" column, data/verses.json "wisdom"): each Wisdom
+# verse adds its % (stacking up to wisdom_max = 100%) and resets the duration
+# to wisdom_rounds, like Faith. Wisdom = EVASION: each enemy hit on you is
+# dodged with a chance of the wisdom %, but never more than evasion_max (so
+# 100% wisdom can't make you untouchable). The SinDeath counter also checks
+# for 100% wisdom (Greed/scripts/sindeath_scene.gd).
+@export var wisdom_max = 100.0
+@export var wisdom_rounds = 3
+@export var evasion_max = 75.0        # the dodge chance never goes above this %
+var wisdom = 0.0                      # 0..100 (%)
+var wisdom_rounds_left = 0
+var wisdom_label: Label
+var dodges = 0                        # (counted for the tests)
+var dodge_override = -1.0             # tests: >= 0 forces the dodge roll (0 = never, 1 = always)
+signal wisdom_changed(value)
+
+# A boss scene can take over what a recited verse does (Greed's SinDeath
+# counter, sindeath_scene.gd). Called twice from _on_verse_submitted:
+#   verse_interceptor.call("pre", verse)  -> true = skip the verse cycle check
+#   verse_interceptor.call("post", verse) -> {"effects": bool, "end_turn": bool}
+# Typed and spoken (voice) verses both come through here.
+var verse_interceptor := Callable()
 var shofar_player: AudioStreamPlayer
 var shofar_plays = 0                 # how many times the shofar has played (for testing)
 signal faith_maxed                   # emitted when Faith newly reaches the max
@@ -300,7 +323,9 @@ func _passes_filter(v) -> bool:
 				return v.get("heal", 0) > 0
 			"Status":
 				if filter_type == "*":
-					return v.get("zeal", false) or v.get("guard", false)
+					return v.get("zeal", false) or v.get("guard", false) or v.get("wisdom", 0) > 0
+				if filter_type == "wisdom":
+					return v.get("wisdom", 0) > 0
 				return filter_type in ["zeal", "guard"] and v.get(filter_type, false)
 		return false
 	if filter_type == "*":
@@ -385,12 +410,13 @@ func _on_verse_submitted(text):
 		_finish_typing()
 		return   # in a battle this does NOT use up your turn
 	var typed_verse = _find_verse(lower)
+	var skip_cycle = typed_verse != null and verse_interceptor.is_valid() and verse_interceptor.call("pre", typed_verse) == true
 	if typed_verse:
 		if VerseManager.discover(typed_verse.ref):
 			typed_verse.discovered = true
 			_show_verse_message(tr("New verse discovered: %s!") % VerseManager.ref_text(typed_verse.ref))
 			print("Discovered: ", typed_verse.ref)
-		if not VerseManager.can_use(typed_verse.ref):
+		if not skip_cycle and not VerseManager.can_use(typed_verse.ref):
 			_show_verse_message(tr("%s was already used - recite your other %d verse(s) first (Tab to see them)") % [VerseManager.ref_text(typed_verse.ref), VerseManager.remaining_count()])
 			print(typed_verse.ref, " is on cooldown")
 			_finish_typing()
@@ -407,6 +433,15 @@ func _on_verse_submitted(text):
 	# Say it in a speech bubble (reference + the whole verse)
 	if typed_verse:
 		say_verse(typed_verse)
+	
+	if typed_verse and verse_interceptor.is_valid():
+		var r = verse_interceptor.call("post", typed_verse)
+		if r is Dictionary:
+			if r.get("effects", true):
+				apply_verse_effects(lower, 1.0 + faith_bonus, true, true)
+			if r.get("end_turn", true) and TurnManager.is_players_turn():
+				TurnManager.player_turn_finished.emit()
+			return
 	
 	# Who it hits / heals: see targeting.gd (all enemies split by default, or
 	# the one you chose with Alt). Faith boosts the damage (x1.5 at +50%,
@@ -498,6 +533,8 @@ func _cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale,
 		_zeal_boost()   # (the player's own boost; not when a party member recites it)
 	if verse.get("guard", false) and caster == null:
 		activate_guard()
+	if verse.get("wisdom", 0) > 0 and caster == null:
+		add_wisdom(float(verse.wisdom))   # (your own stat; not when a party member recites it)
 	var heal_pct = float(verse.get("heal", 0))
 	if heal_pct > 0:
 		heal_targets(Targeting.heal_targets(use_choice), heal_pct * heal_scale)
@@ -593,6 +630,8 @@ func _load_sheet_verses():
 			type = "zeal"   # only the Zeal effect
 		elif type == "heal" and row.get("heal", 0) == 0 and row.get("guard", false):
 			type = "guard"  # only the Guard effect
+		elif type == "heal" and row.get("heal", 0) == 0 and row.get("wisdom", 0) > 0:
+			type = "wisdom" # only the Wisdom effect
 		var v = {
 			"ref": row.ref, "set": "sheet", "type": type,
 			"damage": max(best, all_sin), "sins": sins, "all_damage": all_sin,
@@ -601,6 +640,8 @@ func _load_sheet_verses():
 			"translation": row.get("translation", ""),
 			"zeal": row.get("zeal", false),   # Zeal list: also gives the speed + jump boost
 			"guard": row.get("guard", false), # Guard list: also raises your defense for a few rounds
+			"wisdom": row.get("wisdom", 0),   # Wisdom UP %: raises your wisdom (= evasion)
+			"alt": row.get("alt", []),        # other wordings that also match (sheet_fills.json "extra")
 			"discovered": false,
 			"en": row.get("en", ""), "es": row.get("es", ""), "pl": row.get("pl", ""),
 		}
@@ -944,6 +985,8 @@ func verse_power_text(v) -> String:
 			parts.append(tr("Speed + jump"))
 		if v.get("guard", false):
 			parts.append(tr("%d%% def") % int(guard_reduction * 100))
+		if v.get("wisdom", 0) > 0:
+			parts.append(tr("+%d%% wis") % int(v.wisdom))
 		return _pack_labels(parts)
 	var text = _builtin_power_text(v)
 	# Boss columns from the sheet (e.g. John 3:16 also hurts SinDeath)
@@ -1335,6 +1378,12 @@ func _on_round_ended():
 		if faith_rounds_left == 0:
 			faith_bonus = 0.0
 		_update_faith_label()
+	if wisdom_rounds_left > 0:
+		wisdom_rounds_left -= 1
+		if wisdom_rounds_left == 0:
+			wisdom = 0.0
+			wisdom_changed.emit(wisdom)
+		_update_wisdom_label()
 
 func _update_guard_label():
 	guard_label.visible = guard_rounds_left > 0
@@ -1360,6 +1409,42 @@ func _update_faith_label():
 	faith_label.visible = faith_rounds_left > 0
 	faith_label.text = tr("Faith +%d%% (%d)") % [int(faith_bonus * 100), faith_rounds_left]
 
+# ---------------- Wisdom (evasion) ----------------
+
+# +amount % wisdom (stacking up to wisdom_max) and reset the duration, like
+# Faith. Outside a battle it doesn't count down.
+func add_wisdom(amount: float):
+	if wisdom_rounds_left > 0:
+		wisdom = min(wisdom + amount, wisdom_max)
+	else:
+		wisdom = min(amount, wisdom_max)
+	wisdom_rounds_left = wisdom_rounds
+	_update_wisdom_label()
+	wisdom_changed.emit(wisdom)
+	print("Wisdom: ", int(wisdom), "% (evasion ", int(evasion_chance() * 100), "%) for ", wisdom_rounds, " rounds")
+
+# The chance (0..1) to dodge an enemy hit: the wisdom %, at most evasion_max.
+func evasion_chance() -> float:
+	return min(wisdom, evasion_max) / 100.0
+
+func _update_wisdom_label():
+	if wisdom_label == null:
+		return
+	wisdom_label.visible = wisdom_rounds_left > 0 and wisdom > 0
+	wisdom_label.text = tr("%d%% wis (%d)") % [int(wisdom), wisdom_rounds_left]
+
+# An enemy attack / verse / line hitting you (enemy.gd): rolls against your
+# evasion first. Returns the damage taken, or -1 if you dodged it.
+# (Not for SinDeath's counter or other unavoidable damage: use take_damage.)
+func enemy_hit(amount) -> float:
+	var roll_ok = randf() < evasion_chance() if dodge_override < 0 else dodge_override >= 1.0
+	if amount > 0 and roll_ok:
+		dodges += 1
+		PopupText.spawn(self, tr("Dodged!"), Color(0.6, 0.95, 1.0))
+		print("Dodged! (wisdom ", int(wisdom), "%)")
+		return -1.0
+	return take_damage(amount)
+
 # The shofar plays when Faith newly reaches the max.
 func _play_shofar():
 	shofar_plays += 1
@@ -1380,6 +1465,12 @@ func _build_status_labels():
 	faith_label.add_theme_constant_override("outline_size", 4)
 	faith_label.visible = false
 	box.add_child(faith_label)
+	wisdom_label = Label.new()
+	wisdom_label.add_theme_color_override("font_color", Color(0.65, 0.95, 0.85))
+	wisdom_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	wisdom_label.add_theme_constant_override("outline_size", 4)
+	wisdom_label.visible = false
+	box.add_child(wisdom_label)
 	hp_bar.get_parent().add_child.call_deferred(box)
 	
 	shofar_player = AudioStreamPlayer.new()
@@ -1558,6 +1649,7 @@ func _on_language_changed(_new_language):
 	_update_filter_buttons()
 	_update_guard_label()
 	_update_faith_label()
+	_update_wisdom_label()
 	verse_input.placeholder_text = DEFAULT_PLACEHOLDER
 
 # ---------------- Speech bubble and speaker icon ----------------
