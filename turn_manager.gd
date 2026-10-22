@@ -63,6 +63,7 @@ var battle_id = 0             # changes every battle; stops old battles if the s
 
 var turn_label: Label
 var run_button: Button
+var items_button: Button
 var skip_button: Button
 var target_button: Button
 var escaped_from = {}         # enemy -> seconds left before it can start a battle again (after Run)
@@ -98,6 +99,21 @@ func _ready():
 	run_button.visible = false
 	run_button.pressed.connect(run_away)
 	layer.add_child(run_button)
+	# Items button, top-left beside Run (or in Run's place outside battles).
+	# Shown all through gameplay; click / tap = the inventory key.
+	items_button = Button.new()
+	items_button.name = "ItemsButton"
+	items_button.position = Vector2(HUD_RUN_POS)
+	items_button.custom_minimum_size = Vector2(120, 34)
+	items_button.size = Vector2(120, 34)
+	items_button.focus_mode = Control.FOCUS_NONE
+	items_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED   # text is built (and translated) in _update_items_text
+	items_button.visible = false
+	items_button.pressed.connect(_on_items_pressed)
+	layer.add_child(items_button)
+	_update_items_text()
+	GameSettings.bindings_changed.connect(_update_items_text)
+	GameSettings.touch_controls_changed.connect(func(_on): _update_items_text())
 	# Skip and Target buttons, bottom-right
 	skip_button = _make_side_button("Skip (K)", -56, skip_turn)
 	layer.add_child(skip_button)
@@ -272,6 +288,61 @@ static func portrait_of(node: Node, frame := -1) -> Texture2D:
 
 
 # A button in the bottom-right corner, "top" pixels from the bottom
+# ---------------- Items button (top-left) ----------------
+# "Items (Ctrl)": the key is the player's CURRENT inventory key (Settings >
+# Controls), so it follows a rebind. With the on-screen touch buttons on
+# there's no keyboard, so it just says "Items".
+const HUD_GAP = 8
+
+func _update_items_text():
+	if items_button == null:
+		return
+	var touch = get_node_or_null("/root/TouchControls")
+	if touch and touch.wanted():
+		items_button.text = tr("Items")
+	else:
+		var key = GameSettings.key_name("toggle_inventory")
+		items_button.text = tr("Items (%s)") % key if key != "-" else tr("Items")
+	items_button.size = items_button.get_combined_minimum_size()
+
+func _on_items_pressed():
+	if _items_allowed(get_tree().get_first_node_in_group("player")):
+		Inventory.toggle()
+
+# When the Items button would be wrong to show: no player (menus, loading),
+# the main / pause menu, a cut-scene (player.cutscene_lock - also covers the
+# Idolatry Cam replay and SinDeath's dialogue), a full-screen overlay
+# (group "hud_hidden_overlay"), or the inventory already open.
+func _items_allowed(player) -> bool:
+	if player == null or not is_instance_valid(player):
+		return false
+	if player.get("cutscene_lock"):
+		return false
+	var menus = get_tree().get_first_node_in_group("menus")
+	if menus and (menus.is_main_menu_open() or menus.pause_menu.visible):
+		return false
+	for o in get_tree().get_nodes_in_group("hud_hidden_overlay"):
+		if is_instance_valid(o) and o.get("visible") != false:
+			return false
+	return true
+
+func _update_items_button(player):
+	if items_button == null:
+		return
+	items_button.visible = _items_allowed(player) and not Inventory.is_open()
+	# beside Run when Run is shown, otherwise in Run's spot
+	var x = HUD_RUN_POS.x
+	if run_button.visible:
+		x = run_button.position.x + run_button.size.x + HUD_GAP
+	items_button.position = Vector2(x, HUD_RUN_POS.y)
+	# the level's Zeal countdown sits after the buttons (never under them)
+	if player and "hp_bar" in player and is_instance_valid(player.hp_bar):
+		var timer_label = player.hp_bar.get_parent().get_node_or_null("TimerLabel")
+		if timer_label:
+			var right = items_button.position.x + items_button.size.x if items_button.visible else (run_button.position.x + run_button.size.x if run_button.visible else float(HUD_RUN_POS.x))
+			timer_label.position.x = right + HUD_GAP + 4
+
+
 func _make_side_button(text: String, top: float, action: Callable) -> Button:
 	var button = Button.new()
 	button.text = text
@@ -303,6 +374,7 @@ func show_message(text: String):
 
 
 func _on_language_changed(_new_language):
+	_update_items_text()
 	if is_players_turn():
 		show_message(tr("Your turn - type or say a verse"))
 	elif not in_battle:
@@ -358,6 +430,7 @@ func run_away():
 
 func _physics_process(delta):
 	var player = get_tree().get_first_node_in_group("player")
+	_update_items_button(player)
 	# Run button: visible in battles, usable on your turn
 	run_button.visible = in_battle
 	run_button.disabled = not is_players_turn()

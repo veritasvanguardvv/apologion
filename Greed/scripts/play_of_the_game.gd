@@ -135,6 +135,7 @@ func play(parent: Node) -> void:
 	recording = false
 	skipping = false
 	_build_overlay(parent)
+	layer.add_to_group("hud_hidden_overlay")   # turn_manager.gd hides the Items button under it
 	var tex: ImageTexture = null
 	var img = Image.new()
 	for i in clips.size():
