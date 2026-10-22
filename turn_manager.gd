@@ -56,6 +56,7 @@ const BATTLE_SOUND = "res://battle1low.mp3"   # plays once when a battle starts
 var battle_sound: AudioStreamPlayer
 
 var in_battle = false
+var encounters_paused = false # true during a cut-scene: walking near enemies starts no battle
 var current = null            # whose turn it is right now
 var battle_enemies = []       # enemies in this battle
 var battle_id = 0             # changes every battle; stops old battles if the scene changes
@@ -335,8 +336,13 @@ func skip_turn():
 
 
 # Leave the battle (only on the player's turn). Enemies stay as they are.
+var no_escape = false   # a boss fight (Greed's SinDeath): Run doesn't work
+
 func run_away():
 	if not is_players_turn():
+		return
+	if no_escape:
+		show_message(tr("You can't run from this battle!"))
 		return
 	for enemy in battle_enemies:
 		if _is_alive(enemy):
@@ -368,7 +374,7 @@ func _physics_process(delta):
 		elif is_players_turn() and not _enemies_left():
 			player_turn_finished.emit()
 		return
-	if player == null:
+	if player == null or encounters_paused:
 		return
 	# Look for enemies close enough to start a battle
 	var enemies = []
@@ -451,9 +457,18 @@ func _faster_first(a, b) -> bool:
 
 func _enemies_left() -> bool:
 	for enemy in battle_enemies:
-		if _is_alive(enemy):
+		if _is_alive(enemy) and not enemy.get("optional_target"):
 			return true
 	return false
+
+
+# Starts a battle with exactly these enemies (a scripted boss fight,
+# e.g. Greed's SinDeath scene). Ignores the encounter range.
+func start_battle(enemies: Array):
+	var player = get_tree().get_first_node_in_group("player")
+	if in_battle or player == null or enemies.is_empty():
+		return
+	_run_battle(player, enemies.duplicate())
 
 
 # The whole battle, round after round. (A coroutine: it pauses at each await.)
@@ -474,7 +489,7 @@ func _run_battle(player, enemies):
 		var order = [player]
 		order.append_array(get_tree().get_nodes_in_group("party"))
 		for enemy in battle_enemies:
-			if _is_alive(enemy):
+			if _is_alive(enemy) and not enemy.get("passive"):
 				order.append(enemy)
 		order.sort_custom(_faster_first)
 
@@ -533,6 +548,7 @@ func _run_battle(player, enemies):
 func _end_battle():
 	var was_in_battle = in_battle
 	in_battle = false
+	no_escape = false
 	current = null
 	battle_enemies = []
 	battle_id += 1   # stops the battle coroutine if it is still waiting

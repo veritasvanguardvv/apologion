@@ -37,6 +37,8 @@ func _ready():
 		if kind == "money":
 			icon.rotation = deg_to_rad(randf_range(-18, 18))   # RandomRot.cs (gentler: the bills hang on the trees)
 	time = randf() * bob_time
+	if kind == "money" or kind == "gold":
+		add_to_group("greed_valuables")   # play_of_the_game.gd records near these
 	body_entered.connect(_on_body_entered)
 	if not start_active:
 		set_active(false)
@@ -61,6 +63,9 @@ func _on_body_entered(body):
 	if not body.is_in_group("player") or not visible or is_queued_for_deletion():
 		return
 	var level = owner if owner else get_tree().current_scene
+	if kind == "money" or kind == "gold":
+		# Mammon remembers: a 2-second clip for the "Play of the Game"
+		get_tree().call_group("play_recorder", "note_pickup", kind)
 	match kind:
 		"money":
 			Inventory.add("money")

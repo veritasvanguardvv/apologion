@@ -51,7 +51,7 @@
 [ext_resource type="PackedScene" path="res://Greed/Greedog.tscn" id="51_g"]
 [ext_resource type="PackedScene" path="res://Greed/Greedwolf.tscn" id="52_g"]
 [ext_resource type="PackedScene" path="res://Greed/Greedvorg.tscn" id="53_g"]
-[ext_resource type="PackedScene" path="res://Greed/Greedwraith.tscn" id="54_g"]
+[ext_resource type="PackedScene" path="res://Greed/SinDeathScene.tscn" id="54_g"]
 [ext_resource type="PackedScene" path="res://pastor_ramuel.tscn" id="55_g"]
 [ext_resource type="AudioStream" uid="uid://cuxw018jsoydk" path="res://Greed/05 - Bard Tales (loop version).ogg" id="56_g"]
 [ext_resource type="Script" uid="uid://bkw1wy34ffxqx" path="res://menu_layer.gd" id="t_12_5h0ix"]
@@ -3502,6 +3502,7 @@ position = Vector2(11774.88, 101.92)
 script = ExtResource("42_g")
 wins_level = true
 requires_group = "greed_boss"
+break_sound = ExtResource("43_g")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Interactive/GoldenCalf"]
 shape = SubResource("CircleShape2D_80")
@@ -3866,14 +3867,8 @@ attack_damage = 12
 defense = 0.5
 battle_speed = 5
 
-[node name="Greedwraith_Boss" parent="Enemies" instance=ExtResource("54_g") groups=["greed_boss"]]
-position = Vector2(11689.92, 0.16)
-display_name = "Greedwraith"
-max_hp = 925
-attack_damage = 15
-defense = 0.65
-battle_speed = 5
-verses = Array[String](["Genesis 3:17", "Hosea 12:8"])
+[node name="SinDeathScene" parent="." instance=ExtResource("54_g")]
+position = Vector2(11690, 192)
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1804218673]
 position = Vector2(-1400.0659, -245.4702)

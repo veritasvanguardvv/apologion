@@ -23,7 +23,7 @@ extends Node2D
 #   - falling into a pit / the water restarts the level - or, once you've
 #     reached the hill (Triggers/CheckpointArea), puts you back on top of the
 #     hill (checkpoint_feet). Your inventory stays as it was (gold too).
-#   - breaking the Golden Calf (after beating the Greedwraith) wins the level
+#   - breaking the Golden Calf (after the SinDeath scene, Greed/scripts/sindeath_scene.gd) wins the level
 
 const PopupText = preload("res://popup_text.gd")
 
@@ -54,6 +54,10 @@ var music_player: AudioStreamPlayer
 func _ready():
 	add_to_group("greed_level")
 	_build_hud()
+	# Records 2-second clips around money/gold pickups (SinDeath scene replay)
+	var recorder = preload("res://Greed/scripts/play_of_the_game.gd").new()
+	recorder.name = "PlayOfTheGame"
+	add_child(recorder)
 	if music:
 		music_player = AudioStreamPlayer.new()
 		music_player.stream = music
@@ -240,9 +244,60 @@ func reach_checkpoint():
 
 func win():
 	TurnManager.show_message(tr("You defeated the forces of greed!"))
+	_show_level_complete.call_deferred()
 	var menus = get_tree().get_first_node_in_group("menus")
 	if menus and menus.has_method("unlock_next_level"):
 		menus.unlock_next_level("Greed")
+
+
+# "Level Complete!" banner after the Golden Calf is smashed
+func _show_level_complete():
+	await get_tree().create_timer(1.2).timeout
+	var layer = CanvasLayer.new()
+	layer.name = "LevelComplete"
+	layer.layer = 60
+	add_child(layer)
+	var dim = ColorRect.new()
+	dim.color = Color(0, 0, 0, 0.55)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(dim)
+	var box = VBoxContainer.new()
+	box.set_anchors_preset(Control.PRESET_CENTER)
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	box.grow_vertical = Control.GROW_DIRECTION_BOTH
+	box.add_theme_constant_override("separation", 14)
+	layer.add_child(box)
+	var title = Label.new()
+	title.text = "Level Complete!"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 64)
+	title.add_theme_color_override("font_color", Color(1, 0.85, 0.3))
+	title.add_theme_color_override("font_outline_color", Color.BLACK)
+	title.add_theme_constant_override("outline_size", 12)
+	box.add_child(title)
+	var sub = Label.new()
+	sub.text = "You defeated the forces of greed!"
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub.add_theme_font_size_override("font_size", 26)
+	sub.add_theme_color_override("font_outline_color", Color.BLACK)
+	sub.add_theme_constant_override("outline_size", 6)
+	box.add_child(sub)
+	var ok = Button.new()
+	ok.text = "Continue"
+	ok.custom_minimum_size = Vector2(220, 52)
+	ok.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	ok.add_theme_font_size_override("font_size", 24)
+	ok.pressed.connect(layer.queue_free)
+	box.add_child(ok)
+	box.modulate.a = 0.0
+	box.scale = Vector2(0.8, 0.8)
+	box.pivot_offset = box.size / 2
+	var t = box.create_tween().set_parallel(true)
+	t.tween_property(box, "modulate:a", 1.0, 0.5)
+	t.tween_property(box, "scale", Vector2.ONE, 0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	ok.grab_focus.call_deferred()
 
 
 # ---------------- HUD ----------------

@@ -1173,6 +1173,10 @@
   },
   "Isaiah 56:11b": {
    "pl": "Pasterze bez zrozumienia poszli własną drogą, każdy za swoim zyskiem."
+  },
+  "Psalm 149:6a": {
+   "es": "Que las altas alabanzas de Dios estén en su boca.",
+   "pl": "Niech chwała Boża będzie w ich ustach."
   }
  },
  "enemy": {
@@ -2159,6 +2163,14 @@
   "You're a fanatic with religious OCD, get help.": {
    "es": "Eres un fanático con TOC religioso; busca ayuda.",
    "pl": "Jesteś fanatykiem z religijnym OCD, idź się leczyć."
+  },
+  "What do people get for all their hard work under the sun?": {
+   "es": "¿Qué gana la gente con todo su duro trabajo bajo el sol?",
+   "pl": "Co ludzie mają z całej swojej ciężkiej pracy pod słońcem?"
+  },
+  "You just believe because you're afraid of dying. I'm not afraid-- I'm stronger than you.": {
+   "es": "Solo crees porque tienes miedo de morir. Yo no tengo miedo, soy más fuerte que tú.",
+   "pl": "Wierzysz tylko dlatego, że boisz się umrzeć. Ja się nie boję — jestem silniejszy od ciebie."
   }
  },
  "_about_zeal": "Zeal list (user's list, t40u): verses with the Zeal effect (speed + jump boost). Each entry marks the sheet verse with that reference (the row whose English matches, for repeated rows) as Zeal and uses this English text (and translation type / es / pl when given); a reference not in the sheet becomes a Zeal-only verse. sheet_ref = the sheet's reference when it's labelled wrong (the sheet's '1 Corinthians 14:2' text is 1 Corinthians 14:1). 2 Corinthians 4:15 was taken out again (t42u).",
@@ -2180,7 +2192,9 @@
   {
    "ref": "Psalm 149:6",
    "translation": "Fragment",
-   "en": "May the high praises of God be in their mouths, and a two-edged sword in their hand."
+   "en": "May the high praises of God be in their mouths, and a two-edged sword in their hand.",
+   "es": "Que las altas alabanzas de Dios estén en su boca y espada de dos filos en su mano.",
+   "pl": "Niech chwała Boża będzie w ich ustach, a miecz obosieczny w ich ręku."
   },
   {
    "ref": "Proverbs 6:6",

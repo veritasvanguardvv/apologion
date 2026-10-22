@@ -171,7 +171,14 @@ func get_defeated_count() -> int:
 
 # Called from menu_layer when a level is started from Story Select,
 # so a fresh level begins at full health (same as before saving existed).
+# Greed's "Play of the Game" clips (Greed/scripts/play_of_the_game.gd). Kept
+# here so they survive dying / checkpoint reloads; memory only (never saved).
+var greed_clips: Array = []
+var greed_sindeath_seen = false   # died in the SinDeath fight: the retry skips the talk
+
 func start_new_level() -> void:
+	greed_clips.clear()
+	greed_sindeath_seen = false
 	player_hp = MAX_HP
 	pending_position = null
 	checkpoints.clear()       # a fresh level starts at its beginning
@@ -307,6 +314,8 @@ func save_game() -> bool:
 # also switches to the saved level (the normal case). Returns false if
 # there is no save file.
 func load_game(change_level := true) -> bool:
+	greed_clips.clear()
+	greed_sindeath_seen = false
 	var config = ConfigFile.new()
 	if config.load(SAVE_PATH) != OK:
 		print("No save file found")

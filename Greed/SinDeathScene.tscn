@@ -1,0 +1,73 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Greed/scripts/sindeath_scene.gd" id="1_sd"]
+[ext_resource type="PackedScene" path="res://Greed/MammonGreedBoss.tscn" id="2_sd"]
+[ext_resource type="PackedScene" path="res://Greed/SinDeath.tscn" id="3_sd"]
+[ext_resource type="Script" path="res://enemy.gd" id="4_sd"]
+[ext_resource type="Texture2D" path="res://Greed/calf_42x32gold.png" id="5_sd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_trig"]
+size = Vector2(60, 1100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_idol"]
+size = Vector2(197, 110)
+
+[node name="SinDeathScene" type="Node2D"]
+script = ExtResource("1_sd")
+
+[node name="Trigger" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Trigger"]
+position = Vector2(-390, -350)
+shape = SubResource("RectangleShape2D_trig")
+
+[node name="Mammon" parent="." instance=ExtResource("2_sd")]
+position = Vector2(0, -191.84)
+collision_layer = 0
+collision_mask = 0
+dormant = true
+can_attack = false
+
+[node name="SinDeath" parent="." instance=ExtResource("3_sd")]
+position = Vector2(-150, 0)
+collision_layer = 0
+collision_mask = 0
+
+[node name="Idol" type="CharacterBody2D" parent="."]
+position = Vector2(84.88, -90.08)
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("4_sd")
+max_hp = 500
+display_name = "Golden Calf"
+can_attack = false
+base_type = "idol"
+only_vs = "idol"
+dormant = true
+passive = true
+optional_target = true
+survives_defeat = true
+hide_while_dormant = false
+
+[node name="Sprite" type="Sprite2D" parent="Idol"]
+z_index = 1
+modulate = Color(1, 0.8857, 0.5142, 1)
+scale = Vector2(5.7977, 5.7977)
+texture = ExtResource("5_sd")
+centered = false
+offset = Vector2(-17, -9.5)
+region_enabled = true
+region_rect = Rect2(2, 8, 34, 19)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Idol"]
+shape = SubResource("RectangleShape2D_idol")
+
+[node name="EnemyHP" type="ProgressBar" parent="Idol"]
+offset_left = -60.0
+offset_top = -100.0
+offset_right = 60.0
+offset_bottom = -80.0
+value = 100.0
+show_percentage = false

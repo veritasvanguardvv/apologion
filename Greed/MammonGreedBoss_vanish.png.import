@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dr3n6c1u6rq7u"
-path="res://.godot/imported/ghost-idle.png-01e055c5b683ccb750bedb9bc99c3680.ctex"
+uid="uid://bukai7o42mn0m"
+path="res://.godot/imported/MammonGreedBoss_vanish.png-c9a766f4008d255f5c025283b5e090ed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Greed/ghost-idle.png"
-dest_files=["res://.godot/imported/ghost-idle.png-01e055c5b683ccb750bedb9bc99c3680.ctex"]
+source_file="res://Greed/MammonGreedBoss_vanish.png"
+dest_files=["res://.godot/imported/MammonGreedBoss_vanish.png-c9a766f4008d255f5c025283b5e090ed.ctex"]
 
 [params]
 

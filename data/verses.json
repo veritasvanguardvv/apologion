@@ -11105,16 +11105,15 @@
    "jesus": false
   },
   {
-   "ref": "Psalm 149:6",
+   "ref": "Psalm 149:6a",
    "translation": "Fragment",
-   "en": "May the high praises of God be in their mouths, and a two-edged sword in their hand.",
-   "es": "Que las altas alabanzas de Dios estén en su boca y espada de dos filos en su mano.",
-   "pl": "Niech chwała Boża będzie w ich ustach, a miecz obosieczny w ich ręku.",
+   "en": "May the high praises of God be in their mouths.",
+   "es": "Que las altas alabanzas de Dios estén en su boca.",
+   "pl": "Niech chwała Boża będzie w ich ustach.",
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false,
-   "zeal": true
+   "jesus": false
   },
   {
    "ref": "Proverbs 6:6 (2)",
@@ -11708,6 +11707,18 @@
    "en": "Let the saints rejoice in honor. Let them sing for joy on their beds.",
    "es": "Que los santos se regocijen con honra; que canten de alegría sobre sus camas.",
    "pl": "Niech święci radują się w chwale, niech śpiewają z radości na swoich posłaniach.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "zeal": true
+  },
+  {
+   "ref": "Psalm 149:6",
+   "translation": "Fragment",
+   "en": "May the high praises of God be in their mouths, and a two-edged sword in their hand.",
+   "es": "Que las altas alabanzas de Dios estén en su boca y espada de dos filos en su mano.",
+   "pl": "Niech chwała Boża będzie w ich ustach, a miecz obosieczny w ich ręku.",
    "all_damage": 0,
    "sins": {},
    "heal": 0,
