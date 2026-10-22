@@ -50,7 +50,7 @@
 [ext_resource type="Texture2D" uid="uid://bwp3vta0evenr" path="res://Greed/16.png" id="50_g"]
 [ext_resource type="PackedScene" path="res://Greed/Greedog.tscn" id="51_g"]
 [ext_resource type="PackedScene" path="res://Greed/Greedwolf.tscn" id="52_g"]
-[ext_resource type="PackedScene" path="res://Greed/Greedvorg.tscn" id="53_g"]
+[ext_resource type="PackedScene" path="res://umbrid.tscn" id="53_umbrid"]
 [ext_resource type="PackedScene" path="res://Greed/SinDeathScene.tscn" id="54_g"]
 [ext_resource type="PackedScene" path="res://pastor_ramuel.tscn" id="55_g"]
 [ext_resource type="AudioStream" uid="uid://cuxw018jsoydk" path="res://Greed/05 - Bard Tales (loop version).ogg" id="56_g"]
@@ -3851,21 +3851,13 @@ attack_damage = 5
 defense = 0.5
 battle_speed = 5
 
-[node name="Greedvorg_Greedvorg" parent="Enemies" instance=ExtResource("53_g")]
-position = Vector2(15613.2, -7611.6)
-display_name = "Greedvorg"
-max_hp = 367
-attack_damage = 12
-defense = 0.5
-battle_speed = 5
+[node name="Umbrid" parent="Enemies" instance=ExtResource("53_umbrid")]
+position = Vector2(15613.2, -7619)
+display_name = "Umbrid"
 
-[node name="Greedvorg_Greedvorg_1" parent="Enemies" instance=ExtResource("53_g")]
-position = Vector2(8337.6, -491.2)
-display_name = "Greedvorg"
-max_hp = 367
-attack_damage = 12
-defense = 0.5
-battle_speed = 5
+[node name="Umbrid_1" parent="Enemies" instance=ExtResource("53_umbrid")]
+position = Vector2(8337.6, -499)
+display_name = "Umbrid"
 
 [node name="SinDeathScene" parent="." instance=ExtResource("54_g")]
 position = Vector2(11690, 192)
