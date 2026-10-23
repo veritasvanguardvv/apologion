@@ -1,4 +1,5 @@
 extends Node
+const Battle3D = preload("res://battle_3d.gd")   # 3D boss battle: 2D spots seen through its camera
 # Targeting (autoload / singleton)
 # --------------------------------
 # Decides WHO a verse (typed, spoken or from a scroll) affects in a battle,
@@ -190,6 +191,10 @@ func body_rect(node) -> Rect2:
 		center = shape.global_position
 		if shape.shape is RectangleShape2D:
 			size = shape.shape.size * shape.global_scale.abs()
+	if Battle3D.is_on():   # the 3D boss battle: where it shows through the 3D camera
+		var at = Battle3D.screen_point(node, center)
+		var k = Battle3D.screen_scale(node, center)
+		return Rect2(at - size * k / 2.0, size * k)
 	var to_screen = node.get_viewport().get_canvas_transform()
 	var zoom = to_screen.get_scale().abs()
 	return Rect2(to_screen * center - size * zoom / 2.0, size * zoom)

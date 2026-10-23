@@ -1,4 +1,5 @@
 extends CanvasLayer
+const Battle3D = preload("res://battle_3d.gd")   # 3D boss battle: 2D spots seen through its camera
 # SPEECH BUBBLE (built in code)
 # -----------------------------
 # A speech bubble that follows a node around and stays inside the screen.
@@ -224,6 +225,8 @@ func _place():
 		return
 	var screen = get_viewport().get_visible_rect().size
 	var head = target.get_global_transform_with_canvas() * head_offset
+	if Battle3D.is_on():   # the 3D boss battle: over where they show
+		head = Battle3D.screen_point(target, target.get_global_transform() * head_offset)
 	panel.reset_size()
 	var s = panel.size
 	var margin = 8.0

@@ -1,4 +1,5 @@
 extends RefCounted
+const Battle3D = preload("res://battle_3d.gd")   # 3D boss battle: 2D spots seen through its camera
 # Floating text that rises and fades, e.g. "+25" over someone who was healed.
 # Usage:  PopupText.spawn(some_node, "+25", Color.GREEN)
 # It's added to the level (not to the node), so it stays visible even if the
@@ -24,7 +25,10 @@ static func spawn(node: Node2D, text: String, color := Color.WHITE, offset := Ve
 	level.add_child(label)
 	var tween = label.create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(label, "position:y", label.position.y - 40, time)
+	if Battle3D.is_on():   # the 3D boss battle: rises over where it shows (follows the camera)
+		Battle3D.current.track_popup(label, node, center + offset, time)
+	else:
+		tween.tween_property(label, "position:y", label.position.y - 40, time)
 	tween.tween_property(label, "modulate:a", 0.0, time * 0.5).set_delay(time * 0.5)
 	tween.chain().tween_callback(label.queue_free)
 	return label

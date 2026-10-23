@@ -20,6 +20,7 @@ extends Node2D
 # (English = the translation key in General/translations/strings.csv).
 
 const PopupText = preload("res://popup_text.gd")
+const Battle3D = preload("res://battle_3d.gd")   # the 3D presentation of the fight (Settings > 3D boss battles)
 
 # ---------------- THE DIALOGUE ----------------
 # who: "idol", "sheep" or "mammon". ref: shown as the bubble title.
@@ -110,6 +111,7 @@ var hint: Label
 var choice_layer: CanvasLayer
 var counter_state = ""   # "" (none yet / over), "sliding", "waiting", "done" (idol at 0)
 var sindeath_home: Vector2
+var battle_3d = null     # battle_3d.gd while the fight is shown in 3D
 var counters_shown = 0   # (counted for the tests)
 var counter_hits = 0
 var autofills = 0
@@ -220,8 +222,11 @@ func _run():
 		await _lines(ANSWERS[pick])
 		SaveManager.greed_sindeath_seen = true
 	_hide_bubbles()
+	if GameSettings.boss_battles_3d:
+		await _begin_3d()
 	await _transform()
-	await _pan(_battle_view(), 1.0, 1.0)
+	if battle_3d == null:
+		await _pan(_battle_view(), 1.0, 1.0)
 	_end_camera()
 	_lock(false)
 	state = "battle"
@@ -495,11 +500,18 @@ func _on_battle_ended():
 		state = "idle"
 		TurnManager.encounters_paused = false
 		idol.make_dormant()
+		if battle_3d:
+			battle_3d.finish()
+			battle_3d = null
 		return
 	state = "after"
 	idol.make_dormant()   # walking up to it mustn't start a new battle
 	_lock(true)
 	await get_tree().create_timer(1.6).timeout   # let "Victory!" show
+	if battle_3d:
+		await get_tree().create_timer(1.0).timeout   # (the victory camera)
+		await battle_3d.finish()   # back to the 2D level for the talk and the ram
+		battle_3d = null
 	await _lines(VICTORY)
 	_hide_bubbles()
 	_lock(false)
@@ -613,7 +625,16 @@ func _end_camera():
 		camera = null
 
 
+# The fight in 3D (battle_3d.gd): fades in before SinDeath manifests
+func _begin_3d():
+	battle_3d = Battle3D.new()
+	battle_3d.name = "Battle3D"
+	add_child(battle_3d)
+	await battle_3d.begin(self, player)
+
 func _shake():
+	if battle_3d:
+		battle_3d.shake(0.14, 0.3)
 	var cam = camera if camera else _player_camera()
 	if cam == null:
 		return
