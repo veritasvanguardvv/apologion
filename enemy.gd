@@ -1,4 +1,5 @@
 extends CharacterBody2D
+const Battle3D = preload("res://battle_3d.gd")   # 3D boss battle: 2D spots seen through its camera
 
 const EnemyVerses = preload("res://enemy_verses.gd")
 const SpeechBubble = preload("res://speech_bubble.gd")
@@ -341,12 +342,24 @@ func show_popup(text: String, color := Color.WHITE):
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", Color.BLACK)
 	label.add_theme_constant_override("outline_size", 6)
-	# Added to the level (not the enemy) so it stays visible even if this hit defeats it
-	label.position = global_position + label.position
+	# Added to the level (not the enemy) so it stays visible even if this hit
+	# defeats it. Placed in GLOBAL coordinates after adding it: the parent may
+	# be moved (the SinDeath scene node sits at (11690, 192)).
+	# Long texts ("No effect - only SinDeath verses can hurt it") widen the
+	# label, so centre it again and keep it on the screen.
+	var center = global_transform * (label.position + Vector2(160, 15))
 	get_parent().add_child(label)
+	label.size.x = max(320.0, label.get_combined_minimum_size().x)
 	var tween = label.create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(label, "position:y", label.position.y - 40, popup_time)
+	if Battle3D.is_on():   # the 3D boss battle: rises over where it shows (follows the camera)
+		Battle3D.current.track_popup(label, self, center, popup_time)
+	else:
+		var xf = get_viewport().get_canvas_transform()
+		var rise = 40.0 * xf.get_scale().y
+		var at = xf.affine_inverse() * Battle3D.keep_on_screen(get_viewport(), label, xf * center, rise)
+		label.global_position = at - Vector2(label.size.x / 2.0, 15)
+		tween.tween_property(label, "global_position:y", label.global_position.y - 40, popup_time)
 	tween.tween_property(label, "modulate:a", 0.0, popup_time).set_delay(popup_time * 0.5)
 	tween.chain().tween_callback(label.queue_free)
 	return label

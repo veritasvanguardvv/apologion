@@ -110,6 +110,18 @@ static func world_point(node, p: Vector2) -> Vector2:
 	var vp = current.get_viewport()
 	return vp.get_canvas_transform().affine_inverse() * current._screen(node, p)
 
+# A popup centred on screen point s, moved so all of it stays on the screen
+# and below the turn banner at the top (2D and 3D both use this).
+static func keep_on_screen(vp: Viewport, label: Control, s: Vector2, rise := 0.0) -> Vector2:
+	var size = vp.get_visible_rect().size
+	var k = vp.get_canvas_transform().get_scale().x
+	var half = label.size.x * k / 2.0
+	s.x = clamp(s.x, half + 8.0, max(half + 8.0, size.x - half - 8.0))
+	# the turn banner spans the top; the boss HP panel the top-right corner
+	var top = 132.0 if s.x + half > size.x - 290.0 else 62.0
+	s.y = max(s.y, top + 15.0 * k + rise)
+	return s
+
 # How many screen pixels one 2D pixel is at that spot (perspective)
 static func screen_scale(node, p: Vector2) -> float:
 	var a = current._screen(node, p)
@@ -216,8 +228,10 @@ func track_popup(label: Control, node, p: Vector2, time: float):
 func _place_popup(label: Control, delta: float):
 	var d = popups[label]
 	d[3] += delta
-	var at = world_point(d[0], d[1]) if is_instance_valid(d[0]) else d[1]
-	label.global_position = at - Vector2(label.size.x / 2.0, 15) + Vector2(0, -40.0 * clamp(d[3] / d[2], 0.0, 1.0))
+	var xf = get_viewport().get_canvas_transform()
+	var at = _screen(d[0], d[1]) if is_instance_valid(d[0]) else xf * d[1]
+	at.y -= 40.0 * clamp(d[3] / d[2], 0.0, 1.0)
+	label.global_position = xf.affine_inverse() * keep_on_screen(get_viewport(), label, at) - Vector2(label.size.x / 2.0, 15)
 
 
 # ---------------- The 2D side: hide it, follow it ----------------
