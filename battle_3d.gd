@@ -77,6 +77,17 @@ var base_node = null
 var cam_pos = Vector3.ZERO
 var cam_look = Vector3.ZERO
 var cam_fov = 55.0
+var cam_vel = Vector3.ZERO      # (the camera's eased moves)
+var look_vel = Vector3.ZERO
+var fov_vel = 0.0
+var cam_max_speed = 0.0        # fastest camera move, units/s (tests)
+var cam_max_accel = 0.0        # most sudden change of speed, units/s² (tests)
+var cam_last_v = Vector3.ZERO
+const CAM_MAX_SPEED = 7.0
+const IDOL_LANE = -0.1
+const SD_HOME_LANE = -1.3
+const PEDESTAL_DEPTH = 0.5     # the calf's pedestal: IDOL_LANE -/+ 0.25
+const SD_FRONT_LANE = 0.18     # just in front of the calf and its pedestal
 var shake_left = 0.0
 var shake_power = 0.0
 var counter_seen = ""
@@ -282,12 +293,19 @@ func lane(node) -> float:
 		var i = get_tree().get_nodes_in_group("party").find(node)
 		return 0.4 - 0.4 * max(i, 0)   # staggered back from you
 	if node == scene.idol:
-		return -0.1
+		return IDOL_LANE
 	if node == scene.sindeath:
-		# sliding over the calf (the counter): comes forward to cover it
+		# Sliding over the calf (the counter) it comes forward to cover it, as
+		# in 2D (drawn over it). It is in front before their sprites overlap,
+		# and once the calf is cracked it stays in front of it (sliding back
+		# and for the rest of the fight), so the calf never shows through it.
+		# Only just in front: little parallax, so the calf shows through the
+		# gaps in its coils from any camera angle, as in 2D.
+		if is_instance_valid(scene.idol) and scene.idol.get("is_cracked"):
+			return SD_FRONT_LANE
 		var span = scene.idol.position.x - sd_home_x
 		var k = 0.0 if abs(span) < 1.0 else clamp((node.position.x - sd_home_x) / span, 0.0, 1.0)
-		return lerp(-1.3, 0.45, k)
+		return lerp(SD_HOME_LANE, SD_FRONT_LANE, smoothstep(0.0, 0.3, k))
 	if node == scene.mammon:
 		return -1.3
 	return 0.0
@@ -373,7 +391,8 @@ func _add_proxy(src: CanvasItem, owner_node):
 	s.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	s.shaded = false
 	s.double_sided = true
-	s.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+	s.alpha_cut = SpriteBase3D.ALPHA_CUT_DISABLED   # drawn in lane order (see _sync_sprite)
+	s.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	s.centered = false
 	add_child(s)
 	proxies[src] = s
@@ -469,8 +488,14 @@ func _sync_sprite(src: CanvasItem, s: Sprite3D):
 	var col = _color_of(src)
 	var tint = PARTY_TINT if _is_party(owner_node) else ENEMY_TINT
 	s.modulate = Color(col.r * tint.r, col.g * tint.g, col.b * tint.b, col.a)
-	var see_through = col.a < 0.98
-	s.alpha_cut = SpriteBase3D.ALPHA_CUT_DISABLED if see_through else SpriteBase3D.ALPHA_CUT_DISCARD
+	# The sprites overlap each other in lane order, like the 2D draw order,
+	# whatever the camera angle. (Depth can't do it: a billboard is as deep as
+	# its origin, so from the side wide SinDeath, centred far left of the
+	# calf, would sink behind it.) They are blended, don't write depth, and
+	# are sorted by render_priority = lane; the arena still hides them.
+	var prio = clampi(roundi(z * 100.0), -120, 120)
+	if s.render_priority != prio:
+		s.render_priority = prio
 
 func _sync_mirror(src: Control, m: Control):
 	m.visible = src.is_visible_in_tree() and src.size.x > 0
@@ -612,7 +637,7 @@ func _build_arena():
 		var r = calf_sprite.get_global_transform() * calf_sprite.get_rect()
 		var h = (ground_y - r.end.y) * K
 		if h > 0.05:
-			_box(Vector3(r.size.x * K * 1.05, h, 1.1), to_3d(Vector2(r.get_center().x, ground_y), lane(calf)) + Vector3(0, h / 2.0, 0),
+			_box(Vector3(r.size.x * K * 1.05, h, PEDESTAL_DEPTH), to_3d(Vector2(r.get_center().x, ground_y), lane(calf)) + Vector3(0, h / 2.0, 0),
 				_mat(floor_tex, Color(0.95, 0.8, 0.45), false, Vector2(2, 0.6)))
 	# Lights: a warm spotlight on the party, a dimmer cold one on the bosses
 	var party_at = _party_center()
@@ -664,6 +689,7 @@ func _build_arena():
 	dm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	dm.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
 	dm.albedo_color = Color(1.0, 0.9, 0.6, 0.6)
+	dm.render_priority = 127   # motes in the air, over the sprites
 	dot.material = dm
 	dust.mesh = dot
 	dust.position = party_at + Vector3(0, 3.0, 0)
@@ -704,6 +730,7 @@ func _beam(at: Vector3, color: Color, strength: float, radius: float) -> MeshIns
 	b.mesh = cone
 	b.material_override = m
 	b.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	m.render_priority = -128   # before the sprites (they are drawn over it)
 	b.position = at + Vector3(0, 4.0, 0)
 	add_child(b)
 	return b
@@ -788,7 +815,28 @@ func _shot_params(t: float) -> Array:
 			var yaw = deg_to_rad(-16.0 + 15.0 * sin(t * 0.11))
 			return [M + Vector3(sin(yaw) * 9.6, 1.9 + 0.3 * sin(t * 0.07), cos(yaw) * 9.6), M, 50.0]
 
+# One step of a critically damped spring from x towards target (velocity v),
+# taking about smooth_time seconds, never faster than max_speed: [x, v]
+static func _damp3(x: Vector3, target: Vector3, v: Vector3, smooth_time: float, max_speed: float, delta: float) -> Array:
+	if delta <= 0.0:
+		return [x, v]
+	var omega = 2.0 / max(smooth_time, 0.01)
+	var e = omega * delta
+	var d = 1.0 / (1.0 + e + 0.48 * e * e + 0.235 * e * e * e)
+	var change = (x - target).limit_length(max_speed * smooth_time)
+	var goal = x - change
+	var temp = (v + omega * change) * delta
+	v = (v - omega * temp) * d
+	var out = goal + (change + temp) * d
+	if (target - x).dot(out - target) > 0.0:   # no overshoot
+		out = target
+		v = (out - target) / delta
+	return [out, v]
+
 func _snap_camera():
+	cam_vel = Vector3.ZERO
+	look_vel = Vector3.ZERO
+	fov_vel = 0.0
 	var p = _shot_params(0.0)
 	cam_pos = p[0]
 	cam_look = p[1]
@@ -823,15 +871,25 @@ func _process(delta):
 			shot_node = base_node
 			shot_time = 0.0
 	var p = _shot_params(shot_time)
-	var rate = 2.0
+	# Every change of shot is an eased move (a critically damped spring: it
+	# speeds up gently, then settles), never a jump. Hits move a bit faster.
+	var smooth = 0.8
 	if shot in ["hit_enemy", "hit_party"]:
-		rate = 3.2
+		smooth = 0.55
 	elif shot in ["victory", "manifest", "wide"]:
-		rate = 1.3
-	var k = 1.0 - exp(-rate * delta)
-	cam_pos = cam_pos.lerp(p[0], k)
-	cam_look = cam_look.lerp(p[1], k)
-	cam_fov = lerp(cam_fov, p[2], k)
+		smooth = 1.3
+	var before = cam_pos
+	var a = _damp3(cam_pos, p[0], cam_vel, smooth, CAM_MAX_SPEED, delta)
+	cam_pos = a[0]; cam_vel = a[1]
+	var b = _damp3(cam_look, p[1], look_vel, smooth, CAM_MAX_SPEED * 1.5, delta)
+	cam_look = b[0]; look_vel = b[1]
+	var f = _damp3(Vector3(cam_fov, 0, 0), Vector3(p[2], 0, 0), Vector3(fov_vel, 0, 0), smooth, 60.0, delta)
+	cam_fov = f[0].x; fov_vel = f[1].x
+	if delta > 0.0:   # (for the tests: how fast / how suddenly the camera moved)
+		var v = (cam_pos - before) / delta
+		cam_max_speed = max(cam_max_speed, v.length())
+		cam_max_accel = max(cam_max_accel, (v - cam_last_v).length() / delta)
+		cam_last_v = v
 	_apply_camera(delta)
 	# (after the camera moved: no lag)
 	_sync()
