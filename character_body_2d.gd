@@ -261,7 +261,7 @@ func _ready():
 # A group button was pressed (Attacks / Status / Special).
 # First press shows the whole group; pressing again cycles through its types.
 func _on_group_pressed(group: String):
-	var types = FILTER_GROUPS[group]
+	var types = filter_types(group)
 	if filter_group != group:
 		filter_group = group
 		filter_type = "*"
@@ -302,6 +302,35 @@ func _update_filter_buttons():
 		else:
 			button.text = tr(group)
 			button.modulate = Color.WHITE
+
+# ---------------- The level's sin first ----------------
+# On a level named after a sin (Greed.tscn -> "greed", Sloth.tscn -> "sloth",
+# Lust, Gluttony, and Wrath / Envy / Pride when they get a level) that sin
+# comes first under Attacks: first in the button's cycle (Attacks (all) >
+# Greed > Sloth > Lust > ...) and its verses at the top of "Attacks (all)".
+# Other levels (Endless...) keep the usual order. Worked out from the level
+# that's loaded, so it always matches the level you're in.
+func level_sin() -> String:
+	var scene = get_tree().current_scene if is_inside_tree() else null
+	if scene == null:
+		return ""
+	var level = scene.scene_file_path.get_file().get_basename().to_lower()
+	return level if level in SINS else ""
+
+# The group's sub-filters in cycle order (Attacks: the level's sin first)
+func filter_types(group: String) -> Array:
+	var types: Array = FILTER_GROUPS[group].duplicate()
+	var sin = level_sin()
+	if group == "Attacks" and sin in types:
+		types.erase(sin)
+		types.push_front(sin)
+	return types
+
+# True if the verse attacks this sin
+func _hits_sin(v, sin: String) -> bool:
+	if v.get("set", "") == "sheet":
+		return v.get("sins", {}).get(sin, 0) > 0
+	return v.type == sin
 
 # True if a verse passes the current filter.
 func _passes_filter(v) -> bool:
@@ -922,7 +951,16 @@ func _update_verse_text():
 			ordered.append(v)
 		else:
 			hidden.append(v)
-	ordered.append_array(hidden)
+	# "Attacks (all)" on a sin's level: that sin's verses first (each part
+	# keeps its usual order)
+	var lvl_sin = level_sin()
+	if filter_group == "Attacks" and filter_type == "*" and lvl_sin != "":
+		var first = ordered.filter(func(v): return _hits_sin(v, lvl_sin))
+		var rest = ordered.filter(func(v): return not _hits_sin(v, lvl_sin))
+		# discovered first, then the "???" ones, as before
+		ordered = first + rest + hidden.filter(func(v): return _hits_sin(v, lvl_sin)) + hidden.filter(func(v): return not _hits_sin(v, lvl_sin))
+	else:
+		ordered.append_array(hidden)
 	for v in ordered:
 		if not _passes_filter(v):
 			continue   # hidden by the filter buttons
