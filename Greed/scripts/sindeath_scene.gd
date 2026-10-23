@@ -158,7 +158,20 @@ func _input(event):
 		go = true
 	if go and Time.get_ticks_msec() - wait_since > 250:
 		get_viewport().set_input_as_handled()
-		advance()
+		# the first press finishes a line that's still typing, the next goes on
+		if not finish_typing():
+			advance()
+
+
+# Finishes any boss line that's still typing. True if one was.
+func finish_typing() -> bool:
+	var any = false
+	for b in bubbles.values():
+		if is_instance_valid(b) and b.is_typing():
+			b.finish_typing()
+			any = true
+	wait_since = Time.get_ticks_msec()
+	return any
 
 
 # Next line (also used by the tests)
@@ -270,6 +283,7 @@ func _start_counter():
 	# screen under the enemy list: speak from beside its heads instead)
 	sindeath.bubble.head_offset = counter_bubble_offset
 	sindeath.bubble.say(tr("SinDeath counters!"), tr(COUNTER_TEXT), true, 0.0)   # the enemy counter style ("!")
+	sindeath.bubble.start_typing()
 	if is_instance_valid(player) and player.wisdom >= 100.0:
 		_autofill_answer()   # full Wisdom: you already know the answer
 	else:
@@ -338,6 +352,8 @@ func _say_line(line: Dictionary):
 		title = tr("Mammon")
 	_hide_bubbles()
 	_bubble(who).say(title, tr(line.text), false, 0.0)
+	if who != "sheep":
+		_bubble(who).start_typing()   # Mammon / the idol: typewriter + boss voice
 	if line.has("hurt_pct") and is_instance_valid(player):
 		var amount = max(1.0, player.max_hp * line.hurt_pct / 100.0)
 		amount = min(amount, player.hp - 1.0)   # a talk can't kill you

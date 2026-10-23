@@ -59,6 +59,11 @@ var enemy_type = ""
 #   "sindeath" = the 'Dmg to SinDeath boss' column, "idol" = 'Dmg to Idol');
 #   every other verse has no effect. See character_body_2d.gd verse_damage_against.
 @export var only_vs = ""
+# Boss talk: its bubbles type out with the boss voice blips (speech_bubble.gd).
+# On for every boss-only enemy (only_vs set: SinDeath, the Golden Calf).
+@export var boss_voice = false
+func talks_like_boss() -> bool:
+	return boss_voice or only_vs != ""
 # dormant: not in the level yet (hidden, can't start a battle) until awaken()
 @export var dormant = false
 # passive: never takes a turn (the Golden Calf just stands there)
@@ -240,6 +245,8 @@ func recite_verse():
 		bubble.say(title, text, false, verse_bubble_time)
 	else:
 		bubble.say(title, text, true, 0.0)   # stays up through your next turn
+	if talks_like_boss():
+		bubble.start_typing()   # typewriter + boss voice blips
 	TurnManager.show_message(tr("%s recites %s! -%s HP - it's %s type now!") % [tr(display_name), title, str(snapped(dealt, 0.1)), tr(type_name(v.type))])
 	print(display_name, " recites ", ref, " for ", dealt, " (counters: ", counter_refs, ")")
 	return verse_read_time
@@ -277,6 +284,8 @@ func say_line(line: Dictionary):
 		bubble.say(title, text, false, verse_bubble_time)
 	else:
 		bubble.say(title, text, true, 0.0)
+	if talks_like_boss():
+		bubble.start_typing()   # typewriter + boss voice blips
 	TurnManager.show_message(tr("%s: -%s HP") % [tr(display_name), str(snapped(dealt, 0.1))])
 	print(display_name, " says [", line.set, "] ", line.en.substr(0, 60), " for ", dealt)
 	return verse_read_time
