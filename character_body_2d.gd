@@ -323,9 +323,11 @@ func _passes_filter(v) -> bool:
 				return v.get("heal", 0) > 0
 			"Status":
 				if filter_type == "*":
-					return v.get("zeal", false) or v.get("guard", false) or v.get("wisdom", 0) > 0
+					return v.get("zeal", false) or v.get("guard", false) or v.get("wisdom", 0) > 0 or v.get("faith", 0) > 0
 				if filter_type == "wisdom":
 					return v.get("wisdom", 0) > 0
+				if filter_type == "faith":
+					return v.get("faith", 0) > 0
 				return filter_type in ["zeal", "guard"] and v.get(filter_type, false)
 		return false
 	if filter_type == "*":
@@ -533,6 +535,8 @@ func _cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale,
 		_zeal_boost()   # (the player's own boost; not when a party member recites it)
 	if verse.get("guard", false) and caster == null:
 		activate_guard()
+	if verse.get("faith", 0) > 0 and caster == null:
+		activate_faith(float(verse.faith) / 100.0)   # sheet "Faith UP" (your own stat, like Wisdom)
 	if verse.get("wisdom", 0) > 0 and caster == null:
 		add_wisdom(float(verse.wisdom))   # (your own stat; not when a party member recites it)
 	var heal_pct = float(verse.get("heal", 0))
@@ -632,6 +636,8 @@ func _load_sheet_verses():
 			type = "guard"  # only the Guard effect
 		elif type == "heal" and row.get("heal", 0) == 0 and row.get("wisdom", 0) > 0:
 			type = "wisdom" # only the Wisdom effect
+		elif type == "heal" and row.get("heal", 0) == 0 and row.get("faith", 0) > 0:
+			type = "faith"  # only the Faith effect
 		var v = {
 			"ref": row.ref, "set": "sheet", "type": type,
 			"damage": max(best, all_sin), "sins": sins, "all_damage": all_sin,
@@ -641,6 +647,7 @@ func _load_sheet_verses():
 			"zeal": row.get("zeal", false),   # Zeal list: also gives the speed + jump boost
 			"guard": row.get("guard", false), # Guard list: also raises your defense for a few rounds
 			"wisdom": row.get("wisdom", 0),   # Wisdom UP %: raises your wisdom (= evasion)
+			"faith": row.get("faith", 0),     # Faith UP %: attack up (like the built-in Faith verses)
 			"alt": row.get("alt", []),        # other wordings that also match (sheet_fills.json "extra")
 			"discovered": false,
 			"en": row.get("en", ""), "es": row.get("es", ""), "pl": row.get("pl", ""),
@@ -670,21 +677,44 @@ func _light_up():
 	if lamp:
 		lamp.energy = 0.8
 
-# Zeal (Romans 12:11): run faster and jump higher for 3 seconds
+# Zeal (Romans 12:11): run faster and jump higher for zeal_seconds. It's a
+# walking boost, counted in SECONDS (not battle turns). Another Zeal verse
+# while it's on restarts the countdown (it doesn't stack).
+# The countdown shows in the status row ("Zeal +100%  3s") and in the
+# level's TimerLabel if it has one. (Before, a level without a TimerLabel -
+# Greed - ended the boost at once.)
+@export var zeal_seconds = 3
+var zeal_left = 0
+var zeal_label: Label
+
 func _zeal_boost():
+	if zeal_left > 0:
+		zeal_left = zeal_seconds   # already on: just restart the countdown
+		_update_zeal_label()
+		return
 	# (relative to the current values, so the Greed level's tuning comes back after)
 	var old_jump = jump_velocity
 	var old_speed = speed
 	jump_velocity = old_jump * 1.75
 	speed = old_speed * 2
-	var timer_label = get_parent().get_node_or_null("CanvasLayer/TimerLabel")
-	if timer_label:
-		for i in range(3, 0, -1):
-			timer_label.text = str(i)
-			await get_tree().create_timer(1.0).timeout
-		timer_label.text = ""
+	zeal_left = zeal_seconds
+	while zeal_left > 0:
+		_update_zeal_label()
+		await get_tree().create_timer(1.0).timeout
+		if not is_inside_tree():
+			return
+		zeal_left -= 1
+	_update_zeal_label()
 	jump_velocity = old_jump
 	speed = old_speed
+
+func _update_zeal_label():
+	var timer_label = get_parent().get_node_or_null("CanvasLayer/TimerLabel") if get_parent() else null
+	if timer_label:
+		timer_label.text = str(zeal_left) if zeal_left > 0 else ""
+	if zeal_label:
+		zeal_label.visible = zeal_left > 0
+		zeal_label.text = tr("Zeal +100%%  %ds") % zeal_left
 
 # Using a scroll from the inventory (inventory.gd). Like reciting its verse,
 # but the verse cycle isn't touched and the verse isn't discovered.
@@ -985,6 +1015,8 @@ func verse_power_text(v) -> String:
 			parts.append(tr("Speed + jump"))
 		if v.get("guard", false):
 			parts.append(tr("%d%% def") % int(guard_reduction * 100))
+		if v.get("faith", 0) > 0:
+			parts.append(tr("+%d%% atk") % int(min(v.faith, faith_max * 100)))
 		if v.get("wisdom", 0) > 0:
 			parts.append(tr("+%d%% wis") % int(v.wisdom))
 		return _pack_labels(parts)
@@ -1387,18 +1419,25 @@ func _on_round_ended():
 
 func _update_guard_label():
 	guard_label.visible = guard_rounds_left > 0
-	guard_label.text = tr("Defense +%d%% (%d)") % [int(guard_reduction * 100), guard_rounds_left]
+	guard_label.text = tr("Guard +%d%%  turn %d/%d") % [roundi(guard_reduction * 100), status_turn(guard_rounds_left, guard_rounds), guard_rounds]
+
+# Which turn of the status you're on: 1/3 right after the verse, 3/3 in its
+# last round (each battle round ends one; at 0 the status is gone)
+func status_turn(left: int, total: int) -> int:
+	return clampi(total - left + 1, 1, total)
 
 # ---------------- Faith (attack up) ----------------
 
 # +faith_step attack (stacking up to faith_max) and reset the duration.
 # Outside a battle it doesn't count down.
-func activate_faith():
+func activate_faith(amount := -1.0):
+	if amount < 0:
+		amount = faith_step   # the built-in Faith verses: +50%
 	var was_max = faith_bonus >= faith_max
 	if faith_rounds_left > 0:
-		faith_bonus = min(faith_bonus + faith_step, faith_max)
+		faith_bonus = min(faith_bonus + amount, faith_max)
 	else:
-		faith_bonus = faith_step
+		faith_bonus = min(amount, faith_max)
 	faith_rounds_left = faith_rounds
 	_update_faith_label()
 	print("Faith: attack +", int(faith_bonus * 100), "% for ", faith_rounds, " rounds")
@@ -1407,7 +1446,7 @@ func activate_faith():
 
 func _update_faith_label():
 	faith_label.visible = faith_rounds_left > 0
-	faith_label.text = tr("Faith +%d%% (%d)") % [int(faith_bonus * 100), faith_rounds_left]
+	faith_label.text = tr("Faith +%d%%  turn %d/%d") % [roundi(faith_bonus * 100), status_turn(faith_rounds_left, faith_rounds), faith_rounds]
 
 # ---------------- Wisdom (evasion) ----------------
 
@@ -1431,7 +1470,7 @@ func _update_wisdom_label():
 	if wisdom_label == null:
 		return
 	wisdom_label.visible = wisdom_rounds_left > 0 and wisdom > 0
-	wisdom_label.text = tr("%d%% wis (%d)") % [int(wisdom), wisdom_rounds_left]
+	wisdom_label.text = tr("Wisdom %d%%  turn %d/%d") % [roundi(wisdom), status_turn(wisdom_rounds_left, wisdom_rounds), wisdom_rounds]
 
 # An enemy attack / verse / line hitting you (enemy.gd): rolls against your
 # evasion first. Returns the damage taken, or -1 if you dodged it.
@@ -1456,8 +1495,22 @@ func _play_shofar():
 
 # Builds the Guard/Faith lines under the HP bar and the shofar sound player.
 func _build_status_labels():
-	var box = VBoxContainer.new()   # stacks the labels; hidden ones take no space
-	box.position = hp_bar.position + Vector2(hp_bar.size.x + 10, -2)   # right of the HP bar (the verse box is below it)
+	# One row right of the HP bar (the Items / Run buttons are above it, the
+	# verse box below): "Faith +100%  turn 1/3   Guard +50%  turn 2/3 ..."
+	# Hidden labels take no space.
+	# It sits on its own layer 5 (above the speech bubbles, layer 4, under the
+	# menus) so a bubble never hides it, and wraps onto a second line before
+	# it reaches the enemy HP panel on the right (the verse box moves down).
+	var box = HFlowContainer.new()
+	box.name = "StatusRow"
+	box.add_theme_constant_override("h_separation", 18)
+	box.add_theme_constant_override("v_separation", 0)
+	box.position = hp_bar.position + Vector2(hp_bar.size.x + 12, -1)
+	var screen_w = get_viewport().get_visible_rect().size.x if is_inside_tree() else 1024.0
+	box.custom_minimum_size.x = max(screen_w - box.position.x - STATUS_RIGHT_MARGIN, 200.0)
+	box.resized.connect(func():
+		if verse_panel:
+			verse_panel.position.y = VERSE_PANEL_POS.y + max(box.size.y - STATUS_LINE_H, 0.0))
 	box.add_child(guard_label)
 	faith_label = Label.new()
 	faith_label.add_theme_color_override("font_color", Color(1.0, 0.8, 0.45))
@@ -1471,7 +1524,17 @@ func _build_status_labels():
 	wisdom_label.add_theme_constant_override("outline_size", 4)
 	wisdom_label.visible = false
 	box.add_child(wisdom_label)
-	hp_bar.get_parent().add_child.call_deferred(box)
+	zeal_label = Label.new()
+	zeal_label.add_theme_color_override("font_color", Color(1.0, 0.6, 0.35))
+	zeal_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	zeal_label.add_theme_constant_override("outline_size", 4)
+	zeal_label.visible = false
+	box.add_child(zeal_label)
+	var status_layer = CanvasLayer.new()
+	status_layer.name = "StatusLayer"
+	status_layer.layer = 5
+	status_layer.add_child(box)
+	add_child.call_deferred(status_layer)
 	
 	shofar_player = AudioStreamPlayer.new()
 	if ResourceLoader.exists(shofar_sound_path):
@@ -1543,6 +1606,8 @@ func _layout_hud():
 # Index / Verse / Effects columns, so it never covers the characters (they
 # stand in the lower middle of the screen).
 const VERSE_PANEL_POS = Vector2(10, 102)
+const STATUS_RIGHT_MARGIN = 300.0   # keep the status row clear of the enemy HP panel
+const STATUS_LINE_H = 26.0          # one line of the status row
 const VERSE_PANEL_SIZE = Vector2(620, 184)
 var cycle_label: Label
 
@@ -1650,6 +1715,7 @@ func _on_language_changed(_new_language):
 	_update_guard_label()
 	_update_faith_label()
 	_update_wisdom_label()
+	_update_zeal_label()
 	verse_input.placeholder_text = DEFAULT_PLACEHOLDER
 
 # ---------------- Speech bubble and speaker icon ----------------

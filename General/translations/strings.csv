@@ -420,3 +420,7 @@ Wisdom! %s is in your verse box - press Enter,Wisdom! %s is in your verse box - 
 God's promises are “Yes” in Christ!,God's promises are “Yes” in Christ!,¡Las promesas de Dios son «Sí» en Cristo!,Obietnice Boże są „tak” w Chrystusie!
 SinDeath's counter hits! -%s HP,SinDeath's counter hits! -%s HP,¡El contraataque de SinDeath te golpea! -%s PS,Kontra SinDeatha trafia! -%s PŻ
 Items (%s),Items (%s),Objetos (%s),Przedmioty (%s)
+Faith +%d%%  turn %d/%d,Faith +%d%%  turn %d/%d,Fe +%d%%  turno %d/%d,Wiara +%d%%  tura %d/%d
+Guard +%d%%  turn %d/%d,Guard +%d%%  turn %d/%d,Defensa +%d%%  turno %d/%d,Ochrona +%d%%  tura %d/%d
+Wisdom %d%%  turn %d/%d,Wisdom %d%%  turn %d/%d,Sabiduría %d%%  turno %d/%d,Mądrość %d%%  tura %d/%d
+Zeal +100%%  %ds,Zeal +100%%  %ds,Celo +100%%  %ds,Gorliwość +100%%  %ds

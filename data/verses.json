@@ -1075,7 +1075,8 @@
     "pride": 25
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "faith": 10
   },
   {
    "ref": "Proverbs 20:1b",
@@ -3905,7 +3906,8 @@
    },
    "heal": 100,
    "jesus": true,
-   "wisdom": 10
+   "wisdom": 10,
+   "faith": 100
   },
   {
    "ref": "Matthew 10:10",
@@ -5382,7 +5384,8 @@
    "all_damage": 100,
    "sins": {},
    "heal": 0,
-   "jesus": true
+   "jesus": true,
+   "faith": 100
   },
   {
    "ref": "2 Corinthians 12:10a",
@@ -5404,7 +5407,8 @@
    "all_damage": 50,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "faith": 10
   },
   {
    "ref": "2 Corinthians 12:14a",
@@ -5457,7 +5461,8 @@
     "envy": 25
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "faith": 10
   },
   {
    "ref": "Galatians 4:13",
@@ -5502,7 +5507,8 @@
     "greed": 150
    },
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "faith": 25
   },
   {
    "ref": "Ephesians 2:10",
@@ -5665,7 +5671,8 @@
     "greed": 50
    },
    "heal": 20,
-   "jesus": false
+   "jesus": false,
+   "faith": 50
   },
   {
    "ref": "Colossians 3:5c",
@@ -5681,7 +5688,8 @@
    "jesus": false,
    "vs": {
     "idol": 50
-   }
+   },
+   "faith": 10
   },
   {
    "ref": "1 Thessalonians 2:5",
@@ -5708,7 +5716,8 @@
    },
    "heal": 0,
    "jesus": false,
-   "wisdom": 5
+   "wisdom": 5,
+   "faith": 10
   },
   {
    "ref": "James 1:2 (2)",
@@ -5760,7 +5769,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "faith": 10
   },
   {
    "ref": "James 3:1",
@@ -6071,7 +6081,8 @@
     "pride": 10
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "faith": 10
   },
   {
    "ref": "2 Timothy 3:1-5",
@@ -7685,7 +7696,8 @@
    "all_damage": 50,
    "sins": {},
    "heal": 50,
-   "jesus": false
+   "jesus": false,
+   "faith": 50
   },
   {
    "ref": "Psalm 119:36",
@@ -7936,7 +7948,8 @@
    "sins": {},
    "heal": 100,
    "jesus": false,
-   "wisdom": 20
+   "wisdom": 20,
+   "faith": 50
   },
   {
    "ref": "1 Corinthians 13:4b",
@@ -8086,7 +8099,8 @@
    "sins": {},
    "heal": 100,
    "jesus": false,
-   "wisdom": 50
+   "wisdom": 50,
+   "faith": 50
   },
   {
    "ref": "Matthew 15:30",
@@ -8123,7 +8137,8 @@
    "all_damage": 10,
    "sins": {},
    "heal": 100,
-   "jesus": true
+   "jesus": true,
+   "faith": 50
   },
   {
    "ref": "Mark 1:34",
@@ -8197,7 +8212,8 @@
     "sindeath": 100,
     "idol": 50
    },
-   "wisdom": 100
+   "wisdom": 100,
+   "faith": 100
   },
   {
    "ref": "John 6:35a",
@@ -8245,7 +8261,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 100,
-   "jesus": true
+   "jesus": true,
+   "faith": 50
   },
   {
    "ref": "John 10:10b",
@@ -8284,7 +8301,8 @@
    "jesus": true,
    "vs": {
     "sindeath": 50
-   }
+   },
+   "faith": 50
   },
   {
    "ref": "John 10:29",
@@ -8295,7 +8313,8 @@
    "all_damage": 10,
    "sins": {},
    "heal": 100,
-   "jesus": true
+   "jesus": true,
+   "faith": 50
   },
   {
    "ref": "John 14:16",
@@ -8306,7 +8325,8 @@
    "all_damage": 10,
    "sins": {},
    "heal": 100,
-   "jesus": true
+   "jesus": true,
+   "faith": 10
   },
   {
    "ref": "John 16:33",
@@ -8345,7 +8365,8 @@
    "jesus": true,
    "vs": {
     "sindeath": 50
-   }
+   },
+   "faith": 100
   },
   {
    "ref": "Acts 4:29-30",
@@ -8443,7 +8464,8 @@
    "sins": {},
    "heal": 100,
    "jesus": false,
-   "wisdom": 100
+   "wisdom": 100,
+   "faith": 100
   },
   {
    "ref": "2 Corinthians 3:6a",
@@ -8489,7 +8511,8 @@
    "all_damage": 50,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "faith": 100
   },
   {
    "ref": "Philippians 4:6",
@@ -8537,7 +8560,8 @@
     "pride": 50
    },
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "faith": 50
   },
   {
    "ref": "Titus 3:5b",
@@ -8660,7 +8684,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 50,
-   "jesus": false
+   "jesus": false,
+   "faith": 50
   },
   {
    "ref": "Isaiah 30:26",
@@ -8682,7 +8707,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 50,
-   "jesus": false
+   "jesus": false,
+   "faith": 100
   },
   {
    "ref": "Isaiah 40:29b",
@@ -8693,7 +8719,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 50,
-   "jesus": false
+   "jesus": false,
+   "faith": 100
   },
   {
    "ref": "Isaiah 40:31",
@@ -8704,7 +8731,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "faith": 100
   },
   {
    "ref": "Isaiah 44:22a",
@@ -9023,7 +9051,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "faith": 100
   },
   {
    "ref": "Psalm 103:2",
@@ -9035,7 +9064,8 @@
    "sins": {},
    "heal": 100,
    "jesus": false,
-   "wisdom": 7
+   "wisdom": 7,
+   "faith": 7
   },
   {
    "ref": "Psalm 103:3",
@@ -9308,7 +9338,8 @@
    "sins": {},
    "heal": 0,
    "jesus": true,
-   "wisdom": 10
+   "wisdom": 10,
+   "faith": 50
   },
   {
    "ref": "Luke 10:19",
@@ -9374,7 +9405,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 100,
-   "jesus": true
+   "jesus": true,
+   "faith": 25
   },
   {
    "ref": "John 10:6",
@@ -9507,7 +9539,8 @@
    "jesus": false,
    "vs": {
     "false_teacher": 25
-   }
+   },
+   "faith": 50
   },
   {
    "ref": "Galatians 3:13",
@@ -9561,7 +9594,8 @@
    "all_damage": 45,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "faith": 10
   },
   {
    "ref": "Ephesians 5:11",
@@ -9590,7 +9624,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "faith": 10
   },
   {
    "ref": "Philippians 3:17",
@@ -9631,7 +9666,8 @@
    "vs": {
     "false_teacher": 25,
     "demon": 50
-   }
+   },
+   "faith": 10
   },
   {
    "ref": "Romans 6:15",
@@ -9643,7 +9679,8 @@
    "sins": {},
    "heal": 25,
    "jesus": false,
-   "wisdom": 25
+   "wisdom": 25,
+   "faith": 25
   },
   {
    "ref": "Romans 7:6b",
@@ -9752,7 +9789,8 @@
    "jesus": false,
    "vs": {
     "demon": 25
-   }
+   },
+   "faith": 100
   },
   {
    "ref": "Hebrews 12:5b",
@@ -9792,7 +9830,8 @@
    "vs": {
     "demon": 50
    },
-   "wisdom": 7
+   "wisdom": 7,
+   "faith": 7
   },
   {
    "ref": "James 4:4a",
@@ -9864,7 +9903,8 @@
    "vs": {
     "demon": 25
    },
-   "wisdom": 50
+   "wisdom": 50,
+   "faith": 50
   },
   {
    "ref": "1 Corinthians 6:20b",
@@ -10071,7 +10111,8 @@
    "all_damage": 10,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "faith": 10
   },
   {
    "ref": "1 Peter 5:8a",
@@ -10233,6 +10274,18 @@
    "jesus": false
   },
   {
+   "ref": "Genesis 15:6",
+   "translation": "Fragment",
+   "en": "Abram believed in Yahweh, who credited it to him for righteousness.",
+   "es": "Abram creyó en Jehová, y le fue contado por justicia.",
+   "pl": "Abram uwierzył w Jahwe, a On poczytał mu to za sprawiedliwość.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
+  },
+  {
    "ref": "Exodus 15:2",
    "translation": "Fragment",
    "en": "Yah is my strength and song. He has become my salvation. This is my God, and I will praise him.",
@@ -10241,7 +10294,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 50,
-   "jesus": false
+   "jesus": false,
+   "faith": 50
   },
   {
    "ref": "Joshua 1:9",
@@ -10252,7 +10306,44 @@
    "all_damage": 0,
    "sins": {},
    "heal": 50,
-   "jesus": false
+   "jesus": false,
+   "faith": 50
+  },
+  {
+   "ref": "1 Chronicles 16:11",
+   "translation": "",
+   "en": "Seek Yahweh and his strength. Seek his face forever more.",
+   "es": "Busquen a Jehová y su fortaleza. Busquen su rostro continuamente.",
+   "pl": "Szukajcie Jahwe i Jego siły. Szukajcie Jego oblicza ciągle.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
+  },
+  {
+   "ref": "Nehemiah 8:10",
+   "translation": "Fragment",
+   "en": "The joy of Yahweh is your strength.",
+   "es": "El gozo de Jehová es su fuerza.",
+   "pl": "Radość z Jahwe jest waszą siłą.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 70
+  },
+  {
+   "ref": "Psalm 18:32",
+   "translation": "Fragment",
+   "en": "God arms me with strength, and makes my way perfect",
+   "es": "Dios me arma de fortaleza y hace perfecto mi camino.",
+   "pl": "Bóg uzbraja mnie siłą i czyni moją drogę doskonałą.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
   },
   {
    "ref": "Psalm 27:1a",
@@ -10266,7 +10357,32 @@
    "jesus": false,
    "vs": {
     "sindeath": 25
-   }
+   },
+   "faith": 100
+  },
+  {
+   "ref": "Psalm 27:14",
+   "translation": "Full",
+   "en": "Wait for Yahweh. Be strong, and let your heart take courage. Yes, wait for Yahweh.",
+   "es": "Espera en Jehová. Sé fuerte y cobra ánimo. Sí, espera en Jehová.",
+   "pl": "Oczekuj na Jahwe. Bądź mocny i niech twoje serce nabiera odwagi. Tak, oczekuj na Jahwe.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 100
+  },
+  {
+   "ref": "Psalm 28:8",
+   "translation": "Fragment",
+   "en": "Yahweh is the strength of His people.",
+   "es": "Jehová es la fortaleza de su pueblo.",
+   "pl": "Jahwe jest siłą swego ludu.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
   },
   {
    "ref": "Psalm 29:11",
@@ -10277,7 +10393,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 50,
-   "jesus": false
+   "jesus": false,
+   "faith": 100
   },
   {
    "ref": "Psalm 31:24",
@@ -10290,7 +10407,44 @@
     "sloth": 25
    },
    "heal": 10,
-   "jesus": false
+   "jesus": false,
+   "faith": 50
+  },
+  {
+   "ref": "Psalm 59:16a",
+   "translation": "Fragment",
+   "en": "But I will sing of your strength. Yes, I will sing aloud of your loving kindness in the morning.",
+   "es": "Pero yo cantaré de tu fortaleza. Sí, cantaré con júbilo de tu misericordia por la mañana.",
+   "pl": "Ale ja będę śpiewał o Twojej sile. Tak, rano z radością będę śpiewał o Twojej łasce.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
+  },
+  {
+   "ref": "Psalm 59:16b",
+   "translation": "Fragment",
+   "en": "For you have been my stronghold, a refuge in the day of my trouble.",
+   "es": "Porque tú has sido mi refugio, fortaleza en el día de mi angustia.",
+   "pl": "Bo byłeś moją ostoją, schronieniem w dniu mojej niedoli.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
+  },
+  {
+   "ref": "Psalm 75:10b",
+   "translation": "Fragment",
+   "en": "I will lift up the power of the godly.",
+   "es": "Levantaré el poder de los piadosos.",
+   "pl": "Odetnę siłę niegodziwych, ale wywyższę moc pobożnych.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 100
   },
   {
    "ref": "Isaiah 12:2b",
@@ -10306,7 +10460,32 @@
    "jesus": false,
    "vs": {
     "false_teacher": 50
-   }
+   },
+   "faith": 100
+  },
+  {
+   "ref": "Isaiah 33:13b",
+   "translation": "Fragment",
+   "en": "You [believers], acknowledge God's might.",
+   "es": "",
+   "pl": "",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 100
+  },
+  {
+   "ref": "Isaiah 40:29",
+   "translation": "Full",
+   "en": "He gives power to the weak. He increases the strength of him who has no might.",
+   "es": "Él da poder al débil. Aumenta la fuerza del que no tiene poder.",
+   "pl": "On daje siłę słabym. Zwiększa moc tego, który nie ma siły.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 100
   },
   {
    "ref": "Daniel 3:17",
@@ -10317,7 +10496,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 25,
-   "jesus": false
+   "jesus": false,
+   "faith": 50
   },
   {
    "ref": "Daniel 3:18",
@@ -10328,7 +10508,8 @@
    "all_damage": 50,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "faith": 100
   },
   {
    "ref": "Habakkuk 3:19",
@@ -10340,7 +10521,8 @@
    "sins": {},
    "heal": 0,
    "jesus": false,
-   "wisdom": 50
+   "wisdom": 50,
+   "faith": 100
   },
   {
    "ref": "Zechariah 4:6",
@@ -10351,7 +10533,20 @@
    "all_damage": 100,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "faith": 100
+  },
+  {
+   "ref": "Matthew 17:20",
+   "translation": "Fragment",
+   "en": "If you had faith as small as a mustard seed, you could move a mountain. Nothing would be impossible.",
+   "es": "Si tuvieran fe como un grano de mostaza, podrían decir a esta montaña: «¡Muévete!» y nada les sería imposible.",
+   "pl": "Gdybyście mieli wiarę jak ziarno gorczycy, moglibyście powiedzieć tej górze: „Przenieś się!” – i nic nie byłoby dla was niemożliwe.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": true,
+   "faith": 100
   },
   {
    "ref": "Mark 9:24",
@@ -10362,7 +10557,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "faith": 100
   },
   {
    "ref": "Luke 7:50",
@@ -10374,7 +10570,8 @@
    "sins": {},
    "heal": 100,
    "jesus": true,
-   "wisdom": 10
+   "wisdom": 10,
+   "faith": 100
   },
   {
    "ref": "Luke 5:20",
@@ -10385,7 +10582,8 @@
    "all_damage": 0,
    "sins": {},
    "heal": 100,
-   "jesus": true
+   "jesus": true,
+   "faith": 100
   },
   {
    "ref": "Luke 18:17",
@@ -10399,7 +10597,8 @@
    "jesus": true,
    "vs": {
     "false_teacher": 50
-   }
+   },
+   "faith": 100
   },
   {
    "ref": "John 6:37",
@@ -10411,7 +10610,8 @@
    "sins": {},
    "heal": 100,
    "jesus": true,
-   "wisdom": 10
+   "wisdom": 10,
+   "faith": 100
   },
   {
    "ref": "Romans 4:14",
@@ -10427,7 +10627,8 @@
    "jesus": false,
    "vs": {
     "false_teacher": 10
-   }
+   },
+   "faith": 50
   },
   {
    "ref": "Romans 4:23",
@@ -10455,7 +10656,32 @@
    "vs": {
     "false_teacher": 25,
     "demon": 50
-   }
+   },
+   "faith": 100
+  },
+  {
+   "ref": "Romans 8:35a",
+   "translation": "Fragment",
+   "en": "Who shall separate us from the love of Christ?",
+   "es": "¿Quién nos separará del amor de Cristo?",
+   "pl": "Któż nas odłączy od miłości Chrystusa?",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
+  },
+  {
+   "ref": "Romans 8:35b",
+   "translation": "Fragment",
+   "en": "Could oppression, anguish, famine, nakedness, or sword seperate us from the love of Christ?",
+   "es": "¿Tribulación, angustia, hambre, desnudez o espada nos separará del amor de Cristo?",
+   "pl": "Czy ucisk, ucisk, głód, nagość czy miecz mogą nas odłączyć od miłości Chrystusa?",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
   },
   {
    "ref": "Romans 8:37",
@@ -10466,7 +10692,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "faith": 125
   },
   {
    "ref": "Romans 8:39",
@@ -10477,7 +10704,8 @@
    "all_damage": 25,
    "sins": {},
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "faith": 100
   },
   {
    "ref": "Romans 11:6",
@@ -10488,7 +10716,32 @@
    "all_damage": 0,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "faith": 100
+  },
+  {
+   "ref": "Romans 11:6b",
+   "translation": "Fragment",
+   "en": "If it is of works, it is no longer grace.",
+   "es": "Si es por obras, ya no es gracia.",
+   "pl": "Jeśli jest z uczynków, to nie jest już łaską.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
+  },
+  {
+   "ref": "1 Corinthians 16:13",
+   "translation": "Full",
+   "en": "Watch! Stand firm in the faith! Be courageous! Be strong!",
+   "es": "¡Velad! ¡Estad firmes en la fe! ¡Sean valientes! ¡Sean fuertes!",
+   "pl": "Czuwajcie! Stójcie mocno w wierze! Bądźcie odważni! Bądźcie mocni!",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 25
   },
   {
    "ref": "Ephesians 3:16",
@@ -10499,7 +10752,20 @@
    "all_damage": 0,
    "sins": {},
    "heal": 25,
-   "jesus": false
+   "jesus": false,
+   "faith": 50
+  },
+  {
+   "ref": "Ephesians 3:17",
+   "translation": "Fragment",
+   "en": "I pray that Christ may dwell in your hearts through faith, to the end that you, being rooted and grounded in love,",
+   "es": "Ruego que Cristo more en sus corazones por la fe, para que, arraigados y cimentados en amor,",
+   "pl": "Modlę się, aby Chrystus zamieszkał w waszych sercach przez wiarę, abyście będąc zakorzenieni i ugruntowani w miłości…",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
   },
   {
    "ref": "Ephesians 3:18",
@@ -10510,7 +10776,8 @@
    "all_damage": 50,
    "sins": {},
    "heal": 50,
-   "jesus": false
+   "jesus": false,
+   "faith": 100
   },
   {
    "ref": "Ephesians 3:19",
@@ -10521,7 +10788,44 @@
    "all_damage": 50,
    "sins": {},
    "heal": 100,
-   "jesus": false
+   "jesus": false,
+   "faith": 100
+  },
+  {
+   "ref": "Ephesians 3:20",
+   "translation": "Fragment",
+   "en": "[God] is able to do exceedingly above all that we ask or think, according to the power that works in us,",
+   "es": "[Dios] es poderoso para hacer muchísimo más de lo que pedimos o pensamos, según el poder que obra en nosotros.",
+   "pl": "[Bóg] jest w stanie uczynić daleko więcej niż prosimy lub myślimy, według mocy, która w nas działa.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
+  },
+  {
+   "ref": "Ephesians 6:10",
+   "translation": "Full",
+   "en": "Finally, be strong in the Lord and in the strength of his might.",
+   "es": "Por último, sean fuertes en el Señor y en el poder de su fuerza.",
+   "pl": "W końcu bądźcie mocni w Panu i w sile Jego mocy.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 70
+  },
+  {
+   "ref": "Ephesians 6:17",
+   "translation": "Fragment",
+   "en": "Take the helmet of salvation, and the sword of the Spirit, which is the word of God;",
+   "es": "Tomen el yelmo de la salvación y la espada del Espíritu, que es la palabra de Dios.",
+   "pl": "Weźcie hełm zbawienia i miecz Ducha, którym jest Słowo Boże.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
   },
   {
    "ref": "Philippians 3:9a",
@@ -10536,7 +10840,47 @@
    "vs": {
     "false_teacher": 1000,
     "demon": 50
-   }
+   },
+   "faith": 100
+  },
+  {
+   "ref": "Philippians 3:9b",
+   "translation": "Fragment",
+   "en": "For God’s way of making us right with himself depends on faith.",
+   "es": "Porque el camino de Dios para hacernos justos depende de la fe.",
+   "pl": "Bo Boży sposób usprawiedliwienia nas zależy od wiary.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 100
+  },
+  {
+   "ref": "Philippians 3:20",
+   "translation": "Fragment",
+   "en": "For our citizenship is in heaven, where we also wait for a Savior, the Lord Jesus Christ",
+   "es": "Nuestra ciudadanía está en los cielos, de donde también esperamos al Salvador, al Señor Jesucristo.",
+   "pl": "Nasze obywatelstwo jest w niebie, skąd też oczekujemy Zbawiciela, Pana Jezusa Chrystusa.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 25
+  },
+  {
+   "ref": "2 Thessalonians 3:3",
+   "translation": "Fragment",
+   "en": "But the Lord is faithful, who will strengthen you and guard you from the evil one.",
+   "es": "Pero el Señor es fiel; él los fortalecerá y guardará del maligno.",
+   "pl": "Lecz Pan jest wierny – On was umocni i będzie strzegł od Złego.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "vs": {
+    "demon": 50
+   },
+   "faith": 25
   },
   {
    "ref": "2 Timothy 1:7",
@@ -10552,7 +10896,68 @@
     "false_teacher": 25,
     "demon": 50
    },
-   "wisdom": 25
+   "wisdom": 25,
+   "faith": 25
+  },
+  {
+   "ref": "2 Timothy 2:1",
+   "translation": "",
+   "en": "Be strengthened in the grace that is in Christ Jesus.",
+   "es": "Fortalécete en la gracia que es en Cristo Jesús.",
+   "pl": "",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
+  },
+  {
+   "ref": "Hebrews 4:12a",
+   "translation": "Fragment",
+   "en": "For the word of God is living and active, and sharper than any two-edged sword",
+   "es": "Porque la palabra de Dios es viva y eficaz, y más cortante que cualquier espada de dos filos.",
+   "pl": "Słowo Boże jest bowiem żywe i skuteczne, ostrzejsze niż jakikolwiek miecz obosieczny.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 33
+  },
+  {
+   "ref": "Hebrews 4:12b",
+   "translation": "Fragment",
+   "en": "God's word pierces even to the dividing of soul and spirit, of both joints and marrow",
+   "es": "La palabra de Dios penetra hasta partir el alma y el espíritu, las coyunturas y los tuétanos.",
+   "pl": "Słowo Boże przenika aż do rozdzielenia duszy i ducha, stawów i szpiku.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 33
+  },
+  {
+   "ref": "Hebrews 4:12c",
+   "translation": "Fragment",
+   "en": "The word of God is able to discern the thoughts and intentions of the heart.",
+   "es": "La palabra de Dios es capaz de discernir los pensamientos y las intenciones del corazón.",
+   "pl": "Słowo Boże jest zdolne rozsądzać myśli i zamysły serca.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 33
+  },
+  {
+   "ref": "2 Peter 3:18",
+   "translation": "Fragment",
+   "en": "But grow in the grace and knowledge of our Lord and Savior the Lamb.",
+   "es": "",
+   "pl": "",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
   },
   {
    "ref": "1 John 3:20",
@@ -10567,7 +10972,8 @@
    "vs": {
     "false_teacher": 25,
     "demon": 100
-   }
+   },
+   "faith": 50
   },
   {
    "ref": "1 John 5:13",
@@ -10584,7 +10990,20 @@
     "demon": 25,
     "sindeath": 100
    },
-   "wisdom": 100
+   "wisdom": 100,
+   "faith": 200
+  },
+  {
+   "ref": "Psalm 37:17",
+   "translation": "Full",
+   "en": "For the arms of the wicked shall be broken, but Yahweh upholds the righteous.",
+   "es": "Los brazos de los impíos serán quebrados, pero Jehová sostiene a los justos.",
+   "pl": "Ramiona niegodziwych zostaną połamane, ale Jahwe podtrzymuje sprawiedliwych.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 25
   },
   {
    "ref": "Psalm 17:8",
@@ -10611,6 +11030,19 @@
    "guard": true
   },
   {
+   "ref": "Psalm 28:7",
+   "translation": "Fragment",
+   "en": "Yahweh is my strength and my shield. My heart has trusted in him, and I am helped.",
+   "es": "El Señor es mi fuerza y mi escudo; en él confió mi corazón, y fui ayudado.",
+   "pl": "Pan jest moją siłą i moją tarczą. Moje serce Mu zaufało i otrzymałem pomoc.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50,
+   "guard": true
+  },
+  {
    "ref": "Psalm 31:2",
    "translation": "Fragment",
    "en": "Be to me a strong rock, a house of defense to save me.",
@@ -10634,6 +11066,18 @@
    "jesus": false,
    "wisdom": 20,
    "guard": true
+  },
+  {
+   "ref": "Psalm 46:1",
+   "translation": "Fragment",
+   "en": "Be still, and know that I am God. I will be exalted among the nations.",
+   "es": "Estén quietos y sepan que yo soy Dios. Seré exaltado entre las naciones.",
+   "pl": "Zatrzymajcie się i poznajcie, że Ja jestem Bogiem. Będę wywyższony wśród narodów.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 50
   },
   {
    "ref": "Psalm 91:1",
@@ -10738,6 +11182,19 @@
    "guard": true
   },
   {
+   "ref": "Ephesians 6:16",
+   "translation": "Fragment",
+   "en": "Equip the shield of faith, with which you can quench all the fiery darts of the evil one.",
+   "es": "Tomen el escudo de la fe, con el que podrán apagar todos los dardos de fuego del maligno.",
+   "pl": "Weźcie tarczę wiary, którą zdołacie zgasić wszystkie ogniste pociski złego.",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "faith": 25,
+   "guard": true
+  },
+  {
    "ref": "Philippians 3:3 (2)",
    "translation": "Fragment",
    "en": "We... are truly saved. We rely on what Christ Jesus has done for us and put no confidence in human effort.",
@@ -10748,6 +11205,7 @@
    "heal": 100,
    "jesus": false,
    "wisdom": 100,
+   "faith": 100,
    "guard": true
   },
   {
@@ -10913,7 +11371,8 @@
    "sins": {},
    "heal": 0,
    "jesus": false,
-   "wisdom": 100
+   "wisdom": 100,
+   "faith": 10
   },
   {
    "ref": "Psalm 119:125",
@@ -10964,7 +11423,8 @@
    "sins": {},
    "heal": 0,
    "jesus": false,
-   "wisdom": 50
+   "wisdom": 50,
+   "faith": 10
   },
   {
    "ref": "Proverbs 3:6",
@@ -11272,7 +11732,8 @@
    "sins": {},
    "heal": 0,
    "jesus": false,
-   "wisdom": 15
+   "wisdom": 15,
+   "faith": 50
   },
   {
    "ref": "Proverbs 24:5b",
@@ -11284,7 +11745,8 @@
    "sins": {},
    "heal": 0,
    "jesus": false,
-   "wisdom": 15
+   "wisdom": 15,
+   "faith": 50
   },
   {
    "ref": "Proverbs 28:23",
@@ -11568,7 +12030,8 @@
    "sins": {},
    "heal": 0,
    "jesus": false,
-   "wisdom": 5
+   "wisdom": 5,
+   "faith": 5
   },
   {
    "ref": "Psalm 149:6a",
@@ -12073,7 +12536,8 @@
    "jesus": false,
    "vs": {
     "demon": 100
-   }
+   },
+   "faith": 20
   },
   {
    "ref": "James 4:7",
@@ -12412,18 +12876,6 @@
    "guard": true
   },
   {
-   "ref": "Psalm 28:7",
-   "translation": "Fragment",
-   "en": "Yahweh is my strength and my shield. My heart has trusted in him, and I am helped.",
-   "es": "El Señor es mi fuerza y mi escudo; en él confió mi corazón, y fui ayudado.",
-   "pl": "Pan jest moją siłą i moją tarczą. Moje serce Mu zaufało i otrzymałem pomoc.",
-   "all_damage": 0,
-   "sins": {},
-   "heal": 0,
-   "jesus": false,
-   "guard": true
-  },
-  {
    "ref": "Psalm 34:22",
    "translation": "Full",
    "en": "Yahweh redeems the soul of his servants. None of those who take refuge in him will be condemned.",
@@ -12753,18 +13205,6 @@
    "en": "Fit your feet with the preparation of the Good News of peace",
    "es": "Calcen sus pies con la disposición del evangelio de la paz.",
    "pl": "Obujcie nogi w gotowość głoszenia Dobrej Nowiny o pokoju.",
-   "all_damage": 0,
-   "sins": {},
-   "heal": 0,
-   "jesus": false,
-   "guard": true
-  },
-  {
-   "ref": "Ephesians 6:16",
-   "translation": "Fragment",
-   "en": "Equip the shield of faith, with which you can quench all the fiery darts of the evil one.",
-   "es": "Tomen el escudo de la fe, con el que podrán apagar todos los dardos de fuego del maligno.",
-   "pl": "Weźcie tarczę wiary, którą zdołacie zgasić wszystkie ogniste pociski złego.",
    "all_damage": 0,
    "sins": {},
    "heal": 0,
