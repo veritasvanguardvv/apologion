@@ -20,7 +20,9 @@ const Battle3D = preload("res://battle_3d.gd")   # 3D boss battle: 2D spots seen
 #   - Choosing You or the party member only changes heals (attacks stay on
 #     all enemies).
 # Red markers = who your next attack hits. Green markers = who your next
-# heal heals. Markers only show during YOUR turn.
+# heal heals. Markers only show during YOUR turn, and the green ones only
+# while you're switching targets (a choice other than the default All is
+# picked): by default they'd just clutter the screen over your party.
 # The choice goes back to the default after every turn of yours, so you never
 # hit the wrong target by accident with an old choice next round.
 #
@@ -155,8 +157,9 @@ func _process(_delta):
 	if TurnManager.is_players_turn():
 		for e in attack_targets():
 			wanted.append([e, attack_color])
-		for a in heal_targets():
-			wanted.append([a, heal_color])
+		if switching():
+			for a in heal_targets():
+				wanted.append([a, heal_color])
 	# Make sure there are enough marker sprites, hide the extra ones
 	while markers.size() < wanted.size():
 		var sprite = Sprite2D.new()
@@ -173,6 +176,13 @@ func _process(_delta):
 			sprite.position = rect.get_center()
 			sprite.scale = (rect.size + Vector2.ONE * marker_margin * 2.0) / marker_texture.get_size() * pulse
 			sprite.modulate = wanted[i][1]
+
+# True while you're picking a target (Alt / the Target button moved off the
+# default). The green heal markers only show then; they go away again once
+# the verse is recited (end of your turn), you cycle back to All, or the
+# battle ends (reset()).
+func switching() -> bool:
+	return chosen != null and is_instance_valid(chosen)
 
 # How many markers are on screen (for tests)
 func visible_marker_count() -> int:

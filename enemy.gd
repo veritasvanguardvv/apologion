@@ -61,20 +61,26 @@ var enemy_type = ""
 #   every other verse has no effect. See character_body_2d.gd verse_damage_against.
 @export var only_vs = ""
 # Boss talk: its bubbles type out with the boss voice blips (speech_bubble.gd).
-# On for every boss-only enemy (only_vs set: SinDeath, the Golden Calf).
+# On for every boss-only enemy (only_vs set: SinDeath, the Idol).
 @export var boss_voice = false
 func talks_like_boss() -> bool:
 	return boss_voice or only_vs != ""
 # dormant: not in the level yet (hidden, can't start a battle) until awaken()
 @export var dormant = false
-# passive: never takes a turn (the Golden Calf just stands there)
+# passive: never takes a turn (the Idol just stands there)
 @export var passive = false
 # optional_target: the battle can be won without beating it
 @export var optional_target = false
 # survives_defeat: at 0 HP it isn't removed, it just leaves the battle
-#   ("cracked"); emits cracked. (The Golden Calf still has to be rammed.)
+#   ("cracked"); emits cracked. (The Idol still has to be rammed.)
 @export var survives_defeat = false
 @export var hide_while_dormant = true   # false: stays visible (just no HP bar) while dormant
+# head_bar: the small grey HP bar + type tag over its head. Boss-only enemies
+# (only_vs set: SinDeath, the Idol) never show it: their HP is in the
+# enemies' panel at the top right (turn_manager.gd).
+@export var head_bar = true
+func shows_head_bar() -> bool:
+	return head_bar and only_vs == ""
 signal cracked
 var counter_refs = []     # player verses that counter what it just recited (only during your next turn)
 var type_label: Label     # small "Sloth" tag under the HP bar
@@ -96,6 +102,8 @@ func _ready():
 	hp = max_hp
 	hp_bar.max_value = max_hp
 	hp_bar.value = hp
+	if not shows_head_bar():
+		hp_bar.visible = false
 	if display_name == "":
 		display_name = str(name)
 	
@@ -143,6 +151,7 @@ func awaken():
 		add_to_group("enemies")
 
 func _show_battle_ui(on: bool):
+	on = on and shows_head_bar()
 	if hp_bar:
 		hp_bar.visible = on
 	if type_label:
@@ -293,7 +302,7 @@ func say_line(line: Dictionary):
 
 func set_enemy_type(new_type: String):
 	enemy_type = new_type
-	type_label.visible = enemy_type != ""
+	type_label.visible = enemy_type != "" and shows_head_bar()
 	type_label.text = type_name(enemy_type)   # e.g. "Sloth": translated automatically
 
 static func type_name(t: String) -> String:
@@ -423,7 +432,7 @@ func _death_anim():
 # survives_defeat: out of the battle, but stays in the level
 var is_cracked = false
 # Straight to 0 HP (ignores defense): cracks a survives_defeat enemy (the
-# Golden Calf), defeats any other. Used by the SinDeath counter (2 Cor 1:20).
+# Idol), defeats any other. Used by the SinDeath counter (2 Cor 1:20).
 func knock_out():
 	hp = 0
 	hp_bar.value = 0

@@ -277,7 +277,7 @@ func _intercept_verse(phase: String, verse):
 func _start_counter():
 	counter_state = "sliding"
 	counters_shown += 1
-	TurnManager.show_message(tr("SinDeath covers the calf!"))
+	TurnManager.show_message(tr("SinDeath covers the Idol!"))
 	var tw = create_tween()
 	tw.tween_property(sindeath, "position:x", idol.position.x, slide_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	await tw.finished
@@ -421,7 +421,7 @@ func _transform():
 	_shake()
 	await sd.animation_finished
 	sd.play("idle")
-	sindeath.hp_bar.visible = true
+	sindeath._show_battle_ui(true)   # (no head bar for SinDeath: enemy.gd shows_head_bar)
 	await get_tree().create_timer(0.4).timeout
 
 
