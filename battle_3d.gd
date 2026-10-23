@@ -31,6 +31,7 @@ extends Node3D
 # Used by Greed/scripts/sindeath_scene.gd: begin() before SinDeath manifests,
 # finish() after "Victory!" (the victory talk and the ram are 2D again).
 
+const HudLayout = preload("res://hud_layout.gd")   # keeps popups clear of the HUD
 const K = 0.01                 # 3D units per 2D pixel
 const CULL_BIT = 1 << 19       # canvas visibility layer for the hidden 2D drawing
 const PREVIEW_TEX = "res://Greed/preview-old-dark-castle-interior-tileset.png"
@@ -77,13 +78,25 @@ var base_node = null
 var cam_pos = Vector3.ZERO
 var cam_look = Vector3.ZERO
 var cam_fov = 55.0
-var cam_vel = Vector3.ZERO      # (the camera's eased moves)
+var cam_vel = Vector3.ZERO      # (the camera's eased moves: its speed now)
 var look_vel = Vector3.ZERO
 var fov_vel = 0.0
+var blend = {}                  # the move to the current shot (see _process)
 var cam_max_speed = 0.0        # fastest camera move, units/s (tests)
 var cam_max_accel = 0.0        # most sudden change of speed, units/s² (tests)
+var cam_min_blend = INF        # quickest move to a new shot that isn't a hit, s (tests)
+var cam_blends = []            # [shot, seconds] of every move (tests)
 var cam_last_v = Vector3.ZERO
-const CAM_MAX_SPEED = 7.0
+const CAM_MAX_SPEED = 10.0
+# How long a move to a new shot takes (an ease in and out): hits are a bit
+# quicker (a punch), the big wide moves slower; long moves take longer.
+const BLEND_TIME = 1.15
+const BLEND_HIT = 0.85
+const BLEND_SLOW = 1.4
+const BLEND_MAX = 2.4
+const BLEND_SPEED = 5.0         # a long move: about this many units/s on average
+const BLEND_CARRY = 0.2        # the old move's speed fades out over about this (s)
+const SD_MIN_DIST = 6.2         # the camera never gets closer to SinDeath's body than this
 const IDOL_LANE = -0.1
 const SD_HOME_LANE = -1.3
 const PEDESTAL_DEPTH = 0.5     # the calf's pedestal: IDOL_LANE -/+ 0.25
@@ -121,17 +134,28 @@ static func world_point(node, p: Vector2) -> Vector2:
 	var vp = current.get_viewport()
 	return vp.get_canvas_transform().affine_inverse() * current._screen(node, p)
 
-# A popup centred on screen point s, moved so all of it stays on the screen
-# and below the turn banner at the top (2D and 3D both use this).
+# A popup centred on screen point s (rising by rise screen pixels): moved so
+# all of it stays on the screen, clear of the HUD (the turn message, Run /
+# Items, the HP bars) and of the popups and bubbles already showing
+# (hud_layout.gd). 2D and 3D both use this. Returns the new s.
+static var _popups_made = 0
 static func keep_on_screen(vp: Viewport, label: Control, s: Vector2, rise := 0.0) -> Vector2:
-	var size = vp.get_visible_rect().size
 	var k = vp.get_canvas_transform().get_scale().x
-	var half = label.size.x * k / 2.0
-	s.x = clamp(s.x, half + 8.0, max(half + 8.0, size.x - half - 8.0))
-	# the turn banner spans the top; the boss HP panel the top-right corner
-	var top = 132.0 if s.x + half > size.x - 290.0 else 62.0
-	s.y = max(s.y, top + 15.0 * k + rise)
-	return s
+	if not label.has_meta("born"):
+		_popups_made += 1
+		label.set_meta("born", _popups_made)
+		label.add_to_group("float_popups")
+	var w = label.size.x * k
+	var h = label.size.y * k
+	var rect = Rect2(s.x - w / 2.0, s.y - 15.0 * k - rise, w, h + rise)
+	var others = HudLayout.bubble_rects(vp)
+	var me = label.get_meta("born")
+	for l in vp.get_tree().get_nodes_in_group("float_popups"):
+		if l != label and is_instance_valid(l) and l.get_meta("born", 0) < me and l.has_meta("screen_rect") and l.modulate.a > 0.15:
+			others.append(l.get_meta("screen_rect").grow(HudLayout.GAP / 2.0))
+	var p = HudLayout.fit(rect, vp, others)
+	label.set_meta("screen_rect", Rect2(p, rect.size))
+	return Vector2(p.x + w / 2.0, p.y + rise + 15.0 * k)
 
 # How many screen pixels one 2D pixel is at that spot (perspective)
 static func screen_scale(node, p: Vector2) -> float:
@@ -151,7 +175,7 @@ func begin(the_scene, the_player):
 	_build_fade()
 	fade.color.a = 0.0
 	var t = create_tween()
-	t.tween_property(fade, "color:a", 1.0, 0.35)
+	t.tween_property(fade, "color:a", 1.0, 0.5)
 	await t.finished
 	var idol = scene.idol
 	center_x = (_feet(player).x + idol.global_position.x) / 2.0
@@ -186,12 +210,14 @@ func begin(the_scene, the_player):
 func finish():
 	if not live:
 		return
+	# Fade to black, hold a moment, swap back to the 2D level, fade in
 	var t = create_tween()
-	t.tween_property(fade, "color:a", 1.0, 0.45)
+	t.tween_property(fade, "color:a", 1.0, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	await t.finished
 	_restore()
+	await get_tree().create_timer(0.2).timeout   # (the 2D camera settles under the black)
 	t = create_tween()
-	t.tween_property(fade, "color:a", 0.0, 0.45)
+	t.tween_property(fade, "color:a", 0.0, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	await t.finished
 	queue_free()
 
@@ -242,7 +268,11 @@ func _place_popup(label: Control, delta: float):
 	var xf = get_viewport().get_canvas_transform()
 	var at = _screen(d[0], d[1]) if is_instance_valid(d[0]) else xf * d[1]
 	at.y -= 40.0 * clamp(d[3] / d[2], 0.0, 1.0)
-	label.global_position = xf.affine_inverse() * keep_on_screen(get_viewport(), label, at) - Vector2(label.size.x / 2.0, 15)
+	at = keep_on_screen(get_viewport(), label, at)
+	if label.has_meta("shown_at") and delta > 0.0:   # pushed aside: glide there, no jumps
+		at = label.get_meta("shown_at").lerp(at, 1.0 - exp(-14.0 * delta))
+	label.set_meta("shown_at", at)
+	label.global_position = xf.affine_inverse() * at - Vector2(label.size.x / 2.0, 15)
 
 
 # ---------------- The 2D side: hide it, follow it ----------------
@@ -385,14 +415,50 @@ func _scan_node(n: Node, owner_node):
 			_cull(c)
 		_scan_node(c, owner_node)
 
+# The combatants' sprites: unshaded, upright billboards (they turn to face
+# the camera around the vertical axis), blended, and they never write depth,
+# so the only thing that decides which one is drawn over which is their
+# render_priority = their lane (_sync_sprite), as in the 2D draw order. The
+# arena (floor, pillars) still hides them by depth.
+const SPRITE_SHADER = """
+shader_type spatial;
+render_mode unshaded, blend_mix, cull_disabled, depth_draw_never, shadows_disabled;
+uniform sampler2D tex : source_color, filter_nearest;
+void vertex() {
+	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(
+		vec4(normalize(cross(vec3(0.0, 1.0, 0.0), INV_VIEW_MATRIX[2].xyz)), 0.0),
+		vec4(0.0, 1.0, 0.0, 0.0),
+		vec4(normalize(cross(INV_VIEW_MATRIX[0].xyz, vec3(0.0, 1.0, 0.0))), 0.0),
+		MODEL_MATRIX[3]);
+	MODELVIEW_NORMAL_MATRIX = mat3(MODELVIEW_MATRIX);
+}
+void fragment() {
+	vec4 c = texture(tex, UV) * COLOR;
+	if (c.a < 0.004) {
+		discard;
+	}
+	ALBEDO = c.rgb;
+	ALPHA = c.a;
+}
+"""
+static var _sprite_shader: Shader
+
+func _sprite_material() -> ShaderMaterial:
+	if _sprite_shader == null:
+		_sprite_shader = Shader.new()
+		_sprite_shader.code = SPRITE_SHADER
+	var m = ShaderMaterial.new()
+	m.shader = _sprite_shader
+	return m
+
 func _add_proxy(src: CanvasItem, owner_node):
 	var s = Sprite3D.new()
-	s.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
 	s.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	s.shaded = false
 	s.double_sided = true
-	s.alpha_cut = SpriteBase3D.ALPHA_CUT_DISABLED   # drawn in lane order (see _sync_sprite)
+	s.alpha_cut = SpriteBase3D.ALPHA_CUT_DISABLED
 	s.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	s.material_override = _sprite_material()   # billboard + lane order, see SPRITE_SHADER
 	s.centered = false
 	add_child(s)
 	proxies[src] = s
@@ -431,6 +497,7 @@ func _sync():
 			_fade_out(s)
 			continue
 		_sync_sprite(src, s)
+	var hud = HudLayout.blockers(get_viewport())
 	for src in mirrors.keys():
 		var m = mirrors[src]
 		if not is_instance_valid(src):
@@ -438,7 +505,7 @@ func _sync():
 			if is_instance_valid(m):
 				m.queue_free()
 			continue
-		_sync_mirror(src, m)
+		_sync_mirror(src, m, hud)
 
 func _sync_sprite(src: CanvasItem, s: Sprite3D):
 	s.visible = src.is_visible_in_tree()
@@ -494,10 +561,18 @@ func _sync_sprite(src: CanvasItem, s: Sprite3D):
 	# calf, would sink behind it.) They are blended, don't write depth, and
 	# are sorted by render_priority = lane; the arena still hides them.
 	var prio = clampi(roundi(z * 100.0), -120, 120)
-	if s.render_priority != prio:
-		s.render_priority = prio
+	var m: ShaderMaterial = s.material_override
+	if m and m.render_priority != prio:
+		# a new material: the renderer doesn't re-sort an instance whose
+		# material only changed its priority
+		m = m.duplicate()
+		m.render_priority = prio
+		s.material_override = m
+	if m and m.get_shader_parameter("tex") != s.texture:
+		m.set_shader_parameter("tex", s.texture)
+	s.render_priority = prio
 
-func _sync_mirror(src: Control, m: Control):
+func _sync_mirror(src: Control, m: Control, hud := []):
 	m.visible = src.is_visible_in_tree() and src.size.x > 0
 	if not m.visible:
 		return
@@ -512,12 +587,15 @@ func _sync_mirror(src: Control, m: Control):
 	var owner_node = mirror_owner.get(src)
 	var mid = src.get_global_transform() * (src.size / 2.0)
 	var at = _screen(owner_node if owner_node != null else src, mid)
-	m.position = (at - src.size / 2.0).round()
+	var r = Rect2((at - src.size / 2.0).round(), src.size)
+	for b in hud:   # never over the HUD (e.g. the enemies' panel): just below it
+		if r.intersects(b):
+			r.position.y = b.end.y + HudLayout.GAP
+	m.position = r.position
 
 func _fade_out(s: Sprite3D):
 	if not is_instance_valid(s):
 		return
-	s.alpha_cut = SpriteBase3D.ALPHA_CUT_DISABLED
 	var t = s.create_tween().set_parallel(true)
 	t.tween_property(s, "modulate", Color(2.0, 1.6, 1.6, 0.0), 1.1)
 	t.tween_property(s, "pixel_size", s.pixel_size * 1.25, 1.1).set_ease(Tween.EASE_OUT)
@@ -637,8 +715,13 @@ func _build_arena():
 		var r = calf_sprite.get_global_transform() * calf_sprite.get_rect()
 		var h = (ground_y - r.end.y) * K
 		if h > 0.05:
-			_box(Vector3(r.size.x * K * 1.05, h, PEDESTAL_DEPTH), to_3d(Vector2(r.get_center().x, ground_y), lane(calf)) + Vector3(0, h / 2.0, 0),
-				_mat(floor_tex, Color(0.95, 0.8, 0.45), false, Vector2(2, 0.6)))
+			# drawn like the sprites (no depth, in lane order): just under the
+			# calf, so SinDeath (in front of the calf) is drawn over it too
+			var pm = _mat(floor_tex, Color(0.95, 0.8, 0.45), false, Vector2(2, 0.6))
+			pm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			pm.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED
+			pm.render_priority = roundi(IDOL_LANE * 100.0) - 3
+			_box(Vector3(r.size.x * K * 1.05, h, PEDESTAL_DEPTH), to_3d(Vector2(r.get_center().x, ground_y), lane(calf)) + Vector3(0, h / 2.0, 0), pm)
 	# Lights: a warm spotlight on the party, a dimmer cold one on the bosses
 	var party_at = _party_center()
 	party_light = SpotLight3D.new()
@@ -805,7 +888,7 @@ func _shot_params(t: float) -> Array:
 			return [look + Vector3(0.6 - 0.8 * smoothstep(0.0, 3.0, t), -0.3, 7.6), look + Vector3(-0.6, 0, 0), 50.0]
 		"idol_zero":
 			var k = smoothstep(0.0, 3.5, t)
-			return [I + Vector3(lerp(3.4, 2.9, k), 1.0, lerp(3.6, 3.0, k)), I + Vector3(-0.3, 0.8, 0), lerp(48.0, 42.0, k)]
+			return [I + Vector3(lerp(3.6, 3.2, k), 1.1, lerp(4.8, 4.2, k)), I + Vector3(-0.5, 0.8, 0), lerp(50.0, 46.0, k)]
 		"victory":
 			var look = P + Vector3(0, 1.0, 0)
 			var yaw = -0.5 + t * 0.14
@@ -815,29 +898,47 @@ func _shot_params(t: float) -> Array:
 			var yaw = deg_to_rad(-16.0 + 15.0 * sin(t * 0.11))
 			return [M + Vector3(sin(yaw) * 9.6, 1.9 + 0.3 * sin(t * 0.07), cos(yaw) * 9.6), M, 50.0]
 
-# One step of a critically damped spring from x towards target (velocity v),
-# taking about smooth_time seconds, never faster than max_speed: [x, v]
-static func _damp3(x: Vector3, target: Vector3, v: Vector3, smooth_time: float, max_speed: float, delta: float) -> Array:
-	if delta <= 0.0:
-		return [x, v]
-	var omega = 2.0 / max(smooth_time, 0.01)
-	var e = omega * delta
-	var d = 1.0 / (1.0 + e + 0.48 * e * e + 0.235 * e * e * e)
-	var change = (x - target).limit_length(max_speed * smooth_time)
-	var goal = x - change
-	var temp = (v + omega * change) * delta
-	v = (v - omega * temp) * d
-	var out = goal + (change + temp) * d
-	if (target - x).dot(out - target) > 0.0:   # no overshoot
-		out = target
-		v = (out - target) / delta
-	return [out, v]
+# A shot never frames SinDeath so close that it overflows the screen: the
+# camera backs off along its line of sight to keep a minimum distance.
+func _framed(p: Array) -> Array:
+	if is_instance_valid(scene.sindeath) and not scene.sindeath.is_queued_for_deletion():
+		var body = pos_3d(scene.sindeath) + Vector3(0, 1.6, 0)
+		var d = p[0] - body
+		if d.length() < SD_MIN_DIST:
+			var back = (p[0] - p[1]).normalized()
+			# move back along the view direction until far enough
+			var b = d.dot(back)
+			var c = d.length_squared() - SD_MIN_DIST * SD_MIN_DIST
+			var s = -b + sqrt(max(b * b - c, 0.0))
+			p = [p[0] + back * s, p[1], p[2]]
+	return p
+
+# A straight move from a to b that would pass closer to SinDeath than
+# SD_MIN_DIST: how far (and which way) to bow out at its middle. ZERO if none.
+func _detour(a: Vector3, b: Vector3) -> Vector3:
+	if not is_instance_valid(scene.sindeath) or scene.sindeath.is_queued_for_deletion():
+		return Vector3.ZERO
+	var body = pos_3d(scene.sindeath) + Vector3(0, 1.6, 0)
+	var best = INF
+	var at = a
+	for i in 21:
+		var q = a.lerp(b, i / 20.0)
+		if q.distance_to(body) < best:
+			best = q.distance_to(body)
+			at = q
+	if best >= SD_MIN_DIST:
+		return Vector3.ZERO
+	var out = Vector3(at.x - body.x, 0, at.z - body.z)
+	if out.length() < 0.01:
+		out = Vector3(0, 0, 1)
+	return out.normalized() * (SD_MIN_DIST - best + 0.3)
 
 func _snap_camera():
 	cam_vel = Vector3.ZERO
 	look_vel = Vector3.ZERO
 	fov_vel = 0.0
-	var p = _shot_params(0.0)
+	blend = {}
+	var p = _framed(_shot_params(0.0))
 	cam_pos = p[0]
 	cam_look = p[1]
 	cam_fov = p[2]
@@ -870,26 +971,48 @@ func _process(delta):
 			shot = base_shot
 			shot_node = base_node
 			shot_time = 0.0
-	var p = _shot_params(shot_time)
-	# Every change of shot is an eased move (a critically damped spring: it
-	# speeds up gently, then settles), never a jump. Hits move a bit faster.
-	var smooth = 0.8
-	if shot in ["hit_enemy", "hit_party"]:
-		smooth = 0.55
-	elif shot in ["victory", "manifest", "wide"]:
-		smooth = 1.3
+	var p = _framed(_shot_params(shot_time))
+	# Every change of shot is an eased move (smootherstep: it speeds up gently
+	# and settles), never a jump. It starts from where the camera is, still
+	# carrying the old move's speed (fading out), so nothing jerks either.
+	var key = [shot, shot_node]
+	# (a target that jumps - an actor teleported, a shot's subject swapped - is
+	# eased to as well, like a new shot)
+	var jumped = not blend.is_empty() and blend.key == key and blend.has("target") and (blend.target.distance_to(p[0]) > 0.4 or blend.target_look.distance_to(p[1]) > 0.4)
+	if blend.is_empty() or blend.key != key or jumped:
+		var dist = cam_pos.distance_to(p[0])
+		var base = BLEND_HIT if shot in ["hit_enemy", "hit_party"] else (BLEND_SLOW if shot in ["victory", "manifest", "wide"] else BLEND_TIME)
+		var length = clamp(max(base, dist / BLEND_SPEED), base, BLEND_MAX)
+		blend = {key = key, t = 0.0, length = length, pos = cam_pos, look = cam_look, fov = cam_fov, v = cam_vel, lv = look_vel, fv = fov_vel}
+		var detour = _detour(cam_pos, p[0])
+		if detour != Vector3.ZERO:
+			blend.detour = detour
+		cam_blends.append([shot, length])
+		if not shot in ["hit_enemy", "hit_party"] and not jumped:
+			cam_min_blend = min(cam_min_blend, length)
+	blend.target = p[0]
+	blend.target_look = p[1]
 	var before = cam_pos
-	var a = _damp3(cam_pos, p[0], cam_vel, smooth, CAM_MAX_SPEED, delta)
-	cam_pos = a[0]; cam_vel = a[1]
-	var b = _damp3(cam_look, p[1], look_vel, smooth, CAM_MAX_SPEED * 1.5, delta)
-	cam_look = b[0]; look_vel = b[1]
-	var f = _damp3(Vector3(cam_fov, 0, 0), Vector3(p[2], 0, 0), Vector3(fov_vel, 0, 0), smooth, 60.0, delta)
-	cam_fov = f[0].x; fov_vel = f[1].x
-	if delta > 0.0:   # (for the tests: how fast / how suddenly the camera moved)
-		var v = (cam_pos - before) / delta
-		cam_max_speed = max(cam_max_speed, v.length())
-		cam_max_accel = max(cam_max_accel, (v - cam_last_v).length() / delta)
-		cam_last_v = v
+	var before_look = cam_look
+	var before_fov = cam_fov
+	blend.t += delta
+	var u = clamp(blend.t / blend.length, 0.0, 1.0)
+	var e = u * u * u * (u * (u * 6.0 - 15.0) + 10.0)
+	var carry = BLEND_CARRY * (1.0 - exp(-blend.t / BLEND_CARRY))
+	cam_pos = (blend.pos + blend.v * carry).lerp(p[0], e)
+	cam_look = (blend.look + blend.lv * carry).lerp(p[1], e)
+	cam_fov = lerp(blend.fov + blend.fv * carry, p[2], e)
+	# (a long move that would pass close by SinDeath bows out around it)
+	if blend.has("detour"):
+		cam_pos += blend.detour * (4.0 * e * (1.0 - e))
+	if delta > 0.0:
+		cam_vel = (cam_pos - before) / delta
+		look_vel = (cam_look - before_look) / delta
+		fov_vel = (cam_fov - before_fov) / delta
+		# (for the tests: how fast / how suddenly the camera moved)
+		cam_max_speed = max(cam_max_speed, cam_vel.length())
+		cam_max_accel = max(cam_max_accel, (cam_vel - cam_last_v).length() / delta)
+		cam_last_v = cam_vel
 	_apply_camera(delta)
 	# (after the camera moved: no lag)
 	_sync()
@@ -910,9 +1033,9 @@ func _events(delta):
 		if hp < before - 0.01 and _tm().in_battle:
 			var big = (before - hp) >= 0.12 * float(c.get("max_hp") if c.get("max_hp") else 100.0)
 			if _is_party(c):
-				set_shot("hit_party", c, 1.3)
+				set_shot("hit_party", c, 1.9)
 			elif c != scene.mammon:
-				set_shot("hit_enemy", c, 1.4)
+				set_shot("hit_enemy", c, 2.0)
 			shake(0.16 if big else 0.06, 0.4 if big else 0.2)
 	var cs = scene.counter_state
 	if cs != counter_seen:

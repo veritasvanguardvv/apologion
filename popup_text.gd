@@ -27,8 +27,13 @@ static func spawn(node: Node2D, text: String, color := Color.WHITE, offset := Ve
 	tween.set_parallel(true)
 	if Battle3D.is_on():   # the 3D boss battle: rises over where it shows (follows the camera)
 		Battle3D.current.track_popup(label, node, center + offset, time)
-	else:
-		tween.tween_property(label, "position:y", label.position.y - 40, time)
+	else:   # on the screen and clear of the HUD / other popups (hud_layout.gd)
+		var vp = label.get_viewport()
+		var xf = vp.get_canvas_transform()
+		var rise = 40.0 * xf.get_scale().y
+		var at = xf.affine_inverse() * Battle3D.keep_on_screen(vp, label, xf * (center + offset), rise)
+		label.global_position = at - Vector2(label.size.x / 2.0, 15)
+		tween.tween_property(label, "global_position:y", label.global_position.y - 40, time)
 	tween.tween_property(label, "modulate:a", 0.0, time * 0.5).set_delay(time * 0.5)
 	tween.chain().tween_callback(label.queue_free)
 	return label

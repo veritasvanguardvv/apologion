@@ -1,4 +1,5 @@
 extends Node
+const HudLayout = preload("res://hud_layout.gd")
 # TurnManager (autoload / singleton)
 # -----------------------------------
 # Turn-based battles, Pokémon-style.
@@ -213,6 +214,37 @@ func _update_enemy_hud():
 func _process(_delta):
 	if enemy_hud and enemy_hud.visible:
 		_update_enemy_hud()
+	if turn_label and turn_label.visible:
+		_fit_turn_label()
+
+# The turn message stays between the player's corner (Run / Items, HP) and the
+# enemies' panel: centred if it fits, else smaller, else on two lines.
+const TITLE_FONT = 24
+const TITLE_MIN_FONT = 18
+func _fit_turn_label():
+	var screen = turn_label.get_viewport_rect().size
+	var corner = HudLayout.player_corner(get_viewport())
+	var left = (corner.end.x if corner.size != Vector2.ZERO else 0.0) + 16.0
+	var right = screen.x - left
+	if enemy_hud.is_visible_in_tree():
+		right = min(right, enemy_hud.get_global_rect().position.x - 16.0)
+	var room = max(right - left, 160.0)
+	var font = turn_label.get_theme_font("font")
+	var size = TITLE_FONT
+	var w = font.get_string_size(turn_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x + 8.0
+	while w > room and size > TITLE_MIN_FONT:
+		size -= 1
+		w = font.get_string_size(turn_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x + 8.0
+	var wrap = w > room
+	if turn_label.get_theme_font_size("font_size") != size:
+		turn_label.add_theme_font_size_override("font_size", size)
+	turn_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if wrap else TextServer.AUTOWRAP_OFF
+	w = room if wrap else w
+	var cx = clamp(screen.x / 2.0, left + w / 2.0, right - w / 2.0)
+	turn_label.anchor_left = 0.0
+	turn_label.anchor_right = 0.0
+	turn_label.position = Vector2(round(cx - w / 2.0), 20)
+	turn_label.size = Vector2(w, 0)
 
 # A small framed portrait (like the Unity HUD's face boxes)
 static func make_portrait(tex: Texture2D, border := Color(0.9, 0.9, 0.9)) -> Control:
@@ -370,6 +402,7 @@ func show_message(text: String):
 	message_count += 1
 	turn_label.text = text
 	turn_label.visible = true
+	_fit_turn_label()
 	message_shown.emit(text)
 
 

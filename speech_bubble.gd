@@ -1,5 +1,6 @@
 extends CanvasLayer
-const Battle3D = preload("res://battle_3d.gd")   # 3D boss battle: 2D spots seen through its camera
+const Battle3D = preload("res://battle_3d.gd")
+const HudLayout = preload("res://hud_layout.gd")   # 3D boss battle: 2D spots seen through its camera
 # SPEECH BUBBLE (built in code)
 # -----------------------------
 # A speech bubble that follows a node around and stays inside the screen.
@@ -240,6 +241,14 @@ func _place():
 			if other_rect.intersects(Rect2(pos, s)):
 				pos.y = other_rect.position.y - s.y - 8.0
 	pos.y = max(pos.y, margin)
+	# ...and clear of the HUD (the turn message, Run / Items, the HP bars, the
+	# enemies' panel) and of older bubbles (hud_layout.gd); the badge too
+	var older = []
+	for other in get_tree().get_nodes_in_group("speech_bubbles"):
+		if other != self and other.is_showing() and other.shown_order < shown_order:
+			older.append(Rect2(other.panel.position, other.panel.size).grow(6))
+	var b = Vector2(14, 14) if badge.visible else Vector2.ZERO
+	pos = HudLayout.fit(Rect2(pos - b, s + b), get_viewport(), older) + b
 	panel.position = pos
 	tail.position = Vector2(clamp(head.x, pos.x + 16.0, pos.x + s.x - 16.0), pos.y + s.y - 2.0)
 	badge.position = pos + Vector2(-14, -14)

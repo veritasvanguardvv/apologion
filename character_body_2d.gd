@@ -1422,7 +1422,8 @@ func _attack(verse, enemy, damage_scale: float, can_counter: bool):
 			for sin in verse.get("sins", {}):
 				names.append(tr(sin.capitalize()))
 			msg = tr("No effect - this verse only hurts %s-type enemies") % "/".join(names)
-		enemy.show_popup(msg, Color(0.75, 0.75, 0.75))
+		if not TurnManager.in_battle:   # (in battle the title says it: no second copy)
+			enemy.show_popup(msg, Color(0.75, 0.75, 0.75))
 		_no_damage_popup(enemy)
 		_show_verse_message(msg)
 		if TurnManager.in_battle:
