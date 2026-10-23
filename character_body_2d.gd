@@ -889,6 +889,7 @@ func _update_ram_bar():
 
 func _process(delta):
 	_process_speaker_bob(delta)
+	_update_low_hp()
 	_process_verse_scroll(delta)
 	flicker_time += delta
 	var flicker_amount = 0.94 + sin(flicker_time * 8.0) * 0.04 + randf_range(-0.02, 0.02)
@@ -1640,6 +1641,60 @@ const HUD_HP_POS = Vector2(10, 72)
 const HUD_HP_SIZE = Vector2(240, 24)
 var portrait: Control
 
+# ---------------- Low health (25% or less) ----------------
+# The HP bar turns red, and in a battle the low-health sound (General/Sounds/
+# "Low hp sfx.wav") loops on the SFX bus (the Settings SFX slider). The sound
+# stops when you're healed above 25%, at 0 HP, out of battle (and when you
+# leave the level - it belongs to the player), and while the pause menu /
+# its Settings or a full-screen overlay (Idolatry Cam) is up; it starts
+# again when they close. The red bar stays the whole time you're low.
+const HP_COLOR = Color(0.2, 0.75, 0.25)
+const LOW_HP_COLOR = Color(0.85, 0.12, 0.12)
+const LOW_HP_RATIO = 0.25
+const LOW_HP_SOUND = "res://General/Sounds/Low hp sfx.wav"
+var hp_fill: StyleBoxFlat
+var low_hp_player: AudioStreamPlayer
+
+func _build_low_hp():
+	low_hp_player = AudioStreamPlayer.new()
+	low_hp_player.name = "LowHpSound"
+	low_hp_player.bus = "SFX"
+	if ResourceLoader.exists(LOW_HP_SOUND):
+		low_hp_player.stream = load(LOW_HP_SOUND)
+	# loops: start over when it ends, as long as it's still wanted
+	low_hp_player.finished.connect(func():
+		if low_hp_sound_wanted():
+			low_hp_player.play())
+	add_child.call_deferred(low_hp_player)
+
+func is_low_hp() -> bool:
+	return max_hp > 0 and hp <= max_hp * LOW_HP_RATIO
+
+func low_hp_sound_wanted() -> bool:
+	if not is_low_hp() or hp <= 0 or not TurnManager.in_battle:
+		return false
+	var menus = get_tree().get_first_node_in_group("menus") if is_inside_tree() else null
+	if menus and (menus.is_main_menu_open() or menus.pause_menu.visible
+			or (menus.get("sub_from_pause") and [menus.settings_menu, menus.remap_menu, menus.multiplayer_menu].any(func(m): return m != null and m.visible))):
+		return false
+	for o in get_tree().get_nodes_in_group("hud_hidden_overlay"):
+		if is_instance_valid(o) and o.get("visible") != false:
+			return false
+	return true
+
+func _update_low_hp():
+	if hp_fill:
+		var c = LOW_HP_COLOR if is_low_hp() else HP_COLOR
+		if hp_fill.bg_color != c:
+			hp_fill.bg_color = c
+	if low_hp_player == null or not low_hp_player.is_inside_tree() or low_hp_player.stream == null:
+		return
+	var want = low_hp_sound_wanted()
+	if want and not low_hp_player.playing:
+		low_hp_player.play()
+	elif not want and low_hp_player.playing:
+		low_hp_player.stop()
+
 func _layout_hud():
 	var hud = hp_bar.get_parent()
 	portrait = TurnManager.make_portrait(TurnManager.portrait_of(get_node_or_null("Sprite2D"), 3))
@@ -1649,9 +1704,11 @@ func _layout_hud():
 	hp_bar.position = HUD_HP_POS
 	hp_bar.size = HUD_HP_SIZE
 	var fill = StyleBoxFlat.new()
-	fill.bg_color = Color(0.2, 0.75, 0.25)
+	fill.bg_color = HP_COLOR
 	fill.set_corner_radius_all(3)
 	hp_bar.add_theme_stylebox_override("fill", fill)
+	hp_fill = fill
+	_build_low_hp()
 	# the Zeal countdown goes beside Run, out of the verse box's way
 	var timer_label = hud.get_node_or_null("TimerLabel")
 	if timer_label:
