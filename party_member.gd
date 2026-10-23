@@ -419,18 +419,50 @@ func recite_random_verse() -> bool:
 	# NOT discover the verse for the player.
 	if player.all_verses.is_empty():
 		return false
-	var verse = player.all_verses.pick_random()
+	# The player is at 50% HP or less: heal them first (a heal verse, all of
+	# its healing on the player). No heal verse -> the usual random verse.
+	var verse = pick_player_heal_verse() if player_needs_heal() else null
+	var healing_player = verse != null
+	if verse == null:
+		verse = player.all_verses.pick_random()
 	
 	# Use the same language as the game so the effect matches
 	var text = player.verse_body(verse)
 	# Default targets (use_choice = false), 25% damage and 25% healing
+	if healing_player:
+		player.forced_heal_targets = [player]
 	player.cast_verse(verse, damage_scale, false, false, damage_scale, self)
+	player.forced_heal_targets = []
 	
-	print(display_name, " recites ", verse.ref)
+	print(display_name, " recites ", verse.ref, " (healing you: you were at %d%%)" % roundi(100.0 * player.hp / player.max_hp) if healing_player else "")
 	_say(VerseManager.ref_text(verse.ref), text.substr(0, 1).to_upper() + text.substr(1))
 	recited.emit(verse.ref)
 	return true
 
+
+# ---------------- Heal the player first ----------------
+# On his turn, if the player's HP is at or below heal_player_below (50%),
+# Ramuel / Baana recite a HEAL verse on the player instead of a random one.
+# Above 50% they never pick one on purpose (no heal spam). Phone players are
+# people: they choose for themselves.
+@export var heal_player_below = 0.5
+
+func player_needs_heal() -> bool:
+	return _find_player() and player.max_hp > 0 and player.hp > 0 and player.hp <= player.max_hp * heal_player_below
+
+# A verse that heals (and never costs HP). The strongest heals are picked
+# most: a random one among the top heals.
+func pick_player_heal_verse():
+	var heals = player.all_verses.filter(func(v): return _heal_amount(v) > 0)
+	if heals.is_empty():
+		return null
+	heals.sort_custom(func(a, b): return _heal_amount(a) > _heal_amount(b))
+	return heals.slice(0, max(5, heals.size() / 4)).pick_random()
+
+func _heal_amount(v) -> float:
+	if v.get("set", "") == "sheet":
+		return float(v.get("heal", 0))
+	return float(v.get("heal", 0)) if v.get("type", "") == "heal" else 0.0
 
 var bubble_time_left = 0.0
 

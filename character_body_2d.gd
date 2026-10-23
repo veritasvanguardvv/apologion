@@ -530,7 +530,7 @@ func cast_verse(verse, damage_scale := 1.0, can_counter := false, use_choice := 
 				if is_instance_valid(enemy) and enemy.has_method("take_damage") and not _hits_only_vs(verse, enemy):
 					_attack(verse, enemy, damage_scale / targets.size(), can_counter)
 		"heal":
-			heal_targets(Targeting.heal_targets(use_choice), verse.heal * heal_scale)
+			heal_targets(_heal_targets_for(use_choice), verse.heal * heal_scale)
 		"light":
 			_light_up()
 		"guard":
@@ -570,7 +570,7 @@ func _cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale,
 		add_wisdom(float(verse.wisdom))   # (your own stat; not when a party member recites it)
 	var heal_pct = float(verse.get("heal", 0))
 	if heal_pct > 0:
-		heal_targets(Targeting.heal_targets(use_choice), heal_pct * heal_scale)
+		heal_targets(_heal_targets_for(use_choice), heal_pct * heal_scale)
 	elif heal_pct < 0:
 		var who = caster if caster != null and is_instance_valid(caster) else self
 		var cost = who.max_hp * (-heal_pct) / 100.0
@@ -581,6 +581,14 @@ func _cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale,
 			who.take_damage(cost)
 		if TurnManager.in_battle:
 			TurnManager.show_message(tr("%s loses %s HP") % [tr(who.display_name), str(snapped(cost, 0.1))])
+
+# Who a verse's healing goes to. A party member can aim it (party_member.gd:
+# Ramuel / Baana heal YOU when you're at 50% or less) by setting
+# forced_heal_targets around its cast_verse().
+var forced_heal_targets: Array = []
+func _heal_targets_for(use_choice: bool) -> Array:
+	var forced = forced_heal_targets.filter(func(t): return is_instance_valid(t))
+	return forced if not forced.is_empty() else Targeting.heal_targets(use_choice)
 
 # How much a verse does to this enemy (before Faith / splitting / defense).
 # -1 = no effect.
