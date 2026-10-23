@@ -488,6 +488,15 @@ func _build_settings_menu():
 	touch_toggle.add_theme_font_size_override("font_size", 22)
 	touch_toggle.toggled.connect(GameSettings.set_touch_controls)
 	column.add_child(touch_toggle)
+	var boss3d_toggle = CheckButton.new()
+	boss3d_toggle.name = "Boss3DToggle"
+	boss3d_toggle.text = "3D boss battles"
+	boss3d_toggle.button_pressed = GameSettings.boss_battles_3d
+	boss3d_toggle.focus_mode = Control.FOCUS_NONE
+	boss3d_toggle.add_theme_font_override("font", _get_bold_font())
+	boss3d_toggle.add_theme_font_size_override("font_size", 22)
+	boss3d_toggle.toggled.connect(GameSettings.set_boss_battles_3d)
+	column.add_child(boss3d_toggle)
 	column.add_child(_make_menu_button("ControlsButton", "Controls (remap keys)", _open_remap))
 	column.add_child(_make_menu_button("BackButton", "Back", _close_settings))
 

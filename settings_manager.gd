@@ -43,6 +43,7 @@ var music_volume = 0.8   # 0..1
 var sfx_volume = 1.0     # 0..1
 var scroll_verses_with_arrows = true   # hold Up/Down to scroll the Tab verse list
 var touch_controls = true               # on-screen buttons on phones / tablets (touch_controls.gd)
+var boss_battles_3d = true              # boss fights (SinDeath) shown in 3D (battle_3d.gd); off = the 2D fight
 
 signal touch_controls_changed(on)
 var bindings = {}        # action -> physical keycode
@@ -116,6 +117,12 @@ func set_touch_controls(on: bool):
 	touch_controls = on
 	_save()
 	touch_controls_changed.emit(on)
+
+
+# (used when the next boss fight starts)
+func set_boss_battles_3d(on: bool):
+	boss_battles_3d = on
+	_save()
 
 
 # ---------------- Key bindings ----------------
@@ -192,6 +199,7 @@ func _save():
 	c.set_value("audio", "sfx", sfx_volume)
 	c.set_value("controls", "scroll_verses_with_arrows", scroll_verses_with_arrows)
 	c.set_value("controls", "touch_controls", touch_controls)
+	c.set_value("graphics", "boss_battles_3d", boss_battles_3d)
 	for action in bindings:
 		c.set_value("keys", action, int(bindings[action]))
 	c.save(PATH)
@@ -205,5 +213,6 @@ func _load():
 	sfx_volume = float(c.get_value("audio", "sfx", sfx_volume))
 	scroll_verses_with_arrows = bool(c.get_value("controls", "scroll_verses_with_arrows", scroll_verses_with_arrows))
 	touch_controls = bool(c.get_value("controls", "touch_controls", touch_controls))
+	boss_battles_3d = bool(c.get_value("graphics", "boss_battles_3d", boss_battles_3d))
 	for action in bindings.keys():
 		bindings[action] = int(c.get_value("keys", action, bindings[action]))
