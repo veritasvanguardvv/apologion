@@ -31,10 +31,10 @@ static var shown_counter = 0
 var shown_order = 0
 
 # ---- Typewriter + voice blips ----
-# BOSS_VOICE = the user's "Calf:Mammon voice" recording: 80 short blips, one
+# BOSS_VOICE = the user's "Calf_Mammon_voice" recording: 80 short blips, one
 # every BOSS_BLIP_STEP seconds. Each blip plays one of them (a random one,
 # pitched a bit lower), so the boss "mutters" while the text appears.
-const BOSS_VOICE = "res://General/Sounds/Calf:Mammon voice.mp3"
+const BOSS_VOICE = "res://General/Sounds/Calf_Mammon_voice.mp3"
 const BOSS_BLIP_FIRST = 0.045     # where the first blip starts (s)
 const BOSS_BLIP_STEP = 0.10955    # one blip every ... (s)
 const BOSS_BLIP_COUNT = 80
