@@ -1375,6 +1375,22 @@ func _attack_only_vs_targets(verse, damage_scale, can_counter, use_choice):
 	for enemy in targets:
 		if is_instance_valid(enemy) and enemy.has_method("take_damage") and _hits_only_vs(verse, enemy):
 			_attack(verse, enemy, damage_scale / targets.size(), can_counter)
+		elif is_instance_valid(enemy) and enemy.has_method("take_damage") and enemy.get("only_vs") and not _has_regular_attack(verse):
+			# e.g. a SinDeath-only verse at the calf: the normal attack below
+			# won't touch it, so say "No damage!" here
+			_attack(verse, enemy, damage_scale / targets.size(), can_counter)
+
+# Does the verse attack through its sin / all-sin damage (or a built-in attack type)?
+func _has_regular_attack(verse) -> bool:
+	if verse.get("set", "") == "sheet":
+		return not verse.get("sins", {}).is_empty() or verse.get("all_damage", 0) > 0
+	return verse.get("type", "") in ["sloth", "lust", "all"]
+
+# Immune target (a Greed verse vs SinDeath, a non-idolatry verse vs the calf...):
+# a "No damage!" popup where the damage number would be, so it doesn't look
+# like the verse glitched.
+func _no_damage_popup(enemy):
+	PopupText.spawn(enemy, tr("No damage!"), Color(0.85, 0.85, 0.85), Vector2(0, -100))
 
 func _attack(verse, enemy, damage_scale: float, can_counter: bool):
 	if instant_kill_against(verse, enemy):
@@ -1398,6 +1414,7 @@ func _attack(verse, enemy, damage_scale: float, can_counter: bool):
 				names.append(tr(sin.capitalize()))
 			msg = tr("No effect - this verse only hurts %s-type enemies") % "/".join(names)
 		enemy.show_popup(msg, Color(0.75, 0.75, 0.75))
+		_no_damage_popup(enemy)
 		_show_verse_message(msg)
 		if TurnManager.in_battle:
 			TurnManager.show_message(msg)
