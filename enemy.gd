@@ -193,7 +193,10 @@ func take_turn():
 		# Sometimes it goes for your party member (if they're still standing)
 		var party = _party_member_to_attack()
 		if party and randf() < party_target_chance:
-			var hit = party.take_damage(damage)
+			var hit = party.enemy_hit(damage) if party.has_method("enemy_hit") else party.take_damage(damage)   # (their Wisdom may dodge it)
+			if hit < 0:
+				TurnManager.show_message(tr("%s attacks %s... Dodged!") % [tr(display_name), tr(party.display_name)])
+				return
 			TurnManager.show_message(tr("%s attacks %s! -%s HP") % [tr(display_name), tr(party.display_name), str(snapped(hit, 0.1))])
 			print(display_name, " attacks ", party.display_name, " for ", hit)
 			return

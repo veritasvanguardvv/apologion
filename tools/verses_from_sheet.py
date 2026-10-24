@@ -19,7 +19,8 @@ Player tab columns: Bible Index | Transl. | TEXT | TEXT PL | TEXT SP |
   Columns are found by their header text. Wisdom UP becomes "wisdom" and
   Faith UP "faith" (whole %). Any Guard UP % marks the verse as a Guard verse
   ("guard": true, the sheet's % kept in "guard_pct"), any Zeal up % above 0 as
-  a Zeal verse ("zeal": true, "zeal_pct"), whatever else the row does
+  a Zeal verse ("zeal": true, "zeal_pct"; a negative Zeal up is a penalty:
+  only "zeal_pct" < 0), whatever else the row does
   (Guard + Wisdom, Guard + attack, Guard + heal...).
   A row is imported if it does damage to "All Sin" or one of the seven sins,
   heals, or (with a text) gives Wisdom, Faith, Guard or Zeal.
@@ -217,7 +218,7 @@ def main():
         # (Wisdom / Faith / Guard UP / Zeal up verses too; the "extra" verses are added back below)
         verses = [v for v in verses if v.get("sins") or v.get("all_damage", 0) > 0 or v.get("heal", 0) != 0
                   or v.get("wisdom", 0) > 0 or v.get("faith", 0) > 0
-                  or v.get("guard_pct", 0) > 0 or v.get("zeal_pct", 0) > 0]
+                  or v.get("guard_pct", 0) > 0 or v.get("zeal_pct", 0) != 0]
         for v in verses:
             v.pop("zeal", None)
             v.pop("guard", None)
@@ -248,11 +249,12 @@ def main():
         sins = {k: pct(r[c]) for k, c in SINS.items() if pct(r[c]) > 0}
         all_d, heal, wis = pct(r[COL_ALL]), pct(r[COL_HEAL]), pct(r[COL_WISDOM])
         faith = pct(r[COL_FAITH])
-        guard, zeal = pct(r[COL_GUARD]), max(pct(r[COL_ZEAL]), 0)   # (a negative Zeal is ignored)
+        guard, zeal = pct(r[COL_GUARD]), pct(r[COL_ZEAL])   # (a negative Zeal is a penalty: "zeal_pct" < 0)
         en, es, pl = clean(r[COL_EN]), clean(r[COL_ES]), clean(r[COL_PL])
         if not sins and all_d <= 0 and heal == 0:
             # A Wisdom-, Faith-, Guard- or Zeal-only verse (e.g. Proverbs 2:6,
             # Philippians 3:9b, Isaiah 25:4a) counts too, if it has a text
+            # (not a row with only a Zeal penalty, e.g. Proverbs 21:5)
             if (wis <= 0 and faith <= 0 and guard <= 0 and zeal <= 0) or not (en or pfill.get(ref, {}).get("en")):
                 continue
         # The same verse listed again (e.g. under another sin) with the same
@@ -269,10 +271,13 @@ def main():
                 first["wisdom"] = wis
             if faith > first.get("faith", 0):
                 first["faith"] = faith
-            for flag, amount in (("guard", guard), ("zeal", zeal)):
-                if amount > first.get(flag + "_pct", 0):
-                    first[flag] = True
-                    first[flag + "_pct"] = amount
+            if guard > first.get("guard_pct", 0):
+                first["guard"] = True
+                first["guard_pct"] = guard
+            if abs(zeal) > abs(first.get("zeal_pct", 0)):
+                first["zeal_pct"] = zeal
+                if zeal > 0:
+                    first["zeal"] = True
             for lang, t in (("en", en), ("es", es), ("pl", pl)):
                 if not first[lang] and t:
                     first[lang] = t
@@ -300,8 +305,9 @@ def main():
             v["guard"] = True      # Guard UP (the game's Guard: +defense and the wings)
             v["guard_pct"] = guard # (the sheet's %, kept for reference)
         if zeal > 0:
-            v["zeal"] = True       # Zeal up (the game's Zeal: speed + jump)
-            v["zeal_pct"] = zeal
+            v["zeal"] = True       # a Zeal verse (also the speed + jump boost)
+        if zeal != 0:
+            v["zeal_pct"] = zeal   # Zeal up % (the game's Zeal: attack +/-% for 3 rounds; < 0 = a penalty)
         verses.append(v)
     for v in verses:
         for lang in ("en", "es", "pl"):

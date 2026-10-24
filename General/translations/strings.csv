@@ -428,3 +428,7 @@ No damage!,No damage!,¡Sin daño!,Brak obrażeń!
 Guard +%d%%,Guard +%d%%,Defensa +%d%%,Ochrona +%d%%
 Faith +%d%%,Faith +%d%%,Fe +%d%%,Wiara +%d%%
 Wisdom +%d%%,Wisdom +%d%%,Sabiduría +%d%%,Mądrość +%d%%
+Zeal +%d%%,Zeal +%d%%,Celo +%d%%,Gorliwość +%d%%
+Zeal -%d%%,Zeal -%d%%,Celo -%d%%,Gorliwość -%d%%
+turn %d/%d,turn %d/%d,turno %d/%d,tura %d/%d
+%s attacks %s... Dodged!,%s attacks %s... Dodged!,¡%s ataca a %s... Esquivado!,%s atakuje: %s... Unik!

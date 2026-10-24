@@ -5267,7 +5267,8 @@
    "jesus": false,
    "vs": {
     "false_teacher": 50
-   }
+   },
+   "zeal_pct": -12
   },
   {
    "ref": "2 Corinthians 11:23b",
@@ -5282,7 +5283,8 @@
    "heal": 0,
    "jesus": false,
    "guard": true,
-   "guard_pct": 12
+   "guard_pct": 12,
+   "zeal_pct": -12
   },
   {
    "ref": "2 Corinthians 11:23c",
@@ -5308,7 +5310,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "zeal_pct": -12
   },
   {
    "ref": "2 Corinthians 11:25a",
@@ -5321,7 +5324,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "zeal_pct": -12
   },
   {
    "ref": "2 Corinthians 11:25b",
@@ -5347,7 +5351,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "zeal_pct": -12
   },
   {
    "ref": "2 Corinthians 11:26b",
@@ -5361,7 +5366,8 @@
     "pride": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "zeal_pct": -12
   },
   {
    "ref": "2 Corinthians 11:26c",
@@ -5378,7 +5384,8 @@
    "jesus": false,
    "vs": {
     "false_teacher": 25
-   }
+   },
+   "zeal_pct": -12
   },
   {
    "ref": "2 Corinthians 11:27a",
@@ -5392,7 +5399,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "zeal_pct": -12
   },
   {
    "ref": "2 Corinthians 11:27b",
@@ -5405,7 +5413,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "zeal_pct": -12
   },
   {
    "ref": "2 Corinthians 11:27c",
@@ -5418,7 +5427,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "zeal_pct": -12
   },
   {
    "ref": "2 Corinthians 12:7",
@@ -5431,7 +5441,8 @@
     "greed": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "zeal_pct": -12
   },
   {
    "ref": "2 Corinthians 12:8",
@@ -5445,7 +5456,8 @@
     "pride": 50
    },
    "heal": 0,
-   "jesus": false
+   "jesus": false,
+   "zeal_pct": -12
   },
   {
    "ref": "2 Corinthians 12:9",
@@ -5871,7 +5883,8 @@
    "heal": 0,
    "jesus": false,
    "guard": true,
-   "guard_pct": 50
+   "guard_pct": 50,
+   "zeal_pct": -50
   },
   {
    "ref": "James 3:14",
@@ -11695,6 +11708,19 @@
    "guard_pct": 50
   },
   {
+   "ref": "Romans 5:9",
+   "translation": "",
+   "en": "Now that we are made right by his blood, how much more will we be saved from God's wrath through him!",
+   "es": "Ahora que hemos sido justificados por su sangre, ¡con cuánta más razón seremos salvados por él de la ira de Dios!",
+   "pl": "Skoro teraz jesteśmy usprawiedliwieni Jego krwią, o ileż bardziej przez Niego zostaniemy zbawieni od gniewu Bożego!",
+   "all_damage": 0,
+   "sins": {},
+   "heal": 0,
+   "jesus": false,
+   "guard": true,
+   "guard_pct": 50
+  },
+  {
    "ref": "Romans 8:31",
    "translation": "Fragment",
    "en": "If God is for us, who can be against us?",
@@ -12385,7 +12411,8 @@
    "jesus": false,
    "wisdom": 100,
    "guard": true,
-   "guard_pct": 10
+   "guard_pct": 10,
+   "zeal_pct": -50
   },
   {
    "ref": "Proverbs 19:2 (2)",
@@ -12436,7 +12463,8 @@
    "sins": {},
    "heal": 0,
    "jesus": false,
-   "wisdom": 10
+   "wisdom": 10,
+   "zeal_pct": -25
   },
   {
    "ref": "Proverbs 24:5a",
@@ -12591,7 +12619,8 @@
    "sins": {},
    "heal": 0,
    "jesus": true,
-   "wisdom": 100
+   "wisdom": 100,
+   "zeal_pct": -50
   },
   {
    "ref": "Matthew 7:6",
@@ -12603,7 +12632,8 @@
    "sins": {},
    "heal": 0,
    "jesus": true,
-   "wisdom": 50
+   "wisdom": 50,
+   "zeal_pct": -25
   },
   {
    "ref": "Matthew 10:16",
@@ -12615,7 +12645,8 @@
    "sins": {},
    "heal": 0,
    "jesus": true,
-   "wisdom": 100
+   "wisdom": 100,
+   "zeal_pct": -12
   },
   {
    "ref": "Luke 7:35",
@@ -13600,18 +13631,6 @@
    "en": "God showed his love for us in that while we were still sinners, Christ died for us.",
    "es": "Dios demostró su amor por nosotros en que, siendo aún pecadores, Cristo murió por nosotros.",
    "pl": "Bóg okazał nam swoją miłość przez to, że Chrystus umarł za nas, gdy byliśmy jeszcze grzesznikami.",
-   "all_damage": 0,
-   "sins": {},
-   "heal": 0,
-   "jesus": false,
-   "guard": true
-  },
-  {
-   "ref": "Romans 5:9",
-   "translation": "",
-   "en": "Now that we are made right by his blood, how much more will we be saved from God's wrath through him!",
-   "es": "Ahora que hemos sido justificados por su sangre, ¡con cuánta más razón seremos salvados por él de la ira de Dios!",
-   "pl": "Skoro teraz jesteśmy usprawiedliwieni Jego krwią, o ileż bardziej przez Niego zostaniemy zbawieni od gniewu Bożego!",
    "all_damage": 0,
    "sins": {},
    "heal": 0,

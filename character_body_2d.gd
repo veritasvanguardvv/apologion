@@ -477,7 +477,7 @@ func _on_verse_submitted(text):
 		var r = verse_interceptor.call("post", typed_verse)
 		if r is Dictionary:
 			if r.get("effects", true):
-				apply_verse_effects(lower, 1.0 + faith_bonus, true, true)
+				apply_verse_effects(lower, attack_multiplier(), true, true)
 			if r.get("end_turn", true) and TurnManager.is_players_turn():
 				TurnManager.player_turn_finished.emit()
 			return
@@ -485,7 +485,7 @@ func _on_verse_submitted(text):
 	# Who it hits / heals: see targeting.gd (all enemies split by default, or
 	# the one you chose with Alt). Faith boosts the damage (x1.5 at +50%,
 	# x2 at +100%). Only the player can counter (true).
-	apply_verse_effects(lower, 1.0 + faith_bonus, true, true)
+	apply_verse_effects(lower, attack_multiplier(), true, true)
 	
 	# A real verse was recited: if it was our battle turn, the turn is over
 	if TurnManager.is_players_turn():
@@ -535,8 +535,8 @@ func cast_verse(verse, damage_scale := 1.0, can_counter := false, use_choice := 
 	if not statuses_by_caller:
 		if caster == null:
 			apply_verse_statuses(verse)
-		else:   # Ramuel / Baana: the Guard guards themselves; the built-in Faith / Zeal still help you
-			apply_verse_statuses(verse, caster, ["guard", verse.type])
+		else:   # Ramuel / Baana: all of it on themselves (their own stats)
+			apply_verse_statuses(verse, caster)
 	match verse.type:
 		"sloth", "lust", "all":
 			# Attack: split between the targets (all enemies by default)
@@ -573,10 +573,8 @@ func _cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale,
 	if not statuses_by_caller:
 		if caster == null:
 			apply_verse_statuses(verse)
-		else:
-			# Ramuel / Baana: a Guard verse guards themselves (with the wings);
-			# Zeal / Faith / Wisdom are your own stats - not from their random verses
-			apply_verse_statuses(verse, caster, ["guard"])
+		else:   # Ramuel / Baana: all of it on themselves (their own stats)
+			apply_verse_statuses(verse, caster)
 	var heal_pct = float(verse.get("heal", 0))
 	if heal_pct > 0:
 		heal_targets(_heal_targets_for(use_choice), heal_pct * heal_scale)
@@ -600,7 +598,7 @@ func _cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale,
 # themselves (to the ally picked on their phone), see party_member.gd.
 var statuses_by_caller = false
 
-# The verse's statuses: {"guard": true, "faith": 25.0 (%), "wisdom": 20.0, "zeal": true}
+# The verse's statuses: {"guard": true, "faith": 25.0 (%), "wisdom": 20.0, "zeal": -50.0 (%)}
 func verse_statuses(v) -> Dictionary:
 	var st = {}
 	var t = v.get("type", "")
@@ -612,49 +610,71 @@ func verse_statuses(v) -> Dictionary:
 		st["faith"] = float(v.faith)
 	if float(v.get("wisdom", 0)) > 0:
 		st["wisdom"] = float(v.wisdom)
-	if t == "zeal" or v.get("zeal", false):
-		st["zeal"] = true
+	# Zeal: the sheet's Zeal up % (a negative one is a penalty, e.g. James 3:1
+	# -50%); the built-in Zeal verses / list entries without a % give zeal_default
+	var z = float(v.get("zeal_pct", 0))
+	if z != 0:
+		st["zeal"] = z
+	elif t == "zeal" or v.get("zeal", false):
+		st["zeal"] = zeal_default
 	return st
 
-# Gives a verse's statuses.
-#   guard_to = who gets the Guard and its wings (null = you; a party member
-#              or phone player otherwise). Faith / Wisdom / Zeal are your stats
-#              (the team's: everyone's attacks go through you).
-#   only     = just these statuses ([] = all of them)
-# Returns the labels shown ("Guard +50%", "Wisdom +20%"...).
-func apply_verse_statuses(verse, guard_to = null, only := []) -> Array:
+# Gives a verse's statuses to ONE character: `to` = the reciter or the ally
+# a support verse was aimed at (null = you). Everyone has their own Guard,
+# Faith (their attack), Wisdom (their evasion) and Zeal (their attack +/-),
+# see activate_guard / activate_faith / add_wisdom / add_zeal here and in
+# party_member.gd.
+#   only = just these statuses ([] = all of them)
+# Returns the labels shown ("Guard +50%", "Zeal -50%"...).
+func apply_verse_statuses(verse, to = null, only := []) -> Array:
 	var st = verse_statuses(verse)
 	var labels = []
-	var guarded = self
+	var who = to if to != null and is_instance_valid(to) and to.has_method("add_zeal") else self
 	for k in st.keys():
 		if not only.is_empty() and not k in only:
 			continue
 		match k:
 			"guard":
-				if guard_to != null and is_instance_valid(guard_to) and guard_to != self and guard_to.has_method("activate_guard"):
-					guarded = guard_to
-					guard_to.activate_guard(guard_rounds, guard_reduction)
-				else:
+				if who == self:
 					activate_guard()
+				else:
+					who.activate_guard(guard_rounds, guard_reduction)
 				labels.append(tr("Guard +%d%%") % roundi(guard_reduction * 100))
 			"faith":
-				activate_faith(st.faith / 100.0)
+				who.activate_faith(st.faith / 100.0)
 				labels.append(tr("Faith +%d%%") % roundi(min(st.faith, faith_max * 100)))
 			"wisdom":
-				add_wisdom(st.wisdom)
+				who.add_wisdom(st.wisdom)
 				labels.append(tr("Wisdom +%d%%") % roundi(st.wisdom))
 			"zeal":
-				_zeal_boost()
-				labels.append(tr("Zeal"))
+				who.add_zeal(st.zeal)
+				labels.append(zeal_text(st.zeal))
 	if not labels.is_empty():
-		# One popup with all of them (two per line), over whoever got the
-		# Guard (else you): on the body, under the verse's speech bubble
+		# One popup with all of them (two per line), over who got them:
+		# on the body, under the verse's speech bubble
 		var rows = []
 		for i in range(0, labels.size(), 2):
 			rows.append("   ".join(labels.slice(i, i + 2)))
-		PopupText.spawn(guarded, "\n".join(rows), Color(0.7, 0.88, 1.0), Vector2(0, -40), 1.8)
+		PopupText.spawn(who, "\n".join(rows), Color(0.7, 0.88, 1.0) if st.get("zeal", 0) >= 0 else Color(1.0, 0.7, 0.6), Vector2(0, -40), 1.8)
 		last_status_labels = labels
 	return labels
+
+# What you have now ("Guard +50%", "Faith +100%", "Zeal -50%"...), e.g. for the phones' party list
+func status_labels() -> Array:
+	var out = []
+	if guard_rounds_left > 0:
+		out.append(tr("Guard +%d%%") % roundi(guard_reduction * 100))
+	if faith_rounds_left > 0:
+		out.append(tr("Faith +%d%%") % roundi(faith_bonus * 100))
+	if wisdom_rounds_left > 0 and wisdom > 0:
+		out.append(tr("Wisdom +%d%%") % roundi(wisdom))
+	if zeal_rounds_left > 0:
+		out.append(zeal_text(zeal))
+	return out
+
+# "Zeal +50%" / "Zeal -50%"
+func zeal_text(pct: float) -> String:
+	return tr("Zeal +%d%%") % roundi(min(pct, zeal_max)) if pct >= 0 else tr("Zeal -%d%%") % roundi(min(-pct, -zeal_min))
 var last_status_labels = []   # (for the tests)
 
 # Who a verse's healing goes to. A party member can aim it (party_member.gd:
@@ -734,7 +754,7 @@ func _load_sheet_verses():
 			# ...and its status columns on top of its own effect (e.g. John 3:16:
 			# heal + Guard + Faith + Wisdom + Zeal), see apply_verse_statuses
 			if builtin != null:
-				for k in ["guard", "zeal", "faith", "wisdom"]:
+				for k in ["guard", "zeal", "faith", "wisdom", "zeal_pct"]:
 					if row.get(k, false) and not builtin.has(k) and builtin.get("type", "") != k:
 						builtin[k] = row[k]
 			continue
@@ -763,6 +783,7 @@ func _load_sheet_verses():
 			"heal": row.get("heal", 0), "jesus": row.get("jesus", false),
 			"translation": row.get("translation", ""),
 			"zeal": row.get("zeal", false),   # Zeal list / Zeal up: also gives the speed + jump boost
+			"zeal_pct": row.get("zeal_pct", 0), # Zeal up %: attack +/- for 3 rounds (< 0 = a penalty, James 3:1)
 			"guard": row.get("guard", false), # Guard list / Guard UP: also raises your defense for a few rounds (+ the wings)
 			"guard_pct": row.get("guard_pct", 0), # (the sheet's Guard UP %; the game uses guard_reduction)
 			"wisdom": row.get("wisdom", 0),   # Wisdom UP %: raises your wisdom (= evasion)
@@ -806,6 +827,37 @@ func _light_up():
 var zeal_left = 0
 var zeal_label: Label
 
+# Zeal in battle (the sheet's Zeal up %): your attack +/- that % for
+# zeal_rounds battle rounds, stacking like Faith between zeal_min and
+# zeal_max. A NEGATIVE Zeal up (James 3:1 -50%) is a penalty: weaker attacks.
+# Verses without a % (Romans 12:11, the Zeal list) give zeal_default.
+# Your attack = 1 + Faith + Zeal (attack_multiplier), never below 0.
+@export var zeal_default = 50.0
+@export var zeal_max = 100.0
+@export var zeal_min = -75.0
+@export var zeal_rounds = 3
+var zeal = 0.0                      # -75..100 (%)
+var zeal_rounds_left = 0
+
+# +pct % zeal (or a penalty when < 0). A positive one also gives the speed +
+# jump boost (outside battles that's what it's for).
+func add_zeal(pct: float):
+	if zeal_rounds_left > 0:
+		zeal = clamp(zeal + pct, zeal_min, zeal_max)
+	else:
+		zeal = clamp(pct, zeal_min, zeal_max)
+	zeal_rounds_left = zeal_rounds
+	if zeal == 0.0:
+		zeal_rounds_left = 0
+	_update_zeal_label()
+	print("Zeal: attack ", ("+" if zeal >= 0 else ""), int(zeal), "% for ", zeal_rounds, " rounds")
+	if pct > 0:
+		_zeal_boost()
+
+# Your attack verses' damage: 1 + Faith + Zeal (0.5 = +50%)
+func attack_multiplier() -> float:
+	return max(1.0 + faith_bonus + zeal / 100.0, 0.0)
+
 func _zeal_boost():
 	if zeal_left > 0:
 		zeal_left = zeal_seconds   # already on: just restart the countdown
@@ -832,15 +884,20 @@ func _update_zeal_label():
 	if timer_label:
 		timer_label.text = str(zeal_left) if zeal_left > 0 else ""
 	if zeal_label:
-		zeal_label.visible = zeal_left > 0
-		zeal_label.text = tr("Zeal +100%%  %ds") % zeal_left
+		# Battle Zeal ("Zeal -50%  turn 1/3"), else the walking boost's seconds
+		zeal_label.visible = zeal_rounds_left > 0 or zeal_left > 0
+		if zeal_rounds_left > 0:
+			zeal_label.text = zeal_text(zeal) + "  " + tr("turn %d/%d") % [status_turn(zeal_rounds_left, zeal_rounds), zeal_rounds]
+		else:
+			zeal_label.text = tr("Zeal +100%%  %ds") % zeal_left
+		zeal_label.add_theme_color_override("font_color", Color(1.0, 0.6, 0.35) if zeal_rounds_left <= 0 or zeal >= 0 else Color(1.0, 0.4, 0.4))
 
 # Using a scroll from the inventory (inventory.gd). Like reciting its verse,
 # but the verse cycle isn't touched and the verse isn't discovered.
 func use_scroll(verse, item_name: String):
 	say_verse(verse)
 	_show_verse_message(tr("You read the %s") % item_name)
-	cast_verse(verse, 1.0 + faith_bonus, true, true)
+	cast_verse(verse, attack_multiplier(), true, true)
 	if TurnManager.is_players_turn():
 		TurnManager.player_turn_finished.emit()
 
@@ -1142,6 +1199,8 @@ func verse_power_text(v) -> String:
 			parts.append(tr("-%d%% HP") % (-v.heal))
 		if v.get("zeal", false):
 			parts.append(tr("Speed + jump"))
+		if float(v.get("zeal_pct", 0)) != 0:
+			parts.append(zeal_text(float(v.zeal_pct)))   # "Zeal +50%" / the penalty "Zeal -50%"
 		if v.get("guard", false):
 			parts.append(tr("%d%% def") % int(guard_reduction * 100))
 		if v.get("faith", 0) > 0:
@@ -1159,6 +1218,8 @@ func verse_power_text(v) -> String:
 		extra.append(tr("%d%% def") % int(guard_reduction * 100))
 	if v.get("zeal", false) and v.type != "zeal":
 		extra.append(tr("Speed + jump"))
+	if float(v.get("zeal_pct", 0)) != 0:
+		extra.append(zeal_text(float(v.zeal_pct)))
 	if float(v.get("faith", 0)) > 0 and v.type != "faith":
 		extra.append(tr("+%d%% atk") % int(min(v.faith, faith_max * 100)))
 	if float(v.get("wisdom", 0)) > 0:
@@ -1575,6 +1636,11 @@ func _on_round_ended():
 			wisdom = 0.0
 			wisdom_changed.emit(wisdom)
 		_update_wisdom_label()
+	if zeal_rounds_left > 0:
+		zeal_rounds_left -= 1
+		if zeal_rounds_left == 0:
+			zeal = 0.0
+		_update_zeal_label()
 
 func _update_guard_label():
 	guard_label.visible = guard_rounds_left > 0

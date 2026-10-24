@@ -478,14 +478,14 @@ func state_for(slot: int) -> Dictionary:
 	var index = 0
 	for who in party_nodes():
 		if who == player:
-			party.append({"i": index, "name": host_name(), "hp": player.hp, "max_hp": player.max_hp, "ko": false, "color": ""})
+			party.append({"i": index, "name": host_name(), "hp": player.hp, "max_hp": player.max_hp, "ko": false, "color": "", "st": player.status_labels()})
 		else:
 			var color = ""
 			if who.player_controlled:
 				color = "#" + SLOT_COLORS[who.phone_slot - 1].to_html(false)
 			if who == node:
 				me = index
-			party.append({"i": index, "name": who.display_name, "hp": snapped(who.hp, 0.1), "max_hp": who.max_hp, "ko": who.knocked_out, "color": color})
+			party.append({"i": index, "name": who.display_name, "hp": snapped(who.hp, 0.1), "max_hp": who.max_hp, "ko": who.knocked_out, "color": color, "st": who.status_labels()})
 		index += 1
 	# The team's discovered verses (with this player's own "used" marks)
 	var verses = []

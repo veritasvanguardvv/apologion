@@ -63,6 +63,7 @@ const HTML = r"""<!DOCTYPE html>
   @keyframes pulse { from { filter: brightness(1); } to { filter: brightness(1.25); } }
   .hpbar { height: 14px; background: #400; border-radius: 7px; overflow: hidden; }
   .hpbar div { height: 100%; background: #3c3; }
+  .member .st { font-size: 12px; color: #9cf; margin-top: 2px; }
   .member { margin: 6px 0; }
   .member .name { display: flex; justify-content: space-between; font-size: 15px; }
   .verse { border-bottom: 1px solid #333; padding: 8px 0; }
@@ -240,7 +241,8 @@ function render(s) {
   var party = "";
   s.party.forEach(function (m) {
     party += '<div class="member"><div class="name"><span>' + (m.color ? '<span class="dot" style="width:10px;height:10px;background:' + m.color + '"></span> ' : '') +
-      esc(m.name) + (m.ko ? " (" + esc(t("Knocked out")) + ")" : "") + '</span><span>' + Math.round(m.hp) + " / " + m.max_hp + '</span></div>' + bar(m.hp, m.max_hp) + '</div>';
+      esc(m.name) + (m.ko ? " (" + esc(t("Knocked out")) + ")" : "") + '</span><span>' + Math.round(m.hp) + " / " + m.max_hp + '</span></div>' + bar(m.hp, m.max_hp) +
+      (m.st && m.st.length ? '<div class="st">' + esc(m.st.join("  ")) + '</div>' : '') + '</div>';
   });
   $("party").innerHTML = party;
   var msgs = "";

@@ -218,7 +218,7 @@ func _physics_process(delta):
 	var delayed_facing = trail[0][2]
 	
 	var player_pos = player.get_body_center()   # where the player is right now
-	var target_x = delayed_pos.x - follow_distance * delayed_facing
+	var target_x = delayed_pos.x - (_battle_distance() if TurnManager.in_battle else follow_distance) * delayed_facing
 	var dx = target_x - global_position.x
 	
 	# Gravity, like the player
@@ -284,6 +284,17 @@ func _physics_process(delta):
 	
 	_update_animation(delta)
 
+
+# In a battle the party spreads out a bit more (one behind the other,
+# battle_spacing apart - less with a big party), so everyone's own wings,
+# bubble and status tag stay clear of the next one's.
+@export var battle_spacing = 160.0
+func _battle_distance() -> float:
+	var members = get_tree().get_nodes_in_group("party")
+	members.sort_custom(func(a, b): return a.follow_distance < b.follow_distance)
+	var rank = members.find(self)
+	var gap = clamp(640.0 / max(members.size(), 1), 90.0, battle_spacing)
+	return max(follow_distance, gap * (rank + 1))
 
 var stranded_for = 0.0
 var offscreen_for = 0.0
@@ -431,7 +442,8 @@ func recite_random_verse() -> bool:
 	# Default targets (use_choice = false), 25% damage and 25% healing
 	if healing_player:
 		player.forced_heal_targets = [player]
-	player.cast_verse(verse, damage_scale, false, false, damage_scale, self)
+	# (their attack: 25% of the verse, x their own Faith / Zeal)
+	player.cast_verse(verse, damage_scale * attack_multiplier(), false, false, damage_scale, self)
 	player.forced_heal_targets = []
 	
 	print(display_name, " recites ", verse.ref, " (healing you: you were at %d%%)" % roundi(100.0 * player.hp / player.max_hp) if healing_player else "")
@@ -510,21 +522,36 @@ func _update_hp():
 	visual.rotation_degrees = 90.0 if knocked_out else 0.0
 	PartyManager.set_hp(member_id, hp)
 
-# Guard on a party member (a phone player can recite a Guard verse for any
-# ally, see phone_verse): enemies do less damage for a few rounds.
+# ---------------- Their own statuses ----------------
+# Every party member (Ramuel, Baana, each phone player) has their OWN Guard,
+# Faith, Wisdom and Zeal, like the player (character_body_2d.gd): from the
+# verses they recite, or a support verse a phone player aims at them.
+#   Guard  = enemies do guard_reduction less damage to them (+ their wings)
+#   Faith  = their attack +%, Zeal = their attack +/-% (a negative Zeal up is
+#            a penalty), see attack_multiplier()
+#   Wisdom = the chance to dodge an enemy's hit (at most the player's evasion_max)
+# Each lasts 3 battle rounds; a battle's end clears them. They show in a
+# small tag over the head (status_tag), the player's own in the HUD row.
 var guard_rounds_left = 0
 var guard_reduction = 0.5
-var guard_tag: Label
-
 var guard_rounds = 3
 var guard_fx: AnimatedSprite2D   # the same wings/dome animation as the player's
+var faith_bonus = 0.0            # 0.5 = +50% attack
+var faith_rounds_left = 0
+var wisdom = 0.0                 # 0..100 (%)
+var wisdom_rounds_left = 0
+var zeal = 0.0                   # -75..100 (%)
+var zeal_rounds_left = 0
+const STATUS_ROUNDS = 3
+var status_tag: Label
+var dodges = 0                   # (counted for the tests)
 
 func activate_guard(rounds := 3, reduction := 0.5):
 	guard_rounds_left = rounds
 	guard_rounds = rounds
 	guard_reduction = reduction
-	_update_guard_tag()
-	# The wings: played once fully visible, then they stay see-through while
+	_update_status_tag()
+	# Their own pair of wings (sized to them), played once, then see-through while
 	# the guard lasts (like the player's, character_body_2d.gd)
 	if guard_fx == null:
 		_build_guard_fx()
@@ -534,16 +561,91 @@ func activate_guard(rounds := 3, reduction := 0.5):
 	guard_fx.play("guard")
 	print(display_name, ": Guard up for ", rounds, " rounds")
 
+func activate_faith(amount := 0.5):
+	var cap = player.faith_max if _find_player() else 1.0
+	faith_bonus = min((faith_bonus if faith_rounds_left > 0 else 0.0) + amount, cap)
+	faith_rounds_left = STATUS_ROUNDS
+	_update_status_tag()
+	print(display_name, ": Faith attack +", int(faith_bonus * 100), "%")
+
+func add_wisdom(amount: float):
+	var cap = player.wisdom_max if _find_player() else 100.0
+	wisdom = min((wisdom if wisdom_rounds_left > 0 else 0.0) + amount, cap)
+	wisdom_rounds_left = STATUS_ROUNDS
+	_update_status_tag()
+	print(display_name, ": Wisdom ", int(wisdom), "%")
+
+func add_zeal(pct: float):
+	var lo = player.zeal_min if _find_player() else -75.0
+	var hi = player.zeal_max if player else 100.0
+	zeal = clamp((zeal if zeal_rounds_left > 0 else 0.0) + pct, lo, hi)
+	zeal_rounds_left = STATUS_ROUNDS if zeal != 0.0 else 0
+	_update_status_tag()
+	print(display_name, ": Zeal ", int(zeal), "%")
+
+# Their attack verses' damage: 1 + Faith + Zeal
+func attack_multiplier() -> float:
+	return max(1.0 + faith_bonus + zeal / 100.0, 0.0)
+
+# Their dodge chance (0..1): the wisdom %, at most the player's evasion_max
+func evasion_chance() -> float:
+	var cap = player.evasion_max if _find_player() else 75.0
+	return min(wisdom, cap) / 100.0
+
+var dodge_override = -1.0   # (tests: 1 = always dodge, 0 = never)
+
+# An enemy's attack on them: their Wisdom may dodge it. -1 = dodged.
+func enemy_hit(amount) -> float:
+	var roll_ok = randf() < evasion_chance() if dodge_override < 0 else dodge_override >= 1.0
+	if amount > 0 and roll_ok:
+		dodges += 1
+		PopupText.spawn(self, tr("Dodged!"), Color(0.6, 0.95, 1.0), Vector2(0, -60))
+		print(display_name, " dodged (wisdom ", int(wisdom), "%)")
+		return -1.0
+	return take_damage(amount)
+
 func _on_round_ended():
 	if guard_rounds_left > 0:
 		guard_rounds_left -= 1
-		_update_guard_tag()
+	if faith_rounds_left > 0:
+		faith_rounds_left -= 1
+		if faith_rounds_left == 0:
+			faith_bonus = 0.0
+	if wisdom_rounds_left > 0:
+		wisdom_rounds_left -= 1
+		if wisdom_rounds_left == 0:
+			wisdom = 0.0
+	if zeal_rounds_left > 0:
+		zeal_rounds_left -= 1
+		if zeal_rounds_left == 0:
+			zeal = 0.0
+	_update_status_tag()
 
 func _on_battle_over():
 	guard_rounds_left = 0
-	_update_guard_tag()
+	faith_rounds_left = 0; faith_bonus = 0.0
+	wisdom_rounds_left = 0; wisdom = 0.0
+	zeal_rounds_left = 0; zeal = 0.0
+	_update_status_tag()
 
-# Guardeffect.png (12 frames of 78x78), sized to this member's body
+# The labels of what they have now ("Guard +50%", "Faith +50%", "Zeal -50%"...)
+func status_labels() -> Array:
+	var out = []
+	if guard_rounds_left > 0:
+		out.append(tr("Guard +%d%%") % roundi(guard_reduction * 100))
+	if faith_rounds_left > 0:
+		out.append(tr("Faith +%d%%") % roundi(faith_bonus * 100))
+	if wisdom_rounds_left > 0 and wisdom > 0:
+		out.append(tr("Wisdom +%d%%") % roundi(wisdom))
+	if zeal_rounds_left > 0:
+		out.append(player.zeal_text(zeal) if _find_player() else "%+d%%" % roundi(zeal))
+	return out
+
+# Guardeffect.png (12 frames of 78x78), sized to this member's body the way
+# the player's wings are sized to the player: the same scale for the same
+# body size (a phone sheep gets exactly the player's wings), bigger or
+# smaller for a bigger or smaller body. Its scale never changes after that
+# (played, lingering, see-through).
 func _build_guard_fx():
 	var sheet = load("res://Guardeffect.png")
 	var frames = SpriteFrames.new()
@@ -559,37 +661,87 @@ func _build_guard_fx():
 	guard_fx.name = "GuardFx"
 	guard_fx.sprite_frames = frames
 	guard_fx.offset = Vector2(-11, -11)   # the dome is drawn a bit right/down of the frame centre
-	# Over the body: the sprite's box in this node's space
-	var body = Rect2(Vector2(-40, -90), Vector2(80, 90))
-	if idle_sprite and idle_sprite.texture:
-		var r: Rect2 = idle_sprite.get_rect()
-		var xf: Transform2D = global_transform.affine_inverse() * idle_sprite.global_transform
-		body = Rect2(xf * r.position, Vector2.ZERO).expand(xf * r.end).abs()
-	var size = max(body.size.x, body.size.y) * guard_fx_size
-	guard_fx.scale = Vector2.ONE * size / 78.0
-	guard_fx.position = body.get_center() + Vector2(0, body.size.y * 0.05)
+	var body = _visible_body_rect(idle_sprite, self)
+	if body.size == Vector2.ZERO:
+		body = Rect2(Vector2(-40, -90), Vector2(80, 90))
+	# The player's wings: their scale and where they sit on the player's body
+	var scale_px = 4.0            # (wings px per frame px, for an 80 px body)
+	var host_off = Vector2(0, -0.05)
+	var host_size = 80.0
+	if _find_player() and player.guard_fx:
+		var host_sprite = player.get_node_or_null("Sprite2D")
+		var hb = _visible_body_rect(host_sprite, player) if host_sprite else Rect2()
+		if hb.size != Vector2.ZERO:
+			var gs = player.global_transform.get_scale()
+			host_size = sqrt(hb.size.x * hb.size.y) * gs.x
+			scale_px = player.guard_fx.scale.x * gs.x
+			host_off = (player.guard_fx.position - hb.get_center()) / Vector2(hb.size.y, hb.size.y)
+	var my_scale = global_transform.get_scale().x
+	var my_size = sqrt(body.size.x * body.size.y) * my_scale
+	guard_fx.scale = Vector2.ONE * scale_px * (my_size / host_size) / my_scale
+	guard_fx.position = body.get_center() + host_off * body.size.y
+	guard_fx_ratio = my_size / host_size
 	guard_fx.z_index = 5
 	guard_fx.visible = false
 	guard_fx.animation_finished.connect(func():
 		if guard_rounds_left > 0:
-			guard_fx.modulate.a = 0.5
+			guard_fx.modulate.a = 0.5   # see-through, same size and frame
 		else:
 			guard_fx.visible = false)
 	add_child(guard_fx)
-@export var guard_fx_size = 1.6   # the wings' frame, in body sizes
+var guard_fx_ratio = 1.0   # (their wings / the player's, for the tests)
 
-func _update_guard_tag():
-	if guard_tag == null:
-		guard_tag = Label.new()
-		guard_tag.add_theme_color_override("font_color", Color(0.6, 0.85, 1.0))
-		guard_tag.add_theme_font_size_override("font_size", 14)
-		guard_tag.position = Vector2(-hp_bar_width / 2.0, bubble_head_offset - 16)
-		add_child(guard_tag)
-	guard_tag.visible = guard_rounds_left > 0
-	# (same wording as your status row: "Guard +50%  turn 1/3")
-	guard_tag.text = tr("Guard +%d%%  turn %d/%d") % [roundi(guard_reduction * 100), clampi(guard_rounds - guard_rounds_left + 1, 1, guard_rounds), guard_rounds]
+# The box of a sprite's visible (non-transparent) pixels, in `space`'s
+# coordinates (the sprite PNGs have empty margins)
+static func _visible_body_rect(sprite, space: Node2D) -> Rect2:
+	if sprite == null or not (sprite is Sprite2D) or sprite.texture == null:
+		return Rect2()
+	var r: Rect2 = sprite.get_rect()   # (one frame of a sprite sheet)
+	var img: Image = sprite.texture.get_image()
+	if img:
+		if img.is_compressed():
+			img.decompress()
+		# the pixels of the frame shown (its cell of the sheet / its region)
+		var cell = Rect2i(sprite.region_rect) if sprite.region_enabled else Rect2i(Vector2i.ZERO, img.get_size())
+		if not sprite.region_enabled:
+			var fs = img.get_size() / Vector2i(max(sprite.hframes, 1), max(sprite.vframes, 1))
+			cell = Rect2i(Vector2i(sprite.frame_coords) * fs, fs)
+		var used = img.get_region(cell).get_used_rect()
+		if used.size.x > 0:
+			r = Rect2(r.position + Vector2(used.position), Vector2(used.size))
+	var xf: Transform2D = space.global_transform.affine_inverse() * sprite.global_transform
+	return Rect2(xf * r.position, Vector2.ZERO).expand(xf * r.end).abs()
+
+# Their statuses over the head, small: "Guard +50%  Faith +50%" (two a line),
+# over the HP bar (and the phone player's name). Mirrored in the 3D view.
+func _update_status_tag():
 	if guard_rounds_left <= 0 and guard_fx:
 		guard_fx.visible = false   # guard over: the wings go
+	var labels = status_labels()
+	if status_tag == null:
+		if labels.is_empty():
+			return
+		status_tag = Label.new()
+		status_tag.name = "StatusTag"
+		status_tag.z_index = 6   # (over the wings)
+		status_tag.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		status_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		status_tag.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+		status_tag.add_theme_color_override("font_color", Color(0.75, 0.88, 1.0))
+		status_tag.add_theme_color_override("font_outline_color", Color.BLACK)
+		status_tag.add_theme_constant_override("outline_size", 4)
+		status_tag.add_theme_font_size_override("font_size", 13)
+		add_child(status_tag)
+	status_tag.visible = not labels.is_empty()
+	var rows = []
+	for i in range(0, labels.size(), 2):
+		rows.append("  ".join(labels.slice(i, i + 2)))
+	status_tag.text = "\n".join(rows)
+	var h = 17.0 * max(rows.size(), 1)
+	var top = bubble_head_offset - (26 if player_controlled else 2)   # over the name / the HP bar
+	status_tag.size = Vector2(220, h)
+	status_tag.position = Vector2(-110, top - h)
+	status_tag.add_theme_color_override("font_color", Color(1.0, 0.65, 0.6) if zeal_rounds_left > 0 and zeal < 0 else Color(0.75, 0.88, 1.0))
 
 # Returns the damage taken (less while guarded).
 func take_damage(amount) -> float:
@@ -692,13 +844,9 @@ func phone_verse(text: String, target := -1) -> String:
 			PhoneServer.mark_support_used(phone_slot)
 			TurnManager.show_message(tr("%s helps out of turn: %s") % [display_name, VerseManager.ref_text(verse.ref)])
 	else:
-		# Full damage (1.0), can counter, default targets. Its statuses (an
-		# attack + Guard verse...) go to the ally picked on the phone, below.
-		player.statuses_by_caller = true
-		player.cast_verse(verse, 1.0, true, false, 1.0, self)
-		player.statuses_by_caller = false
-		var who = PhoneServer.party_node(target)
-		player.apply_verse_statuses(verse, who if who != null else self)
+		# Full damage x their own Faith / Zeal, can counter, default targets.
+		# Its statuses (an attack + Guard verse...) go to the reciter.
+		player.cast_verse(verse, attack_multiplier(), true, false, 1.0, self)
 	print(display_name, " (phone) recites ", verse.ref, "" if my_turn else " (out of turn)")
 	recited.emit(verse.ref)
 	if my_turn:
@@ -717,10 +865,9 @@ static func is_support_verse(verse) -> bool:
 
 
 # A support verse's effect on ONE chosen party member (`who`: the player or a
-# party member). Faith boosts the whole team's attacks (they all go through
-# the player's cast_verse), Zeal is the player's run/jump boost.
-# Every status of the verse applies (Guard + Wisdom, heal + Guard + Faith...):
-# the Guard (with its wings) on `who`, Faith / Wisdom / Zeal on the team.
+# party member): the heal and every status of the verse (Guard + Wisdom,
+# heal + Guard + Faith...) go to `who` - their own Guard (with their own
+# wings), Faith, Wisdom and Zeal.
 func apply_support_verse(verse, who):
 	var heal_pct = 0.0
 	if verse.get("set", "") == "sheet" or verse.type == "heal":
