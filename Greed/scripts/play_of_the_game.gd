@@ -272,7 +272,7 @@ func _build_overlay(parent: Node):
 	flash.modulate.a = 0.0
 	frame.add_child(flash)
 	var skip_btn = Button.new()
-	skip_btn.text = "Skip (K)"
+	skip_btn.text = "Skip (K)" if TurnManager.key_hints() else "Skip"
 	skip_btn.anchor_left = 1.0
 	skip_btn.anchor_right = 1.0
 	skip_btn.anchor_top = 1.0

@@ -34,6 +34,7 @@ var key_items = []      # key item ids you have (items.gd KEY_ITEMS), in the ord
 var tab = "items"       # "items" or "key" (the Key Items tab)
 var items_tab_button: Button
 var key_tab_button: Button
+var title_label: Label
 var hint_label: Label
 signal changed
 
@@ -449,6 +450,7 @@ func _build_panel():
 	panel.add_theme_stylebox_override("panel", look)
 	layer.add_child(panel)
 	var title = Label.new()
+	title_label = title
 	title.text = "Inventory (Ctrl)"
 	title.position = Vector2(16, 10)
 	title.add_theme_font_size_override("font_size", 20)
@@ -543,7 +545,10 @@ func _refresh():
 	var ids = _owned_ids()
 	empty_label.visible = ids.is_empty()
 	empty_label.text = "No key items yet." if key_tab else "No items yet. Look around the levels!"
-	hint_label.text = "Click a key item to read it" if key_tab else "Click an item (or press 1-9): U = Use, Delete = Drop"
+	# (no keyboard hints in the phone app / with the touch buttons)
+	var hints = TurnManager.key_hints()
+	title_label.text = "Inventory (Ctrl)" if hints else "Inventory"
+	hint_label.text = "Click a key item to read it" if key_tab else ("Click an item (or press 1-9): U = Use, Delete = Drop" if hints else "Tap an item, then Use or Drop")
 	items_tab_button.button_pressed = not key_tab
 	key_tab_button.button_pressed = key_tab
 	if selected_id != "" and (not has_key_item(selected_id) if key_tab else count(selected_id) <= 0):
