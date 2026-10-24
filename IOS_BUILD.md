@@ -69,8 +69,9 @@ in the repo. Your Apple ID signs the app on your Mac.
 ## Option C: ad-hoc build from GitHub Actions (no Mac, no TestFlight review)
 
 An ad-hoc build installs only on iPhones whose UDIDs are registered in the Apple
-Developer account and listed in the Ad Hoc provisioning profile. No App Review, no
-TestFlight, and no Developer Mode needed on the phone.
+Developer account and listed in the Ad Hoc provisioning profile. No App Review and no
+TestFlight. On iOS 16+ the phone may say "Developer Mode Required" the first time: turn it on
+in Settings > Privacy & Security > Developer Mode (the phone restarts, then confirm with the passcode).
 
 **Build it:** Actions > "iOS TestFlight" > Run workflow > distribution = `ad-hoc`, or
 
