@@ -16,6 +16,10 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 config/name.ios="Apologion"
 config/name.web="Apologion"
+boot_splash/bg_color=Color(0.07, 0.07, 0.1, 1)
+boot_splash/image="res://icons/splash_sheep.png"
+boot_splash/stretch_mode=0
+boot_splash/use_filter=false
 
 [audio]
 
