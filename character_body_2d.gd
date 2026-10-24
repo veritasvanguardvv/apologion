@@ -225,12 +225,17 @@ var bible_books = ["psalm", "psalms", "proverb", "proverbs", "matthew", "romans"
 
 # (translated automatically: the LineEdit looks this text up in strings.csv)
 const DEFAULT_PLACEHOLDER = "Press Enter (or hold Shift and speak) to recite Scripture"
+# The iPhone / Android app: tap the box, then type or use the keyboard's dictation key
+const TAP_PLACEHOLDER = "Click here to type or speak Scripture"
+
+func default_placeholder() -> String:
+	return TAP_PLACEHOLDER if TouchControls.tap_to_type() else DEFAULT_PLACEHOLDER
 var message_id = 0  # used by _show_verse_message so old messages don't overwrite new ones
 
 func _ready():
 	add_to_group("player")  # lets SaveManager find the player when saving
 	verse_input.text_submitted.connect(_on_verse_submitted)
-	verse_input.placeholder_text = DEFAULT_PLACEHOLDER
+	verse_input.placeholder_text = default_placeholder()
 	
 	# Health comes from SaveManager (full HP on a new level, saved HP after loading)
 	hp = SaveManager.player_hp
@@ -394,6 +399,8 @@ static func type_name(t: String) -> String:
 var cutscene_lock = false
 
 func _input(event):
+	if _dismiss_typing_on_outside_press(event):
+		return
 	if cutscene_lock:
 		return
 	if event.is_action_pressed("recite") and not event.is_echo() and not verse_input.has_focus():
@@ -423,6 +430,57 @@ func _input(event):
 			print("Tab pressed - panel visible: ", verse_panel.visible)
 			if verse_panel.visible:
 				_update_verse_text()
+
+# ---------------- Clicking / tapping off the verse box ----------------
+# While you're typing, a click or tap anywhere outside the verse box closes it
+# (like pressing away from a text field): the box loses focus, the phone
+# keyboard goes away, nothing is recited and the words you typed stay in the
+# box for later. That click does nothing else - it doesn't also press a
+# button, pick a target or move a touch button. (Clicks inside the open verse
+# list - its filter buttons, scrolling it - still work while you type.)
+var _swallow_pointer_frame = -1   # the press that closed the box (its touch + mouse copies)
+var _swallow_releases_until = 0   # ...and their releases (msec)
+
+func _dismiss_typing_on_outside_press(event) -> bool:
+	var is_press = false
+	var pos = Vector2.ZERO
+	if event is InputEventMouseButton:
+		if not event.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_MIDDLE]:
+			return false   # (the wheel scrolls the verse list)
+		is_press = event.pressed
+		pos = event.position
+	elif event is InputEventScreenTouch:
+		is_press = event.pressed
+		pos = event.position
+	else:
+		return false
+	var frame = Engine.get_process_frames()
+	if is_press:
+		if frame == _swallow_pointer_frame:
+			get_viewport().set_input_as_handled()   # the mouse copy of the same tap
+			return true
+		_swallow_releases_until = 0
+		if not is_instance_valid(verse_input) or not verse_input.has_focus():
+			return false
+		if verse_input.get_global_rect().has_point(pos):
+			return false   # in the box: move the caret, select...
+		if verse_panel and verse_panel.is_visible_in_tree() and verse_panel.get_global_rect().has_point(pos):
+			return false
+		close_typing()
+		_swallow_pointer_frame = frame
+		_swallow_releases_until = Time.get_ticks_msec() + 2000
+		get_viewport().set_input_as_handled()
+		return true
+	if Time.get_ticks_msec() < _swallow_releases_until:
+		get_viewport().set_input_as_handled()
+		return true
+	return false
+
+# Leaves the verse box without reciting (keeps what was typed)
+func close_typing():
+	verse_input.release_focus()
+	get_viewport().gui_release_focus()
+	DisplayServer.virtual_keyboard_hide()
 
 # ---------------- Scrolling the verse list with the arrow keys ----------------
 # Tap = a small step; hold = smooth scrolling (Settings can turn it off).
@@ -1470,7 +1528,7 @@ func _show_verse_message(msg: String):
 	verse_input.placeholder_text = msg
 	await get_tree().create_timer(3.0).timeout
 	if my_id == message_id and is_instance_valid(verse_input):
-		verse_input.placeholder_text = DEFAULT_PLACEHOLDER
+		verse_input.placeholder_text = default_placeholder()
 
 # Changes the whole game's language ("en", "es" or "pl"). Same as the menu buttons.
 func set_language(new_language: String):
@@ -2018,7 +2076,7 @@ func _on_language_changed(_new_language):
 	_update_faith_label()
 	_update_wisdom_label()
 	_update_zeal_label()
-	verse_input.placeholder_text = DEFAULT_PLACEHOLDER
+	verse_input.placeholder_text = default_placeholder()
 
 # ---------------- Speech bubble and speaker icon ----------------
 
