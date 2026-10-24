@@ -15,7 +15,8 @@ static func _tm(vp: Viewport):
 static func _shown(c) -> bool:
 	return c is Control and is_instance_valid(c) and c.is_visible_in_tree() and c.size.x > 0.0
 
-# The player's corner: portrait, Run / Items (and the Zeal timer), HP bar
+# The player's corner: portrait, Run / Items (and the Zeal timer), HP bar,
+# the party's rows under it (party_hud.gd)
 static func player_corner(vp: Viewport) -> Rect2:
 	var r = Rect2()
 	var tm = _tm(vp)
@@ -24,7 +25,7 @@ static func player_corner(vp: Viewport) -> Rect2:
 	if tm:
 		parts += [tm.run_button, tm.items_button]
 	if player:
-		for n in ["portrait", "hp_bar"]:
+		for n in ["portrait", "hp_bar", "party_hud"]:
 			if n in player:
 				parts.append(player.get(n))
 		if "hp_bar" in player and is_instance_valid(player.hp_bar):

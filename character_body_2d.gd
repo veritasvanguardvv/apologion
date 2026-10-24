@@ -429,6 +429,7 @@ func _input(event):
 			verse_panel.visible = not verse_panel.visible
 			print("Tab pressed - panel visible: ", verse_panel.visible)
 			if verse_panel.visible:
+				place_verse_panel()
 				_update_verse_text()
 
 # ---------------- Clicking / tapping off the verse box ----------------
@@ -1805,9 +1806,8 @@ func _build_status_labels():
 	box.position = hp_bar.position + Vector2(hp_bar.size.x + 12, -1)
 	var screen_w = get_viewport().get_visible_rect().size.x if is_inside_tree() else 1024.0
 	box.custom_minimum_size.x = max(screen_w - box.position.x - STATUS_RIGHT_MARGIN, 200.0)
-	box.resized.connect(func():
-		if verse_panel:
-			verse_panel.position.y = VERSE_PANEL_POS.y + max(box.size.y - STATUS_LINE_H, 0.0))
+	status_row = box
+	box.resized.connect(place_verse_panel)
 	box.add_child(guard_label)
 	faith_label = Label.new()
 	faith_label.add_theme_color_override("font_color", Color(1.0, 0.8, 0.45))
@@ -1887,7 +1887,11 @@ func _build_guard_effect():
 # top-left corner, Run (turn_manager.gd) beside it, the HP bar under it.
 const HUD_HP_POS = Vector2(10, 72)
 const HUD_HP_SIZE = Vector2(240, 24)
+const HUD_PARTY_POS = Vector2(10, 102)   # the party's rows, under the HP bar
+const PartyHud = preload("res://party_hud.gd")
 var portrait: Control
+var party_hud: Control
+var status_row: Control
 
 # ---------------- Low health (25% or less) ----------------
 # The HP bar turns red, and in a battle the low-health sound (General/Sounds/
@@ -1961,6 +1965,23 @@ func _layout_hud():
 	var timer_label = hud.get_node_or_null("TimerLabel")
 	if timer_label:
 		timer_label.position = Vector2(206, 18)
+	# The party's portraits and HP under yours (party_hud.gd)
+	party_hud = PartyHud.new()
+	party_hud.position = HUD_PARTY_POS
+	party_hud.resized.connect(place_verse_panel)
+	hud.add_child.call_deferred(party_hud)
+
+# The verse box (Tab) sits under the HP bar - and under the party's rows and
+# a second line of the status row, if there are any.
+func place_verse_panel():
+	if verse_panel == null:
+		return
+	var y = VERSE_PANEL_POS.y
+	if is_instance_valid(status_row):
+		y += max(status_row.size.y - STATUS_LINE_H, 0.0)
+	if is_instance_valid(party_hud) and party_hud.used_height() > 0.0:
+		y = max(y, HUD_PARTY_POS.y + party_hud.used_height() + 6.0)
+	verse_panel.position.y = y
 
 # The verse box (Tab): a compact panel in the top-left, under the HP bar, with
 # Index / Verse / Effects columns, so it never covers the characters (they

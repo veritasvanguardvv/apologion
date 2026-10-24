@@ -12,7 +12,8 @@ extends CharacterBody2D
 #   - he always uses the default targets (all enemies / you + him, split),
 #     never the one you chose with Alt (that's for your own verses)
 #
-# HP: party members have their own health (small bar above the head).
+# HP: party members have their own health, shown top-left under the player's
+# (party_hud.gd: portrait + HP bar; nothing floats over their heads).
 # Enemies sometimes attack them (party_target_chance in enemy.gd). At 0 HP
 # they're knocked out: they skip their turns until a healing verse brings
 # them back. Their HP is kept between levels and in the save, and goes back
@@ -532,6 +533,9 @@ func _build_hp_bar():
 	var back = StyleBoxFlat.new()
 	back.bg_color = Color(0.1, 0.1, 0.1, 0.8)
 	hp_bar.add_theme_stylebox_override("background", back)
+	# Not drawn over the head any more: the party's HP shows in the top-left
+	# HUD (party_hud.gd). The bar is kept (hidden) as their HP's value holder.
+	hp_bar.visible = false
 	add_child(hp_bar)
 	_update_hp()
 
@@ -646,6 +650,34 @@ func _on_round_ended():
 		if zeal_rounds_left == 0:
 			zeal = 0.0
 	_update_status_tag()
+
+# Their statuses, for the bench (party_manager.gd switch_in): whoever is
+# switched out keeps them for if they come back in this battle
+func battle_status() -> Dictionary:
+	return {
+		guard_rounds_left = guard_rounds_left, guard_rounds = guard_rounds, guard_reduction = guard_reduction,
+		faith_bonus = faith_bonus, faith_rounds_left = faith_rounds_left,
+		wisdom = wisdom, wisdom_rounds_left = wisdom_rounds_left,
+		zeal = zeal, zeal_rounds_left = zeal_rounds_left,
+	}
+
+func restore_battle_status(st: Dictionary):
+	faith_bonus = st.faith_bonus; faith_rounds_left = st.faith_rounds_left
+	wisdom = st.wisdom; wisdom_rounds_left = st.wisdom_rounds_left
+	zeal = st.zeal; zeal_rounds_left = st.zeal_rounds_left
+	if st.guard_rounds_left > 0:
+		activate_guard(st.guard_rounds_left, st.guard_reduction)   # (their wings come back)
+		guard_rounds = st.guard_rounds
+	_update_status_tag()
+
+func save_hp():
+	PartyManager.set_hp(member_id, hp)
+
+# Look at the enemies right away (a member switched in mid-battle)
+func face_battle():
+	var toward = battle_facing()
+	if toward != 0:
+		_face(toward)
 
 func _on_battle_over():
 	guard_rounds_left = 0
