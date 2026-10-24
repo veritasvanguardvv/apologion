@@ -401,10 +401,34 @@ func _update_animation(delta):
 	if walking:
 		walk_sprite.frame = walk_first_frame + int(anim_time * walk_fps) % walk_frame_count
 		# Mirror the whole Visual node so both sprites flip around his feet
-		var moving_right = velocity.x > 0
-		visual.scale.x = 1 if moving_right == sprite_faces_right else -1
+		_face(1 if velocity.x > 0 else -1)
 	else:
 		idle_sprite.frame = idle_first_frame + int(anim_time * idle_fps) % idle_frame_count
+		# Standing in a battle: face the enemies, like the player does. (He
+		# backs up to his battle spot behind the player, so the last walking
+		# direction would leave him looking away from the fight.)
+		var toward = battle_facing()
+		if toward != 0:
+			_face(toward)
+
+# 1 = look right, -1 = look left (mirrors the Visual node; the 3D boss view
+# copies this flip from the 2D sprite)
+func _face(dir: int):
+	visual.scale.x = 1 if (dir > 0) == sprite_faces_right else -1
+
+# Which way the enemies are during a battle: 1 = right, -1 = left, 0 = no
+# battle (or no enemies left) - then he keeps his last walking direction.
+func battle_facing() -> int:
+	if not TurnManager.in_battle:
+		return 0
+	var enemies = Targeting.battle_enemies()
+	if enemies.is_empty():
+		return 0
+	var x = 0.0
+	for e in enemies:
+		x += e.global_position.x
+	x /= enemies.size()
+	return 1 if x >= global_position.x else -1
 
 
 # ---------------- Battle turns ----------------
