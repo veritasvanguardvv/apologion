@@ -1,5 +1,8 @@
 # Apologion on iPhone (native app, free Apple ID)
 
+> With the paid Apple Developer Program you can skip all of this and install builds from
+> TestFlight instead: see **TESTFLIGHT.md**.
+
 The repo has an **iOS export preset** (Project > Export > iOS) with everything set up:
 bundle id `com.veritasvanguard.apologion`, name **Apologion**, landscape only, icons
 (made from `icon.svg`, in `icons/ios/`), the microphone message and the local-network message
