@@ -116,6 +116,19 @@ jobs:
           "$GODOT" --headless --path . --import || true
           test -d .godot/imported
 
+      - name: Fix GDExtension framework install names
+        # dyld refuses relative install names in signed iOS apps ("relative path not
+        # allowed in hardened program") and the app dies at launch. The upstream
+        # godot-whisper iOS framework shipped one, so force @rpath before exporting.
+        run: |
+          set -euo pipefail
+          for fw in addons/*/bin/*.ios.*.framework; do
+            [ -d "$fw" ] || continue
+            bin="$fw/$(/usr/libexec/PlistBuddy -c 'Print CFBundleExecutable' "$fw/Info.plist")"
+            install_name_tool -id "@rpath/$(basename "$fw")/$(basename "$bin")" "$bin"
+            echo "$bin -> $(otool -D "$bin" | tail -1)"
+          done
+
       - name: Export Xcode project
         run: |
           set -euo pipefail
@@ -190,6 +203,15 @@ jobs:
           set -e
           grep -E '^\*\* |error:' "$RUNNER_TEMP/archive.log" | head -40 || true
           if [ "$rc" -ne 0 ]; then tail -100 "$RUNNER_TEMP/archive.log"; exit "$rc"; fi
+
+      - name: Check app launches its frameworks by @rpath
+        run: |
+          set -euo pipefail
+          APP="$RUNNER_TEMP/${APP_NAME}.xcarchive/Products/Applications/${APP_NAME}.app"
+          otool -L "$APP/${APP_NAME}" | tee "$RUNNER_TEMP/otool.txt"
+          if grep -vE '^\s*(/|@rpath/|@executable_path/|@loader_path/)' "$RUNNER_TEMP/otool.txt" | grep -v ':$' | grep -q .; then
+            echo "::error::The app links a library by a relative path; it would crash at launch on iOS"; exit 1
+          fi
 
       - name: Export .ipa
         run: |
