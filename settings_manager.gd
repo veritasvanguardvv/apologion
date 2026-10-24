@@ -32,6 +32,7 @@ const ACTIONS = [
 	["skip_turn", "Skip turn", KEY_K],
 	["run_away", "Run away", KEY_R],
 	["change_party", "Change Party", KEY_P],
+	["dig", "Dig", KEY_D],
 	["scroll_verses_up", "Scroll verses up", KEY_UP],
 	["scroll_verses_down", "Scroll verses down", KEY_DOWN],
 ]

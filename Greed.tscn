@@ -60,6 +60,7 @@
 [ext_resource type="Script" uid="uid://clibt8yfiqmdr" path="res://sprite_2d.gd" id="t_4_t5073"]
 [ext_resource type="Texture2D" uid="uid://cjae4ede1ckiw" path="res://Sloth/Light tests/Light2.png" id="t_5_4lvg6"]
 [ext_resource type="Texture2D" uid="uid://dg0o06xr4ed4x" path="res://Sloth/Light tests/Halo ring.png" id="t_6_w3cbm"]
+[ext_resource type="Script" path="res://Greed/scripts/dig_spot.gd" id="dig_spot_g"]
 
 [sub_resource type="Gradient" id="t_Gradient_d5c3b"]
 offsets = PackedFloat32Array(0, 0.9386792)
@@ -3861,6 +3862,10 @@ display_name = "Umbrid"
 
 [node name="SinDeathScene" parent="." instance=ExtResource("54_g")]
 position = Vector2(11690, 192)
+
+[node name="DigSpot" type="Node2D" parent="."]
+position = Vector2(-1000, 320.4)
+script = ExtResource("dig_spot_g")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1804218673]
 position = Vector2(-1400.0659, -245.4702)

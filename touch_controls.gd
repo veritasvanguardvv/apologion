@@ -50,6 +50,8 @@ func _ready():
 	# jump / ram (bottom-right)
 	_add("Jump", "jump", "Jump", Vector2(R - 128, B - 236), 108, true)
 	_add("Ram", "ram", "Ram", Vector2(R - 236, B - 196), 92, true)
+	# contextual: only next to something to dig (Greed/scripts/dig_spot.gd)
+	_add("Dig", "dig", "Dig", Vector2(R - 232, B - 300), 84, true)
 	# right edge column
 	_add("Pause", "ui_cancel", "II", Vector2(R - 70, 96), 60, false)
 	_add("Verses", "toggle_verse_box", "Verses", Vector2(R - 70, 164), 60, false)
@@ -190,6 +192,10 @@ func _menu_open() -> bool:
 	return false
 
 
+# Buttons that only show in some places: name -> shown (set by the level,
+# e.g. contextual["Dig"] next to a dig spot)
+var contextual = {}
+
 func _update_visibility():
 	var on = wanted() and get_tree().get_first_node_in_group("player") != null and not _menu_open()
 	root_node.visible = on
@@ -199,6 +205,11 @@ func _update_visibility():
 	var battle = TurnManager.in_battle or (player != null and player.get("cutscene_lock") == true)
 	for b in move_buttons:
 		b.visible = not battle
+	for n in contextual:
+		if buttons.has(n):
+			buttons[n].visible = not battle and contextual[n]
+	if not contextual.has("Dig"):
+		buttons["Dig"].visible = false
 	# the phone app types / dictates straight into the verse box
 	for n in ["Type", "Mic"]:
 		buttons[n].visible = not tap_to_type()

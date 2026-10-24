@@ -323,6 +323,14 @@ Scroll verses down,Scroll verses down,Desplazar versículos hacia abajo,Przewiń
 Press %s to ram.,Press %s to ram.,Pulsa %s para embestir.,"Naciśnij %s, aby taranować."
 Letter from V.,Letter from V.,Carta de V.,List od V.
 Items,Items,Objetos,Przedmioty
+Dig,Dig,Cavar,Kop
+Press %s to dig,Press %s to dig,Pulsa %s para cavar,"Naciśnij %s, aby kopać"
+Tap Dig to dig,Tap Dig to dig,Toca Cavar para cavar,"Dotknij Kop, aby kopać"
+Press %s to go down,Press %s to go down,Pulsa %s para bajar,"Naciśnij %s, aby zejść"
+Press %s to go up,Press %s to go up,Pulsa %s para subir,"Naciśnij %s, aby wejść na górę"
+Tap ^ to go down,Tap ^ to go down,Toca ^ para bajar,"Dotknij ^, aby zejść"
+Tap ^ to go up,Tap ^ to go up,Toca ^ para subir,"Dotknij ^, aby wejść na górę"
+A secret stairway!,A secret stairway!,¡Una escalera secreta!,Sekretne schody!
 Run,Run,Huir,Ucieczka
 Skip,Skip,Pasar,Pomiń
 Target,Target,Objetivo,Cel
