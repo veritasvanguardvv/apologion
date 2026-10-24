@@ -17,6 +17,13 @@ const PROPS = preload("res://Greed/TX Dungeon Props.png")
 const BRICKS = preload("res://Greed/TX Tileset - Dungeon Ground Dirt.png")
 const SCROLL_HEAL = preload("res://General/Items/fc112.png")   # green
 const SCROLL_GREED = preload("res://General/Items/fc110.png")  # red
+# a small grassy hill in the level's grass style (made from Greed/tiles_32x32.png),
+# drawn at the ground tiles' pixel size; the open one has the burrow + stairs
+const HILL = preload("res://Greed/dig-hill.png")
+const HILL_OPEN = preload("res://Greed/dig-hill-open.png")
+const HILL_SCALE = 4.0812
+const HILL_SINK = 6.0
+const HILL_TINT = Color(1.2, 1.2, 1.1)   # a touch brighter so it reads against the dark trees
 const CHIME = preload("res://Greed/SUCCESS PICKUP Collect Chime 01.wav")
 
 # 4 Greed attack verses + 4 healing verses from data/verses.json (sheet verses
@@ -92,7 +99,7 @@ func stairs_bottom() -> Vector2:
 
 
 func hole_top() -> Vector2:
-	return global_position + Vector2(40, 0)
+	return global_position
 
 
 func in_chamber() -> bool:
@@ -155,34 +162,19 @@ func _glow(parent: Node, pos: Vector2, radius: float, col: Color) -> Sprite2D:
 func _build_mound():
 	mound = Node2D.new()
 	mound.name = "MoundArt"
-	mound.z_index = 1
 	add_child(mound)
-	var pile = _sprite(mound, PROPS, Rect2(955, 595, 57, 13), Vector2(0, 3), 2.4)
-	pile.modulate = Color(1.25, 0.95, 0.7)
-	var area = _area(self, "DigArea", Vector2(0, -40), Vector2(170, 120))
+	_sprite(mound, HILL, Rect2(Vector2.ZERO, HILL.get_size()), Vector2(0, HILL_SINK), HILL_SCALE).modulate = HILL_TINT
+	var area = _area(self, "DigArea", Vector2(0, -40), Vector2(190, 120))
 	area.body_entered.connect(func(b): _set_near(b, "dig_or_down", true))
 	area.body_exited.connect(func(b): _set_near(b, "dig_or_down", false))
 
 
-# The opened hole: a dark pit with stone steps going down, the dirt thrown aside
+# The opened hill: a burrow in its side with stone steps going down
 func _build_hole():
 	hole = Node2D.new()
 	hole.name = "Hole"
-	hole.z_index = 1   # over the grass tiles
 	add_child(hole)
-	var c = Vector2(40, 0)
-	# the pit (a little wider at the top), dark inside
-	_poly(hole, PackedVector2Array([c + Vector2(-66, -3), c + Vector2(66, -3), c + Vector2(54, 26), c + Vector2(-54, 26)]), Color(0.05, 0.03, 0.02))
-	# stone steps going down into it (lit from above, darker further down)
-	for i in 4:
-		var y = -1.0 + i * 6.5
-		var x = c.x - 56 + i * 22
-		_poly(hole, PackedVector2Array([Vector2(x, y), Vector2(x + 30, y), Vector2(x + 30, y + 6.5), Vector2(x, y + 6.5)]), Color(0.55, 0.53, 0.5).darkened(i * 0.2))
-		_poly(hole, PackedVector2Array([Vector2(x, y), Vector2(x + 30, y), Vector2(x + 30, y + 1.5), Vector2(x, y + 1.5)]), Color(0.75, 0.72, 0.66).darkened(i * 0.2))
-	# a dirt rim
-	_poly(hole, PackedVector2Array([c + Vector2(-72, -6), c + Vector2(-60, -8), c + Vector2(60, -8), c + Vector2(72, -6), c + Vector2(66, -2), c + Vector2(-66, -2)]), Color(0.42, 0.26, 0.12))
-	var pile = _sprite(hole, PROPS, Rect2(955, 595, 57, 13), Vector2(-58, -2), 1.6)
-	pile.modulate = Color(1.25, 0.95, 0.7)
+	_sprite(hole, HILL_OPEN, Rect2(Vector2.ZERO, HILL_OPEN.get_size()), Vector2(0, HILL_SINK), HILL_SCALE).modulate = HILL_TINT
 
 
 func _build_chamber():
@@ -382,14 +374,13 @@ func _process(_delta):
 			near = "down" if dug else "dig"
 	if label:
 		label.visible = near != ""
-		var key = GameSettings.key_name("interact")
 		match near:
 			"dig":
-				label.text = tr("Tap Dig to dig") if _touch() else tr("Press %s to dig") % GameSettings.key_name("dig")
+				label.text = GameSettings.control_prompt("Press %s to dig", "dig", "Tap Dig to dig")
 			"down":
-				label.text = tr("Tap ^ to go down") if _touch() else tr("Press %s to go down") % key
+				label.text = GameSettings.control_prompt("Press %s to go down", "interact", "Tap ^ to go down", "Press Up to go down")
 			"up":
-				label.text = tr("Tap ^ to go up") if _touch() else tr("Press %s to go up") % key
+				label.text = GameSettings.control_prompt("Press %s to go up", "interact", "Tap ^ to go up", "Press Up to go up")
 	if "contextual" in TouchControls:
 		TouchControls.contextual["Dig"] = near == "dig"
 

@@ -136,6 +136,23 @@ func action_label(action: String) -> String:
 
 
 # The key's name, e.g. "Space", "X", "Shift"
+# Prompts that name a control: the keyboard wording ("Press Up to enter",
+# with the key the player bound) on a computer, the touch button's name on a
+# phone / tablet ("Tap ^ to enter"). key_text has a %s for the key.
+func touch_prompts() -> bool:
+	var tm = get_node_or_null("/root/TurnManager")
+	return tm != null and not tm.key_hints()
+
+# up_text: the wording for the default Up arrow ("Press Up to enter", which
+# reads "Pulsa Arriba..." / "strzałkę w górę" in Spanish / Polish).
+func control_prompt(key_text: String, action: String, touch_text: String, up_text := "") -> String:
+	if touch_prompts():
+		return tr(touch_text)
+	if up_text != "" and int(bindings.get(action, 0)) == KEY_UP:
+		return tr(up_text)
+	return tr(key_text) % key_name(action)
+
+
 func key_name(action: String) -> String:
 	var physical = int(bindings.get(action, 0))
 	if physical == 0:

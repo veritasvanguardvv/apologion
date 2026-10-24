@@ -136,6 +136,7 @@ Not in a battle,Not in a battle,No hay batalla,Brak walki
 Discovered verses,Discovered verses,Versículos descubiertos,Odkryte wersety
 Battle,Battle,Batalla,Walka
 Party,Party,Grupo,Drużyna
+Party (%s),Party (%s),Grupo (%s),Drużyna (%s)
 used,used,usado,użyty
 Reconnecting...,Reconnecting...,Reconectando...,Ponowne łączenie...
 Knocked out,Knocked out,Fuera de combate,Nieprzytomny
@@ -323,6 +324,21 @@ Scroll verses down,Scroll verses down,Desplazar versículos hacia abajo,Przewiń
 Press %s to ram.,Press %s to ram.,Pulsa %s para embestir.,"Naciśnij %s, aby taranować."
 Letter from V.,Letter from V.,Carta de V.,List od V.
 Items,Items,Objetos,Przedmioty
+Press %s to enter,Press %s to enter,Pulsa %s para entrar,"Naciśnij %s, aby wejść"
+Tap ^ to enter,Tap ^ to enter,Toca ^ para entrar,"Dotknij ^, aby wejść"
+Press %s to talk,Press %s to talk,Pulsa %s para hablar,"Naciśnij %s, aby porozmawiać"
+Tap ^ to talk,Tap ^ to talk,Toca ^ para hablar,"Dotknij ^, aby porozmawiać"
+Press Up to go down,Press Up to go down,Pulsa Arriba para bajar,"Naciśnij strzałkę w górę, aby zejść"
+Press Up to go up,Press Up to go up,Pulsa Arriba para subir,"Naciśnij strzałkę w górę, aby wejść na górę"
+%s was already used - recite your other %d verse(s) first (tap Verses to see them),%s was already used - recite your other %d verse(s) first (tap Verses to see them),%s ya se usó: recita primero tus otros %d versículo(s) (toca Versículos para verlos),"%s został już użyty – najpierw wyrecytuj pozostałe wersety (%d) (dotknij Wersety, aby je zobaczyć)"
+Tap here to type or speak Scripture,Tap here to type or speak Scripture,Toca aquí para escribir o decir las Escrituras,"Dotknij tutaj, aby wpisać lub wypowiedzieć Pismo"
+Tap Type (or hold Mic and speak) to recite Scripture,Tap Type (or hold Mic and speak) to recite Scripture,Toca Escribir (o mantén Mic y habla) para recitar las Escrituras,"Dotknij Pisz (lub przytrzymaj Mikr. i mów), aby recytować Pismo"
+Listening... release Mic to recite,Listening... release Mic to recite,Escuchando... suelta Mic para recitar,"Słucham... puść Mikr., aby wyrecytować"
+Hold Mic while you speak,Hold Mic while you speak,Mantén Mic mientras hablas,"Przytrzymaj Mikr., gdy mówisz"
+Tap Ram to ram.,Tap Ram to ram.,Toca Embestir para embestir.,"Dotknij Taran, aby taranować."
+Tap a key item to read it,Tap a key item to read it,Toca un objeto clave para leerlo,"Dotknij przedmiotu kluczowego, aby go przeczytać"
+Tap to continue,Tap to continue,Toca para continuar,"Dotknij, aby kontynuować"
+Wisdom! %s is in your verse box - tap Return to recite it,Wisdom! %s is in your verse box - tap Return to recite it,¡Sabiduría! %s está en tu cuadro de versículos: toca Intro para recitarlo,"Mądrość! %s jest w polu wersetu - dotknij Enter, aby go wyrecytować"
 Dig,Dig,Cavar,Kop
 Press %s to dig,Press %s to dig,Pulsa %s para cavar,"Naciśnij %s, aby kopać"
 Tap Dig to dig,Tap Dig to dig,Toca Cavar para cavar,"Dotknij Kop, aby kopać"

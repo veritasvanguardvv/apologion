@@ -110,6 +110,7 @@ func _unhandled_input(event):
 
 func can_enter_room(n: int):
 	room_to_enter = n
+	prompt.text = _enter_text()
 	prompt.visible = n != -1
 
 
@@ -307,7 +308,7 @@ func _build_hud():
 	layer.name = "GreedHUD"
 	add_child(layer)
 	prompt = Label.new()
-	prompt.text = "Press Up to enter"
+	prompt.text = _enter_text()
 	prompt.anchor_left = 0.5
 	prompt.anchor_right = 0.5
 	prompt.position = Vector2(-120, 220)
@@ -324,4 +325,9 @@ func _build_hud():
 
 
 func _on_language_changed(_new_language):
-	prompt.text = tr("Press Up to enter")
+	prompt.text = _enter_text()
+
+
+# "Press Up to enter" on a computer, "Tap ^ to enter" on a phone (the ^ button)
+func _enter_text() -> String:
+	return GameSettings.control_prompt("Press %s to enter", "interact", "Tap ^ to enter", "Press Up to enter")

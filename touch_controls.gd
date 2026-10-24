@@ -65,7 +65,7 @@ static func is_touch_device() -> bool:
 	return tap_to_type() or DisplayServer.is_touchscreen_available() or OS.has_feature("mobile") or OS.has_feature("web_ios") or OS.has_feature("web_android")
 
 
-# The phone app (iOS, Android): the verse box says "Click here to type or
+# The phone app (iOS, Android): the verse box says "Tap here to type or
 # speak Scripture" and tapping it brings up the phone keyboard (its
 # dictation key does the speaking); no Type / Mic buttons.
 # simulate_os: tests and screenshots on a computer can act like the iPhone

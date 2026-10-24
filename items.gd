@@ -74,5 +74,6 @@ const KEY_ITEMS = {
 		"icon": "res://Greed/Letter1.png",
 		"text": "Press %s to ram.",
 		"text_key_action": "ram",
+		"text_touch": "Tap Ram to ram.",   # (phones / tablets: the Ram button)
 	},
 }

@@ -311,7 +311,7 @@ func _autofill_answer():
 	player.verse_input.text = text
 	player.verse_input.caret_column = text.length()
 	player.verse_input.grab_focus.call_deferred()
-	TurnManager.show_message(tr("Wisdom! %s is in your verse box - press Enter") % VerseManager.ref_text(ANSWER_REF))
+	TurnManager.show_message((tr("Wisdom! %s is in your verse box - tap Return to recite it") if GameSettings.touch_prompts() else tr("Wisdom! %s is in your verse box - press Enter")) % VerseManager.ref_text(ANSWER_REF))
 
 func _counter_answered():
 	counter_state = "done"
@@ -531,7 +531,7 @@ func _show_ram_hint():
 func _on_calf_smashed():
 	state = "done"
 	hint.visible = false
-	hint.text = "Click or press Enter to continue"
+	hint.text = "Tap to continue" if GameSettings.touch_prompts() else "Click or press Enter to continue"
 	if is_instance_valid(idol):
 		_shatter(idol.global_position)
 		idol.visible = false
@@ -649,7 +649,7 @@ func _build_hint():
 	hint_layer.layer = 5
 	add_child(hint_layer)
 	hint = Label.new()
-	hint.text = "Click or press Enter to continue"
+	hint.text = "Tap to continue" if GameSettings.touch_prompts() else "Click or press Enter to continue"
 	hint.anchor_left = 0.0
 	hint.anchor_right = 1.0
 	hint.anchor_top = 1.0

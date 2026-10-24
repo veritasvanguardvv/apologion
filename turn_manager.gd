@@ -126,8 +126,8 @@ func _ready():
 	# (on a Mac the Alt key is called Option)
 	target_button = _make_side_button("Target (Option)" if OS.get_name() == "macOS" else "Target (Alt)", -104, Targeting.cycle)
 	layer.add_child(target_button)
-	# Switch (swap the companion for the one waiting on the bench), above Target
-	switch_button = _make_side_button("Switch (P)", -152, func(): PartyManager.open_selector())
+	# Party (swap the companion for the one waiting on the bench), above Target
+	switch_button = _make_side_button("Party (P)", -152, func(): PartyManager.open_selector())
 	switch_button.name = "SwitchButton"
 	switch_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED   # built in _update_hint_texts
 	layer.add_child(switch_button)
@@ -358,7 +358,7 @@ func _update_hint_texts():
 			b.text = texts[b]
 	if switch_button:
 		var key = GameSettings.key_name("change_party")
-		var t = tr("Switch (%s)") % key if hints and key != "-" else tr("Switch")
+		var t = tr("Party (%s)") % key if hints and key != "-" else tr("Party")
 		if switch_button.text != t:
 			switch_button.text = t
 	if hints != _hints_shown:   # the Items label follows too

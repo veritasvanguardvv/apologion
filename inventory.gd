@@ -99,6 +99,9 @@ func add_key_item(id: String):
 # What the key item says, translated, with the player's current key filled in
 func key_item_text(id: String) -> String:
 	var item = get_key_item(id)
+	var gs0 = get_node_or_null("/root/GameSettings")
+	if item.has("text_touch") and gs0 and gs0.touch_prompts():
+		return tr(item.text_touch)
 	var text = tr(item.get("text", ""))
 	if item.has("text_key_action") and "%s" in text:
 		var gs = get_node_or_null("/root/GameSettings")
@@ -548,7 +551,7 @@ func _refresh():
 	# (no keyboard hints in the phone app / with the touch buttons)
 	var hints = TurnManager.key_hints()
 	title_label.text = "Inventory (Ctrl)" if hints else "Inventory"
-	hint_label.text = "Click a key item to read it" if key_tab else ("Click an item (or press 1-9): U = Use, Delete = Drop" if hints else "Tap an item, then Use or Drop")
+	hint_label.text = ("Click a key item to read it" if hints else "Tap a key item to read it") if key_tab else ("Click an item (or press 1-9): U = Use, Delete = Drop" if hints else "Tap an item, then Use or Drop")
 	items_tab_button.button_pressed = not key_tab
 	key_tab_button.button_pressed = key_tab
 	if selected_id != "" and (not has_key_item(selected_id) if key_tab else count(selected_id) <= 0):

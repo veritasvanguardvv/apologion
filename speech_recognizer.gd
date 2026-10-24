@@ -227,7 +227,7 @@ func stop_listening():
 		_mic_problem(tr("Voice: no sound came from the microphone (%s). Check Windows Settings > Privacy > Microphone") % AudioServer.input_device)
 		return
 	if seconds < min_record_seconds:
-		status.emit(tr("Hold Shift while you speak"))
+		status.emit(tr("Hold Mic while you speak") if GameSettings.touch_prompts() else tr("Hold Shift while you speak"))
 		return
 	if _loudest(frames) < silence_level:
 		_mic_problem(tr("Voice: the microphone only recorded silence (%s). Check it isn't muted and that apps may use it") % AudioServer.input_device)

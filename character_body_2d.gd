@@ -226,10 +226,21 @@ var bible_books = ["psalm", "psalms", "proverb", "proverbs", "matthew", "romans"
 # (translated automatically: the LineEdit looks this text up in strings.csv)
 const DEFAULT_PLACEHOLDER = "Press Enter (or hold Shift and speak) to recite Scripture"
 # The iPhone / Android app: tap the box, then type or use the keyboard's dictation key
-const TAP_PLACEHOLDER = "Click here to type or speak Scripture"
+const TAP_PLACEHOLDER = "Tap here to type or speak Scripture"
+const TOUCH_PLACEHOLDER = "Tap Type (or hold Mic and speak) to recite Scripture"
+
+# "... (Tab to see them)" on a computer, "... (tap Verses to see them)" on a phone
+static func already_used_text() -> String:
+	var gs = Engine.get_main_loop().root.get_node_or_null("/root/GameSettings")
+	if gs and gs.touch_prompts():
+		return TranslationServer.translate("%s was already used - recite your other %d verse(s) first (tap Verses to see them)")
+	return TranslationServer.translate("%s was already used - recite your other %d verse(s) first (Tab to see them)")
 
 func default_placeholder() -> String:
-	return TAP_PLACEHOLDER if TouchControls.tap_to_type() else DEFAULT_PLACEHOLDER
+	if TouchControls.tap_to_type():
+		return TAP_PLACEHOLDER
+	# a touch screen in the browser: the Type / Mic buttons
+	return TOUCH_PLACEHOLDER if GameSettings.touch_prompts() else DEFAULT_PLACEHOLDER
 var message_id = 0  # used by _show_verse_message so old messages don't overwrite new ones
 
 func _ready():
@@ -417,8 +428,9 @@ func _input(event):
 	
 	if event.is_action_pressed("interact") and not verse_input.has_focus():
 		var prompt = get_parent().get_node_or_null("NPC/PromptLabel")
-		if prompt and prompt.text == "Press Up to talk":
-			prompt.text = "Life's so stressful..."   # both translated automatically
+		if prompt and prompt.get_meta("talk_prompt", false):
+			prompt.set_meta("talk_prompt", false)
+			prompt.text = "Life's so stressful..."   # translated automatically
 	
 	# Tab = show/hide the verse box ("toggle_verse_box" in Project Settings > Input Map).
 	# Works while typing too. set_input_as_handled() stops Godot from also using
@@ -528,7 +540,7 @@ func _on_verse_submitted(text):
 			_show_verse_message(tr("New verse discovered: %s!") % VerseManager.ref_text(typed_verse.ref))
 			print("Discovered: ", typed_verse.ref)
 		if not skip_cycle and not VerseManager.can_use(typed_verse.ref):
-			_show_verse_message(tr("%s was already used - recite your other %d verse(s) first (Tab to see them)") % [VerseManager.ref_text(typed_verse.ref), VerseManager.remaining_count()])
+			_show_verse_message(already_used_text() % [VerseManager.ref_text(typed_verse.ref), VerseManager.remaining_count()])
 			print(typed_verse.ref, " is on cooldown")
 			_finish_typing()
 			return   # in a battle this does NOT use up your turn
@@ -2011,7 +2023,7 @@ func _build_verse_panel():
 	
 	var title = Label.new()
 	title.name = "Title"
-	title.text = "Verses (Tab to close)"
+	title.text = "Verses" if GameSettings.touch_prompts() else "Verses (Tab to close)"
 	title.position = Vector2(8, 3)
 	title.add_theme_font_size_override("font_size", 14)
 	verse_panel.add_child(title)
@@ -2139,7 +2151,7 @@ func say_verse(v):
 func _on_listening_changed(on: bool):
 	speaker_icon.visible = on
 	if on:
-		_show_verse_message(tr("Listening... release Shift to recite"))
+		_show_verse_message(tr("Listening... release Mic to recite") if GameSettings.touch_prompts() else tr("Listening... release Shift to recite"))
 
 func _on_voice_status(message: String):
 	_show_verse_message(message)

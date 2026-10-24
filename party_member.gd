@@ -894,7 +894,7 @@ func phone_verse(text: String, target := -1) -> String:
 		verse.discovered = true
 		note = tr("New verse discovered: %s!") % VerseManager.ref_text(verse.ref)
 	if not PhoneServer.can_use_verse(phone_slot, verse.ref):
-		return tr("%s was already used - recite your other %d verse(s) first (Tab to see them)") % [VerseManager.ref_text(verse.ref), PhoneServer.remaining_count(phone_slot)]
+		return preload("res://character_body_2d.gd").already_used_text() % [VerseManager.ref_text(verse.ref), PhoneServer.remaining_count(phone_slot)]
 	PhoneServer.mark_verse_used(phone_slot, verse.ref)
 	var body = player.verse_body(verse)
 	_say(VerseManager.ref_text(verse.ref), body.substr(0, 1).to_upper() + body.substr(1))
