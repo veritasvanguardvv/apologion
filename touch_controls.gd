@@ -9,7 +9,8 @@ extends CanvasLayer
 #               (move_left / move_right, a light push walks slowly), push it
 #               up to talk / go through doors (interact); ^ does that too
 #   right side: Jump, Ram (hold until the bar fills, like holding X)
-#   right edge: Pause (Esc), Verses (Tab); on a touch computer / the web
+#   right edge: Pause (Esc), Verses (Tab) - under the enemies' HP bars in a
+#               battle; on a touch computer / the web
 #               also Type (opens the keyboard in the verse box) and Mic (hold
 #               to talk). The iPhone / Android app has no Type or Mic: you tap
 #               the verse box itself and type, or use the keyboard's own
@@ -202,12 +203,33 @@ func _update_visibility():
 	for n in ["Type", "Mic"]:
 		buttons[n].visible = not tap_to_type()
 	# bigger battle buttons for fingers
-	for n in ["skip_button", "target_button"]:
+	var lift = {"skip_button": 20, "target_button": 40, "switch_button": 60}
+	for n in lift:
 		var btn = TurnManager.get(n)
 		if btn != null and btn.offset_left > -170:
 			btn.offset_left = -180
-			btn.offset_top -= (20 if n == "skip_button" else 40)
+			btn.offset_top -= lift[n]
 			btn.offset_bottom = btn.offset_top + 56
+	_place_right_column()
+
+
+# Pause / Verses (and Type / Mic) on the right edge: under the enemies' HP
+# panel in a battle (it grows with every enemy), so they never cover a boss's
+# HP bar. The game's view is always 1152 x 648 (it keeps its 16:9 shape on
+# a 19.5:9 phone, with bars at the sides), so this works on every phone.
+const COLUMN_TOP = 96.0
+const COLUMN_STEP = 68.0
+func _place_right_column():
+	var top = COLUMN_TOP
+	var hud = TurnManager.get("enemy_hud")
+	if hud != null and hud.is_visible_in_tree() and hud.get_child_count() > 0:
+		var r = hud.get_global_rect()
+		top = max(top, r.end.y + 10.0)
+	var R = BASE.x
+	buttons["Pause"].position = Vector2(R - 70, top)
+	buttons["Verses"].position = Vector2(R - 70, top + COLUMN_STEP)
+	buttons["Type"].position = Vector2(R - 70, top + COLUMN_STEP * 2)
+	buttons["Mic"].position = Vector2(R - 140, top + COLUMN_STEP * 2)
 
 
 # The phone keyboard covers the bottom of the screen: lift the verse box.

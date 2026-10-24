@@ -24,6 +24,10 @@ const HudLayout = preload("res://hud_layout.gd")
 #      or heals - see targeting.gd.
 #   GROUPS: enemies standing close to an enemy that starts a battle join the
 #      same battle (group_join_range), so two Umbrids fight you together.
+#   SWITCH: on your turn the Switch button (or P, the Change Party key) opens
+#      the party window: pick the companion who isn't fighting (Baana instead
+#      of Pastor Ramuel...) to swap them in. It uses your turn (see
+#      party_manager.gd switch_in).
 #   5. RUN: on your turn press the Run button (or R, when you're not typing) to
 #      leave the battle. Enemies keep their HP, type and status. The battle
 #      won't start again until you walk out of the enemy's range - or, if you
@@ -67,6 +71,7 @@ var run_button: Button
 var items_button: Button
 var skip_button: Button
 var target_button: Button
+var switch_button: Button
 var escaped_from = {}         # enemy -> seconds left before it can start a battle again (after Run)
 
 
@@ -121,6 +126,11 @@ func _ready():
 	# (on a Mac the Alt key is called Option)
 	target_button = _make_side_button("Target (Option)" if OS.get_name() == "macOS" else "Target (Alt)", -104, Targeting.cycle)
 	layer.add_child(target_button)
+	# Switch (swap the companion for the one waiting on the bench), above Target
+	switch_button = _make_side_button("Switch (P)", -152, func(): PartyManager.open_selector())
+	switch_button.name = "SwitchButton"
+	switch_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED   # built in _update_hint_texts
+	layer.add_child(switch_button)
 	# Enemy name / portrait / HP in the top-right corner during battles
 	enemy_hud = VBoxContainer.new()
 	enemy_hud.name = "EnemyHUD"
@@ -326,11 +336,39 @@ static func portrait_of(node: Node, frame := -1) -> Texture2D:
 # there's no keyboard, so it just says "Items".
 const HUD_GAP = 8
 
+# Key hints ("Run (R)", "Skip (K)"...) are for keyboards: the phone app (and
+# the on-screen touch buttons) show just "Run", "Skip", "Target", "Items".
+func key_hints() -> bool:
+	var touch = get_node_or_null("/root/TouchControls")
+	return not (touch and (touch.wanted() or touch.tap_to_type()))
+
+var _hints_shown = null
+
+func _update_hint_texts():
+	if run_button == null or skip_button == null:
+		return
+	var hints = key_hints()
+	var texts = {
+		run_button: "Run (R)" if hints else "Run",
+		skip_button: "Skip (K)" if hints else "Skip",
+		target_button: ("Target (Option)" if OS.get_name() == "macOS" else "Target (Alt)") if hints else "Target",
+	}
+	for b in texts:
+		if b.text != texts[b]:
+			b.text = texts[b]
+	if switch_button:
+		var key = GameSettings.key_name("change_party")
+		var t = tr("Switch (%s)") % key if hints and key != "-" else tr("Switch")
+		if switch_button.text != t:
+			switch_button.text = t
+	if hints != _hints_shown:   # the Items label follows too
+		_hints_shown = hints
+		_update_items_text()
+
 func _update_items_text():
 	if items_button == null:
 		return
-	var touch = get_node_or_null("/root/TouchControls")
-	if touch and touch.wanted():
+	if not key_hints():
 		items_button.text = tr("Items")
 	else:
 		var key = GameSettings.key_name("toggle_inventory")
@@ -463,7 +501,11 @@ func run_away():
 
 func _physics_process(delta):
 	var player = get_tree().get_first_node_in_group("player")
+	_update_hint_texts()
 	_update_items_button(player)
+	# Switch: in battles when someone is waiting on the bench; usable on your turn
+	switch_button.visible = in_battle and PartyManager.has_bench()
+	switch_button.disabled = not PartyManager.can_switch()
 	# Run button: visible in battles, usable on your turn
 	run_button.visible = in_battle
 	run_button.disabled = not is_players_turn()

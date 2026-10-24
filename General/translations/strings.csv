@@ -323,6 +323,19 @@ Scroll verses down,Scroll verses down,Desplazar versículos hacia abajo,Przewiń
 Press %s to ram.,Press %s to ram.,Pulsa %s para embestir.,"Naciśnij %s, aby taranować."
 Letter from V.,Letter from V.,Carta de V.,List od V.
 Items,Items,Objetos,Przedmioty
+Run,Run,Huir,Ucieczka
+Skip,Skip,Pasar,Pomiń
+Target,Target,Objetivo,Cel
+Switch,Switch,Cambiar,Zmień
+Switch (%s),Switch (%s),Cambiar (%s),Zmień (%s)
+Switch party member,Switch party member,Cambiar de compañero,Zmień towarzysza
+Pick who comes in. Switching uses your turn.,Pick who comes in. Switching uses your turn.,Elige quién entra. Cambiar usa tu turno.,"Wybierz, kto wchodzi. Zmiana zużywa twoją turę."
+You can switch on your turn.,You can switch on your turn.,Puedes cambiar en tu turno.,Możesz zmienić w swojej turze.
+%s comes in for %s!,%s comes in for %s!,¡%s entra por %s!,%s wchodzi za %s!
+fighting,fighting,luchando,walczy
+knocked out,knocked out,fuera de combate,znokautowany
+KO,KO,KO,KO
+"Tap an item, then Use or Drop","Tap an item, then Use or Drop",Toca un objeto y luego Usar o Soltar,"Dotknij przedmiotu, potem Użyj lub Upuść"
 Key Items,Key Items,Objetos clave,Przedmioty kluczowe
 No key items yet.,No key items yet.,Aún no tienes objetos clave.,Nie masz jeszcze przedmiotów kluczowych.
 Click a key item to read it,Click a key item to read it,Haz clic en un objeto clave para leerlo,"Kliknij przedmiot kluczowy, aby go przeczytać"
