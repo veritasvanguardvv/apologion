@@ -38,7 +38,7 @@ mouse_filter = 2
 color = Color(0.07, 0.06, 0.09, 1)
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1804218673]
-position = Vector2(-1401.1487, -222.7499)
+position = Vector2(-1261.1487, -222.7499)
 script = ExtResource("t_2_d5c3b")
 
 [node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D" unique_id=1735905428]
@@ -322,4 +322,5 @@ offset_bottom = 556.0
 text = "Back"
 
 [node name="PastorRamuel" parent="." instance=ExtResource("55_g")]
-position = Vector2(-1385.1487, 332)
+position = Vector2(-1297.1487, 332)
+follow_distance = 140.0
