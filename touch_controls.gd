@@ -5,12 +5,18 @@ extends CanvasLayer
 # laptop) and only while Settings > "Touch controls" is on. Each button is a
 # TouchScreenButton that presses the same input action as the keyboard key,
 # so everything that works with keys works with fingers:
-#   left side : < and > (move_left / move_right), ^ (interact: talk, doors)
+#   left side : a joystick (touch_joystick.gd): push left / right to walk
+#               (move_left / move_right, a light push walks slowly), push it
+#               up to talk / go through doors (interact); ^ does that too
 #   right side: Jump, Ram (hold until the bar fills, like holding X)
-#   right edge: Pause (Esc), Verses (Tab), Bag (inventory), Type (opens the
-#               phone keyboard in the verse box), Mic (hold to talk)
-# In a battle the movement buttons hide (you can't move then); the battle's
-# own Skip / Target buttons are made bigger for fingers.
+#   right edge: Pause (Esc), Verses (Tab); on a touch computer / the web
+#               also Type (opens the keyboard in the verse box) and Mic (hold
+#               to talk). The iPhone / Android app has no Type or Mic: you tap
+#               the verse box itself and type, or use the keyboard's own
+#               dictation (microphone) key. The inventory opens from the
+#               always-visible "Items" box in the top-left corner.
+# In a battle or a cut-scene the movement controls hide (you can't move then);
+# the battle's own Skip / Target buttons are made bigger for fingers.
 # While the phone keyboard is up, the verse box moves up above it.
 
 const BASE = Vector2(1152, 648)       # the game's view size (Project Settings > Display)
@@ -21,6 +27,8 @@ var move_buttons = []                 # hidden in battles
 var root_node: Node2D
 var _textures = {}
 var _verse_box_y = {}                 # LineEdit -> its normal offset_top/bottom
+var joystick: Node2D
+const Joystick = preload("res://touch_joystick.gd")
 
 
 func _ready():
@@ -32,24 +40,45 @@ func _ready():
 	var R = BASE.x
 	var B = BASE.y
 	# movement (bottom-left, above the verse box)
-	_add("Left", "move_left", "<", Vector2(18, B - 222), 96, true)
-	_add("Right", "move_right", ">", Vector2(126, B - 222), 96, true)
-	_add("Up", "interact", "^", Vector2(72, B - 320), 76, true)
+	joystick = Joystick.new()
+	joystick.name = "Joystick"
+	joystick.position = Vector2(118, B - 178)
+	root_node.add_child(joystick)
+	move_buttons.append(joystick)
+	_add("Up", "interact", "^", Vector2(226, B - 300), 64, true)
 	# jump / ram (bottom-right)
 	_add("Jump", "jump", "Jump", Vector2(R - 128, B - 236), 108, true)
 	_add("Ram", "ram", "Ram", Vector2(R - 236, B - 196), 92, true)
 	# right edge column
 	_add("Pause", "ui_cancel", "II", Vector2(R - 70, 96), 60, false)
 	_add("Verses", "toggle_verse_box", "Verses", Vector2(R - 70, 164), 60, false)
-	_add("Bag", "toggle_inventory", "Bag", Vector2(R - 70, 232), 60, false)
-	_add("Type", "recite", "Type", Vector2(R - 70, 300), 60, false)
-	_add("Mic", "push_to_talk", "Mic", Vector2(R - 140, 300), 60, false)
+	_add("Type", "recite", "Type", Vector2(R - 70, 232), 60, false)   # (hidden in the phone app)
+	_add("Mic", "push_to_talk", "Mic", Vector2(R - 140, 232), 60, false)
 	GameSettings.touch_controls_changed.connect(func(_on): _update_visibility())
 	_update_visibility()
 
 
 static func is_touch_device() -> bool:
-	return DisplayServer.is_touchscreen_available() or OS.has_feature("mobile") or OS.has_feature("web_ios") or OS.has_feature("web_android")
+	return tap_to_type() or DisplayServer.is_touchscreen_available() or OS.has_feature("mobile") or OS.has_feature("web_ios") or OS.has_feature("web_android")
+
+
+# The phone app (iOS, Android): the verse box says "Click here to type or
+# speak Scripture" and tapping it brings up the phone keyboard (its
+# dictation key does the speaking); no Type / Mic buttons.
+# simulate_os: tests and screenshots on a computer can act like the iPhone
+# app (TouchControls.simulate_os = "iOS", or run with -- --simulate-os=iOS).
+static var simulate_os = ""
+
+static func os_name() -> String:
+	if simulate_os != "":
+		return simulate_os
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--simulate-os="):
+			return a.get_slice("=", 1)
+	return OS.get_name()
+
+static func tap_to_type() -> bool:
+	return os_name() in ["iOS", "Android"]
 
 
 func wanted() -> bool:
@@ -109,6 +138,39 @@ func _circle(size: int, color: Color) -> Texture2D:
 func _process(_delta):
 	_update_visibility()
 	_keep_verse_box_above_keyboard()
+	_feed_movement()
+
+
+# ---------------- Walking: joystick -> move_left / move_right ----------------
+var _fed = {"move_left": 0.0, "move_right": 0.0, "interact": false}
+
+func _feed_movement():
+	var axis = 0.0
+	var up = false
+	if root_node.visible and joystick.visible:
+		axis = joystick.axis
+		up = joystick.up
+	else:
+		joystick.release()
+	_set_strength("move_left", max(-axis, 0.0))
+	_set_strength("move_right", max(axis, 0.0))
+	if up != _fed.interact:
+		_fed.interact = up
+		if up:
+			Input.action_press("interact")
+		else:
+			Input.action_release("interact")
+
+# Only touches the action when OUR value changes, so a keyboard / gamepad on
+# the same device still works
+func _set_strength(action: String, v: float):
+	if is_equal_approx(v, _fed[action]):
+		return
+	_fed[action] = v
+	if v > 0.0:
+		Input.action_press(action, v)
+	else:
+		Input.action_release(action)
 
 
 func _menu_open() -> bool:
@@ -132,9 +194,13 @@ func _update_visibility():
 	root_node.visible = on
 	if not on:
 		return
-	var battle = TurnManager.in_battle
+	var player = get_tree().get_first_node_in_group("player")
+	var battle = TurnManager.in_battle or (player != null and player.get("cutscene_lock") == true)
 	for b in move_buttons:
 		b.visible = not battle
+	# the phone app types / dictates straight into the verse box
+	for n in ["Type", "Mic"]:
+		buttons[n].visible = not tap_to_type()
 	# bigger battle buttons for fingers
 	for n in ["skip_button", "target_button"]:
 		var btn = TurnManager.get(n)
