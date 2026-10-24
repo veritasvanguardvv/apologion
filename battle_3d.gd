@@ -424,6 +424,7 @@ const SPRITE_SHADER = """
 shader_type spatial;
 render_mode unshaded, blend_mix, cull_disabled, depth_draw_never, shadows_disabled;
 uniform sampler2D tex : source_color, filter_nearest;
+uniform float shadow = 0.0;   // the Guard wings' shadow (guard_shadow.gd)
 void vertex() {
 	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(
 		vec4(normalize(cross(vec3(0.0, 1.0, 0.0), INV_VIEW_MATRIX[2].xyz)), 0.0),
@@ -437,6 +438,8 @@ void fragment() {
 	if (c.a < 0.004) {
 		discard;
 	}
+	float l = dot(c.rgb, vec3(0.299, 0.587, 0.114));
+	c.rgb *= 1.0 - shadow * 0.275 * l * l * l;
 	ALBEDO = c.rgb;
 	ALPHA = c.a;
 }
@@ -570,6 +573,11 @@ func _sync_sprite(src: CanvasItem, s: Sprite3D):
 		s.material_override = m
 	if m and m.get_shader_parameter("tex") != s.texture:
 		m.set_shader_parameter("tex", s.texture)
+	if m:
+		var sh = preload("res://guard_shadow.gd").shade_of(src)
+		var cur = m.get_shader_parameter("shadow")
+		if cur == null or float(cur) != sh:
+			m.set_shader_parameter("shadow", sh)
 	s.render_priority = prio
 
 func _sync_mirror(src: Control, m: Control, hud := []):

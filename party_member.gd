@@ -283,6 +283,8 @@ func _physics_process(delta):
 			_move_to(spot)
 	
 	_update_animation(delta)
+	if guard_shadow:
+		guard_shadow.update(delta)   # (after the animation: it may hold the ducking frame)
 
 
 # In a battle the party spreads out a bit more (one behind the other,
@@ -550,11 +552,11 @@ func activate_guard(rounds := 3, reduction := 0.5):
 	guard_rounds_left = rounds
 	guard_rounds = rounds
 	guard_reduction = reduction
-	_update_status_tag()
 	# Their own pair of wings (sized to them), played once, then see-through while
 	# the guard lasts (like the player's, character_body_2d.gd)
 	if guard_fx == null:
 		_build_guard_fx()
+	_update_status_tag()
 	guard_fx.visible = true
 	guard_fx.modulate.a = 1.0
 	guard_fx.frame = 0
@@ -689,7 +691,10 @@ func _build_guard_fx():
 		else:
 			guard_fx.visible = false)
 	add_child(guard_fx)
+	guard_shadow = GuardShadow.new(guard_fx, [idle_sprite, walk_sprite])
 var guard_fx_ratio = 1.0   # (their wings / the player's, for the tests)
+const GuardShadow = preload("res://guard_shadow.gd")
+var guard_shadow   # the shadow their wings cast over them (guard_shadow.gd)
 
 # The box of a sprite's visible (non-transparent) pixels, in `space`'s
 # coordinates (the sprite PNGs have empty margins)
@@ -739,6 +744,8 @@ func _update_status_tag():
 	status_tag.text = "\n".join(rows)
 	var h = 17.0 * max(rows.size(), 1)
 	var top = bubble_head_offset - (26 if player_controlled else 2)   # over the name / the HP bar
+	if guard_rounds_left > 0 and guard_fx:   # (and over their wings)
+		top = min(top, guard_fx.position.y - (player.GUARD_DOME_HEIGHT - player.GUARD_DOME_BOTTOM + 2.0) * guard_fx.scale.y if player else top)
 	status_tag.size = Vector2(220, h)
 	status_tag.position = Vector2(-110, top - h)
 	status_tag.add_theme_color_override("font_color", Color(1.0, 0.65, 0.6) if zeal_rounds_left > 0 and zeal < 0 else Color(0.75, 0.88, 1.0))

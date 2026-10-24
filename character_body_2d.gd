@@ -74,8 +74,20 @@ var speaker_icon: Sprite2D
 @export var guard_rounds = 3         # how many battle rounds the guard lasts
 @export var guard_fx_scale = 4.0     # size of the guard animation
 @export var guard_fx_fps = 12.0      # speed of the guard animation
+@export var guard_fx_hover = true    # the dome hovers over the sheep (false: on them, as before)
+@export var guard_fx_hover_gap = 0.22 # the gap under it, in dome heights
+const GUARD_DOME_BOTTOM = 14.0       # the closed dome in Guardeffect.png: its bottom / height
+const GUARD_DOME_HEIGHT = 29.0       # (frame px, from the frame centre with the offset)
 var guard_rounds_left = 0            # 0 = not guarded
 var guard_fx: AnimatedSprite2D       # the wings/dome animation (built in _ready)
+const GuardShadow = preload("res://guard_shadow.gd")
+var guard_shadow   # the shadow the wings cast over the sheep (guard_shadow.gd)
+func _update_guard_shadow(delta):
+	if guard_shadow:
+		guard_shadow.update(delta)
+		var body = get_node_or_null("Sprite2D")
+		if body and "hold_frame" in body:
+			body.hold_frame = GuardShadow.CROUCH_FRAME if guard_shadow.crouching else -1
 var guard_label: Label               # "Guard 50% up (3)" (built in _ready)
 @export var guard_linger_opacity = 0.5  # after the animation, the wings stay at this opacity while guarded
 
@@ -1036,6 +1048,7 @@ func _update_ram_bar():
 
 func _process(delta):
 	_process_speaker_bob(delta)
+	_update_guard_shadow(delta)
 	_update_low_hp()
 	_process_verse_scroll(delta)
 	flicker_time += delta
@@ -1788,10 +1801,17 @@ func _build_guard_effect():
 	# Put it on the player's body (the body is moved away from the origin in the scenes)
 	var shape = get_node_or_null("CollisionShape2D")
 	guard_fx.position = (shape.position if shape else Vector2.ZERO) + Vector2(0, -23)
+	# ... or hovering just over the sheep, its shadow on them (as in the
+	# reference animation: the dome's bottom about a third of its height
+	# above the sheep's back, guard_shadow.gd)
+	var body = preload("res://party_member.gd")._visible_body_rect(get_node_or_null("Sprite2D"), self)
+	if guard_fx_hover and body.size != Vector2.ZERO:
+		guard_fx.position.y = body.position.y - (GUARD_DOME_BOTTOM + guard_fx_hover_gap * GUARD_DOME_HEIGHT) * guard_fx_scale
 	guard_fx.z_index = 5
 	guard_fx.visible = false
 	guard_fx.animation_finished.connect(_on_guard_fx_finished)
 	add_child(guard_fx)
+	guard_shadow = GuardShadow.new(guard_fx, [get_node_or_null("Sprite2D")])
 	
 	guard_label = Label.new()
 	guard_label.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
