@@ -558,7 +558,7 @@ func activate_guard(rounds := 3, reduction := 0.5):
 		_build_guard_fx()
 	_update_status_tag()
 	guard_fx.visible = true
-	guard_fx.modulate.a = 1.0
+	guard_fx.modulate.a = player.guard_play_opacity if _find_player() else 0.8   # (the player's wing opacities)
 	guard_fx.frame = 0
 	guard_fx.play("guard")
 	print(display_name, ": Guard up for ", rounds, " rounds")
@@ -687,7 +687,7 @@ func _build_guard_fx():
 	guard_fx.visible = false
 	guard_fx.animation_finished.connect(func():
 		if guard_rounds_left > 0:
-			guard_fx.modulate.a = 0.5   # see-through, same size and frame
+			guard_fx.modulate.a = player.guard_linger_opacity if _find_player() else 0.35   # see-through, same size and frame
 		else:
 			guard_fx.visible = false)
 	add_child(guard_fx)

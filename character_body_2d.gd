@@ -74,7 +74,7 @@ var speaker_icon: Sprite2D
 @export var guard_rounds = 3         # how many battle rounds the guard lasts
 @export var guard_fx_scale = 4.0     # size of the guard animation
 @export var guard_fx_fps = 12.0      # speed of the guard animation
-@export var guard_fx_hover = true    # the dome hovers over the sheep (false: on them, as before)
+@export var guard_fx_hover = false   # true: the dome hovers over the sheep; false: on them (the original placement)
 @export var guard_fx_hover_gap = 0.22 # the gap under it, in dome heights
 const GUARD_DOME_BOTTOM = 14.0       # the closed dome in Guardeffect.png: its bottom / height
 const GUARD_DOME_HEIGHT = 29.0       # (frame px, from the frame centre with the offset)
@@ -89,7 +89,8 @@ func _update_guard_shadow(delta):
 		if body and "hold_frame" in body:
 			body.hold_frame = GuardShadow.CROUCH_FRAME if guard_shadow.crouching else -1
 var guard_label: Label               # "Guard 50% up (3)" (built in _ready)
-@export var guard_linger_opacity = 0.5  # after the animation, the wings stay at this opacity while guarded
+@export var guard_play_opacity = 0.8    # the wings while they play (a little see-through; their shadow on the sheep stays solid)
+@export var guard_linger_opacity = 0.35 # after the animation, the wings stay at this opacity while guarded
 
 # Faith (Psalm 27:1b, Psalm 29:11, Isaiah 40:29): attack up.
 # Each Faith verse adds faith_step (+50%) up to faith_max (+100%) and resets
@@ -1617,9 +1618,9 @@ func _attack(verse, enemy, damage_scale: float, can_counter: bool):
 func activate_guard():
 	guard_rounds_left = guard_rounds
 	_update_guard_label()
-	# Play the wings/dome animation once (fully visible)
+	# Play the wings/dome animation once (a little see-through)
 	guard_fx.visible = true
-	guard_fx.modulate.a = 1.0
+	guard_fx.modulate.a = guard_play_opacity
 	guard_fx.frame = 0
 	guard_fx.play("guard")
 	print("Guard up for ", guard_rounds, " rounds")
