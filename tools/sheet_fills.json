@@ -1177,6 +1177,14 @@
   "Psalm 149:6a": {
    "es": "Que las altas alabanzas de Dios estén en su boca.",
    "pl": "Niech chwała Boża będzie w ich ustach."
+  },
+  "Psalm 126:5": {
+   "es": "Los que siembran con lágrimas cosecharán con gritos de alegría.",
+   "pl": "Ci, którzy sieją we łzach, będą zbierać plony z okrzykami radości."
+  },
+  "Psalm 103:5": {
+   "es": "El Señor sacia de bien tus anhelos, de modo que tu juventud se renueva como la del águila.",
+   "pl": "Pan nasyca dobrem twoje pragnienia, tak że twoja młodość odnawia się jak u orła."
   }
  },
  "enemy": {
@@ -2370,7 +2378,8 @@
    "translation": "Fragment",
    "en": "Your rod and your staff, they comfort me.",
    "es": "Tu vara y tu cayado me infunden aliento.",
-   "pl": "Twój kij i Twoja laska mnie pocieszają."
+   "pl": "Twój kij i Twoja laska mnie pocieszają.",
+   "sheet_ref": "Psalm 23:4a"
   },
   {
    "ref": "Psalm 28:7",
@@ -2472,7 +2481,8 @@
    "translation": "Fragment",
    "en": "I will say of Yahweh, ‘He is my refuge and my fortress; my God, in whom I trust.",
    "es": "Diré del Señor: «Él es mi refugio y mi fortaleza; mi Dios, en quien confío».",
-   "pl": "Powiem o Panu: «On jest moją ucieczką i twierdzą, moim Bogiem, któremu ufam»."
+   "pl": "Powiem o Panu: «On jest moją ucieczką i twierdzą, moim Bogiem, któremu ufam».",
+   "sheet_ref": "Psalm 91:1b"
   },
   {
    "ref": "Psalm 91:4a",

@@ -516,11 +516,23 @@ var guard_rounds_left = 0
 var guard_reduction = 0.5
 var guard_tag: Label
 
+var guard_rounds = 3
+var guard_fx: AnimatedSprite2D   # the same wings/dome animation as the player's
+
 func activate_guard(rounds := 3, reduction := 0.5):
 	guard_rounds_left = rounds
+	guard_rounds = rounds
 	guard_reduction = reduction
 	_update_guard_tag()
-	PopupText.spawn(self, tr("Guard"), Color(0.6, 0.85, 1.0), Vector2(0, -80))
+	# The wings: played once fully visible, then they stay see-through while
+	# the guard lasts (like the player's, character_body_2d.gd)
+	if guard_fx == null:
+		_build_guard_fx()
+	guard_fx.visible = true
+	guard_fx.modulate.a = 1.0
+	guard_fx.frame = 0
+	guard_fx.play("guard")
+	print(display_name, ": Guard up for ", rounds, " rounds")
 
 func _on_round_ended():
 	if guard_rounds_left > 0:
@@ -531,6 +543,41 @@ func _on_battle_over():
 	guard_rounds_left = 0
 	_update_guard_tag()
 
+# Guardeffect.png (12 frames of 78x78), sized to this member's body
+func _build_guard_fx():
+	var sheet = load("res://Guardeffect.png")
+	var frames = SpriteFrames.new()
+	frames.add_animation("guard")
+	frames.set_animation_loop("guard", false)
+	frames.set_animation_speed("guard", 12.0)
+	for i in 12:
+		var atlas = AtlasTexture.new()
+		atlas.atlas = sheet
+		atlas.region = Rect2(i * 78, 0, 78, 78)
+		frames.add_frame("guard", atlas)
+	guard_fx = AnimatedSprite2D.new()
+	guard_fx.name = "GuardFx"
+	guard_fx.sprite_frames = frames
+	guard_fx.offset = Vector2(-11, -11)   # the dome is drawn a bit right/down of the frame centre
+	# Over the body: the sprite's box in this node's space
+	var body = Rect2(Vector2(-40, -90), Vector2(80, 90))
+	if idle_sprite and idle_sprite.texture:
+		var r: Rect2 = idle_sprite.get_rect()
+		var xf: Transform2D = global_transform.affine_inverse() * idle_sprite.global_transform
+		body = Rect2(xf * r.position, Vector2.ZERO).expand(xf * r.end).abs()
+	var size = max(body.size.x, body.size.y) * guard_fx_size
+	guard_fx.scale = Vector2.ONE * size / 78.0
+	guard_fx.position = body.get_center() + Vector2(0, body.size.y * 0.05)
+	guard_fx.z_index = 5
+	guard_fx.visible = false
+	guard_fx.animation_finished.connect(func():
+		if guard_rounds_left > 0:
+			guard_fx.modulate.a = 0.5
+		else:
+			guard_fx.visible = false)
+	add_child(guard_fx)
+@export var guard_fx_size = 1.6   # the wings' frame, in body sizes
+
 func _update_guard_tag():
 	if guard_tag == null:
 		guard_tag = Label.new()
@@ -539,7 +586,10 @@ func _update_guard_tag():
 		guard_tag.position = Vector2(-hp_bar_width / 2.0, bubble_head_offset - 16)
 		add_child(guard_tag)
 	guard_tag.visible = guard_rounds_left > 0
-	guard_tag.text = tr("Defense +%d%% (%d)") % [int(guard_reduction * 100), guard_rounds_left]
+	# (same wording as your status row: "Guard +50%  turn 1/3")
+	guard_tag.text = tr("Guard +%d%%  turn %d/%d") % [roundi(guard_reduction * 100), clampi(guard_rounds - guard_rounds_left + 1, 1, guard_rounds), guard_rounds]
+	if guard_rounds_left <= 0 and guard_fx:
+		guard_fx.visible = false   # guard over: the wings go
 
 # Returns the damage taken (less while guarded).
 func take_damage(amount) -> float:
@@ -642,8 +692,13 @@ func phone_verse(text: String, target := -1) -> String:
 			PhoneServer.mark_support_used(phone_slot)
 			TurnManager.show_message(tr("%s helps out of turn: %s") % [display_name, VerseManager.ref_text(verse.ref)])
 	else:
-		# Full damage (1.0), can counter, default targets
+		# Full damage (1.0), can counter, default targets. Its statuses (an
+		# attack + Guard verse...) go to the ally picked on the phone, below.
+		player.statuses_by_caller = true
 		player.cast_verse(verse, 1.0, true, false, 1.0, self)
+		player.statuses_by_caller = false
+		var who = PhoneServer.party_node(target)
+		player.apply_verse_statuses(verse, who if who != null else self)
 	print(display_name, " (phone) recites ", verse.ref, "" if my_turn else " (out of turn)")
 	recited.emit(verse.ref)
 	if my_turn:
@@ -651,46 +706,31 @@ func phone_verse(text: String, target := -1) -> String:
 	return note
 
 
-# Heal / Guard / Faith / Zeal, with no attack in it
+# Heal / Guard / Faith / Wisdom / Zeal, with no attack in it
 static func is_support_verse(verse) -> bool:
 	if verse.get("set", "") == "sheet":
 		if not verse.get("sins", {}).is_empty() or verse.get("all_damage", 0) > 0:
 			return false
-		return verse.get("heal", 0) > 0 or verse.get("guard", false) or verse.get("zeal", false)
+		return verse.get("heal", 0) > 0 or verse.get("guard", false) or verse.get("zeal", false) \
+			or float(verse.get("faith", 0)) > 0 or float(verse.get("wisdom", 0)) > 0
 	return verse.get("type", "") in ["heal", "guard", "faith", "zeal"]
 
 
 # A support verse's effect on ONE chosen party member (`who`: the player or a
 # party member). Faith boosts the whole team's attacks (they all go through
 # the player's cast_verse), Zeal is the player's run/jump boost.
+# Every status of the verse applies (Guard + Wisdom, heal + Guard + Faith...):
+# the Guard (with its wings) on `who`, Faith / Wisdom / Zeal on the team.
 func apply_support_verse(verse, who):
 	var heal_pct = 0.0
-	var guard = false
-	var zeal = false
-	var faith = false
-	if verse.get("set", "") == "sheet":
+	if verse.get("set", "") == "sheet" or verse.type == "heal":
 		heal_pct = float(verse.get("heal", 0))
-		guard = verse.get("guard", false)
-		zeal = verse.get("zeal", false)
-	else:
-		match verse.type:
-			"heal": heal_pct = float(verse.heal)
-			"guard": guard = true
-			"zeal": zeal = true
-			"faith": faith = true
 	if heal_pct > 0:
 		player.heal_targets([who], heal_pct)
-	if guard:
-		if who == player:
-			player.activate_guard()
-		elif who.has_method("activate_guard"):
-			who.activate_guard(player.guard_rounds, player.guard_reduction)
-		if TurnManager.in_battle:
-			TurnManager.show_message(tr("%s is guarded") % (PhoneServer.host_name() if who == player else tr(who.display_name)))
-	if faith:
-		player.activate_faith()
-	if zeal:
-		player._zeal_boost()
+	var labels = player.apply_verse_statuses(verse, who)
+	if player.verse_statuses(verse).has("guard") and TurnManager.in_battle:
+		TurnManager.show_message(tr("%s is guarded") % (PhoneServer.host_name() if who == player else tr(who.display_name)))
+	return labels
 
 func phone_skip() -> bool:
 	if not waiting_for_phone:

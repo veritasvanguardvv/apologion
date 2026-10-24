@@ -15,10 +15,14 @@ Player tab columns: Bible Index | Transl. | TEXT | TEXT PL | TEXT SP |
   Dmg to SinDeath boss | Dmg to Idol | Heal | Jesus | ...
   Percent cells are fractions (0.5 = 50%) and become whole percents (50).
   ... | Faith UP | Enemy Faith Debuff | Guard UP | Enemy Guard Debuff | Wisdom UP | ...
+  ... | Zeal up | Enemy Zeal Debuff | Duration (seconds) | ...
   Columns are found by their header text. Wisdom UP becomes "wisdom" and
-  Faith UP "faith" (whole %).
+  Faith UP "faith" (whole %). Any Guard UP % marks the verse as a Guard verse
+  ("guard": true, the sheet's % kept in "guard_pct"), any Zeal up % above 0 as
+  a Zeal verse ("zeal": true, "zeal_pct"), whatever else the row does
+  (Guard + Wisdom, Guard + attack, Guard + heal...).
   A row is imported if it does damage to "All Sin" or one of the seven sins,
-  heals, or (with a text) gives Wisdom or Faith.
+  heals, or (with a text) gives Wisdom, Faith, Guard or Zeal.
 Enemy tab columns: ENEMY SPELL ID | Enemy | Bible Index | Transl. | TEXT |
   Damage | Heal | Jesus? | Doubt | Fear | Confusion | Exhaust | Duration | Countered By
   A blank Enemy cell continues the group above it.
@@ -41,11 +45,14 @@ EXTRA = {"atheist": 15, "false_teacher": 16, "demon": 17, "sindeath": 18, "idol"
 COL_REF, COL_TR, COL_EN, COL_PL, COL_ES, COL_ALL, COL_HEAL, COL_JESUS = 1, 2, 3, 4, 5, 6, 20, 21
 COL_WISDOM = 26
 COL_FAITH = 23
+COL_GUARD = 25
+COL_ZEAL = 29
 # The Player tab's columns are found by their header text (so an inserted
 # column doesn't shift everything); the numbers above are only the fallback.
 PLAYER_HEADERS = {
     "ref": "bible index", "tr": "transl.", "en": "text", "pl": "text pl", "es": "text sp",
     "all": "damage to all sin", "heal": "heal", "jesus": "jesus", "wisdom": "wisdom up", "faith": "faith up",
+    "guard": "guard up", "zeal": "zeal up",
     "sloth": "sloth", "gluttony": "gluttony", "lust": "lust", "wrath": "wrath",
     "greed": "greed", "envy": "envy", "pride": "pride",
     "atheist": "dmg to atheists", "false_teacher": "dmg to false teachers",
@@ -55,7 +62,7 @@ PLAYER_HEADERS = {
 
 def player_columns(header):
     """Column numbers of the Player tab from its header row (see PLAYER_HEADERS)."""
-    global COL_REF, COL_TR, COL_EN, COL_PL, COL_ES, COL_ALL, COL_HEAL, COL_JESUS, COL_WISDOM, COL_FAITH
+    global COL_REF, COL_TR, COL_EN, COL_PL, COL_ES, COL_ALL, COL_HEAL, COL_JESUS, COL_WISDOM, COL_FAITH, COL_GUARD, COL_ZEAL
     names = [clean(h).lower() for h in header]
     def find(want):
         for i, n in enumerate(names):
@@ -70,6 +77,7 @@ def player_columns(header):
     COL_REF, COL_TR, COL_EN, COL_PL, COL_ES = g("ref", COL_REF), g("tr", COL_TR), g("en", COL_EN), g("pl", COL_PL), g("es", COL_ES)
     COL_ALL, COL_HEAL, COL_JESUS, COL_WISDOM = g("all", COL_ALL), g("heal", COL_HEAL), g("jesus", COL_JESUS), g("wisdom", COL_WISDOM)
     COL_FAITH = g("faith", COL_FAITH)
+    COL_GUARD, COL_ZEAL = g("guard", COL_GUARD), g("zeal", COL_ZEAL)
     for k in SINS:
         SINS[k] = g(k, SINS[k])
     for k in EXTRA:
@@ -206,11 +214,16 @@ def main():
         # (the sheet only gives verses that attack or heal) and the list flags,
         # so a verse taken out of a list (or renamed / split) doesn't linger.
         # (Wisdom verses too; the "extra" verses are added back below)
+        # (Wisdom / Faith / Guard UP / Zeal up verses too; the "extra" verses are added back below)
         verses = [v for v in verses if v.get("sins") or v.get("all_damage", 0) > 0 or v.get("heal", 0) != 0
-                  or v.get("wisdom", 0) > 0 or v.get("faith", 0) > 0]
+                  or v.get("wisdom", 0) > 0 or v.get("faith", 0) > 0
+                  or v.get("guard_pct", 0) > 0 or v.get("zeal_pct", 0) > 0]
         for v in verses:
             v.pop("zeal", None)
             v.pop("guard", None)
+            for flag in ("zeal", "guard"):
+                if v.get(flag + "_pct", 0) > 0:
+                    v[flag] = True   # the sheet's own Guard UP / Zeal up column
         for flag in ("zeal", "guard"):
             apply_list(verses, fills.get(flag, []), flag, report)
             print("%s verses: %d (new: %s)" % (flag, sum(1 for v in verses if v.get(flag)), ", ".join(report.get(flag + "_new", []))))
@@ -235,11 +248,12 @@ def main():
         sins = {k: pct(r[c]) for k, c in SINS.items() if pct(r[c]) > 0}
         all_d, heal, wis = pct(r[COL_ALL]), pct(r[COL_HEAL]), pct(r[COL_WISDOM])
         faith = pct(r[COL_FAITH])
+        guard, zeal = pct(r[COL_GUARD]), max(pct(r[COL_ZEAL]), 0)   # (a negative Zeal is ignored)
         en, es, pl = clean(r[COL_EN]), clean(r[COL_ES]), clean(r[COL_PL])
         if not sins and all_d <= 0 and heal == 0:
-            # A Wisdom- or Faith-only verse (e.g. Proverbs 2:6, Philippians 3:9b)
-            # counts too, if it has a text
-            if (wis <= 0 and faith <= 0) or not (en or pfill.get(ref, {}).get("en")):
+            # A Wisdom-, Faith-, Guard- or Zeal-only verse (e.g. Proverbs 2:6,
+            # Philippians 3:9b, Isaiah 25:4a) counts too, if it has a text
+            if (wis <= 0 and faith <= 0 and guard <= 0 and zeal <= 0) or not (en or pfill.get(ref, {}).get("en")):
                 continue
         # The same verse listed again (e.g. under another sin) with the same
         # text: merge it into the first row (highest value of each column wins)
@@ -255,6 +269,10 @@ def main():
                 first["wisdom"] = wis
             if faith > first.get("faith", 0):
                 first["faith"] = faith
+            for flag, amount in (("guard", guard), ("zeal", zeal)):
+                if amount > first.get(flag + "_pct", 0):
+                    first[flag] = True
+                    first[flag + "_pct"] = amount
             for lang, t in (("en", en), ("es", es), ("pl", pl)):
                 if not first[lang] and t:
                     first[lang] = t
@@ -278,6 +296,12 @@ def main():
             v["wisdom"] = wis      # Wisdom UP (whole percent; the game caps the stat at 100)
         if faith > 0:
             v["faith"] = faith     # Faith UP (whole percent attack up; the game caps it at +100%)
+        if guard > 0:
+            v["guard"] = True      # Guard UP (the game's Guard: +defense and the wings)
+            v["guard_pct"] = guard # (the sheet's %, kept for reference)
+        if zeal > 0:
+            v["zeal"] = True       # Zeal up (the game's Zeal: speed + jump)
+            v["zeal_pct"] = zeal
         verses.append(v)
     for v in verses:
         for lang in ("en", "es", "pl"):

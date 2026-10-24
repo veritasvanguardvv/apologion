@@ -359,6 +359,14 @@ func _passes_filter(v) -> bool:
 					return v.get("faith", 0) > 0
 				return filter_type in ["zeal", "guard"] and v.get(filter_type, false)
 		return false
+	# A built-in verse with the sheet's status columns (John 3:16: heal +
+	# Guard + Faith...) also shows under those Status filters
+	if filter_group == "Status":
+		var st = verse_statuses(v)
+		if filter_type == "*" and not st.is_empty():
+			return true
+		if st.has(filter_type):
+			return true
 	if filter_type == "*":
 		return type in FILTER_GROUPS[filter_group]
 	return type == filter_type
@@ -522,6 +530,13 @@ func cast_verse(verse, damage_scale := 1.0, can_counter := false, use_choice := 
 	if verse.get("set", "") == "sheet":
 		_cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale, caster)
 		return
+	# Guard / Faith / Zeal (and the sheet's extra Guard UP / Faith UP / Wisdom UP
+	# / Zeal up columns, e.g. John 3:16): all of them, see apply_verse_statuses
+	if not statuses_by_caller:
+		if caster == null:
+			apply_verse_statuses(verse)
+		else:   # Ramuel / Baana: the Guard guards themselves; the built-in Faith / Zeal still help you
+			apply_verse_statuses(verse, caster, ["guard", verse.type])
 	match verse.type:
 		"sloth", "lust", "all":
 			# Attack: split between the targets (all enemies by default)
@@ -533,10 +548,6 @@ func cast_verse(verse, damage_scale := 1.0, can_counter := false, use_choice := 
 			heal_targets(_heal_targets_for(use_choice), verse.heal * heal_scale)
 		"light":
 			_light_up()
-		"guard":
-			activate_guard()
-		"faith":
-			activate_faith()
 		"fear":
 			# Fear: every enemy in the battle attacks weaker. Outside a battle it
 			# hits the nearest enemy (it starts counting down once a battle starts).
@@ -547,8 +558,6 @@ func cast_verse(verse, damage_scale := 1.0, can_counter := false, use_choice := 
 			for e in targets:
 				if e.has_method("apply_fear"):
 					e.apply_fear()
-		"zeal":
-			_zeal_boost()
 
 # A verse from the design sheet: it can attack (its sin % against enemies of
 # that sin, e.g. Wrath % vs Wrath-type, "All Sin" % against any enemy; the
@@ -560,14 +569,14 @@ func _cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale,
 		for enemy in targets:
 			if is_instance_valid(enemy) and enemy.has_method("take_damage") and not _hits_only_vs(verse, enemy):
 				_attack(verse, enemy, damage_scale / targets.size(), can_counter)
-	if verse.get("zeal", false) and caster == null:
-		_zeal_boost()   # (the player's own boost; not when a party member recites it)
-	if verse.get("guard", false) and caster == null:
-		activate_guard()
-	if verse.get("faith", 0) > 0 and caster == null:
-		activate_faith(float(verse.faith) / 100.0)   # sheet "Faith UP" (your own stat, like Wisdom)
-	if verse.get("wisdom", 0) > 0 and caster == null:
-		add_wisdom(float(verse.wisdom))   # (your own stat; not when a party member recites it)
+	# Every status of the verse (Guard + Wisdom, Guard + Faith...), not just one
+	if not statuses_by_caller:
+		if caster == null:
+			apply_verse_statuses(verse)
+		else:
+			# Ramuel / Baana: a Guard verse guards themselves (with the wings);
+			# Zeal / Faith / Wisdom are your own stats - not from their random verses
+			apply_verse_statuses(verse, caster, ["guard"])
 	var heal_pct = float(verse.get("heal", 0))
 	if heal_pct > 0:
 		heal_targets(_heal_targets_for(use_choice), heal_pct * heal_scale)
@@ -581,6 +590,72 @@ func _cast_sheet_verse(verse, damage_scale, can_counter, use_choice, heal_scale,
 			who.take_damage(cost)
 		if TurnManager.in_battle:
 			TurnManager.show_message(tr("%s loses %s HP") % [tr(who.display_name), str(snapped(cost, 0.1))])
+
+# ---------------- Status effects (Guard, Faith, Wisdom, Zeal) ----------------
+# A verse can have several: e.g. Psalm 36:11a = Guard + Wisdom, Romans 16:18b =
+# attack + Guard, John 3:16 = heal + Guard + Faith + Wisdom + Zeal. They all
+# apply, each shows in the status row, and one popup lists them.
+
+# Set by a phone player around cast_verse(): they give the statuses
+# themselves (to the ally picked on their phone), see party_member.gd.
+var statuses_by_caller = false
+
+# The verse's statuses: {"guard": true, "faith": 25.0 (%), "wisdom": 20.0, "zeal": true}
+func verse_statuses(v) -> Dictionary:
+	var st = {}
+	var t = v.get("type", "")
+	if t == "guard" or v.get("guard", false):
+		st["guard"] = true
+	if t == "faith":
+		st["faith"] = faith_step * 100.0
+	if float(v.get("faith", 0)) > 0:
+		st["faith"] = float(v.faith)
+	if float(v.get("wisdom", 0)) > 0:
+		st["wisdom"] = float(v.wisdom)
+	if t == "zeal" or v.get("zeal", false):
+		st["zeal"] = true
+	return st
+
+# Gives a verse's statuses.
+#   guard_to = who gets the Guard and its wings (null = you; a party member
+#              or phone player otherwise). Faith / Wisdom / Zeal are your stats
+#              (the team's: everyone's attacks go through you).
+#   only     = just these statuses ([] = all of them)
+# Returns the labels shown ("Guard +50%", "Wisdom +20%"...).
+func apply_verse_statuses(verse, guard_to = null, only := []) -> Array:
+	var st = verse_statuses(verse)
+	var labels = []
+	var guarded = self
+	for k in st.keys():
+		if not only.is_empty() and not k in only:
+			continue
+		match k:
+			"guard":
+				if guard_to != null and is_instance_valid(guard_to) and guard_to != self and guard_to.has_method("activate_guard"):
+					guarded = guard_to
+					guard_to.activate_guard(guard_rounds, guard_reduction)
+				else:
+					activate_guard()
+				labels.append(tr("Guard +%d%%") % roundi(guard_reduction * 100))
+			"faith":
+				activate_faith(st.faith / 100.0)
+				labels.append(tr("Faith +%d%%") % roundi(min(st.faith, faith_max * 100)))
+			"wisdom":
+				add_wisdom(st.wisdom)
+				labels.append(tr("Wisdom +%d%%") % roundi(st.wisdom))
+			"zeal":
+				_zeal_boost()
+				labels.append(tr("Zeal"))
+	if not labels.is_empty():
+		# One popup with all of them (two per line), over whoever got the
+		# Guard (else you): on the body, under the verse's speech bubble
+		var rows = []
+		for i in range(0, labels.size(), 2):
+			rows.append("   ".join(labels.slice(i, i + 2)))
+		PopupText.spawn(guarded, "\n".join(rows), Color(0.7, 0.88, 1.0), Vector2(0, -40), 1.8)
+		last_status_labels = labels
+	return labels
+var last_status_labels = []   # (for the tests)
 
 # Who a verse's healing goes to. A party member can aim it (party_member.gd:
 # Ramuel / Baana heal YOU when you're at 50% or less) by setting
@@ -656,6 +731,12 @@ func _load_sheet_verses():
 			var builtin = get_verse(row.ref)
 			if builtin != null and not row.get("vs", {}).is_empty() and not builtin.has("vs"):
 				builtin["vs"] = row.vs
+			# ...and its status columns on top of its own effect (e.g. John 3:16:
+			# heal + Guard + Faith + Wisdom + Zeal), see apply_verse_statuses
+			if builtin != null:
+				for k in ["guard", "zeal", "faith", "wisdom"]:
+					if row.get(k, false) and not builtin.has(k) and builtin.get("type", "") != k:
+						builtin[k] = row[k]
 			continue
 		var sins: Dictionary = row.get("sins", {})
 		var all_sin = row.get("all_damage", 0)
@@ -681,8 +762,9 @@ func _load_sheet_verses():
 			"vs": row.get("vs", {}),
 			"heal": row.get("heal", 0), "jesus": row.get("jesus", false),
 			"translation": row.get("translation", ""),
-			"zeal": row.get("zeal", false),   # Zeal list: also gives the speed + jump boost
-			"guard": row.get("guard", false), # Guard list: also raises your defense for a few rounds
+			"zeal": row.get("zeal", false),   # Zeal list / Zeal up: also gives the speed + jump boost
+			"guard": row.get("guard", false), # Guard list / Guard UP: also raises your defense for a few rounds (+ the wings)
+			"guard_pct": row.get("guard_pct", 0), # (the sheet's Guard UP %; the game uses guard_reduction)
 			"wisdom": row.get("wisdom", 0),   # Wisdom UP %: raises your wisdom (= evasion)
 			"faith": row.get("faith", 0),     # Faith UP %: attack up (like the built-in Faith verses)
 			"alt": row.get("alt", []),        # other wordings that also match (sheet_fills.json "extra")
@@ -1071,6 +1153,18 @@ func verse_power_text(v) -> String:
 	# Boss columns from the sheet (e.g. John 3:16 also hurts SinDeath)
 	for kind in v.get("vs", {}):
 		text += ", +" + tr("%d%% vs %s") % [v.vs[kind], tr(kind.capitalize())]
+	# The sheet's status columns on top of its own effect (John 3:16...)
+	var extra = []
+	if v.get("guard", false) and v.type != "guard":
+		extra.append(tr("%d%% def") % int(guard_reduction * 100))
+	if v.get("zeal", false) and v.type != "zeal":
+		extra.append(tr("Speed + jump"))
+	if float(v.get("faith", 0)) > 0 and v.type != "faith":
+		extra.append(tr("+%d%% atk") % int(min(v.faith, faith_max * 100)))
+	if float(v.get("wisdom", 0)) > 0:
+		extra.append(tr("+%d%% wis") % int(v.wisdom))
+	if not extra.is_empty():
+		text = _pack_labels([text] + extra)
 	return text
 
 func _builtin_power_text(v) -> String:

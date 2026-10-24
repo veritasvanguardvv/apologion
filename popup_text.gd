@@ -10,7 +10,13 @@ static func spawn(node: Node2D, text: String, color := Color.WHITE, offset := Ve
 	label.text = text
 	label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED   # pass translated text
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.size = Vector2(260, 30)
+	# (a multi-line popup, e.g. "Guard +50%   Wisdom +20%" over two lines, is
+	# sized to its text so it's kept clear of the HUD / bubbles as a whole)
+	var lines = text.split("\n")
+	var longest = 0
+	for l in lines:
+		longest = max(longest, l.length())
+	label.size = Vector2(max(260.0, longest * 12.0 + 20.0), 30.0 * lines.size())
 	label.z_index = 10
 	label.add_theme_font_size_override("font_size", 22)
 	label.add_theme_color_override("font_color", color)
@@ -20,7 +26,7 @@ static func spawn(node: Node2D, text: String, color := Color.WHITE, offset := Ve
 	var shape = node.get_node_or_null("CollisionShape2D")
 	if shape:
 		center = shape.global_position
-	label.position = center + offset - Vector2(130, 15)
+	label.position = center + offset - Vector2(label.size.x / 2.0, 15)
 	var level = node.get_tree().current_scene if node.get_tree().current_scene else node.get_parent()
 	level.add_child(label)
 	var tween = label.create_tween()
