@@ -8,6 +8,11 @@
 #   ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8          App Store Connect API key (.p8 text)
 #   IOS_DIST_P12_BASE64, IOS_DIST_P12_PASSWORD     Apple Distribution certificate + private key
 #   IOS_PROFILE_BASE64                             App Store provisioning profile for the bundle id
+#   IOS_ADHOC_PROFILE_BASE64                       Ad Hoc profile (only for distribution=ad-hoc;
+#                                                  `asc_setup.py adhoc` creates it, see IOS_BUILD.md)
+#
+# distribution=ad-hoc builds an .ipa signed for the registered test iPhones only and
+# attaches it to the run as an artifact instead of uploading to TestFlight (no review).
 #
 # Trigger: manual only for now (Actions tab > "iOS TestFlight" > Run workflow, or
 # `gh workflow run ios-testflight.yml`). macOS minutes are expensive on private repos,
@@ -19,6 +24,11 @@ name: iOS TestFlight
 on:
   workflow_dispatch:
     inputs:
+      distribution:
+        description: "app-store = upload to TestFlight; ad-hoc = .ipa artifact for registered devices"
+        type: choice
+        options: [app-store, ad-hoc]
+        default: app-store
       marketing_version:
         description: "Version shown in TestFlight (CFBundleShortVersionString). Blank = the export preset's."
         required: false
@@ -27,7 +37,7 @@ on:
   #   branches: [main]
 
 concurrency:
-  group: ios-testflight
+  group: ios-testflight-${{ inputs.distribution || 'app-store' }}
   cancel-in-progress: true
 
 env:
@@ -35,6 +45,7 @@ env:
   PRESET: "iOS"
   APP_NAME: "Apologion"
   BUNDLE_ID: "com.veritasvanguard.apologion"
+  DISTRIBUTION: ${{ inputs.distribution || 'app-store' }}
 
 jobs:
   testflight:
@@ -50,14 +61,19 @@ jobs:
           P12: ${{ secrets.IOS_DIST_P12_BASE64 }}
           P12_PW: ${{ secrets.IOS_DIST_P12_PASSWORD }}
           PROFILE: ${{ secrets.IOS_PROFILE_BASE64 }}
+          ADHOC_PROFILE: ${{ secrets.IOS_ADHOC_PROFILE_BASE64 }}
         run: |
           missing=""
+          if [ "$DISTRIBUTION" = "ad-hoc" ]; then PROFILE="$ADHOC_PROFILE"; fi
           [ -n "$ASC_KEY_ID" ] || missing="$missing ASC_KEY_ID"
           [ -n "$ASC_ISSUER_ID" ] || missing="$missing ASC_ISSUER_ID"
           [ -n "$ASC_KEY_P8" ] || missing="$missing ASC_KEY_P8"
           [ -n "$P12" ] || missing="$missing IOS_DIST_P12_BASE64"
           [ -n "$P12_PW" ] || missing="$missing IOS_DIST_P12_PASSWORD"
-          [ -n "$PROFILE" ] || missing="$missing IOS_PROFILE_BASE64"
+          if [ -z "$PROFILE" ]; then
+            if [ "$DISTRIBUTION" = "ad-hoc" ]; then missing="$missing IOS_ADHOC_PROFILE_BASE64"
+            else missing="$missing IOS_PROFILE_BASE64"; fi
+          fi
           if [ -n "$missing" ]; then
             echo "::error::Missing repo secrets:$missing (see TESTFLIGHT.md)"
             exit 1
@@ -114,8 +130,10 @@ jobs:
           P12: ${{ secrets.IOS_DIST_P12_BASE64 }}
           P12_PW: ${{ secrets.IOS_DIST_P12_PASSWORD }}
           PROFILE: ${{ secrets.IOS_PROFILE_BASE64 }}
+          ADHOC_PROFILE: ${{ secrets.IOS_ADHOC_PROFILE_BASE64 }}
         run: |
           set -euo pipefail
+          if [ "$DISTRIBUTION" = "ad-hoc" ]; then PROFILE="$ADHOC_PROFILE"; fi
           KC="$RUNNER_TEMP/ci.keychain-db"
           KC_PW="$(uuidgen)"
           security create-keychain -p "$KC_PW" "$KC"
@@ -176,18 +194,24 @@ jobs:
       - name: Export .ipa
         run: |
           set -euo pipefail
+          if [ "$DISTRIBUTION" = "ad-hoc" ]; then
+            METHOD="release-testing"; SYMBOLS="<false/>"
+          else
+            METHOD="app-store-connect"; SYMBOLS="<true/>"
+          fi
           cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0"><dict>
-            <key>method</key><string>app-store-connect</string>
+            <key>method</key><string>${METHOD}</string>
             <key>destination</key><string>export</string>
             <key>teamID</key><string>${TEAM_ID}</string>
             <key>signingStyle</key><string>manual</string>
             <key>signingCertificate</key><string>${IDENTITY}</string>
             <key>provisioningProfiles</key><dict><key>${BUNDLE_ID}</key><string>${PP_NAME}</string></dict>
             <key>manageAppVersionAndBuildNumber</key><false/>
-            <key>uploadSymbols</key><true/>
+            <key>uploadSymbols</key>${SYMBOLS}
+            <key>thinning</key><string>&lt;none&gt;</string>
           </dict></plist>
           PLIST
           xcodebuild -exportArchive \
@@ -196,7 +220,23 @@ jobs:
             -exportPath "$RUNNER_TEMP/ipa"
           ls -la "$RUNNER_TEMP/ipa"
 
+      - name: Keep ad-hoc .ipa
+        if: env.DISTRIBUTION == 'ad-hoc'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Apologion-adhoc-${{ github.run_number }}
+          path: ${{ runner.temp }}/ipa/*.ipa
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Ad-hoc summary
+        if: env.DISTRIBUTION == 'ad-hoc'
+        run: |
+          echo "### Ad-hoc build ${BUILD_NUMBER} (not uploaded to TestFlight)" >> "$GITHUB_STEP_SUMMARY"
+          echo "Download the Apologion-adhoc artifact; it installs only on devices in profile '${PP_NAME}'." >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload to TestFlight
+        if: env.DISTRIBUTION != 'ad-hoc'
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}

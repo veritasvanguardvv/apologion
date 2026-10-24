@@ -65,3 +65,27 @@ in the repo. Your Apple ID signs the app on your Mac.
   Ram (hold until the bar fills), II pause, Verses (the Tab list), Bag (inventory), Type (opens
   the keyboard), Mic (hold to talk). In battles the Skip / Target buttons are on the right.
   Turn them off in Settings > "Touch controls (phones and tablets)".
+
+## Option C: ad-hoc build from GitHub Actions (no Mac, no TestFlight review)
+
+An ad-hoc build installs only on iPhones whose UDIDs are registered in the Apple
+Developer account and listed in the Ad Hoc provisioning profile. No App Review, no
+TestFlight, and no Developer Mode needed on the phone.
+
+**Build it:** Actions > "iOS TestFlight" > Run workflow > distribution = `ad-hoc`, or
+
+    gh workflow run ios-testflight.yml -R veritasvanguardvv/apologion --ref main -f distribution=ad-hoc
+
+The signed `.ipa` is attached to the run as the `Apologion-adhoc-<run>` artifact (kept 30 days).
+Nothing is uploaded to TestFlight. Install it with Apple Configurator / Finder (cable), or
+over the air from an HTTPS `itms-services://` link (an `.ipa` plus a `manifest.plist`).
+
+**Add an iPhone:** get its UDID (Finder/Apple Configurator, or a UDID-profile site), then
+regenerate the profile, which includes every enabled registered iPhone, and update the secret:
+
+    python3 tools/ios_ci/asc_setup.py --key-id KEY_ID --issuer-id ISSUER_ID --p8 AuthKey_KEY_ID.p8 \
+      adhoc --device "Name iPhone=UDID" --out ~/.apologion-ios-signing --set-secrets
+
+Then rerun the ad-hoc workflow; builds made before the device was added will not install on it.
+Apple allows 100 iPhones per membership year. The profile expires after a year (or when the
+distribution certificate does); rerun the `adhoc` command without `--device` to renew it.

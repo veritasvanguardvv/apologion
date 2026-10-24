@@ -9,6 +9,10 @@ Integrations > App Store Connect API). Install deps: pip install pyjwt cryptogra
            (+ private key, packed as .p12) and an App Store provisioning profile, and
            write them to --out. With --set-secrets, also store the six repo secrets via `gh`.
   testers  Create an internal TestFlight group that gets every build, and add --email.
+  adhoc    Register iPhones by UDID (--device NAME=UDID, repeatable) and create an Ad Hoc
+           provisioning profile with every registered iOS device and the existing
+           distribution certificate. With --set-secrets, store IOS_ADHOC_PROFILE_BASE64.
+           Rerun it whenever a device is added (Ad Hoc profiles list devices explicitly).
 
 Nothing here deletes or revokes anything in the Apple account.
 """
@@ -183,6 +187,62 @@ def cmd_testers(asc, a):
         print("Added tester", a.email, "" if r.get("data") else r)
 
 
+def cmd_adhoc(asc, a):
+    out = os.path.expanduser(a.out)
+    os.makedirs(out, mode=0o700, exist_ok=True)
+    info_path = os.path.join(out, "info.json")
+    info = json.load(open(info_path)) if os.path.exists(info_path) else {}
+    cert_id = a.cert_id or info.get("certificate_id")
+    if not cert_id:
+        raise SystemExit("No --cert-id and no certificate_id in info.json")
+    b = find_bundle(asc, a.bundle_id)
+    if not b:
+        raise SystemExit("Bundle id not registered; run `signing` first.")
+
+    devices = asc.get_all("/v1/devices", {"filter[platform]": "IOS"})
+    by_udid = {d["attributes"]["udid"].upper(): d for d in devices}
+    for spec in a.device or []:
+        name, _, udid = spec.rpartition("=")
+        if not udid or not name:
+            raise SystemExit(f"--device must be NAME=UDID, got {spec!r}")
+        d = by_udid.get(udid.strip().upper())
+        if d:
+            print(f"Device already registered: {d['attributes']['name']} ({d['id']}, {d['attributes']['status']})")
+            continue
+        d = asc.req("POST", "/v1/devices", {"data": {"type": "devices", "attributes": {
+            "name": name, "udid": udid.strip(), "platform": "IOS"}}})["data"]
+        by_udid[udid.strip().upper()] = d
+        print(f"Registered device {name} ({d['id']})")
+
+    enabled = [d for d in by_udid.values() if d["attributes"].get("status", "ENABLED") == "ENABLED"]
+    if not enabled:
+        raise SystemExit("No enabled iOS devices registered.")
+    stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d%H%M")
+    prof = asc.req("POST", "/v1/profiles", {"data": {"type": "profiles",
+        "attributes": {"name": f"{a.app_name} Ad Hoc {stamp}", "profileType": "IOS_APP_ADHOC"},
+        "relationships": {"bundleId": {"data": {"type": "bundleIds", "id": b["id"]}},
+                          "certificates": {"data": [{"type": "certificates", "id": cert_id}]},
+                          "devices": {"data": [{"type": "devices", "id": d["id"]} for d in enabled]}}}})["data"]
+    prof_bytes = base64.b64decode(prof["attributes"]["profileContent"])
+    print(f"Created Ad Hoc profile {prof['attributes']['name']} ({prof['id']}), {len(enabled)} device(s),",
+          "expires", prof["attributes"].get("expirationDate"))
+    p = os.path.join(out, "AdHoc.mobileprovision")
+    with open(p, "wb") as f:
+        f.write(prof_bytes)
+    os.chmod(p, 0o600)
+    info.update({"adhoc_profile_id": prof["id"], "adhoc_profile_name": prof["attributes"]["name"],
+                 "adhoc_profile_expires": prof["attributes"].get("expirationDate"),
+                 "adhoc_device_ids": [d["id"] for d in enabled]})
+    with open(info_path, "w") as f:
+        json.dump(info, f, indent=2)
+    os.chmod(info_path, 0o600)
+    print("Wrote", p)
+    if a.set_secrets:
+        subprocess.run(["gh", "secret", "set", "IOS_ADHOC_PROFILE_BASE64", "-R", a.repo],
+                       input=base64.b64encode(prof_bytes), check=True)
+        print("Set repo secret IOS_ADHOC_PROFILE_BASE64")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--key-id", required=True)
@@ -201,9 +261,15 @@ def main():
     t.add_argument("--email")
     t.add_argument("--first", default="")
     t.add_argument("--last", default="")
+    h = sub.add_parser("adhoc")
+    h.add_argument("--device", action="append", metavar="NAME=UDID")
+    h.add_argument("--cert-id", help="distribution certificate id (default: info.json in --out)")
+    h.add_argument("--out", default="~/.apologion-ios-signing")
+    h.add_argument("--set-secrets", action="store_true")
+    h.add_argument("--repo", default="veritasvanguardvv/apologion")
     a = ap.parse_args()
     asc = ASC(a.key_id, a.issuer_id, a.p8)
-    {"check": cmd_check, "signing": cmd_signing, "testers": cmd_testers}[a.cmd](asc, a)
+    {"check": cmd_check, "signing": cmd_signing, "testers": cmd_testers, "adhoc": cmd_adhoc}[a.cmd](asc, a)
 
 
 if __name__ == "__main__":
