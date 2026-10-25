@@ -75,12 +75,13 @@ func talks_like_boss() -> bool:
 #   ("cracked"); emits cracked. (The Idol still has to be rammed.)
 @export var survives_defeat = false
 @export var hide_while_dormant = true   # false: stays visible (just no HP bar) while dormant
-# head_bar: the small grey HP bar + type tag over its head. Boss-only enemies
-# (only_vs set: SinDeath, the Idol) never show it: their HP is in the
-# enemies' panel at the top right (turn_manager.gd).
-@export var head_bar = true
+# head_bar: the small grey HP bar + type tag over its head. upd29: no enemy
+# shows it any more (every battle type, 2D and 3D) - enemy HP is only in the
+# enemies' panel at the top right (turn_manager.gd). Kept as a switch.
+@export var head_bar = false
+const HEAD_BARS = false
 func shows_head_bar() -> bool:
-	return head_bar and only_vs == ""
+	return HEAD_BARS and head_bar and only_vs == ""
 signal cracked
 var counter_refs = []     # player verses that counter what it just recited (only during your next turn)
 var type_label: Label     # small "Sloth" tag under the HP bar
