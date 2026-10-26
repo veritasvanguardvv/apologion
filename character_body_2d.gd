@@ -1588,6 +1588,22 @@ func take_damage(amount):
 	set_hp(hp - amount)
 	return amount
 
+# Baby Mode (baby_mode.gd): an enemy you rammed but didn't finish nips you.
+# Never takes your last HP point (you can't lose). Returns the HP lost.
+func baby_hurt(amount) -> float:
+	var before = hp
+	set_hp(max(1.0, hp - amount))
+	var lost = before - hp
+	if lost > 0:
+		PopupText.spawn(self, "-" + str(snapped(lost, 0.1)), Color(1, 0.45, 0.4))
+		var sprite = get_node_or_null("Sprite2D")
+		if sprite:
+			var t = sprite.create_tween()
+			t.tween_property(sprite, "self_modulate", Color(1.0, 0.35, 0.35), 0.06)
+			t.tween_property(sprite, "self_modulate", Color.WHITE, 0.3)
+	_update_low_hp()
+	return lost
+
 # Healing (never above max HP). Returns how much was really healed.
 func heal(amount) -> float:
 	var before = hp

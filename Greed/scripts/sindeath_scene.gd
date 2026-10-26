@@ -566,8 +566,9 @@ func _start_baby_fight():
 		idol.set_meta("baby_ram_body", barrier)   # the idol sits in the solid calf: touching the calf rams it
 	if _boss_alive():
 		sindeath.awaken()
-		sindeath.max_hp = 1
-		sindeath.hp = 1
+		sindeath.max_hp = BabyMode.ENEMY_HITS   # 2 rams, like every other enemy
+		sindeath.hp = BabyMode.ENEMY_HITS
+		sindeath.set_meta("baby_rams", 0)
 	if not idol.cracked.is_connected(_on_baby_idol_cracked):
 		idol.cracked.connect(_on_baby_idol_cracked, CONNECT_ONE_SHOT)
 	TurnManager.show_enemy_panel([sindeath, idol] if _boss_alive() else [idol])

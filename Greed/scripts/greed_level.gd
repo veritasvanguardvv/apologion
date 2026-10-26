@@ -23,6 +23,8 @@ extends Node2D
 #   - falling into a pit / the water restarts the level - or, once you've
 #     reached the hill (Triggers/CheckpointArea), puts you back on top of the
 #     hill (checkpoint_feet). Your inventory stays as it was (gold too).
+#   - POTS: clay pots on the path (pot.gd) - smash them for a Bible scroll
+#     (a new verse), or in Baby Mode a healing item that reads a healing verse
 #   - breaking the Golden Calf (after the SinDeath scene, Greed/scripts/sindeath_scene.gd) wins the level
 
 const PopupText = preload("res://popup_text.gd")
@@ -43,6 +45,15 @@ const PopupText = preload("res://popup_text.gd")
 # Set to 0 to keep the player's normal values.
 @export var player_speed = 400.0
 @export var player_jump_velocity = -620.0
+
+# Clay pots to smash (pot.gd): [feet position on the floor, "sin" / "heal" scroll first].
+# On the walking path, clear of the hill and its free scrolls (x -1000..140),
+# the enemies and the other pickups.
+const POTS = [
+	[Vector2(1250, 320), "sin"], [Vector2(2500, 320), "heal"], [Vector2(3350, 320), "sin"],
+	[Vector2(3900, -71), "heal"], [Vector2(4250, -332), "sin"], [Vector2(6200, -463), "heal"],
+	[Vector2(7450, -69), "sin"], [Vector2(9200, 175), "heal"], [Vector2(10200, 307), "sin"],
+]
 
 var current_room = 0
 var room_to_enter = -1
@@ -69,6 +80,27 @@ func _ready():
 		music_player.play()
 	call_deferred("_apply_camera_limits")
 	call_deferred("_apply_player_tuning")
+	_build_pots()
+
+
+func _build_pots():
+	var holder = Node2D.new()
+	holder.name = "Pots"
+	add_child(holder)
+	holder.owner = self
+	# (verses the dig spot's scrolls teach: the pots' scrolls are other ones)
+	var DigSpot = preload("res://Greed/scripts/dig_spot.gd")
+	var skip = []
+	for v in DigSpot.VERSES + DigSpot.FREE_VERSES:
+		skip.append(v[0])
+	for i in POTS.size():
+		var pot = preload("res://pot.gd").new()
+		pot.name = "Pot%d" % (i + 1)
+		pot.position = POTS[i][0]
+		pot.prefer = POTS[i][1]
+		pot.skip_refs = skip
+		holder.add_child(pot)
+		pot.owner = self   # (save id = level + node path)
 
 
 func _apply_player_tuning():

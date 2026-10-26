@@ -5,12 +5,18 @@ extends Node
 #   - no turn-based battles (turn_manager.gd skips them) and no verse box,
 #     Verses / Type / Mic buttons or push-to-talk
 #   - you defeat an enemy by running into it (walking, the joystick or the
-#     Ram dash all count): every enemy goes down in one ram, the boss idol
-#     takes IDOL_HITS rams (it flashes, you bounce back, the HP panel counts down)
+#     Ram dash all count): every enemy (SinDeath too) goes down in ENEMY_HITS
+#     rams, the boss idol takes IDOL_HITS. A ram that doesn't finish it: it
+#     flashes, its HP bar drops, "1 more!", you bounce back - and it nips you
+#     (HIT_DAMAGE, never below 1 HP)
 #   - every ram reads a random matching verse out loud (the system's
 #     text-to-speech voice in the game's language) and shows it in the
 #     player's speech bubble
-#   - you can't lose: the player takes no damage (character_body_2d.gd)
+#   - when you're at half health or less, the party member (Pastor...) reads a
+#     kid-safe healing verse out loud and heals you (PARTY_HEAL_PCT, then a
+#     HEAL_COOLDOWN pause). Pots (pot.gd) drop healing items that read one too.
+#   - you can't lose: other damage doesn't hurt you (character_body_2d.gd),
+#     enemies can't take your last HP and falling puts you back
 #
 # Which verses (verse_pool): an enemy's kind is its only_vs ("idol",
 # "sindeath"), else its base_type (a sin like "greed", or "atheist"...), else
@@ -30,7 +36,14 @@ const RAM_REACH = 10.0      # px between the bodies that still counts as touchin
 const RAM_HEIGHT = 24.0     # px of up/down gap that still counts
 const HIT_COOLDOWN = 0.6    # seconds between two rams
 const IDOL_HITS = 3         # the boss idol takes this many rams
+const ENEMY_HITS = 2        # every other enemy (SinDeath too) takes this many
+const HIT_DAMAGE = 20.0     # HP an enemy takes off you when a ram doesn't finish it
+const PARTY_HEAL_BELOW = 0.5   # the party member heals you at this much HP or less
+const PARTY_HEAL_PCT = 40.0    # ... this % of your max HP
+const HEAL_COOLDOWN = 8.0      # seconds before the party member heals again
+const HEAL_DELAY = 1.2         # seconds after the hit (the ram's verse starts first)
 const HIT_SOUND = "res://Greed/SUCCESS PICKUP Collect Chime 01.wav"
+const HEAL_SOUND = "res://Greed/SUCCESS PICKUP Collect Chime 05.wav"
 
 signal enemy_rammed(enemy, verse: Dictionary, defeated: bool)
 
@@ -50,6 +63,13 @@ var last_verse = {}
 var last_spoken = ""        # the text sent (or that would be sent) to text-to-speech
 var last_spoken_language = ""
 var spoke = false           # did the last ram really reach a TTS voice?
+var party_heals = 0         # healing verses read by the party member (Baby Mode)
+var last_heal_verse = {}
+var last_heal_by = ""
+var last_heal_spoken = ""   # the text sent to text-to-speech for the last healing verse
+var _heal_ready_at = 0      # msec: the party member may heal again
+var _heal_pending = false
+var _protect_speech_until = 0   # msec: a healing verse is being read (rams queue after it)
 
 
 func _ready():
@@ -84,6 +104,8 @@ func _physics_process(delta):
 		return
 	var player = get_tree().get_first_node_in_group("player")
 	_track_safe_spot(player)
+	if player != null and not TurnManager.in_battle:
+		_check_party_heal(player)
 	if player == null or TurnManager.in_battle or TurnManager.encounters_paused or player.get("cutscene_lock") == true:
 		return
 	for enemy in get_tree().get_nodes_in_group("enemies"):
@@ -139,9 +161,7 @@ func ram(enemy, player = null) -> bool:
 		enemy.hp = max(0, enemy.hp - 1)
 		_flash(enemy)
 		_shake_camera(player)
-		if is_instance_valid(player) and player.has_method("baby_bounce"):
-			var dir = sign(player.global_position.x - enemy.get_center().x)
-			player.baby_bounce(dir if dir != 0 else -1.0)
+		_bounce(player, enemy)
 		if enemy.hp <= 0:
 			defeated = true
 			enemy.knock_out()   # survives_defeat: it cracks (sindeath_scene.gd smashes it)
@@ -149,10 +169,132 @@ func ram(enemy, player = null) -> bool:
 			enemy.play_anim("hurt")
 			enemy.show_popup(tr("%d more!") % int(enemy.hp), Color(1, 0.85, 0.3))
 	else:
-		defeated = true
-		enemy.instant_defeat("Rammed!")
+		var rams = int(enemy.get_meta("baby_rams", 0)) + 1
+		enemy.set_meta("baby_rams", rams)
+		if rams >= ENEMY_HITS:
+			defeated = true
+			enemy.instant_defeat("Rammed!")
+		else:
+			# hit, not out yet: its HP bar drops, it flashes, you bounce back
+			var left = ENEMY_HITS - rams
+			enemy.hp = max(1.0, ceil(float(enemy.max_hp) * left / ENEMY_HITS))
+			if enemy.get("hp_bar") != null:
+				enemy.hp_bar.max_value = enemy.max_hp
+				enemy.hp_bar.value = enemy.hp
+			_flash(enemy)
+			_shake_camera(player, 4.0)
+			_bounce(player, enemy)
+			if enemy.has_method("play_anim"):
+				enemy.play_anim("hurt")
+			enemy.show_popup(tr("%d more!") % left, Color(1, 0.85, 0.3))
+	if not defeated:
+		hurt_player(player)
 	enemy_rammed.emit(enemy, verse, defeated)
 	return defeated
+
+
+func _bounce(player, enemy):
+	if is_instance_valid(player) and player.has_method("baby_bounce"):
+		var c = enemy.get_center() if enemy.has_method("get_center") else enemy.global_position
+		var dir = sign(player.global_position.x - c.x)
+		player.baby_bounce(dir if dir != 0 else -1.0)
+
+
+# The enemy nips back (a ram that didn't finish it): a little damage, never
+# your last HP point - you can't lose in Baby Mode.
+func hurt_player(player, amount := HIT_DAMAGE) -> float:
+	if not is_instance_valid(player) or not player.has_method("baby_hurt"):
+		return 0.0
+	return player.baby_hurt(amount)
+
+
+# ---------------- The party member heals you ----------------
+# Pastor (or Baana...: the first computer-controlled party member who isn't
+# knocked out) reads a healing verse out loud when you're at PARTY_HEAL_BELOW
+# or less. A HEAL_DELAY after the hit, so the ram's verse is heard first; the
+# healing verse is queued after it, and rams during it queue after it too.
+
+func player_needs_heal(player) -> bool:
+	return is_instance_valid(player) and player.max_hp > 0 and player.hp > 0 and player.hp <= player.max_hp * PARTY_HEAL_BELOW
+
+
+func healer():
+	for m in Targeting.party_members():
+		if m.get("player_controlled") == true or m.get("knocked_out") == true or not m.has_method("pick_player_heal_verse"):
+			continue
+		return m
+	return null
+
+
+func _check_party_heal(player):
+	if _heal_pending or Time.get_ticks_msec() < _heal_ready_at or not player_needs_heal(player):
+		return
+	if healer() == null:
+		return
+	_heal_pending = true
+	await get_tree().create_timer(HEAL_DELAY).timeout
+	_heal_pending = false
+	if is_on() and player_needs_heal(player) and not TurnManager.in_battle:
+		party_heal(player)
+
+
+# The healing itself (also called by the tests). Returns the verse ({} = none).
+func party_heal(player, m = null) -> Dictionary:
+	if m == null:
+		m = healer()
+	if m == null or not is_instance_valid(player):
+		return {}
+	var v = m.pick_player_heal_verse(func(x): return kid_safe(x))
+	if v == null:
+		return {}
+	player.heal(player.max_hp * PARTY_HEAL_PCT / 100.0)
+	var text = player.verse_body(v)
+	text = text.substr(0, 1).to_upper() + text.substr(1)
+	if m.has_method("_say"):
+		m._say(VerseManager.ref_text(v.ref), text)
+	speak_after(VerseManager.ref_text(spoken_ref(str(v.ref))) + ". " + text, SaveManager.language, v)
+	_heal_ready_at = Time.get_ticks_msec() + int(HEAL_COOLDOWN * 1000)
+	party_heals += 1
+	last_heal_verse = v
+	last_heal_by = str(m.get("display_name"))
+	_play_heal_sound()
+	print("Baby Mode: ", last_heal_by, " heals you with ", v.ref)
+	return v
+
+
+# A kid-safe healing verse that fits the level (for pots' healing items)
+func heal_verse(player) -> Dictionary:
+	if not is_instance_valid(player) or not ("all_verses" in player):
+		return {}
+	var PM = preload("res://party_member.gd")
+	var sin = player.level_sin() if player.has_method("level_sin") else ""
+	var sins = [sin] if sin != "" else []
+	var pool = player.all_verses.filter(func(v):
+		var heal = float(v.get("heal", 0)) if (v.get("set", "") == "sheet" or v.get("type", "") == "heal") else 0.0
+		return heal > 0 and kid_safe(v) and PM._theme_ok_for_heal(v, sins))
+	return {} if pool.is_empty() else pool.pick_random()
+
+
+# Reads a healing verse (a pot's healing item): the player's bubble + aloud, queued
+func say_heal_verse(v: Dictionary, player):
+	var text = player.verse_body(v) if player.has_method("verse_body") else verse_text(v, SaveManager.language)
+	text = text.substr(0, 1).to_upper() + text.substr(1)
+	if player.get("bubble") != null:
+		player.bubble.say(VerseManager.ref_text(str(v.ref)), text, false, clamp(2.5 + text.length() * 0.06, 3.0, 7.0))
+	speak_after(VerseManager.ref_text(spoken_ref(str(v.ref))) + ". " + text, SaveManager.language, v)
+	last_heal_verse = v
+
+
+var _heal_sfx: AudioStreamPlayer
+func _play_heal_sound():
+	if _heal_sfx == null:
+		_heal_sfx = AudioStreamPlayer.new()
+		_heal_sfx.bus = "SFX"
+		if ResourceLoader.exists(HEAL_SOUND):
+			_heal_sfx.stream = load(HEAL_SOUND)
+		add_child(_heal_sfx)
+	if _heal_sfx.stream:
+		_heal_sfx.play()
 
 
 func _flash(enemy):
@@ -161,13 +303,13 @@ func _flash(enemy):
 	t.tween_property(enemy, "modulate", Color.WHITE, 0.25)
 
 
-func _shake_camera(player):
+func _shake_camera(player, amount := 7.0):
 	var cam = get_viewport().get_camera_2d()
 	if cam == null:
 		return
 	var t = cam.create_tween()
 	for i in 5:
-		t.tween_property(cam, "offset", Vector2(randf_range(-7, 7), randf_range(-5, 5)), 0.04)
+		t.tween_property(cam, "offset", Vector2(randf_range(-amount, amount), randf_range(-amount, amount) * 0.7), 0.04)
 	t.tween_property(cam, "offset", Vector2.ZERO, 0.05)
 
 
@@ -355,7 +497,7 @@ func _voice_for(lang: String) -> String:
 	return id
 
 
-func speak(text: String, lang: String, v := {}) -> bool:
+func speak(text: String, lang: String, v := {}, interrupt := true) -> bool:
 	last_spoken = text
 	last_spoken_language = lang
 	spoke = false
@@ -375,9 +517,20 @@ func speak(text: String, lang: String, v := {}) -> bool:
 			return false
 		voice = str(all[0].get("id", ""))
 	var volume = int(round(clamp(GameSettings.sfx_volume, 0.0, 1.0) * 100.0))
-	DisplayServer.tts_speak(text, voice, volume, 1.0, 0.95, 0, true)   # (interrupts the last verse)
+	# (a ram's verse interrupts the last one - but not a healing verse being read)
+	if Time.get_ticks_msec() < _protect_speech_until:
+		interrupt = false
+	DisplayServer.tts_speak(text, voice, volume, 1.0, 0.95, 0, interrupt)
 	spoke = true
 	return true
+
+
+# Queued after what's being read now (healing verses); rams don't cut it off
+func speak_after(text: String, lang: String, v := {}) -> bool:
+	var ok = speak(text, lang, v, false)
+	_protect_speech_until = Time.get_ticks_msec() + int((4.0 + text.length() * 0.075) * 1000.0)   # (+ the ram's verse before it)
+	last_heal_spoken = last_spoken
+	return ok
 
 
 func stop_speaking():

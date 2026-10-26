@@ -1,8 +1,9 @@
 extends RefCounted
 # Keeps floating text (popups, speech bubbles, the 3D battle's HP bars) inside
 # the screen, clear of the HUD: the player's corner (portrait, Run / Items, HP),
-# the turn message at the top, the enemies' panel top-right and the Skip /
-# Target buttons. All rects are in screen pixels (the CanvasLayer space).
+# the turn message at the top, the enemies' panel top-right, the Skip /
+# Target buttons and the phone's touch buttons / joystick. All rects are in
+# screen pixels (the CanvasLayer space).
 #   HudLayout.fit(rect, viewport, others) -> the new top-left for rect
 #   others = more rects to keep clear of (older popups, bubbles...)
 
@@ -50,6 +51,11 @@ static func blockers(vp: Viewport, with_title := true) -> Array:
 		for b in [tm.skip_button, tm.target_button]:
 			if _shown(b):
 				list.append(b.get_global_rect().grow(GAP))
+	# the phone's on-screen buttons and joystick (touch_controls.gd)
+	var tc = vp.get_tree().root.get_node_or_null("TouchControls") if vp.is_inside_tree() else null
+	if tc and tc.has_method("screen_rects"):
+		for r in tc.screen_rects():
+			list.append(r.grow(GAP))
 	return list
 
 # Where the turn message's text actually is (the label is wider than it)
@@ -88,7 +94,29 @@ static func fit(rect: Rect2, vp: Viewport, others := [], with_title := true) -> 
 			var right = Vector2(hit.end.x + GAP, p.y)
 			p = left if left.x >= MARGIN else right
 		p = _clamp(p, rect.size, screen)
+	# boxed in (e.g. between the touch buttons and other popups): the nearest
+	# free spot, else at least clear of the HUD / buttons
+	for list in [avoid, blockers(vp, with_title)]:
+		var best = _nearest_free(rect, screen, list)
+		if best != null:
+			return best
 	return p
+
+static func _nearest_free(rect: Rect2, screen: Vector2, avoid: Array):
+	var start = _clamp(rect.position, rect.size, screen)
+	var best = null
+	var best_d = INF
+	for dy in range(-int(screen.y), int(screen.y), 12):
+		for dx in [0, -80, 80, -160, 160, -240, 240, -360, 360]:
+			var q = _clamp(start + Vector2(dx, dy), rect.size, screen)
+			var d = q.distance_squared_to(rect.position) + abs(dx) * 40.0   # prefer moving up / down
+			if d >= best_d:
+				continue
+			var r = Rect2(q, rect.size)
+			if avoid.all(func(b): return not r.intersects(b)):
+				best = q
+				best_d = d
+	return best
 
 static func _clamp(p: Vector2, size: Vector2, screen: Vector2) -> Vector2:
 	p.x = clamp(p.x, MARGIN, max(MARGIN, screen.x - size.x - MARGIN))

@@ -226,6 +226,22 @@ func _update_visibility():
 	_place_right_column()
 
 
+# Where the visible buttons / joystick are (screen pixels): floating popups
+# keep clear of them (hud_layout.gd), e.g. "Ram the idol!" over the Ram button
+func screen_rects() -> Array:
+	var out = []
+	if root_node == null or not root_node.visible:
+		return out
+	for n in buttons:
+		var b = buttons[n]
+		if is_instance_valid(b) and b.is_visible_in_tree() and b.texture_normal:
+			out.append(Rect2(b.global_position, b.texture_normal.get_size()))
+	if joystick and joystick.is_visible_in_tree():
+		var r = float(joystick.get("radius")) if joystick.get("radius") != null else 70.0
+		out.append(Rect2(joystick.global_position - Vector2(r, r), Vector2(r, r) * 2.0))
+	return out
+
+
 # Pause / Verses (and Type / Mic) on the right edge: under the enemies' HP
 # panel in a battle (it grows with every enemy), so they never cover a boss's
 # HP bar. The game's view is always 1152 x 648 (it keeps its 16:9 shape on

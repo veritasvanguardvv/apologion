@@ -494,9 +494,10 @@ func player_needs_heal() -> bool:
 
 # A verse that heals (and never costs HP). The strongest heals are picked
 # most: a random one among the top heals.
-func pick_player_heal_verse():
+# (extra: an optional more-filter, e.g. Baby Mode's kid-safe check)
+func pick_player_heal_verse(extra := Callable()):
 	var sins = battle_theme_sins()
-	var heals = player.all_verses.filter(func(v): return _heal_amount(v) > 0 and _theme_ok_for_heal(v, sins))
+	var heals = player.all_verses.filter(func(v): return _heal_amount(v) > 0 and _theme_ok_for_heal(v, sins) and (not extra.is_valid() or extra.call(v)))
 	if heals.is_empty():
 		return null
 	heals.sort_custom(func(a, b): return _heal_amount(a) > _heal_amount(b))
