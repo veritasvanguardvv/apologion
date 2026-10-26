@@ -500,7 +500,7 @@ func _build_settings_menu():
 	# Baby Mode (baby_mode.gd): no verse typing - ram enemies, verses are read aloud
 	var baby_toggle = CheckButton.new()
 	baby_toggle.name = "BabyModeToggle"
-	baby_toggle.text = "Baby Mode (ram enemies, verses read aloud)"
+	baby_toggle.text = "Baby Mode"
 	baby_toggle.button_pressed = GameSettings.baby_mode
 	baby_toggle.focus_mode = Control.FOCUS_NONE
 	baby_toggle.add_theme_font_override("font", _get_bold_font())
