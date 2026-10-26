@@ -94,7 +94,8 @@ jobs:
         # The iOS 26 SDK is required for uploads; macos-15 images default to Xcode 16
         run: |
           set -euo pipefail
-          major="$(xcodebuild -version | head -1 | awk '{print $2}' | cut -d. -f1)"
+          ver="$(xcodebuild -version)"   # (not piped to head: xcodebuild crashes on a closed pipe)
+          major="$(printf '%s\n' "$ver" | awk 'NR==1 {print $2}' | cut -d. -f1)"
           if [ "$major" -lt 26 ]; then
             x="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)"
             echo "Default Xcode $major is too old; switching to $x"
