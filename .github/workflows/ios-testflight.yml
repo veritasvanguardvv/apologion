@@ -1,7 +1,11 @@
 # Builds the iOS app and uploads it to TestFlight.
 #
-# Runs on a GitHub-hosted Mac (macos-26, Xcode 26: App Store Connect requires the
-# iOS 26 SDK since April 2026). Godot exports the Xcode project, xcodebuild
+# Runs on a GitHub-hosted Mac with Xcode 26 (App Store Connect requires the iOS 26
+# SDK since April 2026). The Mac is the `runner` input: default macos-26-intel,
+# because the Apple-silicon (arm64) pool (macos-26 / macos-latest / macos-15) can sit
+# in the queue for 15 min and get cancelled ("not acquired by Runner") when GitHub
+# is short on capacity. Any of them works: the "Select Xcode 26" step picks the
+# newest Xcode 26 if the image's default is older (macos-15 defaults to Xcode 16). Godot exports the Xcode project, xcodebuild
 # archives and signs it, and altool uploads the .ipa with an App Store Connect API key.
 #
 # Repo secrets it needs (see TESTFLIGHT.md; tools/ios_ci/asc_setup.py creates the signing ones):
@@ -29,6 +33,11 @@ on:
         type: choice
         options: [app-store, ad-hoc]
         default: app-store
+      runner:
+        description: "GitHub-hosted Mac to build on (any with Xcode 26)"
+        type: choice
+        options: [macos-26-intel, macos-26, macos-15, macos-15-intel]
+        default: macos-26-intel
       marketing_version:
         description: "Version shown in TestFlight (CFBundleShortVersionString). Blank = the export preset's."
         required: false
@@ -50,7 +59,7 @@ env:
 jobs:
   testflight:
     if: github.event_name != 'push' || contains(github.event.head_commit.message, '[testflight]')
-    runs-on: macos-26
+    runs-on: ${{ inputs.runner || 'macos-26-intel' }}
     timeout-minutes: 45
     steps:
       - name: Check secrets
@@ -81,8 +90,22 @@ jobs:
 
       - uses: actions/checkout@v4
 
+      - name: Select Xcode 26
+        # The iOS 26 SDK is required for uploads; macos-15 images default to Xcode 16
+        run: |
+          set -euo pipefail
+          major="$(xcodebuild -version | head -1 | awk '{print $2}' | cut -d. -f1)"
+          if [ "$major" -lt 26 ]; then
+            x="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)"
+            echo "Default Xcode $major is too old; switching to $x"
+            sudo xcode-select -s "$x/Contents/Developer"
+          fi
+
       - name: Xcode version
-        run: xcodebuild -version
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i iphoneos
+          uname -m
 
       - name: Cache Godot + iOS export template
         id: godot-cache
