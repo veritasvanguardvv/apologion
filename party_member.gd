@@ -445,24 +445,27 @@ func take_turn():
 	return bubble_time_left
 
 
-# Picks a random verse (from all verses) and runs its effect on the nearest
-# enemy in the current battle. Returns true if he recited.
+# Picks a random ON-THEME verse and runs its effect on the nearest enemy in
+# the current battle. Returns true if he recited. (See "Stay on theme" below:
+# in the Greed level he only ever says Greed verses, never e.g. a Lust one.)
 func recite_random_verse() -> bool:
 	if not _find_player():
 		return false
 	if Targeting.battle_enemies().is_empty():
 		return false
 	
-	# Any verse at all. Nothing here calls VerseManager, so his recital does
-	# NOT discover the verse for the player.
+	# Nothing here calls VerseManager, so his recital does NOT discover the
+	# verse for the player.
 	if player.all_verses.is_empty():
 		return false
 	# The player is at 50% HP or less: heal them first (a heal verse, all of
-	# its healing on the player). No heal verse -> the usual random verse.
+	# its healing on the player). No heal verse -> the usual on-theme verse.
 	var verse = pick_player_heal_verse() if player_needs_heal() else null
 	var healing_player = verse != null
 	if verse == null:
-		verse = player.all_verses.pick_random()
+		verse = pick_attack_verse()
+	if verse == null:
+		return false   # nothing on theme (never a random off-theme verse)
 	
 	# Use the same language as the game so the effect matches
 	var text = player.verse_body(verse)
@@ -492,7 +495,8 @@ func player_needs_heal() -> bool:
 # A verse that heals (and never costs HP). The strongest heals are picked
 # most: a random one among the top heals.
 func pick_player_heal_verse():
-	var heals = player.all_verses.filter(func(v): return _heal_amount(v) > 0)
+	var sins = battle_theme_sins()
+	var heals = player.all_verses.filter(func(v): return _heal_amount(v) > 0 and _theme_ok_for_heal(v, sins))
 	if heals.is_empty():
 		return null
 	heals.sort_custom(func(a, b): return _heal_amount(a) > _heal_amount(b))
@@ -502,6 +506,106 @@ func _heal_amount(v) -> float:
 	if v.get("set", "") == "sheet":
 		return float(v.get("heal", 0))
 	return float(v.get("heal", 0)) if v.get("type", "") == "heal" else 0.0
+
+# ---------------- Stay on theme ----------------
+# AI party members (Pastor, Ramuel, Baana) only say verses that fit the fight:
+#   - On a sin level (Greed.tscn, Sloth.tscn, Lust.tscn, Gluttony.tscn...) the
+#     level's sin: in the Greed level ONLY Greed verses, never a Lust one.
+#   - Elsewhere (Endless...) the sin(s) of the enemies he's attacking.
+#   - No sin at all (e.g. only atheist goats in Endless): a Universal verse
+#     ("All Sin" damage, not about any one sin).
+# A verse "is" a sin's verse when that sin is its strongest one on the sheet
+# (ties count), so a mostly-Lust verse with a small Greed % is NOT a Greed verse.
+# His heal-the-player verses are healing verses that aren't about another sin.
+
+# The sins his verses must be about right now ([] = no sin: Universal only)
+func battle_theme_sins() -> Array:
+	var sin = player.level_sin() if player and player.has_method("level_sin") else ""
+	if sin != "":
+		return [sin]
+	var out = []
+	for e in Targeting.attack_targets(false):
+		if is_instance_valid(e) and e.has_method("enemy_sins"):
+			for t in e.enemy_sins():
+				if t in preload("res://character_body_2d.gd").SINS and not t in out:
+					out.append(t)
+	return out
+
+# The verse's main sin(s): its strongest sin % (ties -> several), or for a
+# built-in verse its type if that's a sin. [] = not about any sin.
+static func verse_main_sins(v) -> Array:
+	var out = []
+	if v.get("set", "") == "sheet":
+		var sins: Dictionary = v.get("sins", {})
+		var best = 0.0
+		for s in sins:
+			best = max(best, float(sins[s]))
+		if best > 0:
+			for s in sins:
+				if float(sins[s]) == best:
+					out.append(s)
+		return out
+	var t = v.get("type", "")
+	if t in preload("res://character_body_2d.gd").SINS:
+		out.append(t)
+	return out
+
+# Every sin % the verse has (built-in: its type if it's a sin)
+static func verse_any_sins(v) -> Array:
+	if v.get("set", "") == "sheet":
+		var out = []
+		for s in v.get("sins", {}):
+			if float(v.sins[s]) > 0:
+				out.append(s)
+		return out
+	return verse_main_sins(v)
+
+# An attack verse he may say: its main sin is one of `sins`. With no sins
+# (unthemed fight): a Universal verse that isn't about any sin.
+static func is_on_theme_attack(v, sins: Array) -> bool:
+	if sins.is_empty():
+		var universal = float(v.get("all_damage", 0)) > 0 or v.get("type", "") == "all"
+		return universal and verse_any_sins(v).is_empty()
+	for s in verse_main_sins(v):
+		if s in sins:
+			return true
+	return false
+
+# A heal verse he may say: not about any sin, or about the fight's sin
+static func _theme_ok_for_heal(v, sins: Array) -> bool:
+	var main = verse_main_sins(v)
+	if main.is_empty():
+		return verse_any_sins(v).is_empty() or sins.is_empty()
+	for s in main:
+		if s in sins:
+			return true
+	return false
+
+# His attack verse: a random on-theme one, preferring ones that actually hurt
+# who he's hitting (e.g. the few Greed verses that hurt SinDeath). Falls back
+# to a Universal verse if the theme has none - never an off-theme verse.
+func pick_attack_verse():
+	var sins = battle_theme_sins()
+	var pool = player.all_verses.filter(func(v): return is_on_theme_attack(v, sins) and not _hurts_caster(v))
+	if pool.is_empty():
+		pool = player.all_verses.filter(func(v): return is_on_theme_attack(v, []) and not _hurts_caster(v))
+	if pool.is_empty():
+		return null
+	var targets = Targeting.attack_targets(false)
+	if not targets.is_empty() and player.has_method("verse_damage_against"):
+		var hurting = pool.filter(func(v):
+			for e in targets:
+				if is_instance_valid(e) and player.verse_damage_against(v, e) > 0:
+					return true
+			return false)
+		if not hurting.is_empty():
+			pool = hurting
+	return pool.pick_random()
+
+# A sheet verse with a negative heal costs the caster HP (he avoids those)
+static func _hurts_caster(v) -> bool:
+	return v.get("set", "") == "sheet" and float(v.get("heal", 0)) < 0
+
 
 var bubble_time_left = 0.0
 
