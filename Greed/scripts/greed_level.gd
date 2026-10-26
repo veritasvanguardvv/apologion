@@ -223,6 +223,8 @@ func play_door():
 func player_fell():
 	if restarting:
 		return
+	if BabyMode.fall_back(_player()):
+		return   # Baby Mode: back to where you last stood
 	restarting = true
 	var checkpoint = SaveManager.get_checkpoint() != null
 	TurnManager.show_message(tr("You fell... back to the checkpoint") if checkpoint else tr("You fell... restarting the level"))

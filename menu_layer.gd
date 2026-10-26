@@ -497,6 +497,17 @@ func _build_settings_menu():
 	boss3d_toggle.add_theme_font_size_override("font_size", 22)
 	boss3d_toggle.toggled.connect(GameSettings.set_boss_battles_3d)
 	column.add_child(boss3d_toggle)
+	# Baby Mode (baby_mode.gd): no verse typing - ram enemies, verses are read aloud
+	var baby_toggle = CheckButton.new()
+	baby_toggle.name = "BabyModeToggle"
+	baby_toggle.text = "Baby Mode (ram enemies, verses read aloud)"
+	baby_toggle.button_pressed = GameSettings.baby_mode
+	baby_toggle.focus_mode = Control.FOCUS_NONE
+	baby_toggle.add_theme_font_override("font", _get_bold_font())
+	baby_toggle.add_theme_font_size_override("font_size", 22)
+	baby_toggle.toggled.connect(GameSettings.set_baby_mode)
+	GameSettings.baby_mode_changed.connect(func(on): baby_toggle.set_pressed_no_signal(on))
+	column.add_child(baby_toggle)
 	column.add_child(_make_menu_button("ControlsButton", "Controls (remap keys)", _open_remap))
 	column.add_child(_make_menu_button("BackButton", "Back", _close_settings))
 

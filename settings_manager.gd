@@ -45,6 +45,10 @@ var sfx_volume = 1.0     # 0..1
 var scroll_verses_with_arrows = true   # hold Up/Down to scroll the Tab verse list
 var touch_controls = true               # on-screen buttons on phones / tablets (touch_controls.gd)
 var boss_battles_3d = true              # boss fights (SinDeath) shown in 3D (battle_3d.gd); off = the 2D fight
+# Baby Mode (baby_mode.gd): no typing or speaking verses - you defeat enemies
+# by running into them and a matching verse is read out loud.
+var baby_mode = false
+signal baby_mode_changed(on)
 
 signal touch_controls_changed(on)
 var bindings = {}        # action -> physical keycode
@@ -124,6 +128,15 @@ func set_touch_controls(on: bool):
 func set_boss_battles_3d(on: bool):
 	boss_battles_3d = on
 	_save()
+
+
+# Baby Mode on/off (saved). baby_mode.gd and the HUD react to the signal.
+func set_baby_mode(on: bool):
+	if baby_mode == on:
+		return
+	baby_mode = on
+	_save()
+	baby_mode_changed.emit(on)
 
 
 # ---------------- Key bindings ----------------
@@ -218,6 +231,7 @@ func _save():
 	c.set_value("controls", "scroll_verses_with_arrows", scroll_verses_with_arrows)
 	c.set_value("controls", "touch_controls", touch_controls)
 	c.set_value("graphics", "boss_battles_3d", boss_battles_3d)
+	c.set_value("gameplay", "baby_mode", baby_mode)
 	for action in bindings:
 		c.set_value("keys", action, int(bindings[action]))
 	c.save(PATH)
@@ -232,5 +246,6 @@ func _load():
 	scroll_verses_with_arrows = bool(c.get_value("controls", "scroll_verses_with_arrows", scroll_verses_with_arrows))
 	touch_controls = bool(c.get_value("controls", "touch_controls", touch_controls))
 	boss_battles_3d = bool(c.get_value("graphics", "boss_battles_3d", boss_battles_3d))
+	baby_mode = bool(c.get_value("gameplay", "baby_mode", baby_mode))
 	for action in bindings.keys():
 		bindings[action] = int(c.get_value("keys", action, bindings[action]))

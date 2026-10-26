@@ -99,7 +99,7 @@ var bubble_home_offset = Vector2.ZERO
 signal advanced
 signal chosen(index: int)
 
-var state = "idle"   # idle, talk, choice, battle, after, ram, done
+var state = "idle"   # idle, talk, choice, battle, after, ram, done (Baby Mode: baby)
 var waiting = false
 var wait_since = 0
 var player
@@ -202,6 +202,9 @@ func _on_trigger(body):
 
 
 func _run():
+	if GameSettings.baby_mode:
+		await _run_baby()
+		return
 	TurnManager.encounters_paused = true
 	_lock(true)
 	_set_recording(false)
@@ -229,6 +232,10 @@ func _run():
 		await _pan(_battle_view(), 1.0, 1.0)
 	_end_camera()
 	_lock(false)
+	_start_battle()
+
+
+func _start_battle():
 	state = "battle"
 	TurnManager.no_escape = true
 	TurnManager.battle_ended.connect(_on_battle_ended, CONNECT_ONE_SHOT)
@@ -497,12 +504,15 @@ func _on_battle_ended():
 		counter_state = ""
 	if _boss_alive():
 		# shouldn't happen (no running, and losing reloads the level)
+		# - except Baby Mode switched on in the middle of the fight
 		state = "idle"
 		TurnManager.encounters_paused = false
 		idol.make_dormant()
 		if battle_3d:
 			battle_3d.finish()
 			battle_3d = null
+		if GameSettings.baby_mode:
+			_start_baby_fight()
 		return
 	state = "after"
 	idol.make_dormant()   # walking up to it mustn't start a new battle
@@ -519,6 +529,95 @@ func _on_battle_ended():
 	_set_recording(true)
 	state = "ram"
 	_show_ram_hint()
+
+
+# ---------------- Baby Mode (baby_mode.gd) ----------------
+# No talk, no choice, no turn battle: SinDeath manifests, then you ram it
+# (one ram) and the idol (BabyMode.IDOL_HITS rams); the last ram on the idol
+# smashes the Golden Calf and wins the level. Each ram reads a verse out loud.
+
+var _normal_hp = []   # [SinDeath's, the idol's] max HP outside Baby Mode
+
+func _run_baby():
+	TurnManager.encounters_paused = true
+	_lock(true)
+	_set_recording(false)
+	await _pan(_idol_view(), zoom_in, pan_time * 0.6)
+	await _mammon_appears()
+	_hide_bubbles()
+	await _transform()
+	await _pan(_battle_view(), 1.0, 1.0)
+	_end_camera()
+	_start_baby_fight()
+
+
+func _start_baby_fight():
+	_lock(false)
+	_set_recording(true)
+	TurnManager.encounters_paused = false
+	state = "baby"
+	if _normal_hp.is_empty():
+		_normal_hp = [sindeath.max_hp if _boss_alive() else 666, idol.max_hp]
+	idol.awaken()
+	idol.is_cracked = false
+	idol.max_hp = BabyMode.IDOL_HITS
+	idol.hp = BabyMode.IDOL_HITS
+	if barrier:
+		idol.set_meta("baby_ram_body", barrier)   # the idol sits in the solid calf: touching the calf rams it
+	if _boss_alive():
+		sindeath.awaken()
+		sindeath.max_hp = 1
+		sindeath.hp = 1
+	if not idol.cracked.is_connected(_on_baby_idol_cracked):
+		idol.cracked.connect(_on_baby_idol_cracked, CONNECT_ONE_SHOT)
+	TurnManager.show_enemy_panel([sindeath, idol] if _boss_alive() else [idol])
+	PopupText.spawn(idol, tr("Ram the idol!"), Color(1, 0.85, 0.3), Vector2(0, -110), 3.0)
+	hint.text = "Run into SinDeath and the idol!"
+	hint.visible = true
+
+
+func _on_baby_idol_cracked():
+	if state != "baby":
+		return
+	hint.visible = false
+	if _boss_alive():
+		sindeath.instant_defeat("Rammed!")   # (jumped over it: it goes too)
+	await get_tree().create_timer(0.6).timeout   # let "0 / 3" show
+	TurnManager.hide_enemy_panel()
+	if barrier and not barrier.broken:
+		barrier.on_rammed(player)   # smashes the calf: _on_calf_smashed, the level is won
+
+
+# Baby Mode switched off during the baby fight: the normal battle; switched
+# on after SinDeath was beaten: running into the calf smashes it.
+func _process(_delta):
+	if state == "baby" and not GameSettings.baby_mode and not TurnManager.in_battle and _boss_alive():
+		hint.visible = false
+		TurnManager.hide_enemy_panel()
+		sindeath.max_hp = _normal_hp[0]
+		sindeath.hp = _normal_hp[0]
+		idol.max_hp = _normal_hp[1]
+		idol.hp = _normal_hp[1]
+		_normal_hp = []
+		if idol.cracked.is_connected(_on_baby_idol_cracked):
+			idol.cracked.disconnect(_on_baby_idol_cracked)
+		_start_battle()
+	elif state == "baby" and not GameSettings.baby_mode and not _boss_alive():
+		# (only the idol left: ram it the normal way)
+		hint.visible = false
+		TurnManager.hide_enemy_panel()
+		if idol.cracked.is_connected(_on_baby_idol_cracked):
+			idol.cracked.disconnect(_on_baby_idol_cracked)
+		idol.make_dormant()
+		state = "ram"
+		_show_ram_hint()
+	if barrier and state == "ram":
+		var want = GameSettings.baby_mode
+		if want != barrier.is_in_group("baby_rammables"):
+			if want:
+				barrier.add_to_group("baby_rammables")
+			else:
+				barrier.remove_from_group("baby_rammables")
 
 
 func _show_ram_hint():

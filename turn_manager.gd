@@ -165,11 +165,11 @@ const HUD_RUN_POS = Vector2i(74, 14)
 var enemy_hud: VBoxContainer
 var enemy_rows = {}     # enemy -> [row, hp bar, hp label]
 
-func _build_enemy_hud():
+func _build_enemy_hud(list = null):
 	for c in enemy_hud.get_children():
 		c.queue_free()
 	enemy_rows.clear()
-	for e in battle_enemies:
+	for e in (battle_enemies if list == null else list):
 		if not is_instance_valid(e):
 			continue
 		var row = HBoxContainer.new()
@@ -207,6 +207,14 @@ func _build_enemy_hud():
 		enemy_rows[e] = [row, bar, hp_label]
 	enemy_hud.visible = not enemy_rows.is_empty()
 	_update_enemy_hud()
+
+# Baby Mode (baby_mode.gd): the same HP panel without a battle (the boss fight)
+func show_enemy_panel(list: Array):
+	_build_enemy_hud(list)
+
+func hide_enemy_panel():
+	if enemy_hud and not in_battle:
+		enemy_hud.visible = false
 
 func _update_enemy_hud():
 	for e in enemy_rows.keys():
@@ -524,6 +532,8 @@ func _physics_process(delta):
 		return
 	if player == null or encounters_paused:
 		return
+	if GameSettings.baby_mode:
+		return   # Baby Mode: no battles - baby_mode.gd checks for rams instead
 	# Look for enemies close enough to start a battle
 	var enemies = []
 	for enemy in get_tree().get_nodes_in_group("enemies"):

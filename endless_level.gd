@@ -809,6 +809,8 @@ func _update_hud():
 # ---------------- Game over (Overmind.GameOver + EndlessHighscore) ----------------
 
 func player_fell():
+	if not game_over and BabyMode.fall_back(_player()):
+		return   # Baby Mode: back to where you last stood
 	_game_over(tr("You fell!"))
 
 

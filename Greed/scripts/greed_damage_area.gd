@@ -19,8 +19,10 @@ func _on_body_entered(body):
 	if not body.is_in_group("player") or not visible:
 		return
 	var taken = body.take_damage(damage)
-	PopupText.spawn(body, "-" + str(snapped(taken, 0.1)), Color(1, 0.45, 0.4))
-	if body.hp <= 0:
+	# (Baby Mode: nothing hurts - a pit still respawns you when you fall out)
+	if not (GameSettings.baby_mode and taken <= 0.0):
+		PopupText.spawn(body, "-" + str(snapped(taken, 0.1)), Color(1, 0.45, 0.4))
+	if body.hp <= 0 or (GameSettings.baby_mode and damage >= SaveManager.MAX_HP):
 		var level = owner if owner else get_tree().current_scene
 		if level.has_method("player_fell"):
 			level.player_fell()

@@ -199,6 +199,8 @@ func _input(event):
 func start_listening():
 	if listening or get_tree().get_first_node_in_group("player") == null:
 		return
+	if GameSettings.baby_mode:
+		return   # Baby Mode: verses aren't spoken in (baby_mode.gd)
 	if busy:
 		status.emit(tr("Still recognizing - wait a moment"))
 		return

@@ -414,6 +414,10 @@ func _input(event):
 		return
 	if cutscene_lock:
 		return
+	# Baby Mode (baby_mode.gd): no verse box, no typing - Enter and Tab do nothing
+	if GameSettings.baby_mode and (event.is_action_pressed("recite") or event.is_action_pressed("toggle_verse_box")):
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("recite") and not event.is_echo() and not verse_input.has_focus():
 		verse_input.grab_focus()
 		get_viewport().set_input_as_handled()
@@ -514,6 +518,9 @@ func _process_verse_scroll(delta):
 			_scroll_verses(dir * VERSE_SCROLL_SPEED * delta)
 
 func _on_verse_submitted(text):
+	if GameSettings.baby_mode:
+		_finish_typing()   # Baby Mode: verses aren't typed or spoken (baby_mode.gd)
+		return
 	var lower = text.to_lower().strip_edges()
 	
 	# --- Battles (see turn_manager.gd) ---
@@ -1013,7 +1020,10 @@ func _physics_process(delta):
 	if direction != 0.0 and ram_state == 0:
 		facing = sign(direction)
 	_process_ram(delta, in_battle or typing)
-	if ram_state == 1:
+	if bounce_left > 0.0:
+		bounce_left -= delta   # Baby Mode: bounced back off the idol (baby_bounce)
+		velocity.x = bounce_speed
+	elif ram_state == 1:
 		velocity.x = -facing * speed * ram_backup_speed          # backing up to take a run-up
 	elif ram_state == 2:
 		velocity.x = facing * speed * ram_speed_multiplier       # the dash
@@ -1097,6 +1107,18 @@ func _end_ram(hit: bool):
 func is_ramming() -> bool:
 	return ram_state == 2
 
+# Baby Mode (baby_mode.gd): a short bounce back after ramming the idol, so
+# every hit is a separate ram. dir = -1 (left) or 1 (right).
+var bounce_left = 0.0
+var bounce_speed = 0.0
+func baby_bounce(dir: float, strength := 380.0, time := 0.22):
+	if ram_state != 0:
+		_end_ram(false)
+	bounce_speed = dir * strength
+	bounce_left = time
+	if is_on_floor():
+		velocity.y = -220.0   # a little hop
+
 func _build_ram_bar():
 	ram_bar = ProgressBar.new()
 	ram_bar.name = "RamBar"
@@ -1119,6 +1141,7 @@ func _update_ram_bar():
 	ram_bar.value = clamp(ram_timer / ram_charge_time, 0.0, 1.0) if ram_state == 1 else 0.0
 
 func _process(delta):
+	_apply_baby_mode_ui()
 	_process_speaker_bob(delta)
 	_update_guard_shadow(delta)
 	_update_low_hp()
@@ -1556,7 +1579,10 @@ func set_hp(value):
 	SaveManager.player_hp = hp
 
 # Returns how much damage was actually taken (after guard).
+# Baby Mode: nothing hurts you (you can't lose; falling still respawns you).
 func take_damage(amount):
+	if GameSettings.baby_mode:
+		return 0.0
 	if guard_rounds_left > 0:
 		amount *= (1.0 - guard_reduction)
 	set_hp(hp - amount)
@@ -2174,3 +2200,21 @@ func _process_speaker_bob(_delta):
 		var body = get_node_or_null("CollisionShape2D")
 		var base_y = (body.position.y if body else 0.0) - speaker_height
 		speaker_icon.position.y = base_y + round(sin(Time.get_ticks_msec() / 160.0) * 3.0)
+
+
+# ---------------- Baby Mode (baby_mode.gd) ----------------
+# No verse box, verse list or typing while it's on; back as before when it's off.
+var _baby_ui = false
+func _apply_baby_mode_ui():
+	var on = GameSettings.baby_mode
+	if on == _baby_ui:
+		if on and is_instance_valid(verse_input) and verse_input.visible:
+			verse_input.visible = false   # (something showed it again)
+		return
+	_baby_ui = on
+	if is_instance_valid(verse_input):
+		if on and verse_input.has_focus():
+			close_typing()
+		verse_input.visible = not on
+	if on and verse_panel:
+		verse_panel.visible = false

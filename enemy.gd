@@ -474,10 +474,10 @@ func is_kind(kind: String) -> bool:
 # INSTANT_KILLS): no defense, no damage numbers. A golden copy of it flashes
 # and fades where it stood, with "Instant defeat!" above.
 var _instant = false   # (the golden flash replaces the death animation)
-func instant_defeat():
+func instant_defeat(popup := "Instant defeat!"):
 	if hp <= 0 or is_queued_for_deletion():
 		return
-	show_popup(tr("Instant defeat!"), Color(1, 0.85, 0.25))
+	show_popup(tr(popup), Color(1, 0.85, 0.25))
 	var level = get_parent()
 	for c in get_children():
 		if (c is Sprite2D or c is AnimatedSprite2D) and c.visible:

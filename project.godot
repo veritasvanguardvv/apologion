@@ -24,6 +24,7 @@ boot_splash/use_filter=false
 [audio]
 
 driver/enable_input=true
+general/text_to_speech=true
 input/transcribe/use_gpu=false
 
 [autoload]
@@ -39,6 +40,7 @@ Inventory="*res://inventory.gd"
 PhoneServer="*res://phone_server.gd"
 OnlineService="*res://online_service.gd"
 TouchControls="*res://touch_controls.gd"
+BabyMode="*res://baby_mode.gd"
 
 [display]
 

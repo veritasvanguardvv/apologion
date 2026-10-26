@@ -470,3 +470,7 @@ Zeal +%d%%,Zeal +%d%%,Celo +%d%%,Gorliwość +%d%%
 Zeal -%d%%,Zeal -%d%%,Celo -%d%%,Gorliwość -%d%%
 turn %d/%d,turn %d/%d,turno %d/%d,tura %d/%d
 %s attacks %s... Dodged!,%s attacks %s... Dodged!,¡%s ataca a %s... Esquivado!,%s atakuje: %s... Unik!
+"Baby Mode (ram enemies, verses read aloud)","Baby Mode (ram enemies, verses read aloud)","Modo bebé (embiste enemigos, versículos en voz alta)","Tryb malucha (taranuj wrogów, wersety na głos)"
+Rammed!,Rammed!,¡Embestido!,Staranowany!
+%d more!,%d more!,¡%d más!,Jeszcze %d!
+Run into SinDeath and the idol!,Run into SinDeath and the idol!,¡Choca contra SinDeath y el ídolo!,Wpadnij na SinDeath i bożka!

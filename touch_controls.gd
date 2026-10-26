@@ -212,7 +212,9 @@ func _update_visibility():
 		buttons["Dig"].visible = false
 	# the phone app types / dictates straight into the verse box
 	for n in ["Type", "Mic"]:
-		buttons[n].visible = not tap_to_type()
+		buttons[n].visible = not tap_to_type() and not GameSettings.baby_mode
+	# Baby Mode (baby_mode.gd): no verses to pick or type - you ram enemies
+	buttons["Verses"].visible = not GameSettings.baby_mode
 	# bigger battle buttons for fingers
 	var lift = {"skip_button": 20, "target_button": 40, "switch_button": 60}
 	for n in lift:
