@@ -35,6 +35,20 @@ const VERSES = [
 	["1 Timothy 6:10", "greed"], ["Exodus 15:26", "heal"],
 ]
 
+# 7 FREE Greed scrolls out in the open right after the start (no digging
+# needed), between the hill and the first Greedog. Pure Greed sheet verses,
+# different from the chamber's, at walking height (no jump needed).
+# [verse, offset from the hill (its feet)]
+const FREE_VERSES = [
+	["Matthew 6:24b", Vector2(180, -60)],
+	["Hebrews 13:5a", Vector2(340, -60)],
+	["Proverbs 11:28", Vector2(500, -60)],
+	["Luke 12:15a", Vector2(660, -60)],
+	["Proverbs 23:4", Vector2(820, -60)],
+	["Luke 12:34a", Vector2(980, -60)],
+	["Proverbs 15:27", Vector2(1140, -60)],
+]
+
 @export var chamber_origin = Vector2(20000, -3000)   # the chamber floor (feet), centre
 @export var dig_time = 1.6                           # seconds (the 11 frames play twice)
 const ROOM_W = 1152.0
@@ -50,7 +64,9 @@ var chamber: Node2D
 var label: Label
 var room_index = -1
 var dig_sprite: Sprite2D
-var scrolls_left = 0
+var scrolls_left = 0     # chamber scrolls not picked up yet
+var free_scrolls: Node2D
+var free_scrolls_left = 0   # the free scrolls above ground
 
 
 func _ready():
@@ -63,6 +79,7 @@ func _ready():
 	_build_mound()
 	_build_hole()
 	_build_chamber()
+	_build_free_scrolls()
 	_show_state()
 	call_deferred("_late_setup")
 
@@ -251,7 +268,19 @@ func _build_chamber():
 	_sprite(chamber, preload("res://Greed/TX Dungeon Props Animation.png"), Rect2(31, 548, 34, 28), Vector2(420, 0), 3.0)
 	# the 8 scrolls
 	for i in VERSES.size():
-		_build_scroll(i, Vector2(-130 + i * 80, -60 - (i % 2) * 70))
+		_build_scroll(chamber, "Scroll%d" % (i + 1), VERSES[i][0], VERSES[i][1], Vector2(-130 + i * 80, -60 - (i % 2) * 70))
+
+
+# The 7 free Greed scrolls above ground (same scrolls, saved the same way)
+func _build_free_scrolls():
+	free_scrolls = Node2D.new()
+	free_scrolls.name = "FreeScrolls"
+	add_child(free_scrolls)
+	for i in FREE_VERSES.size():
+		var s = _build_scroll(free_scrolls, "FreeScroll%d" % (i + 1), FREE_VERSES[i][0], "greed", FREE_VERSES[i][1])
+		if s:
+			s.set_meta("free", true)
+			free_scrolls_left += 1
 
 
 func _area(parent: Node, n: String, pos: Vector2, size: Vector2) -> Area2D:
@@ -268,28 +297,31 @@ func _area(parent: Node, n: String, pos: Vector2, size: Vector2) -> Area2D:
 	return a
 
 
-func _build_scroll(i: int, pos: Vector2):
+# A verse scroll (walk into it to pick it up). Returns it (null if it was
+# already collected in this save). Chamber scrolls count in scrolls_left.
+func _build_scroll(parent: Node, n: String, ref: String, kind: String, pos: Vector2) -> Area2D:
 	var s = Area2D.new()
-	s.name = "Scroll%d" % (i + 1)
-	s.set_meta("verse", VERSES[i][0])
-	s.set_meta("kind", VERSES[i][1])
+	s.name = n
+	s.set_meta("verse", ref)
+	s.set_meta("kind", kind)
 	s.position = pos
 	s.monitorable = false
-	chamber.add_child(s)
+	parent.add_child(s)
 	s.owner = _level()
 	if SaveManager.is_pickup_collected(s):
 		s.queue_free()
-		return
-	scrolls_left += 1
+		return null
+	if parent == chamber:
+		scrolls_left += 1
 	var cs = CollisionShape2D.new()
 	var cc = CircleShape2D.new()
 	cc.radius = 34
 	cs.shape = cc
 	s.add_child(cs)
-	_glow(s, Vector2.ZERO, 70, Color(0.5, 1.0, 0.55, 0.45) if VERSES[i][1] == "heal" else Color(1.0, 0.45, 0.3, 0.45))
+	_glow(s, Vector2.ZERO, 70, Color(0.5, 1.0, 0.55, 0.45) if kind == "heal" else Color(1.0, 0.45, 0.3, 0.45))
 	var icon = Sprite2D.new()
 	icon.name = "Icon"
-	icon.texture = SCROLL_HEAL if VERSES[i][1] == "heal" else SCROLL_GREED
+	icon.texture = SCROLL_HEAL if kind == "heal" else SCROLL_GREED
 	icon.scale = Vector2.ONE * (48.0 / max(icon.texture.get_width(), icon.texture.get_height()))
 	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	s.add_child(icon)
@@ -297,6 +329,7 @@ func _build_scroll(i: int, pos: Vector2):
 	t.tween_property(icon, "position:y", -6.0, 1.0).set_trans(Tween.TRANS_SINE)
 	t.tween_property(icon, "position:y", 6.0, 1.0).set_trans(Tween.TRANS_SINE)
 	s.body_entered.connect(func(b): _collect(s, b))
+	return s
 
 
 func _collect(s: Area2D, body):
@@ -319,7 +352,10 @@ func _collect(s: Area2D, body):
 	p.play()
 	p.finished.connect(p.queue_free)
 	SaveManager.mark_pickup_collected(s)
-	scrolls_left -= 1
+	if s.get_meta("free", false):
+		free_scrolls_left -= 1
+	else:
+		scrolls_left -= 1
 	s.queue_free()
 
 
