@@ -23,7 +23,7 @@ const ACTIONS = [
 	["move_right", "Move right", KEY_RIGHT],
 	["jump", "Jump", KEY_SPACE],
 	["interact", "Talk / enter door", KEY_UP],
-	["ram", "Ram (hold to charge)", KEY_X],
+	["ram", "Ram (tap; hold to charge)", KEY_X],
 	["recite", "Recite (type a verse)", KEY_ENTER],
 	["push_to_talk", "Voice (hold and speak)", KEY_SHIFT],
 	["toggle_verse_box", "Verse box", KEY_TAB],

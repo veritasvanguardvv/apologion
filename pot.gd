@@ -4,8 +4,8 @@ extends Area2D
 #   or jump down onto it.
 # It breaks (cracked pot frame, clay shards, the barrier-smash sound) and
 # drops something that floats to you:
-#   - Baby Mode: a healing item - heals HEAL_PCT of your HP and reads a
-#     kid-safe healing verse out loud (baby_mode.gd)
+#   - Baby Mode: a healing item - heals HEAL_PCT of your HP (a chime and the
+#     "+N" heal number; no verse is read - only rams and Pastor read verses)
 #   - normal game: a Bible scroll that teaches a verse you don't know yet
 #     (a verse of the level's sin or a healing verse, like the dig chamber's
 #     scrolls); no new verse left -> a healing item
@@ -220,11 +220,7 @@ func _collect(body):
 		PopupText.spawn(body, ("+ " if was_new else "") + VerseManager.ref_text(drop_verse),
 			Color(0.6, 1.0, 0.6) if drop.get_meta("kind", "") == "heal" else Color(1.0, 0.75, 0.4))
 	else:
-		body.heal(body.max_hp * HEAL_PCT / 100.0)
-		if GameSettings.baby_mode:
-			var v = BabyMode.heal_verse(body)
-			if not v.is_empty():
-				BabyMode.say_heal_verse(v, body)
+		body.heal(body.max_hp * HEAL_PCT / 100.0)   # the "+N" heal number (and the chime below) - no verse
 	SaveManager.mark_pickup_collected(self)   # stays smashed (once you have what was in it)
 	_play(CHIME)
 	collected.emit(drop_kind, drop_verse)

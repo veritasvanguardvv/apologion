@@ -496,12 +496,16 @@ func player_needs_heal() -> bool:
 # most: a random one among the top heals.
 # (extra: an optional more-filter, e.g. Baby Mode's kid-safe check)
 func pick_player_heal_verse(extra := Callable()):
-	var sins = battle_theme_sins()
-	var heals = player.all_verses.filter(func(v): return _heal_amount(v) > 0 and _theme_ok_for_heal(v, sins) and (not extra.is_valid() or extra.call(v)))
+	var heals = player_heal_verses(extra)
 	if heals.is_empty():
 		return null
 	heals.sort_custom(func(a, b): return _heal_amount(a) > _heal_amount(b))
 	return heals.slice(0, max(5, heals.size() / 4)).pick_random()
+
+# All the healing verses he may read to heal the player (on theme)
+func player_heal_verses(extra := Callable()) -> Array:
+	var sins = battle_theme_sins()
+	return player.all_verses.filter(func(v): return _heal_amount(v) > 0 and _theme_ok_for_heal(v, sins) and (not extra.is_valid() or extra.call(v)))
 
 func _heal_amount(v) -> float:
 	if v.get("set", "") == "sheet":

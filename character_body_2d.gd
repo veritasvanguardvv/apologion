@@ -16,8 +16,20 @@ var gravity = 980
 var carry_max_jump_height = 0.0
 var carry_speed_scale = 1.0
 # Top sideways speed in the air while carrying something heavy (0 = no limit).
-# It holds for every way of moving: walking, the ram dash, Zeal, speed boosts.
+# It holds for every way of moving: walking, the ram dash, Zeal. A speed boost
+# (feather) raises it by the same factor - except where the level sets
+# speed_boost_air_capped (Greed: around the jump over the water, so the gold
+# puzzle there stays the same).
 var carry_air_speed = 0.0
+# SPEED BOOST (the Greed feathers, greed_pickup.gd): walking speed x speed_boost
+# for speed_boost_left seconds. Its own multiplier - not a change to `speed` -
+# so Zeal (which saves and restores `speed`) can't wipe it or make it stick.
+# Another boost while one is on restarts the countdown (doesn't stack).
+# Shows "Speed +50%  7s" in the status row.
+var speed_boost = 1.0
+var speed_boost_left = 0.0
+var speed_boost_air_capped = false
+var speed_label: Label
 # "en", "es" or "pl". The language lives in SaveManager (set with the main
 # menu's English / Español / Polski buttons); this just reads it so verse checks match.
 var language: String:
@@ -140,15 +152,24 @@ signal faith_maxed                   # emitted when Faith newly reaches the max
 # default, remappable in Settings > Controls) while standing on the ground.
 # You back up a little while it charges; when the bar is full you dash
 # forward and break thorn barriers (greed_barrier.gd) you run into.
-# Letting go before it's full cancels. Jump still works while charging/dashing.
+# Letting go before it's full (a quick tap of X / the Ram button) does a
+# TAP RAM right away: a shorter, slower dash at tap_ram_power (half power: it
+# still breaks pots, thorns, blocks - anything a full ram breaks; in Baby Mode
+# it counts as a full hit). After a tap ram there's a short tap_ram_cooldown so
+# tapping fast can't beat the full ram. Jump still works while charging/dashing.
 @export_group("Ram")
 @export var ram_charge_time = 0.7     # seconds to hold before the dash
 @export var ram_dash_time = 0.7       # how long the dash lasts at most
 @export var ram_speed_multiplier = 2.2
 @export var ram_backup_speed = 0.2    # backing up while charging (x walking speed)
+@export var tap_ram_power = 0.5       # a tap ram: half as long, and 1 + (2.2-1) * 0.5 = 1.6x speed
+@export var tap_ram_cooldown = 0.5    # seconds after a tap ram before the next ram can start
 @export_group("")
 var ram_state = 0                     # 0 = nothing, 1 = charging, 2 = dashing
 var ram_timer = 0.0
+var ram_power = 1.0                   # the dash going on: 1 = full ram, tap_ram_power = tap ram
+var ram_cooldown_left = 0.0
+var _ram_tapped = false               # Ram was pressed since the last physics frame
 var facing = 1.0                      # 1 = right, -1 = left (last walking direction)
 var ram_bar: ProgressBar
 var ram_needs_release = false         # after a dash, let go of the key before charging again
@@ -414,6 +435,9 @@ func _input(event):
 		return
 	if cutscene_lock:
 		return
+	# (a tap of Ram too quick for any physics frame to see it held: still a tap ram)
+	if event.is_action_pressed("ram") and not event.is_echo():
+		_ram_tapped = true
 	# Baby Mode (baby_mode.gd): no verse box, no typing - Enter and Tab do nothing
 	if GameSettings.baby_mode and (event.is_action_pressed("recite") or event.is_action_pressed("toggle_verse_box")):
 		get_viewport().set_input_as_handled()
@@ -970,6 +994,29 @@ func _zeal_boost():
 	jump_velocity = old_jump
 	speed = old_speed
 
+# A speed boost (feather): walking x mult for secs seconds (restarts, doesn't stack)
+func add_speed_boost(mult: float, secs: float):
+	speed_boost = max(mult, 1.0)
+	speed_boost_left = secs
+	_update_speed_label()
+
+func _tick_speed_boost(delta):
+	if speed_boost_left <= 0.0:
+		return
+	var shown = ceili(speed_boost_left)
+	speed_boost_left -= delta
+	if speed_boost_left <= 0.0:
+		speed_boost_left = 0.0
+		speed_boost = 1.0
+		_update_speed_label()
+	elif ceili(speed_boost_left) != shown:
+		_update_speed_label()
+
+func _update_speed_label():
+	if speed_label:
+		speed_label.visible = speed_boost_left > 0.0
+		speed_label.text = tr("Speed +%d%%  %ds") % [roundi((speed_boost - 1.0) * 100.0), ceili(speed_boost_left)]
+
 func _update_zeal_label():
 	var timer_label = get_parent().get_node_or_null("CanvasLayer/TimerLabel") if get_parent() else null
 	if timer_label:
@@ -1026,14 +1073,16 @@ func _physics_process(delta):
 	elif ram_state == 1:
 		velocity.x = -facing * speed * ram_backup_speed          # backing up to take a run-up
 	elif ram_state == 2:
-		velocity.x = facing * speed * ram_speed_multiplier       # the dash
+		velocity.x = facing * speed * (1.0 + (ram_speed_multiplier - 1.0) * ram_power)   # the dash (tap ram: slower)
 	else:
-		velocity.x = direction * speed * carry_speed_scale if direction else move_toward(velocity.x, 0, speed)
-	if carry_air_speed > 0.0 and (velocity.y < 0.0 or not is_on_floor()):
-		velocity.x = clamp(velocity.x, -carry_air_speed, carry_air_speed)
+		velocity.x = direction * speed * carry_speed_scale * speed_boost if direction else move_toward(velocity.x, 0, speed)
+	var air_cap = carry_air_speed * (1.0 if speed_boost_air_capped else speed_boost)
+	if air_cap > 0.0 and (velocity.y < 0.0 or not is_on_floor()):
+		velocity.x = clamp(velocity.x, -air_cap, air_cap)
 	move_and_slide()
-	if carry_air_speed > 0.0 and not is_on_floor():
-		velocity.x = clamp(velocity.x, -carry_air_speed, carry_air_speed)
+	if air_cap > 0.0 and not is_on_floor():
+		velocity.x = clamp(velocity.x, -air_cap, air_cap)
+	_tick_speed_boost(delta)
 	if ram_state == 2:
 		_check_ram_hits()
 
@@ -1051,30 +1100,48 @@ func current_jump_velocity() -> float:
 
 func _process_ram(delta, blocked: bool):
 	if blocked:
+		_ram_tapped = false
 		if ram_state != 0:
 			_end_ram(false)
 		return
+	if ram_cooldown_left > 0.0:
+		ram_cooldown_left -= delta
+	var tapped = _ram_tapped
+	_ram_tapped = false
 	match ram_state:
 		0:
-			if ram_needs_release:
+			if ram_needs_release and not tapped:
 				ram_needs_release = Input.is_action_pressed("ram")
-			elif Input.is_action_pressed("ram") and is_on_floor():
+			elif (Input.is_action_pressed("ram") or tapped) and is_on_floor() and ram_cooldown_left <= 0.0:
+				ram_needs_release = false
 				ram_state = 1
 				ram_timer = 0.0
+				if not Input.is_action_pressed("ram"):
+					_start_dash(tap_ram_power)   # pressed and let go already
 		1:
 			if not Input.is_action_pressed("ram"):
-				_end_ram(false)   # let go too early
+				_start_dash(tap_ram_power)   # let go early (a tap): a tap ram right away
 				return
 			ram_timer += delta
 			if ram_timer >= ram_charge_time:
-				ram_state = 2
-				ram_timer = 0.0
-				modulate = Color(1.0, 0.85, 0.45)   # golden while dashing
+				_start_dash(1.0)
 		2:
 			ram_timer += delta
-			if ram_timer >= ram_dash_time:
+			if ram_timer >= ram_dash_time * ram_power:
 				_end_ram(false)
 	_update_ram_bar()
+
+func _start_dash(power: float):
+	ram_state = 2
+	ram_timer = 0.0
+	ram_power = power
+	# golden while dashing (a paler gold for a tap ram)
+	modulate = Color(1.0, 0.85, 0.45) if power >= 1.0 else Color(1.0, 0.93, 0.7)
+	_update_ram_bar()
+
+# A tap ram (not a full one) is going on
+func is_tap_ram() -> bool:
+	return ram_state == 2 and ram_power < 1.0
 
 # After moving: did the dash run into something that can be rammed?
 func _check_ram_hits():
@@ -1099,6 +1166,8 @@ func _end_ram(hit: bool):
 		ram_needs_release = true
 		if hit:
 			velocity.x = -facing * 150.0   # small bounce back
+		if ram_power < 1.0:
+			ram_cooldown_left = tap_ram_cooldown   # (no tap-spamming)
 	ram_state = 0
 	ram_timer = 0.0
 	modulate = Color.WHITE
@@ -1881,6 +1950,12 @@ func _build_status_labels():
 	zeal_label.add_theme_constant_override("outline_size", 4)
 	zeal_label.visible = false
 	box.add_child(zeal_label)
+	speed_label = Label.new()
+	speed_label.add_theme_color_override("font_color", Color(0.5, 0.9, 1.0))
+	speed_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	speed_label.add_theme_constant_override("outline_size", 4)
+	speed_label.visible = false
+	box.add_child(speed_label)
 	var status_layer = CanvasLayer.new()
 	status_layer.name = "StatusLayer"
 	status_layer.layer = 5

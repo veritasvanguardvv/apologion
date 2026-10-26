@@ -13,7 +13,8 @@ extends Node2D
 #     1-tile steps (130.6 px), so every step of the hill can still be climbed
 #     with the gold - it just feels heavier. In the air you also can't go
 #     sideways faster than carry_air_speed (340 instead of 400 - also when
-#     dashing (ram), with Zeal or a speed boost), so the jump from the hill top
+#     dashing (ram) or with Zeal; a feather's speed boost raises the cap by
+#     its factor, but not in water_jump_zone), so the jump from the hill top
 #     to the tree platform over the water (TileMaps/TreePlatform_Tilemap: 2
 #     tiles higher, 437 px gap) falls ~45 px short: you can't cross the water
 #     with gold. Without it the same jump clears with ~60 px to spare.
@@ -36,6 +37,10 @@ const PopupText = preload("res://popup_text.gd")
 @export var carry_jump_height = 172.0  # highest jump with gold (pixels): feather block needs 156.8, hill steps 130.6, normal jump 201
 @export var carry_speed_scale = 0.95   # walking speed with gold
 @export var carry_air_speed = 340.0    # top sideways speed in the air with gold (px/s; normal 400): with it the jump from the hill to the tree platform falls short
+# Around the hill top and the tree platform over the water: a speed boost
+# (feather) doesn't raise the gold's air speed cap here, so the water still
+# can't be crossed with gold even right after a feather.
+@export var water_jump_zone = Rect2(4550, -1500, 1650, 1100)
 @export var checkpoint_feet = Vector2(5110, -855)   # where you respawn: on top of the hill (feet on the grass)
 @export var fall_margin = 500.0        # this far below the room's bottom edge = fell into a pit
 @export var use_camera_limits = true
@@ -121,6 +126,9 @@ func _process(_delta):
 	var player = _player()
 	if player == null or restarting or rooms.is_empty():
 		return
+	# (the body's middle - the player node's own origin is far off to the side)
+	var cs = player.get_node_or_null("CollisionShape2D")
+	player.speed_boost_air_capped = water_jump_zone.has_point(cs.global_position if cs else player.global_position)
 	var r = rooms[current_room].get("rect")
 	if r is Rect2 and player.global_position.y > r.end.y + fall_margin:
 		player_fell()

@@ -14,7 +14,16 @@ extends Node
 #     player's speech bubble
 #   - when you're at half health or less, the party member (Pastor...) reads a
 #     kid-safe healing verse out loud and heals you (PARTY_HEAL_PCT, then a
-#     HEAL_COOLDOWN pause). Pots (pot.gd) drop healing items that read one too.
+#     HEAL_COOLDOWN pause). Pots (pot.gd) drop healing items: a chime and the
+#     "+N" heal number, no verse.
+#   - ONE VOICE AT A TIME (say_line): nothing is read over something that's
+#     still being read. A line that comes while one is being read waits in a
+#     single slot (a newer ram verse replaces a waiting ram verse; a healing
+#     verse beats a waiting ram verse) and is dropped if it waited too long -
+#     so there's never a backlog. The speech bubble only shows a verse when it
+#     starts being read. Only the idol's last ram cuts in.
+#   - only SHORT verses: at most MAX_WORDS words in the game's language
+#     (short_only; a kind with none left uses its shortest ones)
 #   - you can't lose: other damage doesn't hurt you (character_body_2d.gd),
 #     enemies can't take your last HP and falling puts you back
 #
@@ -42,6 +51,11 @@ const PARTY_HEAL_BELOW = 0.5   # the party member heals you at this much HP or l
 const PARTY_HEAL_PCT = 40.0    # ... this % of your max HP
 const HEAL_COOLDOWN = 8.0      # seconds before the party member heals again
 const HEAL_DELAY = 1.2         # seconds after the hit (the ram's verse starts first)
+const MAX_WORDS = 15           # longest verse (words, in the game's language) read in Baby Mode
+const SHORTEST_FALLBACK = 3    # no verse short enough: the 3 shortest
+const WORDS_PER_SEC = 2.4      # speaking speed estimate (rate 0.95) for "still speaking"
+const RAM_LINE_WAIT = 2.5      # seconds a waiting ram verse may wait before it's dropped
+const HEAL_LINE_WAIT = 12.0    # ... a waiting healing verse
 const HIT_SOUND = "res://Greed/SUCCESS PICKUP Collect Chime 01.wav"
 const HEAL_SOUND = "res://Greed/SUCCESS PICKUP Collect Chime 05.wav"
 
@@ -69,7 +83,10 @@ var last_heal_by = ""
 var last_heal_spoken = ""   # the text sent to text-to-speech for the last healing verse
 var _heal_ready_at = 0      # msec: the party member may heal again
 var _heal_pending = false
-var _protect_speech_until = 0   # msec: a healing verse is being read (rams queue after it)
+var _busy_until = 0         # msec: the line being read should be done by then (estimate)
+var _waiting = {}           # the one line waiting to be read ({} = none)
+var lines_started = []      # tests: [{text, start, end (msec)}] (last 20)
+var lines_dropped = 0       # tests: lines never read (something else was being read)
 
 
 func _ready():
@@ -151,8 +168,10 @@ func ram(enemy, player = null) -> bool:
 	_cooldown = HIT_COOLDOWN
 	var verse = pick_verse(enemy)
 	_play_hit_sound()
+	# the idol's last ram cuts in (the big moment); others wait their turn
+	var final_idol_hit = is_boss_idol(enemy) and (enemy.hp if enemy.max_hp == IDOL_HITS else IDOL_HITS) <= 1
 	if not verse.is_empty():
-		say_verse(verse, player)
+		say_verse(verse, player, 2 if final_idol_hit else 0)
 	var defeated = false
 	if is_boss_idol(enemy):
 		if enemy.max_hp != IDOL_HITS:
@@ -244,15 +263,20 @@ func party_heal(player, m = null) -> Dictionary:
 		m = healer()
 	if m == null or not is_instance_valid(player):
 		return {}
-	var v = m.pick_player_heal_verse(func(x): return kid_safe(x))
+	var heals = m.player_heal_verses(func(x): return kid_safe(x)) if m.has_method("player_heal_verses") else []
+	heals = short_only(heals, SaveManager.language)
+	var v = null if heals.is_empty() else heals.pick_random()
 	if v == null:
 		return {}
 	player.heal(player.max_hp * PARTY_HEAL_PCT / 100.0)
 	var text = player.verse_body(v)
 	text = text.substr(0, 1).to_upper() + text.substr(1)
-	if m.has_method("_say"):
-		m._say(VerseManager.ref_text(v.ref), text)
-	speak_after(VerseManager.ref_text(spoken_ref(str(v.ref))) + ". " + text, SaveManager.language, v)
+	var title = VerseManager.ref_text(v.ref)
+	say_line(VerseManager.ref_text(spoken_ref(str(v.ref))) + ". " + text, SaveManager.language, v,
+		func(_secs):
+			if is_instance_valid(m) and m.has_method("_say"):
+				m._say(title, text)
+			last_heal_spoken = last_spoken, 1)
 	_heal_ready_at = Time.get_ticks_msec() + int(HEAL_COOLDOWN * 1000)
 	party_heals += 1
 	last_heal_verse = v
@@ -260,29 +284,6 @@ func party_heal(player, m = null) -> Dictionary:
 	_play_heal_sound()
 	print("Baby Mode: ", last_heal_by, " heals you with ", v.ref)
 	return v
-
-
-# A kid-safe healing verse that fits the level (for pots' healing items)
-func heal_verse(player) -> Dictionary:
-	if not is_instance_valid(player) or not ("all_verses" in player):
-		return {}
-	var PM = preload("res://party_member.gd")
-	var sin = player.level_sin() if player.has_method("level_sin") else ""
-	var sins = [sin] if sin != "" else []
-	var pool = player.all_verses.filter(func(v):
-		var heal = float(v.get("heal", 0)) if (v.get("set", "") == "sheet" or v.get("type", "") == "heal") else 0.0
-		return heal > 0 and kid_safe(v) and PM._theme_ok_for_heal(v, sins))
-	return {} if pool.is_empty() else pool.pick_random()
-
-
-# Reads a healing verse (a pot's healing item): the player's bubble + aloud, queued
-func say_heal_verse(v: Dictionary, player):
-	var text = player.verse_body(v) if player.has_method("verse_body") else verse_text(v, SaveManager.language)
-	text = text.substr(0, 1).to_upper() + text.substr(1)
-	if player.get("bubble") != null:
-		player.bubble.say(VerseManager.ref_text(str(v.ref)), text, false, clamp(2.5 + text.length() * 0.06, 3.0, 7.0))
-	speak_after(VerseManager.ref_text(spoken_ref(str(v.ref))) + ". " + text, SaveManager.language, v)
-	last_heal_verse = v
 
 
 var _heal_sfx: AudioStreamPlayer
@@ -413,9 +414,39 @@ func enemy_kind(enemy) -> String:
 	return ""
 
 
+# Words in a verse's text in this language (the English text if it has none)
+func word_count(v: Dictionary, lang: String) -> int:
+	return count_words(verse_text(v, lang))
+
+static func count_words(text: String) -> int:
+	var n = 0
+	for w in text.split(" ", false):
+		for ch in w:
+			if ch.to_lower() != ch.to_upper() or ch.is_valid_int():
+				n += 1
+				break
+	return n
+
+# Only the verses of at most MAX_WORDS words (in lang); none -> the shortest ones
+func short_only(pool: Array, lang: String) -> Array:
+	var out = pool.filter(func(v): return word_count(v, lang) <= MAX_WORDS)
+	if out.is_empty() and not pool.is_empty():
+		var sorted = pool.duplicate()
+		sorted.sort_custom(func(a, b): return word_count(a, lang) < word_count(b, lang))
+		out = sorted.slice(0, SHORTEST_FALLBACK)
+	return out
+
+# The verses a ram on this kind reads (short ones, in the game's language)
 func verse_pool(kind: String) -> Array:
-	if _pools.has(kind):
-		return _pools[kind]
+	var lang = SaveManager.language
+	var key = kind + "|" + lang
+	if _pools.has(key):
+		return _pools[key]
+	var pool = short_only(_full_pool(kind), lang)
+	_pools[key] = pool
+	return pool
+
+func _full_pool(kind: String) -> Array:
 	var pool = []
 	for v in verses:
 		if not v is Dictionary or not kid_safe(v):
@@ -430,8 +461,7 @@ func verse_pool(kind: String) -> Array:
 		elif float(v.get("all_damage", 0)) > 0.0 and main_sins(v).is_empty():
 			pool.append(v)   # universal
 	if pool.is_empty() and kind != "":
-		pool = verse_pool("")
-	_pools[kind] = pool
+		pool = _full_pool("")
 	return pool
 
 
@@ -465,15 +495,75 @@ static func spoken_ref(ref: String) -> String:
 	return r
 
 
-# Shows the verse in the player's speech bubble and reads it out loud
-func say_verse(v: Dictionary, player = null):
+# Reads the verse out loud and shows it in the player's speech bubble (when it
+# really starts being read). prio: 0 = a ram, 2 = cut in (the idol's last ram)
+func say_verse(v: Dictionary, player = null, prio := 0):
 	var lang = SaveManager.language
 	var text = verse_text(v, lang)
 	var ref = VerseManager.ref_text(str(v.ref))
-	if is_instance_valid(player) and player.get("bubble") != null:
-		var time = clamp(2.5 + text.length() * 0.06, 3.0, 7.0)
-		player.bubble.say(ref, text, false, time)
-	speak(VerseManager.ref_text(spoken_ref(str(v.ref))) + ". " + text, lang, v)
+	say_line(VerseManager.ref_text(spoken_ref(str(v.ref))) + ". " + text, lang, v,
+		func(secs):
+			if is_instance_valid(player) and player.get("bubble") != null:
+				player.bubble.say(ref, text, false, clamp(secs + 0.5, 3.0, 9.0)), prio)
+
+
+# ---------------- One voice at a time ----------------
+# say_line(text, ...): read it now if nothing is being read; else it waits in
+# the one waiting slot (prio 0 = ram verse, 1 = healing verse, 2 = cut in now).
+# A waiting line is replaced by a newer one of the same or higher prio, and
+# dropped after RAM_LINE_WAIT / HEAL_LINE_WAIT. show(secs) is called when the
+# line starts (the speech bubble), secs = how long it should take to read.
+# "Being read" = the estimate from the word count hasn't run out, or the
+# device's TTS still says it's speaking (DisplayServer.tts_is_speaking - on
+# iOS AVSpeechSynthesizer.isSpeaking), but never more than 6 s past the estimate.
+
+func speech_busy() -> bool:
+	var now = Time.get_ticks_msec()
+	if now < _busy_until:
+		return true
+	return spoke and tts_available() and DisplayServer.tts_is_speaking() and now < _busy_until + 6000
+
+func speech_seconds(text: String) -> float:
+	return 0.6 + count_words(text) / WORDS_PER_SEC
+
+func say_line(text: String, lang: String, v := {}, show := Callable(), prio := 0) -> bool:
+	var line = {"text": text, "lang": lang, "v": v, "show": show, "prio": prio, "at": Time.get_ticks_msec()}
+	if prio >= 2 or (not speech_busy() and _waiting.is_empty()):
+		if not _waiting.is_empty() and prio >= 2:
+			lines_dropped += 1
+		_waiting = {}
+		_start_line(line)
+		return true
+	if _waiting.is_empty() or prio >= int(_waiting.prio):
+		if not _waiting.is_empty():
+			lines_dropped += 1
+		_waiting = line
+	else:
+		lines_dropped += 1
+	return false
+
+func _process(_delta):
+	if _waiting.is_empty() or speech_busy():
+		return
+	var line = _waiting
+	_waiting = {}
+	var max_wait = HEAL_LINE_WAIT if int(line.prio) >= 1 else RAM_LINE_WAIT
+	if Time.get_ticks_msec() - int(line.at) > max_wait * 1000.0 or not is_on():
+		lines_dropped += 1
+		return
+	_start_line(line)
+
+func _start_line(line: Dictionary):
+	speak(line.text, line.lang, line.v, true)   # (nothing should be playing: cut off any leftover)
+	var secs = speech_seconds(last_spoken)
+	var now = Time.get_ticks_msec()
+	_busy_until = now + int(secs * 1000.0)
+	lines_started.append({"text": last_spoken, "start": now, "end": _busy_until})
+	if lines_started.size() > 20:
+		lines_started.pop_front()
+	var show: Callable = line.show
+	if show.is_valid():
+		show.call(secs)
 
 
 # ---------------- Text-to-speech ----------------
@@ -517,22 +607,13 @@ func speak(text: String, lang: String, v := {}, interrupt := true) -> bool:
 			return false
 		voice = str(all[0].get("id", ""))
 	var volume = int(round(clamp(GameSettings.sfx_volume, 0.0, 1.0) * 100.0))
-	# (a ram's verse interrupts the last one - but not a healing verse being read)
-	if Time.get_ticks_msec() < _protect_speech_until:
-		interrupt = false
 	DisplayServer.tts_speak(text, voice, volume, 1.0, 0.95, 0, interrupt)
 	spoke = true
 	return true
 
 
-# Queued after what's being read now (healing verses); rams don't cut it off
-func speak_after(text: String, lang: String, v := {}) -> bool:
-	var ok = speak(text, lang, v, false)
-	_protect_speech_until = Time.get_ticks_msec() + int((4.0 + text.length() * 0.075) * 1000.0)   # (+ the ram's verse before it)
-	last_heal_spoken = last_spoken
-	return ok
-
-
 func stop_speaking():
+	_waiting = {}
+	_busy_until = 0
 	if tts_available():
 		DisplayServer.tts_stop()

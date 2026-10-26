@@ -98,8 +98,9 @@ func _speed_buff(body):
 	var mult = value1 if value1 > 0 else 1.5
 	var secs = value2 if value2 > 0 else 10.0
 	PopupText.spawn(body, tr("Speed up!"), Color(0.5, 0.9, 1.0))
-	body.speed *= mult
-	var timer = body.get_tree().create_timer(secs)
-	timer.timeout.connect(func():
-		if is_instance_valid(body):
-			body.speed /= mult)
+	# The player's own boost multiplier (character_body_2d.gd add_speed_boost).
+	# (It used to multiply body.speed and divide it back on a timer: Zeal saves
+	# and restores speed, so the two could wipe each other out - and with gold
+	# the air speed cap hid the boost.)
+	if body.has_method("add_speed_boost"):
+		body.add_speed_boost(mult, secs)
