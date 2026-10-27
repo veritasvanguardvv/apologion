@@ -57,6 +57,9 @@ func _ready():
 	_add("Verses", "toggle_verse_box", "Verses", Vector2(R - 70, 164), 60, false)
 	_add("Type", "recite", "Type", Vector2(R - 70, 232), 60, false)   # (hidden in the phone app)
 	_add("Mic", "push_to_talk", "Mic", Vector2(R - 140, 232), 60, false)
+	for n in ["Jump", "Ram", "Dig"]:
+		var b = buttons[n]
+		_normal_style[n] = [b.position, b.texture_normal, b.texture_pressed, b.shape.radius]
 	GameSettings.touch_controls_changed.connect(func(_on): _update_visibility())
 	_update_visibility()
 
@@ -215,6 +218,7 @@ func _update_visibility():
 		buttons[n].visible = not tap_to_type() and not GameSettings.baby_mode
 	# Baby Mode (baby_mode.gd): no verses to pick or type - you ram enemies
 	buttons["Verses"].visible = not GameSettings.baby_mode
+	_apply_baby_style(GameSettings.baby_mode)
 	# bigger battle buttons for fingers
 	var lift = {"skip_button": 20, "target_button": 40, "switch_button": 60}
 	for n in lift:
@@ -224,6 +228,101 @@ func _update_visibility():
 			btn.offset_top -= lift[n]
 			btn.offset_bottom = btn.offset_top + 56
 	_place_right_column()
+
+
+# Baby Mode: no words to read - Ram is a big red ball and Jump a big blue
+# arrow pointing up (on a pale blue disc: the round hit area is exactly the
+# disc you see). Both bigger, still clear of the joystick (bottom-left) and
+# the edges; Dig moves up out of their way. Normal mode gets its own back.
+const BABY_SIZE = 150
+var _normal_style = {}   # name -> [position, texture_normal, texture_pressed, radius]
+var _baby_style_on = false
+
+func _apply_baby_style(on: bool):
+	if on == _baby_style_on or _normal_style.is_empty():
+		return
+	_baby_style_on = on
+	var R = BASE.x
+	var B = BASE.y
+	if on:
+		_style("Jump", Vector2(R - 170, B - 300), _arrow_up(BABY_SIZE, false), _arrow_up(BABY_SIZE, true), BABY_SIZE / 2.0)
+		_style("Ram", Vector2(R - 330, B - 215), _ball(BABY_SIZE, false), _ball(BABY_SIZE, true), BABY_SIZE / 2.0)
+		_style("Dig", Vector2(R - 300, B - 330), null, null, -1.0)
+	else:
+		for n in _normal_style:
+			var st = _normal_style[n]
+			_style(n, st[0], st[1], st[2], st[3])
+	for n in ["Jump", "Ram"]:
+		buttons[n].get_node("Label").visible = not on
+
+func _style(n: String, pos: Vector2, normal, pressed, radius: float):
+	var b = buttons[n]
+	b.position = pos
+	if normal:
+		b.texture_normal = normal
+		b.texture_pressed = pressed
+	if radius > 0.0:
+		b.shape.radius = radius
+
+# A big red ball (brighter while held)
+func _ball(size: int, pressed: bool) -> Texture2D:
+	var key = "ball_%d_%s" % [size, pressed]
+	if _textures.has(key):
+		return _textures[key]
+	var img = Image.create(size, size, false, Image.FORMAT_RGBA8)
+	var c = (size - 1) / 2.0
+	var base = Color(1.0, 0.35, 0.3) if pressed else Color(0.88, 0.12, 0.12)
+	for y in size:
+		for x in size:
+			var d = Vector2(x - c, y - c).length()
+			if d <= c:
+				var edge = clamp(c - d, 0.0, 1.0)
+				# a little shine at the top-left, a darker rim
+				var shine = clamp(1.0 - Vector2(x - c * 0.6, y - c * 0.55).length() / (c * 0.7), 0.0, 1.0)
+				var col = base.lerp(Color(1, 0.75, 0.7), shine * 0.45)
+				if d > c - 5.0:
+					col = base.darkened(0.35)
+				img.set_pixel(x, y, Color(col.r, col.g, col.b, 0.92 * edge))
+	var tex = ImageTexture.create_from_image(img)
+	_textures[key] = tex
+	return tex
+
+# A big blue arrow pointing up, on a pale blue disc (the hit area)
+func _arrow_up(size: int, pressed: bool) -> Texture2D:
+	var key = "arrow_%d_%s" % [size, pressed]
+	if _textures.has(key):
+		return _textures[key]
+	var img = Image.create(size, size, false, Image.FORMAT_RGBA8)
+	var c = (size - 1) / 2.0
+	var s = float(size)
+	var arrow = PackedVector2Array([
+		Vector2(0.5, 0.10), Vector2(0.86, 0.50), Vector2(0.64, 0.50), Vector2(0.64, 0.88),
+		Vector2(0.36, 0.88), Vector2(0.36, 0.50), Vector2(0.14, 0.50)])
+	for i in arrow.size():
+		arrow[i] *= s
+	var blue = Color(0.35, 0.65, 1.0) if pressed else Color(0.1, 0.4, 0.95)
+	var disc = Color(0.55, 0.78, 1.0, 0.45 if pressed else 0.28)
+	for y in size:
+		for x in size:
+			var d = Vector2(x - c, y - c).length()
+			if d > c:
+				continue
+			var edge = clamp(c - d, 0.0, 1.0)
+			var p = Vector2(x + 0.5, y + 0.5)
+			var col = disc
+			if d > c - 3.0:
+				col = Color(blue.r, blue.g, blue.b, 0.7)
+			if Geometry2D.is_point_in_polygon(p, arrow):
+				col = Color(blue.r, blue.g, blue.b, 0.95)
+				# a white outline so it shows on dark backgrounds too
+				for o in [Vector2(3, 0), Vector2(-3, 0), Vector2(0, 3), Vector2(0, -3)]:
+					if not Geometry2D.is_point_in_polygon(p + o, arrow):
+						col = Color(1, 1, 1, 0.95)
+						break
+			img.set_pixel(x, y, Color(col.r, col.g, col.b, col.a * edge))
+	var tex = ImageTexture.create_from_image(img)
+	_textures[key] = tex
+	return tex
 
 
 # Where the visible buttons / joystick are (screen pixels): floating popups

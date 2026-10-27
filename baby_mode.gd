@@ -350,11 +350,50 @@ func fall_back(player) -> bool:
 		if now - _safe[i][0] >= 1000:
 			pick = i
 			break
+	var fell_at = player.get_body_center() if player.has_method("get_body_center") else player.global_position
 	var pos = _safe[pick][1]
 	_safe.resize(pick)   # (that spot again only if it's still the best one)
 	player.global_position = pos + Vector2(0, -6)
 	player.velocity = Vector2.ZERO
+	_fall_hint(player, fell_at)
 	return true
+
+
+# Falling into the same water / pit again and again: the level can say
+# which way to go instead (baby_fall_hint(fell_at, respawned_at) -> {"id",
+# "dir", "done_x"}, e.g. Greed's water -> left to the portal), and after
+# FALLS_FOR_HINT falls there within FALL_HINT_WINDOW seconds a big arrow by
+# the sheep points that way (fall_hint_arrow.gd).
+const FALLS_FOR_HINT = 2
+const FALL_HINT_WINDOW = 90.0
+const FallHintArrow = preload("res://fall_hint_arrow.gd")
+var _falls = []          # [msec, hint id]
+var hint_arrow: Node2D = null
+
+func _fall_hint(player, fell_at: Vector2):
+	var level = get_tree().current_scene
+	if level == null or not level.has_method("baby_fall_hint"):
+		return
+	var at = player.get_body_center() if player.has_method("get_body_center") else player.global_position
+	var hint: Dictionary = level.baby_fall_hint(fell_at, at)
+	if hint.is_empty():
+		return
+	var now = Time.get_ticks_msec()
+	_falls = _falls.filter(func(f): return now - f[0] < FALL_HINT_WINDOW * 1000.0)
+	_falls.append([now, hint.id])
+	if _falls.filter(func(f): return f[1] == hint.id).size() < FALLS_FOR_HINT:
+		return
+	if is_instance_valid(hint_arrow):
+		hint_arrow.queue_free()
+	var arrow = FallHintArrow.new()
+	arrow.name = "FallHintArrow"
+	arrow.dir = float(hint.dir)
+	arrow.done_x = float(hint.done_x)
+	arrow.player = player
+	arrow.home = at + Vector2(float(hint.dir) * 70.0, -140.0)   # (the camera keeps the sheep near the left edge)
+	arrow.position = arrow.home
+	level.add_child(arrow)
+	hint_arrow = arrow
 
 
 # ---------------- Verses ----------------

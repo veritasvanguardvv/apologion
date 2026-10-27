@@ -273,6 +273,20 @@ func player_fell():
 	get_tree().reload_current_scene()
 
 
+# Baby Mode (baby_mode.gd): the water under the hill (Triggers/DamageArea (1))
+# - put back down there again and again, the way out is LEFT, through the
+# cave to the portal (Triggers/Teleport) that takes you back up the hill.
+# (Put back up on the hill top, there's nothing to point at.)
+const WATER_RECT = Rect2(5050, 300, 1400, 400)     # where a body falls into it
+const BELOW_HILL = Rect2(4560, -200, 1900, 900)    # put back somewhere down here
+func baby_fall_hint(fell_at: Vector2, respawned_at: Vector2) -> Dictionary:
+	if not WATER_RECT.has_point(fell_at) or not BELOW_HILL.has_point(respawned_at):
+		return {}
+	var portal = get_node_or_null("Triggers/Teleport")
+	var portal_x = portal.global_position.x if portal else 4560.0
+	return {"id": "greed_water", "dir": -1, "done_x": portal_x + 260.0}
+
+
 # Triggers/CheckpointArea (at the foot of the hill): from now on dying puts
 # you on top of the hill. Stored as the player's position for SaveManager.
 func reach_checkpoint():

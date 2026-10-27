@@ -1066,6 +1066,11 @@ func _physics_process(delta):
 	var direction = 0.0 if in_battle or typing else Input.get_axis("move_left", "move_right")
 	if direction != 0.0 and ram_state == 0:
 		facing = sign(direction)
+	elif TurnManager.in_battle and ram_state == 0:
+		var toward = _battle_facing()
+		if toward != 0:
+			facing = toward   # in a battle: look at the enemies (like the party members)
+	_apply_facing()
 	_process_ram(delta, in_battle or typing)
 	if bounce_left > 0.0:
 		bounce_left -= delta   # Baby Mode: bounced back off the idol (baby_bounce)
@@ -1447,6 +1452,25 @@ func mark_discovered_by_text(text: String):
 			print("Discovered: ", v.ref)
 			return
 
+
+# The sheep looks the way it's going: Playerwalkanim.png faces right, so
+# walking / ramming left mirrors the sprite (flip_h - the 3D battle view
+# copies it, battle_3d.gd). The collision box is symmetric, so only the
+# picture flips; the ram already dashes along `facing`.
+func _apply_facing():
+	var sprite = get_node_or_null("Sprite2D")
+	if sprite is Sprite2D:
+		sprite.flip_h = facing < 0.0
+
+# Which way the enemies are in a battle: 1 = right, -1 = left, 0 = none
+func _battle_facing() -> int:
+	var enemies = Targeting.battle_enemies()
+	if enemies.is_empty():
+		return 0
+	var x = 0.0
+	for e in enemies:
+		x += e.get_center().x if e.has_method("get_center") else e.global_position.x
+	return 1 if x / enemies.size() >= get_body_center().x else -1
 
 # Where the player's body really is. The sprite and collision shape are moved
 # away from the player's origin in the scenes, so use the collision shape.
