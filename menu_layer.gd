@@ -29,7 +29,7 @@ func _ready():
 	
 	_connect_if_exists("ModeSelect/StoryModeButton", _on_story_mode_pressed)
 	# (the button is called "EndlessModeButton Mode" in the level scenes)
-	_connect_if_exists("ModeSelect/EndlessModeButton Mode" if has_node("ModeSelect/EndlessModeButton Mode") else "ModeSelect/EndlessModeButton", _on_endless_pressed)
+	_connect_if_exists("ModeSelect/EndlessModeButton Mode" if has_node("ModeSelect/EndlessModeButton Mode") else "ModeSelect/EndlessModeButton", _open_endless_menu)
 	_connect_if_exists("ModeSelect/Back", _on_mode_back_pressed)  # the node is named "Back" in the scenes
 	
 	_connect_if_exists("StorySelect/BackButton", _on_story_back_pressed)
@@ -46,8 +46,12 @@ func _ready():
 	_connect_if_exists("MainMenu/SettingsButton", _open_settings.bind(false))
 	_connect_if_exists("PauseMenu/SettingsButton", _open_settings.bind(true))
 	_style_pause_menu()
+	_build_endless_menu()
+	_build_credits_menu()
 	_layout_main_menu()
 	_layout_play_menu()
+	_layout_back_buttons()
+	_apply_pixel_font()
 	
 	for child in story_select.get_children():
 		if child is Button and child.name != "BackButton":
@@ -97,6 +101,10 @@ func _input(event):
 		PartyManager.close_selector()
 	elif Inventory.is_open():
 		Inventory.close()
+	elif credits_menu.visible:
+		_close_credits()
+	elif endless_menu.visible:
+		_close_endless_menu()
 	elif remap_menu.visible:
 		_close_remap()
 	elif settings_menu.visible:
@@ -118,9 +126,9 @@ func _input(event):
 # True while the main menu, Mode Select or Story Select is on screen
 # (inventory.gd won't open over them)
 func is_main_menu_open() -> bool:
-	if (settings_menu.visible or remap_menu.visible or multiplayer_menu.visible) and not sub_from_pause:
+	if (settings_menu.visible or remap_menu.visible or multiplayer_menu.visible or credits_menu.visible) and not sub_from_pause:
 		return true
-	return main_menu.visible or mode_select.visible or story_select.visible
+	return main_menu.visible or mode_select.visible or story_select.visible or endless_menu.visible
 
 func _on_continue_pressed():
 	_show_only(null)
@@ -145,6 +153,7 @@ func _on_endless_pressed():
 
 # Mode Select > "Endless high scores": the local leaderboard (endless_scores.gd)
 func _build_endless_scores_button():
+	return   # "High scores" now lives in the Endless submenu (_build_endless_menu)
 	var endless = get_node_or_null("ModeSelect/EndlessModeButton Mode")
 	if endless == null:
 		endless = get_node_or_null("ModeSelect/EndlessModeButton")
@@ -221,12 +230,14 @@ func _show_only(menu):
 	if settings_menu: settings_menu.visible = (menu == settings_menu)
 	if remap_menu: remap_menu.visible = (menu == remap_menu)
 	if multiplayer_menu: multiplayer_menu.visible = (menu == multiplayer_menu)
+	if endless_menu: endless_menu.visible = (menu == endless_menu)
+	if credits_menu: credits_menu.visible = (menu == credits_menu)
 	if menu != remap_menu:
 		remap_waiting = ""
 	# The pause menu (and Settings / Multiplayer opened from it) dims the game
 	# behind it: you still see it running (the game is NOT paused).
 	# The main menu screens get solid black instead.
-	var is_sub = menu == settings_menu or menu == remap_menu or menu == multiplayer_menu
+	var is_sub = menu == settings_menu or menu == remap_menu or menu == multiplayer_menu or menu == credits_menu
 	var over_game = menu == pause_menu or (is_sub and sub_from_pause)
 	if dim_background:
 		dim_background.visible = over_game
@@ -263,6 +274,8 @@ var multiplayer_menu: Control
 var sub_from_pause = false     # Settings / Multiplayer were opened from the pause menu
 var remap_waiting = ""         # action waiting for a new key on the remap screen
 var remap_list: VBoxContainer
+var endless_menu: Control
+var credits_menu: Control
 var bold_font: FontVariation
 
 # A full-screen black rectangle behind the menu buttons
@@ -398,8 +411,13 @@ const MENU_FONT_SIZE = 28
 func _get_bold_font() -> FontVariation:
 	if bold_font == null:
 		bold_font = FontVariation.new()
-		bold_font.base_font = ThemeDB.fallback_font
-		bold_font.variation_embolden = 0.9
+		var pixel = load(PIXEL_FONT_PATH)
+		if pixel:
+			bold_font.base_font = pixel
+			bold_font.variation_opentype = {TextServerManager.get_primary_interface().name_to_tag("wght"): 600}
+		else:
+			bold_font.base_font = ThemeDB.fallback_font
+			bold_font.variation_embolden = 0.9
 	return bold_font
 
 func _make_bold(button: Button, font_size := MENU_FONT_SIZE):
@@ -542,6 +560,7 @@ func _build_settings_menu():
 	GameSettings.baby_mode_changed.connect(func(on): baby_toggle.set_pressed_no_signal(on))
 	column.add_child(baby_toggle)
 	column.add_child(_make_menu_button("ControlsButton", "Controls (remap keys)", _open_remap))
+	column.add_child(_make_menu_button("CreditsButton", "Credits", _open_credits))
 	column.add_child(_make_menu_button("BackButton", "Back", _close_settings))
 
 func _on_settings_save():
@@ -758,7 +777,7 @@ func _layout_play_menu():
 	column.add_theme_constant_override("separation", 14)
 	column.custom_minimum_size = Vector2(460, 0)
 	center.add_child(column)
-	var order = ["LoadButton", "StoryModeButton", "EndlessModeButton Mode", "EndlessModeButton", "EndlessScoresButton", "MultiplayerButton", "Back"]
+	var order = ["LoadButton", "StoryModeButton", "EndlessModeButton Mode", "EndlessModeButton", "MultiplayerButton"]
 	for n in order:
 		var b = mode_select.get_node_or_null(n)
 		if b == null:
@@ -773,3 +792,93 @@ func _layout_play_menu():
 	var load_button = column.get_node_or_null("LoadButton")
 	if load_button:
 		load_button.text = "Continue"
+
+# ---------------- Endless submenu (Play > Endless) ----------------
+
+func _build_endless_menu():
+	var parts = _make_screen("EndlessMenu", "Endless")
+	endless_menu = parts[0]
+	var column = parts[1]
+	column.custom_minimum_size = Vector2(460, 0)
+	for info in [["StartEndlessButton", "Start Endless", _on_endless_pressed], ["EndlessScoresButton", "Endless high scores", _open_endless_scores]]:
+		var b = _make_menu_button(info[0], info[1], info[2])
+		b.custom_minimum_size = Vector2(0, 80)
+		_style_chunky(b, 34, 5)
+		column.add_child(b)
+	_add_corner_back(endless_menu, _close_endless_menu)
+
+func _open_endless_menu():
+	_show_only(endless_menu)
+
+func _close_endless_menu():
+	_show_only(mode_select)
+
+# ---------------- Credits (Settings > Credits) ----------------
+
+const CREDITS_TEXT = "Jesus Christ, and his followers JoyfulEwe and Piotr Sobotowski"
+
+func _build_credits_menu():
+	var parts = _make_screen("CreditsMenu", "Credits")
+	credits_menu = parts[0]
+	var column = parts[1]
+	column.custom_minimum_size = Vector2(760, 0)
+	var label = Label.new()
+	label.name = "CreditsText"
+	label.text = CREDITS_TEXT
+	label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED   # same in every language
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.custom_minimum_size = Vector2(760, 0)
+	label.add_theme_font_size_override("font_size", 34)
+	column.add_child(label)
+	_add_corner_back(credits_menu, _close_credits)
+
+func _open_credits():
+	_show_only(credits_menu)
+
+func _close_credits():
+	_show_only(settings_menu)
+
+# ---------------- Back buttons: bottom-right corner ----------------
+
+func _add_corner_back(screen: Control, callable: Callable) -> Button:
+	var b = Button.new()
+	b.name = "BackButton"
+	b.text = "Back"
+	b.pressed.connect(callable)
+	screen.add_child(b)
+	_style_corner_back(b)
+	return b
+
+func _style_corner_back(b: Button):
+	_style_chunky(b, 34, 5)
+	b.autowrap_mode = TextServer.AUTOWRAP_OFF
+	b.custom_minimum_size = Vector2.ZERO
+	b.size_flags_horizontal = Control.SIZE_FILL
+	_place(b, Vector2(1, 1), Vector2(260, 86), Vector2(-288, -114))
+
+# Moves the existing Back buttons (scene or code-built) out of their columns
+func _layout_back_buttons():
+	for pair in [[mode_select, "Back"], [story_select, "BackButton"], [settings_menu, "BackButton"], [multiplayer_menu, "BackButton"], [remap_menu, "BackButton"]]:
+		var screen: Control = pair[0]
+		if screen == null:
+			continue
+		var b = screen.find_child(pair[1], true, false)
+		if b == null:
+			continue
+		if b.get_parent() != screen:
+			b.reparent(screen, false)
+		_style_corner_back(b)
+
+# ---------------- Pixel font (General/UI/fonts/PixelifySans.ttf, OFL) ----------------
+
+const PIXEL_FONT_PATH = "res://General/UI/fonts/PixelifySans.ttf"
+var pixel_theme: Theme
+
+func _apply_pixel_font():
+	if pixel_theme == null:
+		pixel_theme = Theme.new()
+		pixel_theme.default_font = _get_bold_font()
+	for screen in [main_menu, mode_select, story_select, pause_menu, settings_menu, remap_menu, multiplayer_menu, endless_menu, credits_menu]:
+		if screen:
+			screen.theme = pixel_theme
