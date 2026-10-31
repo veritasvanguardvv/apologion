@@ -564,6 +564,7 @@ func _start_baby_fight():
 	idol.hp = BabyMode.IDOL_HITS
 	if barrier:
 		idol.set_meta("baby_ram_body", barrier)   # the idol sits in the solid calf: touching the calf rams it
+		barrier.set_meta("baby_shields", idol)    # a dash into the calf rams the idol, not the calf (greed_barrier.gd)
 	if _boss_alive():
 		sindeath.awaken()
 		sindeath.max_hp = BabyMode.ENEMY_HITS   # 2 rams, like every other enemy

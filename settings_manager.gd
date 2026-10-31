@@ -104,13 +104,26 @@ func set_sfx_volume(v: float):
 	_save()
 
 
+# While a verse is read out loud (baby_mode.gd) the music and sound effects
+# go quieter so the voice stands out.
+const DUCK_MUSIC_DB = -12.0
+const DUCK_SFX_DB = -6.0
+var voice_ducking = false
+
+func set_voice_ducking(on: bool):
+	if on == voice_ducking:
+		return
+	voice_ducking = on
+	_apply_volumes()
+
+
 func _apply_volumes():
-	for pair in [[MUSIC_BUS, music_volume], [SFX_BUS, sfx_volume]]:
+	for pair in [[MUSIC_BUS, music_volume, DUCK_MUSIC_DB], [SFX_BUS, sfx_volume, DUCK_SFX_DB]]:
 		var i = AudioServer.get_bus_index(pair[0])
 		if i == -1:
 			continue
 		AudioServer.set_bus_mute(i, pair[1] <= 0.001)
-		AudioServer.set_bus_volume_db(i, linear_to_db(max(pair[1], 0.001)))
+		AudioServer.set_bus_volume_db(i, linear_to_db(max(pair[1], 0.001)) + (pair[2] if voice_ducking else 0.0))
 
 
 func set_scroll_verses_with_arrows(on: bool):

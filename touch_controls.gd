@@ -325,6 +325,27 @@ func _arrow_up(size: int, pressed: bool) -> Texture2D:
 	return tex
 
 
+# A button bounces a few times (Baby Mode: walking into an enemy -> "press
+# the red ball to ram!"). Scales about its centre.
+var _pulses = {}
+func pulse_button(n: String, times := 3):
+	var b = buttons.get(n)
+	if b == null or not b.is_visible_in_tree() or b.texture_normal == null:
+		return
+	if _pulses.has(n) and _pulses[n].is_valid():
+		return
+	var home = b.position
+	var size = b.texture_normal.get_size()
+	var big = 1.22
+	var t = create_tween()
+	for i in times:
+		t.tween_property(b, "scale", Vector2(big, big), 0.12)
+		t.parallel().tween_property(b, "position", home - size * (big - 1.0) / 2.0, 0.12)
+		t.tween_property(b, "scale", Vector2.ONE, 0.14)
+		t.parallel().tween_property(b, "position", home, 0.14)
+	_pulses[n] = t
+
+
 # Where the visible buttons / joystick are (screen pixels): floating popups
 # keep clear of them (hud_layout.gd), e.g. "Ram the idol!" over the Ram button
 func screen_rects() -> Array:

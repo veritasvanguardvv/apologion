@@ -37,6 +37,7 @@ extends Node
 #   - nothing found: the Universal verses (all_damage, no sin)
 # Verses that aren't for small children (KID_UNSAFE words) are never used.
 
+const PopupText = preload("res://popup_text.gd")
 const SINS = ["sloth", "lust", "greed", "wrath", "gluttony", "envy", "pride"]
 const VS_KINDS = ["idol", "sindeath", "atheist", "demon", "false_teacher"]
 const KID_UNSAFE = "(?i)prostitut|harlot|whore|adulter|fornicat|\\blust|sexual|seduc|naked|immoral|\\brape|sodom|breast"
@@ -51,7 +52,7 @@ const PARTY_HEAL_BELOW = 0.5   # the party member heals you at this much HP or l
 const PARTY_HEAL_PCT = 40.0    # ... this % of your max HP
 const HEAL_COOLDOWN = 8.0      # seconds before the party member heals again
 const HEAL_DELAY = 1.2         # seconds after the hit (the ram's verse starts first)
-const MAX_WORDS = 15           # longest verse (words, in the game's language) read in Baby Mode
+const MAX_WORDS = 10           # longest verse (words, in the game's language) read in Baby Mode
 const SHORTEST_FALLBACK = 3    # no verse short enough: the 3 shortest
 const WORDS_PER_SEC = 2.4      # speaking speed estimate (rate 0.95) for "still speaking"
 const RAM_LINE_WAIT = 2.5      # seconds a waiting ram verse may wait before it's dropped
@@ -107,6 +108,7 @@ func is_on() -> bool:
 
 func _on_baby_mode_changed(on: bool):
 	_touching.clear()
+	_bumped.clear()
 	if on and TurnManager.in_battle:
 		TurnManager._end_battle()   # no battles in Baby Mode (enemies stay; ram them)
 	if not on:
@@ -117,6 +119,7 @@ func _on_baby_mode_changed(on: bool):
 
 func _physics_process(delta):
 	_cooldown = max(0.0, _cooldown - delta)
+	_bump_cd = max(0.0, _bump_cd - delta)
 	if not is_on():
 		return
 	var player = get_tree().get_first_node_in_group("player")
@@ -130,17 +133,51 @@ func _physics_process(delta):
 			continue
 		if touching(player, enemy):
 			if not _touching.has(enemy) and _cooldown <= 0.0:
-				ram(enemy, player)
+				if is_ram(player):
+					ram(enemy, player)
+				elif not _bumped.has(enemy) and _bump_cd <= 0.0:
+					bump(enemy, player)
 		else:
 			_touching.erase(enemy)
+			_bumped.erase(enemy)
 	# things that break when rammed (the Golden Calf after SinDeath: greed_barrier.gd)
 	for thing in get_tree().get_nodes_in_group("baby_rammables"):
-		if is_instance_valid(thing) and thing.has_method("on_rammed") and touching(player, thing) and _cooldown <= 0.0:
+		if is_instance_valid(thing) and thing.has_method("on_rammed") and touching(player, thing) and _cooldown <= 0.0 and is_ram(player):
 			_cooldown = HIT_COOLDOWN
 			thing.on_rammed(player)
 	for e in _touching.keys():
 		if not is_instance_valid(e):
 			_touching.erase(e)
+	for e in _bumped.keys():
+		if not is_instance_valid(e):
+			_bumped.erase(e)
+
+
+# Only a ram hurts an enemy (the tap ram or the full one): the dash itself,
+# or the moment it ended against something (ram_counts' short grace).
+func is_ram(player) -> bool:
+	if player == null:
+		return false
+	if player.has_method("ram_counts"):
+		return player.ram_counts()
+	return player.has_method("is_ramming") and player.is_ramming()
+
+
+# Walking into an enemy without ramming: a gentle bump back - nothing gets
+# hurt, the enemy or you - and the first few times a "Ram!" with the red
+# button pulsing, so kids learn to press it.
+const BUMP_HINTS = 3
+var bumps = 0
+var _bump_cd = 0.0
+var _bumped = {}   # enemy -> true: bumped, still pressed against it (a ram still lands)
+func bump(enemy, player):
+	_bumped[enemy] = true
+	_bump_cd = HIT_COOLDOWN   # (its own timer: a ram right after a bump still lands)
+	bumps += 1
+	_bounce(player, enemy, 260.0, 0.18, false)   # (no hop: you'd land on top of it)
+	if bumps <= BUMP_HINTS:
+		PopupText.spawn(player, tr("Ram!"), Color(1, 0.3, 0.3))
+		TouchControls.pulse_button("Ram")
 
 
 func touching(player: Node2D, other: Node2D) -> bool:
@@ -212,11 +249,12 @@ func ram(enemy, player = null) -> bool:
 	return defeated
 
 
-func _bounce(player, enemy):
+func _bounce(player, enemy, strength := 380.0, time := 0.22, hop := true):
 	if is_instance_valid(player) and player.has_method("baby_bounce"):
 		var c = enemy.get_center() if enemy.has_method("get_center") else enemy.global_position
-		var dir = sign(player.global_position.x - c.x)
-		player.baby_bounce(dir if dir != 0 else -1.0)
+		var pc = player.get_body_center() if player.has_method("get_body_center") else player.global_position
+		var dir = sign(pc.x - c.x)
+		player.baby_bounce(dir if dir != 0 else -1.0, strength, time, hop)
 
 
 # The enemy nips back (a ram that didn't finish it): a little damage, never
@@ -582,6 +620,7 @@ func say_line(text: String, lang: String, v := {}, show := Callable(), prio := 0
 	return false
 
 func _process(_delta):
+	GameSettings.set_voice_ducking(is_on() and spoke and speech_busy())
 	if _waiting.is_empty() or speech_busy():
 		return
 	var line = _waiting
@@ -626,10 +665,14 @@ func _voice_for(lang: String) -> String:
 	return id
 
 
+const TTS_VOLUME = 100   # DisplayServer.tts_speak's maximum
+var last_tts_volume = -1
+
 func speak(text: String, lang: String, v := {}, interrupt := true) -> bool:
 	last_spoken = text
 	last_spoken_language = lang
 	spoke = false
+	last_tts_volume = TTS_VOLUME   # always full: see below
 	if not speak_aloud or not tts_available():
 		return false
 	var voice = _voice_for(lang)
@@ -645,8 +688,9 @@ func speak(text: String, lang: String, v := {}, interrupt := true) -> bool:
 		if all.is_empty():
 			return false
 		voice = str(all[0].get("id", ""))
-	var volume = int(round(clamp(GameSettings.sfx_volume, 0.0, 1.0) * 100.0))
-	DisplayServer.tts_speak(text, voice, volume, 1.0, 0.95, 0, interrupt)
+	# Always full volume (the device's maximum): it used to follow the sound
+	# effects slider. The music / sound effects duck while it speaks instead.
+	DisplayServer.tts_speak(text, voice, TTS_VOLUME, 1.0, 0.95, 0, interrupt)
 	spoke = true
 	return true
 

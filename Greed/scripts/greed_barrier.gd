@@ -42,6 +42,13 @@ func _physics_process(_delta):
 func on_rammed(_player = null) -> bool:
 	if broken:
 		return false
+	# Baby Mode: the idol sits inside the calf - a dash into the calf rams the
+	# idol (3 rams); the calf only goes once the idol has cracked
+	var shielded = get_meta("baby_shields", null) if has_meta("baby_shields") else null
+	if GameSettings.baby_mode and is_instance_valid(shielded) and not shielded.get("is_cracked") and shielded.hp > 0:
+		if _player != null and BabyMode._cooldown <= 0.0 and not BabyMode._touching.has(shielded):
+			BabyMode.ram(shielded, _player)
+		return false
 	if requires_group != "":
 		for n in get_tree().get_nodes_in_group(requires_group):
 			if is_instance_valid(n) and not n.is_queued_for_deletion():

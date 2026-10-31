@@ -25,6 +25,7 @@ boot_splash/use_filter=false
 
 driver/enable_input=true
 general/text_to_speech=true
+general/ios/session_category=3
 input/transcribe/use_gpu=false
 
 [autoload]

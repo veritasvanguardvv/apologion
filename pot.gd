@@ -1,6 +1,6 @@
 extends Area2D
 # POT (pot.gd) - a clay pot to smash (built by greed_level.gd: POTS).
-#   Baby Mode: run into it.  Normal game: Ram into it (X / the Ram button)
+#   Baby Mode: Ram it (a tap of the red ball is enough).  Normal game: Ram into it (X / the Ram button)
 #   or jump down onto it.
 # It breaks (cracked pot frame, clay shards, the barrier-smash sound) and
 # drops something that floats to you:
@@ -82,7 +82,8 @@ func _physics_process(_delta):
 # Does this touch break it?
 func smashes(player) -> bool:
 	if GameSettings.baby_mode:
-		return true
+		# Baby Mode: rams only (a tap on the red ball is enough), like enemies
+		return player.ram_counts() if player.has_method("ram_counts") else player.is_ramming()
 	if player.has_method("is_ramming") and player.is_ramming():
 		return true
 	# landing on it from above

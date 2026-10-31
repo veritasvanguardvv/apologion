@@ -1168,6 +1168,8 @@ func on_ram_target_reached(target):
 
 func _end_ram(hit: bool):
 	if ram_state == 2:
+		_ram_ended_at = Time.get_ticks_msec()
+	if ram_state == 2:
 		ram_needs_release = true
 		if hit:
 			velocity.x = -facing * 150.0   # small bounce back
@@ -1181,16 +1183,23 @@ func _end_ram(hit: bool):
 func is_ramming() -> bool:
 	return ram_state == 2
 
+# Baby Mode: does touching an enemy now count as a ram? While dashing, and a
+# moment after the dash ended (it can stop against the enemy first).
+const RAM_GRACE_MSEC = 150
+var _ram_ended_at = -100000
+func ram_counts() -> bool:
+	return ram_state == 2 or Time.get_ticks_msec() - _ram_ended_at <= RAM_GRACE_MSEC
+
 # Baby Mode (baby_mode.gd): a short bounce back after ramming the idol, so
 # every hit is a separate ram. dir = -1 (left) or 1 (right).
 var bounce_left = 0.0
 var bounce_speed = 0.0
-func baby_bounce(dir: float, strength := 380.0, time := 0.22):
+func baby_bounce(dir: float, strength := 380.0, time := 0.22, hop := true):
 	if ram_state != 0:
 		_end_ram(false)
 	bounce_speed = dir * strength
 	bounce_left = time
-	if is_on_floor():
+	if hop and is_on_floor():
 		velocity.y = -220.0   # a little hop
 
 func _build_ram_bar():
