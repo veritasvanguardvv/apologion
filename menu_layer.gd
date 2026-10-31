@@ -19,7 +19,7 @@ func _ready():
 	# Save / load buttons (PauseMenu: Save Progress + Load Save, MainMenu: Continue)
 	_connect_if_exists("PauseMenu/SaveButton", _on_save_pressed)
 	_connect_if_exists("PauseMenu/LoadButton", _on_load_pressed)
-	_connect_if_exists("MainMenu/LoadButton", _on_load_pressed)
+	_connect_if_exists("MainMenu/LoadButton", _on_load_pressed)   # moved under Play in _layout_play_menu
 	
 	_connect_if_exists("PauseMenu/ContinueButton", _on_continue_pressed)
 	_connect_if_exists("PauseMenu/QuitToMenuButton", _on_quit_to_menu)
@@ -46,6 +46,8 @@ func _ready():
 	_connect_if_exists("MainMenu/SettingsButton", _open_settings.bind(false))
 	_connect_if_exists("PauseMenu/SettingsButton", _open_settings.bind(true))
 	_style_pause_menu()
+	_layout_main_menu()
+	_layout_play_menu()
 	
 	for child in story_select.get_children():
 		if child is Button and child.name != "BackButton":
@@ -53,6 +55,13 @@ func _ready():
 	
 	_update_story_buttons()
 	_show_only(null)
+	# Opening the app: start on the main menu instead of straight in the level
+	# (only once per launch, and not when a test script drives the game).
+	if not SaveManager.has_meta("boot_menu_done"):
+		SaveManager.set_meta("boot_menu_done", true)
+		var args = OS.get_cmdline_args()
+		if not ("-s" in args or "--script" in args):
+			_show_only(main_menu)
 
 func _connect_if_exists(path: String, callable: Callable):
 	var node = get_node_or_null(path)
@@ -283,21 +292,28 @@ const LANGUAGES = [["en", "English", "EnglishButton"], ["es", "Español", "Spani
 func _build_language_buttons():
 	if not main_menu:
 		return
+	var row = _make_language_row(22, Vector2(130, 52))
+	row.position = Vector2(20, 20)
+	main_menu.add_child(row)
+	SaveManager.language_changed.connect(func(_l): _update_language_buttons())
+	_update_language_buttons()
+
+# A row of English / Español / Polski buttons (main menu and Settings)
+func _make_language_row(font_size: int, min_size: Vector2) -> HBoxContainer:
 	var row = HBoxContainer.new()
 	row.name = "LanguageButtons"
-	row.position = Vector2(16, 16)
 	row.add_theme_constant_override("separation", 8)
-	main_menu.add_child(row)
 	for lang in LANGUAGES:
 		var button = Button.new()
 		button.name = lang[2]
 		button.text = lang[1]
 		button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED   # language names stay as they are
-		button.custom_minimum_size = Vector2(110, 44)
+		button.custom_minimum_size = min_size
 		button.focus_mode = Control.FOCUS_NONE
 		button.pressed.connect(_set_language.bind(lang[0]))
+		_style_chunky(button, font_size)
 		row.add_child(button)
-	_update_language_buttons()
+	return row
 
 func _set_language(lang: String):
 	SaveManager.set_language(lang)   # switches every text in the game
@@ -305,11 +321,14 @@ func _set_language(lang: String):
 
 # The current language's button is highlighted
 func _update_language_buttons():
-	var row = main_menu.get_node_or_null("LanguageButtons") if main_menu else null
-	if row == null:
-		return
-	for lang in LANGUAGES:
-		row.get_node(lang[2]).modulate = Color(1, 0.9, 0.5) if SaveManager.language == lang[0] else Color.WHITE
+	for parent in [main_menu, settings_menu]:
+		if parent == null:
+			continue
+		var row = parent.find_child("LanguageButtons", true, false)
+		if row == null:
+			continue
+		for lang in LANGUAGES:
+			row.get_node(lang[2]).modulate = Color(1, 0.85, 0.35) if SaveManager.language == lang[0] else Color.WHITE
 
 # "Change Party" in the pause menu, under "Load Save"
 func _build_change_party_button():
@@ -328,8 +347,8 @@ func _build_change_party_button():
 # Local Multiplayer (phones join as party members, see phone_server.gd),
 # Church and Leaderboards (online_service.gd and online_menu.gd).
 func _build_online_buttons():
-	if main_menu:
-		_add_button(main_menu, ["MultiplayerButton", "Multiplayer", _open_multiplayer.bind(false)], Vector2(750, 233), Vector2(250, 76))
+	if mode_select:   # under Play (see _layout_play_menu)
+		_add_button(mode_select, ["MultiplayerButton", "Multiplayer", _open_multiplayer.bind(false)], Vector2(750, 233), Vector2(250, 76))
 	if pause_menu:
 		_add_button(pause_menu, ["MultiplayerButton", "Multiplayer", _open_multiplayer.bind(true)], Vector2(130, 105), Vector2(260, 100))
 
@@ -358,7 +377,7 @@ func _on_load_pressed(button: Button = null):
 	else:
 		# No save yet: show it on whichever Load button is on screen
 		if button == null:
-			button = get_node_or_null("MainMenu/LoadButton") if main_menu.visible else get_node_or_null("PauseMenu/LoadButton")
+			button = mode_select.get_node_or_null("LoadButton") if mode_select.visible else get_node_or_null("PauseMenu/LoadButton")
 		var normal_text = button.text if button else ""
 		_flash_button_text(button, "No save found", normal_text)
 
@@ -458,6 +477,7 @@ func _build_settings_menu():
 	var parts = _make_screen("SettingsMenu", "Settings")
 	settings_menu = parts[0]
 	var column = parts[1]
+	column.add_theme_constant_override("separation", 10)   # fits a 16:9 phone with the Language row
 	var save_row = HBoxContainer.new()
 	save_row.name = "SaveRow"
 	save_row.add_theme_constant_override("separation", 12)
@@ -468,6 +488,19 @@ func _build_settings_menu():
 	var load_button = _make_menu_button("LoadButton", "Load Save", _on_settings_load)
 	load_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	save_row.add_child(load_button)
+	var lang_row = HBoxContainer.new()
+	lang_row.name = "LanguageRow"
+	lang_row.add_theme_constant_override("separation", 12)
+	column.add_child(lang_row)
+	var lang_label = Label.new()
+	lang_label.text = "Language"
+	lang_label.custom_minimum_size = Vector2(160, 0)
+	lang_label.add_theme_font_override("font", _get_bold_font())
+	lang_label.add_theme_font_size_override("font_size", 22)
+	lang_row.add_child(lang_label)
+	var langs = _make_language_row(20, Vector2(120, 44))
+	langs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lang_row.add_child(langs)
 	_add_volume_slider(column, "MusicSlider", "Music volume", GameSettings.music_volume, GameSettings.set_music_volume)
 	_add_volume_slider(column, "SfxSlider", "Sound effects volume", GameSettings.sfx_volume, GameSettings.set_sfx_volume)
 	var scroll_toggle = CheckButton.new()
@@ -635,3 +668,108 @@ func _open_remap():
 func _close_remap():
 	remap_waiting = ""
 	_show_only(settings_menu)
+
+# ---------------- Main menu look (big Play, Settings bottom-left, Quit bottom-right) ----------------
+# Chunky light pixel-art style buttons: cream face, dark brown outline, a hard
+# drop shadow and blocky corners, with big dark bold text.
+
+const FACE = Color(0.96, 0.93, 0.84)
+const FACE_HOVER = Color(1.0, 0.98, 0.91)
+const FACE_PRESSED = Color(0.84, 0.80, 0.70)
+const OUTLINE = Color(0.20, 0.15, 0.13)
+const INK = Color(0.20, 0.15, 0.13)
+
+func _chunky_box(face: Color, border: int, shadow: int, pressed := false) -> StyleBoxFlat:
+	var sb = StyleBoxFlat.new()
+	sb.bg_color = face
+	sb.border_color = OUTLINE
+	sb.set_border_width_all(border)
+	sb.set_corner_radius_all(border * 3)
+	sb.corner_detail = 3            # blocky, pixel-art corners
+	sb.anti_aliasing = false
+	sb.shadow_color = Color(0, 0, 0, 0.55)
+	sb.shadow_size = 0
+	sb.shadow_offset = Vector2(0, 0 if pressed else shadow)
+	sb.content_margin_left = 16
+	sb.content_margin_right = 16
+	sb.content_margin_top = 6 + (shadow if pressed else 0)
+	sb.content_margin_bottom = 6
+	return sb
+
+func _style_chunky(button: Button, font_size: int, border := 4):
+	var shadow = border + 2
+	button.add_theme_stylebox_override("normal", _chunky_box(FACE, border, shadow))
+	button.add_theme_stylebox_override("hover", _chunky_box(FACE_HOVER, border, shadow))
+	button.add_theme_stylebox_override("pressed", _chunky_box(FACE_PRESSED, border, shadow, true))
+	button.add_theme_stylebox_override("hover_pressed", _chunky_box(FACE_PRESSED, border, shadow, true))
+	button.add_theme_stylebox_override("disabled", _chunky_box(FACE.darkened(0.3), border, shadow))
+	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	for c in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
+		button.add_theme_color_override(c, INK)
+	button.add_theme_color_override("font_disabled_color", INK.lightened(0.3))
+	button.add_theme_font_override("font", _get_bold_font())
+	button.add_theme_font_size_override("font_size", font_size)
+	button.focus_mode = Control.FOCUS_NONE
+
+# Anchors a button to a spot on screen so it stays put on any phone size
+func _place(button: Control, anchor: Vector2, button_size: Vector2, offset: Vector2):
+	button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	button.anchor_left = anchor.x
+	button.anchor_right = anchor.x
+	button.anchor_top = anchor.y
+	button.anchor_bottom = anchor.y
+	button.offset_left = offset.x
+	button.offset_top = offset.y
+	button.offset_right = offset.x + button_size.x
+	button.offset_bottom = offset.y + button_size.y
+
+func _layout_main_menu():
+	if not main_menu:
+		return
+	var play = main_menu.get_node_or_null("PlayButton")
+	if play:
+		_style_chunky(play, 72, 8)
+		_place(play, Vector2(0.5, 0.5), Vector2(440, 160), Vector2(-220, -80))
+	var settings = main_menu.get_node_or_null("SettingsButton")
+	if settings:
+		_style_chunky(settings, 34, 5)
+		_place(settings, Vector2(0, 1), Vector2(260, 86), Vector2(28, -114))
+	var quit = main_menu.get_node_or_null("Quit")
+	if quit:
+		_style_chunky(quit, 34, 5)
+		_place(quit, Vector2(1, 1), Vector2(260, 86), Vector2(-288, -114))
+	# Continue moves under Play (_layout_play_menu)
+	var load_button = main_menu.get_node_or_null("LoadButton")
+	if load_button and mode_select:
+		load_button.reparent(mode_select, false)
+
+# Play -> Continue / Story Mode / Endless / Endless high scores / Multiplayer / Back,
+# in one centred column.
+func _layout_play_menu():
+	if not mode_select:
+		return
+	var center = CenterContainer.new()
+	center.name = "Center"
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mode_select.add_child(center)
+	var column = VBoxContainer.new()
+	column.name = "Column"
+	column.add_theme_constant_override("separation", 14)
+	column.custom_minimum_size = Vector2(460, 0)
+	center.add_child(column)
+	var order = ["LoadButton", "StoryModeButton", "EndlessModeButton Mode", "EndlessModeButton", "EndlessScoresButton", "MultiplayerButton", "Back"]
+	for n in order:
+		var b = mode_select.get_node_or_null(n)
+		if b == null:
+			continue
+		b.reparent(column, false)
+		b.position = Vector2.ZERO
+		b.size = Vector2.ZERO
+		var big = n == "LoadButton" or n == "StoryModeButton"
+		b.custom_minimum_size = Vector2(0, 80 if big else 62)
+		b.autowrap_mode = TextServer.AUTOWRAP_OFF
+		_style_chunky(b, 36 if big else 28, 5 if big else 4)
+	var load_button = column.get_node_or_null("LoadButton")
+	if load_button:
+		load_button.text = "Continue"

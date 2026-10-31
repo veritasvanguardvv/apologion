@@ -66,6 +66,8 @@ var endless_snapshot = null
 
 
 func _ready():
+	if GameSettings.language != "":
+		language = GameSettings.language   # picked in Settings (settings.cfg)
 	TranslationServer.set_locale(language)
 	load_profile()
 
@@ -77,6 +79,7 @@ func _ready():
 # General/translations/strings.csv; scripts listen to language_changed to redraw.
 func set_language(new_language: String) -> void:
 	language = new_language
+	GameSettings.set_language(new_language)   # remembered across restarts
 	TranslationServer.set_locale(new_language)
 	language_changed.emit(new_language)
 
@@ -334,7 +337,8 @@ func load_game(change_level := true) -> bool:
 		if level_name not in unlocked_levels:
 			unlocked_levels.append(level_name)
 
-	set_language(config.get_value("progress", "language", "en"))
+	# The language picked in Settings wins over the one stored in the save
+	set_language(GameSettings.language if GameSettings.language != "" else config.get_value("progress", "language", "en"))
 	PartyManager.current = config.get_value("progress", "party", PartyManager.DEFAULT_MEMBER)
 	PartyManager.member_hp = config.get_value("progress", "party_hp", {})
 	Inventory.load_save_data(config.get_value("items", "inventory", {}))

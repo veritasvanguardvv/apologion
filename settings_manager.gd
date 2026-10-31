@@ -49,6 +49,9 @@ var boss_battles_3d = true              # boss fights (SinDeath) shown in 3D (ba
 # by running into them and a matching verse is read out loud.
 var baby_mode = false
 signal baby_mode_changed(on)
+# Language picked in Settings / the main menu ("" = not picked yet). Saved here
+# so it survives restarts; SaveManager.set_language() applies it.
+var language = ""
 
 signal touch_controls_changed(on)
 var bindings = {}        # action -> physical keycode
@@ -142,6 +145,12 @@ func set_boss_battles_3d(on: bool):
 	boss_battles_3d = on
 	_save()
 
+
+func set_language(lang: String):
+	if language == lang:
+		return
+	language = lang
+	_save()
 
 # Baby Mode on/off (saved). baby_mode.gd and the HUD react to the signal.
 func set_baby_mode(on: bool):
@@ -245,6 +254,8 @@ func _save():
 	c.set_value("controls", "touch_controls", touch_controls)
 	c.set_value("graphics", "boss_battles_3d", boss_battles_3d)
 	c.set_value("gameplay", "baby_mode", baby_mode)
+	if language != "":
+		c.set_value("gameplay", "language", language)
 	for action in bindings:
 		c.set_value("keys", action, int(bindings[action]))
 	c.save(PATH)
@@ -260,5 +271,6 @@ func _load():
 	touch_controls = bool(c.get_value("controls", "touch_controls", touch_controls))
 	boss_battles_3d = bool(c.get_value("graphics", "boss_battles_3d", boss_battles_3d))
 	baby_mode = bool(c.get_value("gameplay", "baby_mode", baby_mode))
+	language = str(c.get_value("gameplay", "language", language))
 	for action in bindings.keys():
 		bindings[action] = int(c.get_value("keys", action, bindings[action]))
