@@ -581,18 +581,46 @@ func _start_baby_fight():
 func _on_baby_idol_cracked():
 	if state != "baby":
 		return
+	state = "baby_end"
 	hint.visible = false
 	if _boss_alive():
 		sindeath.instant_defeat("Rammed!")   # (jumped over it: it goes too)
 	await get_tree().create_timer(0.6).timeout   # let "0 / 3" show
 	TurnManager.hide_enemy_panel()
+	if not baby_victory_done:
+		await _baby_victory()   # SinDeath went with the idol: the talk before the smash
 	if barrier and not barrier.broken:
 		barrier.on_rammed(player)   # smashes the calf: _on_calf_smashed, the level is won
+
+
+# Baby Mode: the sheep's victory talk ("I am clothed in His wool...") plays too,
+# as soon as SinDeath is beaten (or before the calf smashes if it never was).
+var baby_victory_done = false
+
+func _baby_victory():
+	baby_victory_done = true
+	var back_to = state
+	state = "baby_talk"
+	hint.visible = false
+	_lock(true)
+	await get_tree().create_timer(0.8).timeout
+	hint.text = "Tap to continue" if GameSettings.touch_prompts() else "Click or press Enter to continue"
+	await _lines(VICTORY)
+	_hide_bubbles()
+	_lock(false)
+	state = back_to
+	if state == "baby":
+		hint.text = "Ram the idol!"
+		hint.visible = true
+		if is_instance_valid(idol):
+			PopupText.spawn(idol, tr("Ram the idol!"), Color(1, 0.85, 0.3), Vector2(0, -110), 3.0)
 
 
 # Baby Mode switched off during the baby fight: the normal battle; switched
 # on after SinDeath was beaten: running into the calf smashes it.
 func _process(_delta):
+	if state == "baby" and GameSettings.baby_mode and not _boss_alive() and not baby_victory_done:
+		_baby_victory()
 	if state == "baby" and not GameSettings.baby_mode and not TurnManager.in_battle and _boss_alive():
 		hint.visible = false
 		TurnManager.hide_enemy_panel()

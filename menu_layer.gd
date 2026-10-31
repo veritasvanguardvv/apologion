@@ -56,6 +56,7 @@ func _ready():
 	for child in story_select.get_children():
 		if child is Button and child.name != "BackButton":
 			child.pressed.connect(_on_level_selected.bind(child.text))
+			_style_chunky(child, 26)
 	
 	_update_story_buttons()
 	_show_only(null)
@@ -424,6 +425,7 @@ func _make_bold(button: Button, font_size := MENU_FONT_SIZE):
 	button.add_theme_font_override("font", _get_bold_font())
 	button.add_theme_font_size_override("font_size", font_size)
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART   # long translations wrap instead of spilling out
+	_apply_pixel_boxes(button)
 
 # Pause menu: bold buttons with a larger font (the dim layer is dim_background)
 func _style_pause_menu():
@@ -698,34 +700,78 @@ const FACE_PRESSED = Color(0.84, 0.80, 0.70)
 const OUTLINE = Color(0.20, 0.15, 0.13)
 const INK = Color(0.20, 0.15, 0.13)
 
-func _chunky_box(face: Color, border: int, shadow: int, pressed := false) -> StyleBoxFlat:
-	var sb = StyleBoxFlat.new()
-	sb.bg_color = face
-	sb.border_color = OUTLINE
-	sb.set_border_width_all(border)
-	sb.set_corner_radius_all(border * 3)
-	sb.corner_detail = 3            # blocky, pixel-art corners
-	sb.anti_aliasing = false
-	sb.shadow_color = Color(0, 0, 0, 0.55)
-	sb.shadow_size = 0
-	sb.shadow_offset = Vector2(0, 0 if pressed else shadow)
-	sb.content_margin_left = 16
-	sb.content_margin_right = 16
-	sb.content_margin_top = 6 + (shadow if pressed else 0)
-	sb.content_margin_bottom = 6
+# The button face is pixel art drawn in code: a 16x16 nine-patch (1 white
+# outline pixel, 1 dark outline pixel, notched corners, a light top row and a
+# darker 2-pixel bottom shade), scaled up PIXEL times with nearest filtering so
+# every art pixel is a crisp PIXEL x PIXEL block on screen.
+const PIXEL = 3
+const ART = 16
+const SHADE_DARK = Color(0.66, 0.60, 0.50)
+static var _pixel_boxes = {}
+
+static func _px_inside(x: int, y: int, inset: int, notch: int, bottom_extra := 0) -> bool:
+	var r = ART - 1 - inset
+	var b = ART - 1 - inset
+	if x < inset or x > r or y < inset or y > b:
+		return false
+	var dx = min(x - inset, r - x)
+	var dy = min(y - inset, b - y)
+	return dx + dy >= notch
+
+static func _pixel_box(face: Color, pressed: bool) -> StyleBoxTexture:
+	var key = "%s|%s" % [face.to_html(), pressed]
+	if _pixel_boxes.has(key):
+		return _pixel_boxes[key]
+	var img = Image.create(ART, ART, false, Image.FORMAT_RGBA8)
+	img.fill(Color(0, 0, 0, 0))
+	var light = face.lightened(0.45)
+	var shade = face.darkened(0.22)
+	for y in ART:
+		for x in ART:
+			var c = Color(0, 0, 0, 0)
+			if _px_inside(x, y, 0, 2):
+				c = Color.WHITE                      # 1-pixel white outline
+			if _px_inside(x, y, 1, 2):
+				c = OUTLINE                          # dark outline
+			if _px_inside(x, y, 2, 1):
+				c = face
+				var top = 2; var bottom = ART - 3
+				if pressed:
+					if y <= top + 1: c = shade       # pressed in: shadow at the top
+				else:
+					if y == top: c = light           # top highlight row
+					elif y >= bottom - 1: c = shade  # bottom shade rows
+					if x == 2 and y < bottom - 1: c = c.lightened(0.25)   # left highlight column
+			img.set_pixel(x, y, c)
+	img.resize(ART * PIXEL, ART * PIXEL, Image.INTERPOLATE_NEAREST)
+	var sb = StyleBoxTexture.new()
+	sb.texture = ImageTexture.create_from_image(img)
+	var m = 5 * PIXEL
+	sb.texture_margin_left = m
+	sb.texture_margin_right = m
+	sb.texture_margin_top = m
+	sb.texture_margin_bottom = m
+	sb.content_margin_left = 6 * PIXEL
+	sb.content_margin_right = 6 * PIXEL
+	sb.content_margin_top = 2 * PIXEL + (PIXEL if pressed else 0)
+	sb.content_margin_bottom = 3 * PIXEL - (PIXEL if pressed else 0)
+	_pixel_boxes[key] = sb
 	return sb
 
-func _style_chunky(button: Button, font_size: int, border := 4):
-	var shadow = border + 2
-	button.add_theme_stylebox_override("normal", _chunky_box(FACE, border, shadow))
-	button.add_theme_stylebox_override("hover", _chunky_box(FACE_HOVER, border, shadow))
-	button.add_theme_stylebox_override("pressed", _chunky_box(FACE_PRESSED, border, shadow, true))
-	button.add_theme_stylebox_override("hover_pressed", _chunky_box(FACE_PRESSED, border, shadow, true))
-	button.add_theme_stylebox_override("disabled", _chunky_box(FACE.darkened(0.3), border, shadow))
+func _apply_pixel_boxes(button: Button):
+	button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	button.add_theme_stylebox_override("normal", _pixel_box(FACE, false))
+	button.add_theme_stylebox_override("hover", _pixel_box(FACE_HOVER, false))
+	button.add_theme_stylebox_override("pressed", _pixel_box(FACE_PRESSED, true))
+	button.add_theme_stylebox_override("hover_pressed", _pixel_box(FACE_PRESSED, true))
+	button.add_theme_stylebox_override("disabled", _pixel_box(FACE.darkened(0.35), false))
 	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 	for c in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
 		button.add_theme_color_override(c, INK)
-	button.add_theme_color_override("font_disabled_color", INK.lightened(0.3))
+	button.add_theme_color_override("font_disabled_color", INK.lightened(0.35))
+
+func _style_chunky(button: Button, font_size: int, _border := 4):
+	_apply_pixel_boxes(button)
 	button.add_theme_font_override("font", _get_bold_font())
 	button.add_theme_font_size_override("font_size", font_size)
 	button.focus_mode = Control.FOCUS_NONE
