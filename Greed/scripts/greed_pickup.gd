@@ -104,3 +104,18 @@ func _speed_buff(body):
 	# the air speed cap hid the boost.)
 	if body.has_method("add_speed_boost"):
 		body.add_speed_boost(mult, secs)
+
+# Safety net: body_entered only fires when the player *enters* the area, so a
+# pickup the sheep was already standing in (after a respawn/teleport, a scene
+# reload, or when monitoring was switched back on) was never collected. Check
+# the overlaps a few times a second as well.
+var _overlap_t = 0.0
+func _physics_process(delta):
+	_overlap_t += delta
+	if _overlap_t < 0.1 or not monitoring or is_queued_for_deletion():
+		return
+	_overlap_t = 0.0
+	for b in get_overlapping_bodies():
+		if b.is_in_group("player"):
+			_on_body_entered(b)
+			return

@@ -479,3 +479,8 @@ Run into SinDeath and the idol!,Run into SinDeath and the idol!,¡Choca contra S
 Language,Language,Idioma,Język
 Start Endless,Start Endless,Empezar Sin fin,Zacznij Bez końca
 Credits,Credits,Créditos,Twórcy
+"ATK +%d%%","ATK +%d%%","ATQ +%d%%","ATK +%d%%"
+"%d%%: ATK +%d%% (level)","%d%%: ATK +%d%% (level)","%d%%: ATQ +%d%% (nivel)","%d%%: ATK +%d%% (poziom)"
+Zeal Scroll,Zeal Scroll,Pergamino de celo,Zwój gorliwości
+Graveyard,Graveyard,Cementerio,Cmentarz
+"You fell! Back up you go.","You fell! Back up you go.","¡Te caíste! De vuelta arriba.","Spadłeś! Z powrotem na górę."

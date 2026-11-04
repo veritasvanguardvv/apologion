@@ -23,6 +23,7 @@
 [ext_resource type="PackedScene" path="res://item_pickup.tscn" id="15_pickup"]
 [ext_resource type="PackedScene" path="res://atheist_goat.tscn" id="16_goat"]
 [ext_resource type="PackedScene" path="res://atheist_goat_black.tscn" id="17_goatb"]
+[ext_resource type="Script" path="res://Sloth/scripts/sloth_extras.gd" id="18_extras"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bexxu"]
 
@@ -163,6 +164,9 @@ offset_top = -93.0
 offset_right = 3600.0
 offset_bottom = 1071.0
 color = Color(0.0558135, 0.024563024, 0.03385973, 0.61960787)
+
+[node name="SlothExtras" type="Node2D" parent="." unique_id=1129945130]
+script = ExtResource("18_extras")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1804218673]
 position = Vector2(-21, 23)

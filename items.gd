@@ -45,6 +45,13 @@ const ITEMS = {
 		"outside_battle": true,
 		"drop_pickup": "item",
 	},
+	"zeal_scroll": {
+		"name": "Zeal Scroll",
+		"icon": "res://General/Items/fc110.png",   # (tinted gold in the level)
+		"verse": "Romans 12:11",           # Zeal: run faster + jump much higher for 7 s
+		"outside_battle": true,
+		"drop_pickup": "item",
+	},
 	# Greed level (greed_pickup.gd)
 	"money": {
 		"name": "Money",

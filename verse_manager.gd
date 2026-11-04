@@ -38,8 +38,15 @@ func is_discovered(ref: String) -> bool:
 
 
 # True if the verse is discovered and not used yet this cycle.
+# Reusable verses (shown with an infinity sign in the verse list) are never
+# used up: they don't take part in the cycle at all.
+const REUSABLE = ["Isaiah 40:31a"]
+
+func is_reusable(ref: String) -> bool:
+	return ref in REUSABLE
+
 func can_use(ref: String) -> bool:
-	return is_discovered(ref) and not (ref in used_this_cycle)
+	return is_discovered(ref) and (is_reusable(ref) or not (ref in used_this_cycle))
 
 
 func is_used(ref: String) -> bool:
@@ -48,6 +55,9 @@ func is_used(ref: String) -> bool:
 
 # Call this after a verse is successfully used.
 func mark_used(ref: String) -> void:
+	if is_reusable(ref):
+		verses_changed.emit()
+		return
 	if not (ref in used_this_cycle):
 		used_this_cycle.append(ref)
 	# Have we used every discovered verse? Then start a new cycle.
@@ -61,7 +71,7 @@ func mark_used(ref: String) -> void:
 func remaining_count() -> int:
 	var count = 0
 	for ref in discovered:
-		if not (ref in used_this_cycle):
+		if not (ref in used_this_cycle) and not is_reusable(ref):
 			count += 1
 	return count
 

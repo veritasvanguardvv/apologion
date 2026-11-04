@@ -202,6 +202,10 @@ var all_verses = [
 	{"ref": "Matthew 5:28", "type": "lust", "damage": 100, "discovered": true, "en": "everyone who gazes at a woman to lust after her has committed adultery in his heart.", "jesus": true, "pl": "każdy, kto patrzy na kobietę, aby jej pożądać, już popełnił z nią cudzołóstwo w swoim sercu.", "es": "todo el que mira a una mujer para codiciarla ya cometió adulterio en su corazón."},
 	{"ref": "Psalm 18:28", "type": "light", "damage": 50, "discovered": false, "en": "the lord, my god, lights up my darkness.", "pl": "Pan, mój Bóg, rozjaśnia moje ciemności.", "es": "Jehová mi Dios alumbrará mis tinieblas."},
 	{"ref": "Romans 12:11", "type": "zeal", "damage": 50, "discovered": false, "en": "never lag in diligence. let the spirit excite you as you serve the lord.", "pl": "W gorliwości nie ustawajcie, bądźcie płomiennego ducha, Panu służcie.", "es": "En lo que requiere diligencia, no perezosos; fervientes en espíritu, sirviendo al Señor."},
+	# Isaiah 40:31a: Zeal (speed + jump) that is never used up (reusable, the
+	# infinity sign in the verse list) and has a 70% chance of attack +10% for
+	# the rest of the level (stacks: see level_atk_bonus)
+	{"ref": "Isaiah 40:31a", "type": "zeal", "damage": 0, "discovered": false, "atk_chance": 0.7, "atk_up": 0.1, "en": "Those who wait for the Lord will gain new strength", "pl": "ci, co zaufali Panu, odzyskują siły", "es": "los que esperan a Jehová tendrán nuevas fuerzas", "alt": ["But they that wait upon the LORD shall renew their strength", "those who wait for Yahweh will renew their strength", "but those who hope in the LORD will renew their strength"]},
 	{"ref": "1 Corinthians 6:18", "type": "lust", "damage": 50, "discovered": false, "en": "flee sexual immorality!", "pl": "Uciekajcie przed nierządem!", "es": "¡huyan de la inmoralidad sexual!"},
 	{"ref": "Proverbs 6:32", "type": "lust", "damage": 50, "discovered": false, "en": "he who commits adultery is a fool who destroys himself.", "pl": "Kto cudzołoży, jest głupcem, który niszczy samego siebie.", "es": "el que comete adulterio es un necio que se destruye a sí mismo."},
 	{"ref": "Psalm 18:28a", "type": "light", "damage": 50, "discovered": false, "en": "you light a lamp for me.", "pl": "Ty zapalasz moją lampę.", "es": "Tú encenderás mi lámpara."},
@@ -239,7 +243,8 @@ var light_verses = [
 ]
 
 var zeal_verses = [
-	{"ref": "romans 12:11", "text": "never lag in diligence. let the spirit excite you as you serve the lord."}
+	{"ref": "romans 12:11", "text": "never lag in diligence. let the spirit excite you as you serve the lord."},
+	{"ref": "isaiah 40:31", "text": "those who wait for the lord will gain new strength"}
 ]
 
 var bible_books = ["psalm", "psalms", "proverb", "proverbs", "matthew", "romans", "corinthians", "isaiah"]
@@ -652,6 +657,8 @@ func cast_verse(verse, damage_scale := 1.0, can_counter := false, use_choice := 
 			apply_verse_statuses(verse)
 		else:   # Ramuel / Baana: all of it on themselves (their own stats)
 			apply_verse_statuses(verse, caster)
+	if caster == null and verse.has("atk_chance"):
+		_roll_level_atk(verse)
 	match verse.type:
 		"sloth", "lust", "all":
 			# Attack: split between the targets (all enemies by default)
@@ -938,7 +945,7 @@ func _light_up():
 # The countdown shows in the status row ("Zeal +100%  3s") and in the
 # level's TimerLabel if it has one. (Before, a level without a TimerLabel -
 # Greed - ended the boost at once.)
-@export var zeal_seconds = 3
+@export var zeal_seconds = 7
 var zeal_left = 0
 var zeal_label: Label
 
@@ -971,7 +978,20 @@ func add_zeal(pct: float):
 
 # Your attack verses' damage: 1 + Faith + Zeal (0.5 = +50%)
 func attack_multiplier() -> float:
-	return max(1.0 + faith_bonus + zeal / 100.0, 0.0)
+	return max(1.0 + faith_bonus + zeal / 100.0 + level_atk_bonus, 0.0)
+
+# Isaiah 40:31a: attack +10% (70% chance per use) for the rest of the level,
+# stacking (+10%, +20%...). A player node lives as long as its level, so it
+# resets on the next level.
+var level_atk_bonus = 0.0
+func _roll_level_atk(verse):
+	var chance = float(verse.get("atk_chance", 0.0))
+	if chance <= 0.0 or randf() >= chance:
+		return false
+	level_atk_bonus += float(verse.get("atk_up", 0.1))
+	PopupText.spawn(self, tr("ATK +%d%%") % roundi(float(verse.get("atk_up", 0.1)) * 100), Color(1.0, 0.85, 0.4), Vector2(0, -70), 1.8)
+	print("Level attack bonus now +", roundi(level_atk_bonus * 100), "%")
+	return true
 
 func _zeal_boost():
 	if zeal_left > 0:
@@ -1308,9 +1328,11 @@ func _update_verse_text():
 		if VerseManager.is_discovered(v.ref):
 			var body = verse_body(v)
 			# Used verses are greyed out until the cycle resets; ready ones are green
-			var used = VerseManager.is_used(v.ref)
+			var used = VerseManager.is_used(v.ref) and not VerseManager.is_reusable(v.ref)
 			var color = "gray" if used else "lightgreen"
 			var status = tr("(used)") if used else tr("(ready)")
+			if VerseManager.is_reusable(v.ref):
+				status = "∞ " + tr("(ready)")   # never used up
 			var power = verse_power_text(v)
 			var instant = instant_kill_text(v)
 			if instant != "":   # in gold in the Effects column
@@ -1415,6 +1437,8 @@ func verse_power_text(v) -> String:
 		extra.append(tr("+%d%% atk") % int(min(v.faith, faith_max * 100)))
 	if float(v.get("wisdom", 0)) > 0:
 		extra.append(tr("+%d%% wis") % int(v.wisdom))
+	if v.has("atk_chance"):
+		extra.append(tr("%d%%: ATK +%d%% (level)") % [roundi(v.atk_chance * 100), roundi(v.get("atk_up", 0.1) * 100)])
 	if not extra.is_empty():
 		text = _pack_labels([text] + extra)
 	return text
