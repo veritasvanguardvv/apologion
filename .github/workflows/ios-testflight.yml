@@ -14,6 +14,7 @@
 #   IOS_PROFILE_BASE64                             App Store provisioning profile for the bundle id
 #   IOS_ADHOC_PROFILE_BASE64                       Ad Hoc profile (only for distribution=ad-hoc;
 #                                                  `asc_setup.py adhoc` creates it, see IOS_BUILD.md)
+#   IOS_PROFILE_ES_BASE64 / IOS_ADHOC_PROFILE_ES_BASE64  the same two for edition=es (bundle id com.veritasvanguard.apologion.es)
 #
 # distribution=ad-hoc builds an .ipa signed for the registered test iPhones only and
 # attaches it to the run as an artifact instead of uploading to TestFlight (no review).
@@ -38,6 +39,11 @@ on:
         type: choice
         options: [macos-26-intel, macos-26, macos-15, macos-15-intel]
         default: macos-26-intel
+      edition:
+        description: "main = Apologion; es = (Es) Apologion (Spanish, Greed only; bundle id com.veritasvanguard.apologion.es)"
+        type: choice
+        options: [main, es]
+        default: main
       marketing_version:
         description: "Version shown in TestFlight (CFBundleShortVersionString). Blank = the export preset's."
         required: false
@@ -46,14 +52,19 @@ on:
   #   branches: [main]
 
 concurrency:
-  group: ios-testflight-${{ inputs.distribution || 'app-store' }}
+  group: ios-testflight-${{ inputs.edition || 'main' }}-${{ inputs.distribution || 'app-store' }}
   cancel-in-progress: true
 
 env:
   GODOT_VERSION: "4.7.2"
-  PRESET: "iOS"
+  # edition=es: the "iOS (Es)" export preset (feature tag es_edition), its own
+  # bundle id / App Store Connect app, and the IOS_PROFILE_ES_BASE64 /
+  # IOS_ADHOC_PROFILE_ES_BASE64 provisioning profiles made for that bundle id.
+  EDITION: ${{ inputs.edition || 'main' }}
+  PRESET: ${{ inputs.edition == 'es' && 'iOS (Es)' || 'iOS' }}
   APP_NAME: "Apologion"
-  BUNDLE_ID: "com.veritasvanguard.apologion"
+  DISPLAY_NAME: ${{ inputs.edition == 'es' && '(Es) Apologion' || 'Apologion' }}
+  BUNDLE_ID: ${{ inputs.edition == 'es' && 'com.veritasvanguard.apologion.es' || 'com.veritasvanguard.apologion' }}
   DISTRIBUTION: ${{ inputs.distribution || 'app-store' }}
 
 jobs:
@@ -69,9 +80,14 @@ jobs:
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
           P12: ${{ secrets.IOS_DIST_P12_BASE64 }}
           P12_PW: ${{ secrets.IOS_DIST_P12_PASSWORD }}
-          PROFILE: ${{ secrets.IOS_PROFILE_BASE64 }}
-          ADHOC_PROFILE: ${{ secrets.IOS_ADHOC_PROFILE_BASE64 }}
+          PROFILE_MAIN: ${{ secrets.IOS_PROFILE_BASE64 }}
+          ADHOC_PROFILE_MAIN: ${{ secrets.IOS_ADHOC_PROFILE_BASE64 }}
+          PROFILE_ES: ${{ secrets.IOS_PROFILE_ES_BASE64 }}
+          ADHOC_PROFILE_ES: ${{ secrets.IOS_ADHOC_PROFILE_ES_BASE64 }}
         run: |
+          # edition=es must use the profiles made for its own bundle id (no fallback)
+          if [ "$EDITION" = "es" ]; then PROFILE="$PROFILE_ES"; ADHOC_PROFILE="$ADHOC_PROFILE_ES"; SFX="_ES"
+          else PROFILE="$PROFILE_MAIN"; ADHOC_PROFILE="$ADHOC_PROFILE_MAIN"; SFX=""; fi
           missing=""
           if [ "$DISTRIBUTION" = "ad-hoc" ]; then PROFILE="$ADHOC_PROFILE"; fi
           [ -n "$ASC_KEY_ID" ] || missing="$missing ASC_KEY_ID"
@@ -80,8 +96,8 @@ jobs:
           [ -n "$P12" ] || missing="$missing IOS_DIST_P12_BASE64"
           [ -n "$P12_PW" ] || missing="$missing IOS_DIST_P12_PASSWORD"
           if [ -z "$PROFILE" ]; then
-            if [ "$DISTRIBUTION" = "ad-hoc" ]; then missing="$missing IOS_ADHOC_PROFILE_BASE64"
-            else missing="$missing IOS_PROFILE_BASE64"; fi
+            if [ "$DISTRIBUTION" = "ad-hoc" ]; then missing="$missing IOS_ADHOC_PROFILE${SFX}_BASE64"
+            else missing="$missing IOS_PROFILE${SFX}_BASE64"; fi
           fi
           if [ -n "$missing" ]; then
             echo "::error::Missing repo secrets:$missing (see TESTFLIGHT.md)"
@@ -160,16 +176,24 @@ jobs:
           "$GODOT" --headless --path . --export-release "$PRESET" "build/ios/${APP_NAME}.xcodeproj"
           test -f "build/ios/${APP_NAME}.xcodeproj/project.pbxproj"
           test -f "build/ios/${APP_NAME}.pck"
-          /usr/libexec/PlistBuddy -c 'Print' "build/ios/${APP_NAME}/${APP_NAME}-Info.plist" | head -60
+          PLIST="build/ios/${APP_NAME}/${APP_NAME}-Info.plist"
+          # the home-screen name ("(Es) Apologion" for edition=es)
+          /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName $DISPLAY_NAME" "$PLIST" || /usr/libexec/PlistBuddy -c "Add :CFBundleDisplayName string $DISPLAY_NAME" "$PLIST"
+          /usr/libexec/PlistBuddy -c 'Print' "$PLIST" | head -60
 
       - name: Install signing certificate and profile
         env:
           P12: ${{ secrets.IOS_DIST_P12_BASE64 }}
           P12_PW: ${{ secrets.IOS_DIST_P12_PASSWORD }}
-          PROFILE: ${{ secrets.IOS_PROFILE_BASE64 }}
-          ADHOC_PROFILE: ${{ secrets.IOS_ADHOC_PROFILE_BASE64 }}
+          PROFILE_MAIN: ${{ secrets.IOS_PROFILE_BASE64 }}
+          ADHOC_PROFILE_MAIN: ${{ secrets.IOS_ADHOC_PROFILE_BASE64 }}
+          PROFILE_ES: ${{ secrets.IOS_PROFILE_ES_BASE64 }}
+          ADHOC_PROFILE_ES: ${{ secrets.IOS_ADHOC_PROFILE_ES_BASE64 }}
         run: |
           set -euo pipefail
+          # edition=es must use the profiles made for its own bundle id (no fallback)
+          if [ "$EDITION" = "es" ]; then PROFILE="$PROFILE_ES"; ADHOC_PROFILE="$ADHOC_PROFILE_ES"
+          else PROFILE="$PROFILE_MAIN"; ADHOC_PROFILE="$ADHOC_PROFILE_MAIN"; fi
           if [ "$DISTRIBUTION" = "ad-hoc" ]; then PROFILE="$ADHOC_PROFILE"; fi
           KC="$RUNNER_TEMP/ci.keychain-db"
           KC_PW="$(uuidgen)"
@@ -270,7 +294,7 @@ jobs:
         if: env.DISTRIBUTION == 'ad-hoc'
         uses: actions/upload-artifact@v4
         with:
-          name: Apologion-adhoc-${{ github.run_number }}
+          name: Apologion-${{ inputs.edition || 'main' }}-adhoc-${{ github.run_number }}
           path: ${{ runner.temp }}/ipa/*.ipa
           retention-days: 30
           if-no-files-found: error

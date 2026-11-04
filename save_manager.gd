@@ -33,6 +33,29 @@ var defeated_enemies: Dictionary = {}
 const DEFAULT_UNLOCKED = ["Sloth", "Gluttony", "Lust", "Greed"]
 var unlocked_levels = DEFAULT_UNLOCKED.duplicate()
 
+# ---------------- Editions ----------------
+# The same project builds two apps:
+#   main edition  - "Apologion"
+#   es edition    - "(Es) Apologion": Spanish on first launch (still switchable
+#                   in Settings), opens straight into Greed, every other Story
+#                   level locked. Turned on by the custom feature tag
+#                   `es_edition` (the "iOS (Es)" export preset), the project
+#                   setting apologion/edition="es", or `-- edition=es` on the
+#                   command line (tests).
+const ES_EDITION_LEVELS = ["Greed"]
+const ES_EDITION_START = "res://Greed.tscn"
+static func edition() -> String:
+	if OS.has_feature("es_edition") or "edition=es" in OS.get_cmdline_user_args():
+		return "es"
+	return str(ProjectSettings.get_setting("apologion/edition", "main"))
+static func is_es_edition() -> bool:
+	return edition() == "es"
+func _apply_edition_locks():
+	if not is_es_edition():
+		return
+	unlocked_levels.clear()   # (same array menu_layer shares)
+	unlocked_levels.append_array(ES_EDITION_LEVELS)
+
 # "en" or "es" - set by the English / Español buttons in the main menu.
 # Always change it with set_language() so all the text switches too.
 var language = "en"
@@ -68,8 +91,13 @@ var endless_snapshot = null
 func _ready():
 	if GameSettings.language != "":
 		language = GameSettings.language   # picked in Settings (settings.cfg)
+	elif is_es_edition():
+		language = "es"   # (Es) Apologion: Spanish until changed in Settings
 	TranslationServer.set_locale(language)
 	load_profile()
+	_apply_edition_locks()
+	if is_es_edition():
+		print("Edition: es (Spanish default, Greed only)")
 
 
 # ---------------- Language ----------------
@@ -336,9 +364,10 @@ func load_game(change_level := true) -> bool:
 	for level_name in DEFAULT_UNLOCKED:
 		if level_name not in unlocked_levels:
 			unlocked_levels.append(level_name)
+	_apply_edition_locks()
 
 	# The language picked in Settings wins over the one stored in the save
-	set_language(GameSettings.language if GameSettings.language != "" else config.get_value("progress", "language", "en"))
+	set_language(GameSettings.language if GameSettings.language != "" else ("es" if is_es_edition() else config.get_value("progress", "language", "en")))
 	PartyManager.current = config.get_value("progress", "party", PartyManager.DEFAULT_MEMBER)
 	PartyManager.member_hp = config.get_value("progress", "party_hp", {})
 	Inventory.load_save_data(config.get_value("items", "inventory", {}))
