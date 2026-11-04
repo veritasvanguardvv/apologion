@@ -90,7 +90,7 @@ func problem() -> Array:
 	if not ProjectSettings.get_setting("audio/driver/enable_input", false):
 		return ["Voice: audio input is turned off (Project Settings > Audio > Driver > Enable Input)"]
 	var loaded = GDExtensionManager.is_extension_loaded(EXTENSION_PATH) and ClassDB.class_exists("SpeechToText")
-	if not loaded and (OS.has_feature("ios") or OS.has_feature("web")):
+	if not loaded and (OS.has_feature("ios") or OS.has_feature("android") or OS.has_feature("web")):
 		# Phones / browser: the voice library is inside the app (not in res://)
 		# or there is none, so nothing the player can fix - point to typing.
 		return ["Voice input isn't available on this phone (%s). Tap Type and use the keyboard's microphone key instead.", OS.get_name() + " " + OS.get_version()]
