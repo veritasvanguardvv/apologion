@@ -3748,14 +3748,6 @@ attack_damage = 2
 defense = 0.5
 battle_speed = 5
 
-[node name="Greedwolf_GreedwolfWeak" parent="Enemies" instance=ExtResource("52_g")]
-position = Vector2(6888, -154.4)
-display_name = "Greedwolf"
-max_hp = 100
-attack_damage = 2
-defense = 0.5
-battle_speed = 5
-
 [node name="Greedog_GreedogWeak" parent="Enemies" instance=ExtResource("51_g")]
 position = Vector2(1976.4, -268)
 display_name = "Greedog"
