@@ -34,27 +34,41 @@ const DEFAULT_UNLOCKED = ["Sloth", "Gluttony", "Lust", "Greed"]
 var unlocked_levels = DEFAULT_UNLOCKED.duplicate()
 
 # ---------------- Editions ----------------
-# The same project builds two apps:
-#   main edition  - "Apologion"
-#   es edition    - "(Es) Apologion": Spanish on first launch (still switchable
-#                   in Settings), opens straight into Greed, every other Story
-#                   level locked. Turned on by the custom feature tag
-#                   `es_edition` (the "iOS (Es)" export preset), the project
-#                   setting apologion/edition="es", or `-- edition=es` on the
-#                   command line (tests).
-const ES_EDITION_LEVELS = ["Greed"]
-const ES_EDITION_START = "res://Greed.tscn"
+# The same project builds a few apps from one codebase:
+#   main edition      - "Apologion" (full story unlocks)
+#   es edition        - "(Es) Apologion": Spanish on first launch (still
+#                       switchable in Settings), opens straight into Greed,
+#                       every other Story level locked. Feature `es_edition`
+#                       (iOS/Android Es presets), apologion/edition="es", or
+#                       `-- edition=es` on the command line (tests).
+#   web_greed edition - English itch.io / HTML5 build: same Greed-only lock,
+#                       English default. Feature `web_greed` (Web export
+#                       preset), apologion/edition="web_greed", or
+#                       `-- edition=web_greed`.
+const GREED_ONLY_LEVELS = ["Greed"]
+const GREED_ONLY_START = "res://Greed.tscn"
+# Kept as aliases so older scripts / tests that say ES_EDITION_* still work.
+const ES_EDITION_LEVELS = GREED_ONLY_LEVELS
+const ES_EDITION_START = GREED_ONLY_START
 static func edition() -> String:
 	if OS.has_feature("es_edition") or "edition=es" in OS.get_cmdline_user_args():
 		return "es"
+	if OS.has_feature("web_greed") or "edition=web_greed" in OS.get_cmdline_user_args() \
+			or "edition=eng_greed" in OS.get_cmdline_user_args():
+		return "web_greed"
 	return str(ProjectSettings.get_setting("apologion/edition", "main"))
 static func is_es_edition() -> bool:
 	return edition() == "es"
+static func is_web_greed_edition() -> bool:
+	return edition() == "web_greed"
+# Greed-only lock shared by (Es) Apologion and the English itch Web build.
+static func is_greed_only_edition() -> bool:
+	return is_es_edition() or is_web_greed_edition()
 func _apply_edition_locks():
-	if not is_es_edition():
+	if not is_greed_only_edition():
 		return
 	unlocked_levels.clear()   # (same array menu_layer shares)
-	unlocked_levels.append_array(ES_EDITION_LEVELS)
+	unlocked_levels.append_array(GREED_ONLY_LEVELS)
 
 # "en" or "es" - set by the English / Español buttons in the main menu.
 # Always change it with set_language() so all the text switches too.
@@ -93,11 +107,15 @@ func _ready():
 		language = GameSettings.language   # picked in Settings (settings.cfg)
 	elif is_es_edition():
 		language = "es"   # (Es) Apologion: Spanish until changed in Settings
+	elif is_web_greed_edition():
+		language = "en"   # itch Web: English until changed in Settings
 	TranslationServer.set_locale(language)
 	load_profile()
 	_apply_edition_locks()
 	if is_es_edition():
 		print("Edition: es (Spanish default, Greed only)")
+	elif is_web_greed_edition():
+		print("Edition: web_greed (English default, Greed only)")
 
 
 # ---------------- Language ----------------

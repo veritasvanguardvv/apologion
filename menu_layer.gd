@@ -65,13 +65,13 @@ func _ready():
 	if not SaveManager.has_meta("boot_menu_done"):
 		SaveManager.set_meta("boot_menu_done", true)
 		var args = OS.get_cmdline_args()
-		if SaveManager.is_es_edition():
-			# (Es) Apologion opens straight into Greed (the menu stays reachable
-			# from the pause menu: Quit to Menu)
+		if SaveManager.is_greed_only_edition():
+			# Greed-only editions (Es + English itch Web) open straight into
+			# Greed (the menu stays reachable from the pause menu: Quit to Menu)
 			var here = get_tree().current_scene.scene_file_path if get_tree().current_scene else ""
-			if here != SaveManager.ES_EDITION_START:
+			if here != SaveManager.GREED_ONLY_START:
 				SaveManager.start_new_level()
-				call_deferred("change_scene", SaveManager.ES_EDITION_START)
+				call_deferred("change_scene", SaveManager.GREED_ONLY_START)
 		elif not ("-s" in args or "--script" in args):
 			_show_only(main_menu)
 
@@ -263,8 +263,8 @@ func _update_story_buttons():
 				child.modulate = Color(0.5, 0.5, 0.5)
 
 func unlock_next_level(completed: String):
-	if SaveManager.is_es_edition():
-		return   # (Es) Apologion: only Greed
+	if SaveManager.is_greed_only_edition():
+		return   # Greed-only editions: only Greed
 	var order = ["Sloth", "Gluttony", "Lust", "Anger", "Greed", "Envy", "Pride"]
 	var idx = order.find(completed)
 	if idx != -1 and idx + 1 < order.size():

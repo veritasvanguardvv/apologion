@@ -61,11 +61,46 @@ func _ready():
 		var b = buttons[n]
 		_normal_style[n] = [b.position, b.texture_normal, b.texture_pressed, b.shape.radius]
 	GameSettings.touch_controls_changed.connect(func(_on): _update_visibility())
+	# itch.io / mobile browsers often sit in an iframe where Godot's UA
+	# feature tags (web_ios / web_android) and is_touchscreen_available()
+	# miss. If the page already flagged a touchy device, or the first real
+	# finger arrives, force the on-screen controls on.
+	if OS.has_feature("web") and _web_page_looks_touchy():
+		force_show = true
 	_update_visibility()
 
 
+# First real finger on a Web build: show the controls even when detection
+# failed (desktop-mode iPad, itch iframe, etc.).
+func _input(event: InputEvent) -> void:
+	if force_show or not OS.has_feature("web"):
+		return
+	if event is InputEventScreenTouch and event.pressed:
+		force_show = true
+		_update_visibility()
+
+
 static func is_touch_device() -> bool:
-	return tap_to_type() or DisplayServer.is_touchscreen_available() or OS.has_feature("mobile") or OS.has_feature("web_ios") or OS.has_feature("web_android")
+	if tap_to_type() or DisplayServer.is_touchscreen_available() \
+			or OS.has_feature("mobile") or OS.has_feature("web_ios") \
+			or OS.has_feature("web_android"):
+		return true
+	# Web: trust the page's own maxTouchPoints / coarse-pointer probe
+	# (set in the export HTML head_include) when Godot's features miss.
+	if OS.has_feature("web") and _web_page_looks_touchy():
+		return true
+	return false
+
+
+# Reads window.__apologionTouchy from the HTML shell (head_include). Safe
+# no-op off the Web export.
+static func _web_page_looks_touchy() -> bool:
+	if not OS.has_feature("web"):
+		return false
+	if not ClassDB.class_exists("JavaScriptBridge"):
+		return false
+	var v = JavaScriptBridge.eval("!!(window.__apologionTouchy)")
+	return bool(v)
 
 
 # The phone app (iOS, Android): the verse box says "Tap here to type or
