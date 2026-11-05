@@ -47,7 +47,9 @@ var touch_controls = true               # on-screen buttons on phones / tablets 
 var boss_battles_3d = true              # boss fights (SinDeath) shown in 3D (battle_3d.gd); off = the 2D fight
 # Baby Mode (baby_mode.gd): no typing or speaking verses - you defeat enemies
 # by running into them and a matching verse is read out loud.
-var baby_mode = false
+# Default ON for new installs / unset settings; an existing settings.cfg that
+# already saved baby_mode=false keeps it off (_load below).
+var baby_mode = true
 signal baby_mode_changed(on)
 # Language picked in Settings / the main menu ("" = not picked yet). Saved here
 # so it survives restarts; SaveManager.set_language() applies it.

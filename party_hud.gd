@@ -4,10 +4,11 @@ extends HBoxContainer
 # Under the player's portrait and HP bar, one small card per party member
 # who is with you (Pastor Ramuel or Baana, and every phone player), side by
 # side:
-#     [ portrait ]   the same 56 x 56 box as the player's own portrait,
-#     [ name     ]   (the name at the bottom of the box)
-#     [ HP 80/100]   their HP bar right under it, as wide as the box (green;
-#                    red at 25% or less; grey and "KO" when knocked out)
+#     [ portrait ]   the same 56 x 56 box as the player's own portrait
+#                    (no name on the icon)
+#     [ HP 80/100]   their HP bar right under it, same style as the player's
+#                    HP bar (height 24, green; red at 25% or less; grey and
+#                    "KO" when knocked out)
 # It replaces the small HP bars that used to float over their heads. It
 # follows the party live: damage, healing, knock-outs, a member switched in
 # mid-battle (party_manager.gd), a phone player joining or leaving. Built by
@@ -15,9 +16,9 @@ extends HBoxContainer
 # it shows wherever the player's own HP bar shows (2D, the 3D boss view).
 
 const PORTRAIT = 56.0                 # = TurnManager.make_portrait (the player's box)
-const BAR_SIZE = Vector2(56, 16)
+const BAR_SIZE = Vector2(56, 24)      # same height as the player's HUD_HP_SIZE
 const CARD_GAP = 8
-const HP_COLOR = Color(0.2, 0.75, 0.25)
+const HP_COLOR = Color(0.2, 0.75, 0.25)   # = character_body_2d.gd HP_COLOR
 const LOW_HP_COLOR = Color(0.85, 0.12, 0.12)
 const KO_COLOR = Color(0.45, 0.45, 0.5)
 const LOW_HP_RATIO = 0.25
@@ -64,18 +65,11 @@ func _rebuild(list: Array):
 		frame.name = "Portrait"
 		frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var pic = frame.get_node("Picture")
+		# No name on the portrait (used to show "Ramuel" / "Baana" over the icon).
 		var who = Label.new()
 		who.name = "Name"
-		who.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-		who.position = Vector2(2, PORTRAIT - 17)
-		who.size = Vector2(PORTRAIT - 4, 15)
-		who.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		who.clip_text = true
-		who.add_theme_font_size_override("font_size", 10)
-		who.add_theme_color_override("font_outline_color", Color.BLACK)
-		who.add_theme_constant_override("outline_size", 4)
+		who.visible = false
 		who.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		frame.add_child(who)
 		row.add_child(frame)
 		var bar = ProgressBar.new()
 		bar.name = "HPBar"
@@ -84,7 +78,7 @@ func _rebuild(list: Array):
 		bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var fill = StyleBoxFlat.new()
 		fill.bg_color = HP_COLOR
-		fill.set_corner_radius_all(3)
+		fill.set_corner_radius_all(3)   # same corner as the player's HP fill
 		bar.add_theme_stylebox_override("fill", fill)
 		var back = StyleBoxFlat.new()
 		back.bg_color = Color(0.1, 0.1, 0.1, 0.8)
@@ -97,7 +91,7 @@ func _rebuild(list: Array):
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		label.clip_text = true
-		label.add_theme_font_size_override("font_size", 10)
+		label.add_theme_font_size_override("font_size", 12)
 		label.add_theme_color_override("font_outline_color", Color.BLACK)
 		label.add_theme_constant_override("outline_size", 3)
 		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -121,9 +115,7 @@ func _update_row(r):
 	var text = tr("KO") if ko else ("%d/%d" % [ceil(m.hp), max_hp])
 	if r.label.text != text:
 		r.label.text = text
-	var who = short_name(tr(m.display_name))
-	if r.name_label.text != who:
-		r.name_label.text = who
+	# Portrait stays nameless (no "Ramuel" / short_name overlay).
 	# Baana's golden tint, a phone sheep's colour (darker when knocked out)
 	var tint = m.get("base_modulate")
 	if tint == null and m.get("visual"):
@@ -132,7 +124,7 @@ func _update_row(r):
 	tint.a = 1.0
 	r.pic.modulate = tint.darkened(0.45) if ko else tint
 
-# "Pastor Ramuel" -> "Ramuel" (the box is small); phone names stay as they are
+# Kept for callers / tests; party portraits no longer show a name.
 static func short_name(n: String) -> String:
 	var parts = n.strip_edges().split(" ", false)
 	return parts[parts.size() - 1] if parts.size() > 1 else n
