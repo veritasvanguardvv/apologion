@@ -62,6 +62,7 @@
 [ext_resource type="Texture2D" uid="uid://dg0o06xr4ed4x" path="res://Sloth/Light tests/Halo ring.png" id="t_6_w3cbm"]
 [ext_resource type="Script" path="res://Greed/scripts/dig_spot.gd" id="dig_spot_g"]
 
+[ext_resource type="Script" path="res://Greed/scripts/gate_bust.gd" id="57_g"]
 [sub_resource type="Gradient" id="t_Gradient_d5c3b"]
 offsets = PackedFloat32Array(0, 0.9386792)
 colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
@@ -3498,6 +3499,10 @@ texture = ExtResource("46_g")
 region_enabled = true
 region_rect = Rect2(314, 276, 76, 158)
 
+[node name="GateBust" type="Node2D" parent="Interactive"]
+script = ExtResource("57_g")
+break_sound = ExtResource("43_g")
+
 [node name="GoldenCalf" type="StaticBody2D" parent="Interactive"]
 position = Vector2(11774.88, 101.92)
 script = ExtResource("42_g")
@@ -3829,7 +3834,7 @@ defense = 0.5
 battle_speed = 7
 
 [node name="Greedog_Greedog_2" parent="Enemies" instance=ExtResource("51_g")]
-position = Vector2(11246.4, 213.6)
+position = Vector2(10875, 270)
 display_name = "Greedog"
 max_hp = 69
 attack_damage = 2
