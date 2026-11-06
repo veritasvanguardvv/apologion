@@ -359,8 +359,9 @@ func _play_hit_sound():
 
 # ---------------- Falling (you can't lose) ----------------
 # Falling into a pit puts you back where you last stood (a moment before),
-# instead of restarting the level / ending the Endless run.
-# (greed_level.gd / endless_level.gd player_fell call fall_back)
+# instead of restarting the story level. Endless mode does NOT use this —
+# a fall there ends the run for the high score (endless_level.player_fell).
+# (greed_level.gd player_fell calls fall_back)
 var _safe = []          # [msec, position] while standing on the ground, newest last
 var _safe_scene = 0
 

@@ -53,6 +53,15 @@ func ensure_party():
 	var level = get_tree().current_scene
 	if player == null or level == null:
 		return
+	# Endless mode: solo run — no Pastor Ramuel / Baana (phone friends OK)
+	if level.is_in_group("no_save") or level.is_in_group("endless"):
+		for member in get_tree().get_nodes_in_group("party"):
+			if member.is_in_group("phone_players"):
+				continue
+			member.remove_from_group("party")
+			member.queue_free()
+		PhoneServer.ensure_phone_members()
+		return
 	var wanted = MEMBERS[current].scene
 	var found = null
 	for member in get_tree().get_nodes_in_group("party"):

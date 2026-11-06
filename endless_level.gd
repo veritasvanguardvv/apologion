@@ -21,7 +21,8 @@ extends "res://Greed/scripts/greed_level.gd"
 #   - score = distance (Unity units: 400 px = 1), level and enemies defeated
 #   - dying (a battle lost, a pit, a trap) ends the run: Game Over screen,
 #     type your name, the run goes in the local leaderboard (endless_scores.gd)
-# Your verses, items and party come along; health starts full.
+# Your verses and items come along (no party companions); health starts full.
+# Falling into a pit ends the run even in Baby Mode (no soft respawn).
 
 const EndlessScores = preload("res://endless_scores.gd")
 const PARTS_FILE = "res://data/endless_parts.json"
@@ -80,6 +81,7 @@ var over_layer: CanvasLayer
 func _ready():
 	rng.randomize()
 	add_to_group("no_save")        # Endless never saves (save_manager.gd)
+	add_to_group("endless")
 	SaveManager.begin_endless()
 	rooms = []
 	use_camera_limits = false
@@ -809,8 +811,7 @@ func _update_hud():
 # ---------------- Game over (Overmind.GameOver + EndlessHighscore) ----------------
 
 func player_fell():
-	if not game_over and BabyMode.fall_back(_player()):
-		return   # Baby Mode: back to where you last stood
+	# Pit = run over (high score). Baby Mode must NOT put you back up here.
 	_game_over(tr("You fell!"))
 
 

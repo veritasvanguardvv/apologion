@@ -1,6 +1,5 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://pastor_ramuel.tscn" id="55_g"]
 [ext_resource type="AudioStream" path="res://Greed/05 - Bard Tales (loop version).ogg" id="56_g"]
 [ext_resource type="Script" uid="uid://bkw1wy34ffxqx" path="res://menu_layer.gd" id="t_12_5h0ix"]
 [ext_resource type="Script" uid="uid://xavj88eon4qj" path="res://character_body_2d.gd" id="t_2_d5c3b"]
@@ -321,6 +320,3 @@ offset_right = 734.0
 offset_bottom = 556.0
 text = "Back"
 
-[node name="PastorRamuel" parent="." instance=ExtResource("55_g")]
-position = Vector2(-1297.1487, 332)
-follow_distance = 140.0
