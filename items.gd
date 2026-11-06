@@ -60,7 +60,7 @@ const ITEMS = {
 		"drop_pickup": "",                 # dropped money is just gone
 	},
 	"gold_bar": {
-		"name": "Gold Bar",
+		"name": "Gold",
 		"icon": "res://Greed/treasure_icons_16x16.png",
 		"icon_region": Rect2(49, 32, 15, 16),
 		"heavy": true,
