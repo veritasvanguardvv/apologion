@@ -3749,7 +3749,7 @@ defense = 0.5
 battle_speed = 5
 
 [node name="Greedog_GreedogWeak" parent="Enemies" instance=ExtResource("51_g")]
-position = Vector2(1976.4, -268)
+position = Vector2(1900, 250.4846)
 display_name = "Greedog"
 max_hp = 50
 attack_damage = 2
