@@ -41,7 +41,7 @@ offset_bottom = 1102.0
 color = Color(0.18359044, 0.18359044, 0.18359044, 1)
 
 [node name="Parallax2D" type="Parallax2D" parent="Rainbow" unique_id=1819504106]
-scroll_scale = Vector2(0.5, 0.5)
+scroll_scale = Vector2(1, 1)
 repeat_size = Vector2(3677.8, 0)
 repeat_times = 4
 

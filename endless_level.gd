@@ -727,7 +727,7 @@ func _build_background():
 	# The dark castle wall from the Greed treasure room, repeating forever behind the parts
 	var par = Parallax2D.new()
 	par.name = "Background"
-	par.scroll_scale = Vector2(0.35, 0.2)
+	par.scroll_scale = Vector2(1, 1)
 	var tex = load("res://Greed/old-dark-castle-interior-background.png")
 	var k = 3.5
 	par.repeat_size = Vector2(tex.get_width() * k, 0)

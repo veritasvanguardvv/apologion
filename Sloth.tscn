@@ -142,7 +142,7 @@ offset_bottom = 1102.0
 color = Color(0.18359044, 0.18359044, 0.18359044, 1)
 
 [node name="Parallax2D" type="Parallax2D" parent="Purple Marble" unique_id=1382825806]
-scroll_scale = Vector2(0.5, 0.5)
+scroll_scale = Vector2(1, 1)
 repeat_size = Vector2(3600, 0)
 repeat_times = 4
 
