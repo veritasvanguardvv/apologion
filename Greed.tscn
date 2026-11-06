@@ -3748,14 +3748,6 @@ attack_damage = 2
 defense = 0.5
 battle_speed = 5
 
-[node name="Greedwolf_GreedwolfWeak" parent="Enemies" instance=ExtResource("52_g")]
-position = Vector2(6888, -154.4)
-display_name = "Greedwolf"
-max_hp = 100
-attack_damage = 2
-defense = 0.5
-battle_speed = 5
-
 [node name="Greedog_GreedogWeak" parent="Enemies" instance=ExtResource("51_g")]
 position = Vector2(1976.4, -268)
 display_name = "Greedog"
@@ -3797,7 +3789,7 @@ defense = 0.5
 battle_speed = 5
 
 [node name="Greedwolf_Greedwolf" parent="Enemies" instance=ExtResource("52_g")]
-position = Vector2(10698.8, -25.6)
+position = Vector2(10630, -25.6)
 display_name = "Greedwolf"
 max_hp = 183
 attack_damage = 5
@@ -3813,7 +3805,7 @@ defense = 0.5
 battle_speed = 5
 
 [node name="Greedwolf_GreedwolfWeak_2" parent="Enemies" instance=ExtResource("52_g")]
-position = Vector2(10552.8, -25.6)
+position = Vector2(10490, -25.6)
 display_name = "Greedwolf"
 max_hp = 100
 attack_damage = 2
@@ -3835,6 +3827,14 @@ max_hp = 69
 attack_damage = 6
 defense = 0.5
 battle_speed = 7
+
+[node name="Greedog_Greedog_2" parent="Enemies" instance=ExtResource("51_g")]
+position = Vector2(11275, 228)
+display_name = "Greedog"
+max_hp = 69
+attack_damage = 2
+defense = 0.5
+battle_speed = 5
 
 [node name="Greedwolf_Greedwolf_1" parent="Enemies" instance=ExtResource("52_g")]
 position = Vector2(8436.8, 242)
