@@ -149,7 +149,7 @@ signal faith_maxed                   # emitted when Faith newly reaches the max
 @export var skip_turn_cost = 0.1
 
 # Ram (like the headbutt in the Unity Greed level): hold the Ram key (X by
-# default, remappable in Settings > Controls) while standing on the ground.
+# default, remappable in Settings > Controls) on the ground or in the air.
 # You back up a little while it charges; when the bar is full you dash
 # forward and break thorn barriers (greed_barrier.gd) you run into.
 # Letting go before it's full (a quick tap of X / the Ram button) does a
@@ -1081,8 +1081,7 @@ func _physics_process(delta):
 	var typing = verse_input.has_focus()
 	if Input.is_action_just_pressed("jump") and is_on_floor() and not typing and not in_battle:
 		velocity.y = current_jump_velocity()
-		if ram_state == 1:
-			_end_ram(false)   # jumping cancels a charge (but not a dash)
+		# Charge keeps going in the air (you can start or finish charging mid-jump)
 	var direction = 0.0 if in_battle or typing else Input.get_axis("move_left", "move_right")
 	if direction != 0.0 and ram_state == 0:
 		facing = sign(direction)
@@ -1137,7 +1136,7 @@ func _process_ram(delta, blocked: bool):
 		0:
 			if ram_needs_release and not tapped:
 				ram_needs_release = Input.is_action_pressed("ram")
-			elif (Input.is_action_pressed("ram") or tapped) and is_on_floor() and ram_cooldown_left <= 0.0:
+			elif (Input.is_action_pressed("ram") or tapped) and ram_cooldown_left <= 0.0:
 				ram_needs_release = false
 				ram_state = 1
 				ram_timer = 0.0
