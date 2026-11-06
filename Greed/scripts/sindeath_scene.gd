@@ -202,14 +202,13 @@ func _on_trigger(body):
 
 
 func _run():
-	if GameSettings.baby_mode:
-		await _run_baby()
-		return
 	TurnManager.encounters_paused = true
 	_lock(true)
 	_set_recording(false)
 	var retry = SaveManager.greed_sindeath_seen
 	await _pan(_idol_view(), zoom_in, pan_time)
+	# Dialogue / Idolatry Cam flashback / answer choice — also in Baby Mode.
+	# (Baby Mode still skips the turn-based / 3D battle; rams come after.)
 	if retry:
 		await _mammon_appears()
 		await _lines(RETRY)
@@ -225,6 +224,12 @@ func _run():
 		await _lines(ANSWERS[pick])
 		SaveManager.greed_sindeath_seen = true
 	_hide_bubbles()
+	if GameSettings.baby_mode:
+		await _transform()
+		await _pan(_battle_view(), 1.0, 1.0)
+		_end_camera()
+		_start_baby_fight()
+		return
 	if GameSettings.boss_battles_3d:
 		await _begin_3d()
 	await _transform()
@@ -532,24 +537,12 @@ func _on_battle_ended():
 
 
 # ---------------- Baby Mode (baby_mode.gd) ----------------
-# No talk, no choice, no turn battle: SinDeath manifests, then you ram it
-# (one ram) and the idol (BabyMode.IDOL_HITS rams); the last ram on the idol
-# smashes the Golden Calf and wins the level. Each ram reads a verse out loud.
+# Talk / flashback / choice run in _run() like normal. After that: no turn
+# battle — SinDeath manifests, then you ram it (ENEMY_HITS) and the idol
+# (BabyMode.IDOL_HITS); the last ram on the idol smashes the Golden Calf and
+# wins the level. Each ram reads a verse out loud (not pots/herbs).
 
 var _normal_hp = []   # [SinDeath's, the idol's] max HP outside Baby Mode
-
-func _run_baby():
-	TurnManager.encounters_paused = true
-	_lock(true)
-	_set_recording(false)
-	await _pan(_idol_view(), zoom_in, pan_time * 0.6)
-	await _mammon_appears()
-	_hide_bubbles()
-	await _transform()
-	await _pan(_battle_view(), 1.0, 1.0)
-	_end_camera()
-	_start_baby_fight()
-
 
 func _start_baby_fight():
 	_lock(false)
