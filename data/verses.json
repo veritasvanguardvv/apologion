@@ -4962,15 +4962,7 @@
    "es": "Pero aparte de la ley, el pecado está muerto.",
    "pl": "Bo gdy nie ma Prawa, grzech jest w stanie śmierci.",
    "all_damage": 0,
-   "sins": {
-    "sloth": 100,
-    "gluttony": 100,
-    "lust": 100,
-    "wrath": 100,
-    "greed": 100,
-    "envy": 100,
-    "pride": 100
-   },
+   "sins": {},
    "heal": 0,
    "jesus": false,
    "vs": {
