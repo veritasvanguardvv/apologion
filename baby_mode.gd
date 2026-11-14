@@ -61,6 +61,7 @@ const HIT_SOUND = "res://Greed/SUCCESS PICKUP Collect Chime 01.wav"
 const HEAL_SOUND = "res://Greed/SUCCESS PICKUP Collect Chime 05.wav"
 
 signal enemy_rammed(enemy, verse: Dictionary, defeated: bool)
+signal verse_heard(verse: Dictionary)   # a verse really started being read out loud (Endless "Verses heard")
 
 var verses: Array = []
 var _pools = {}             # kind -> Array of verses
@@ -88,6 +89,7 @@ var _busy_until = 0         # msec: the line being read should be done by then (
 var _waiting = {}           # the one line waiting to be read ({} = none)
 var lines_started = []      # tests: [{text, start, end (msec)}] (last 20)
 var lines_dropped = 0       # tests: lines never read (something else was being read)
+var verses_heard = 0        # verses that started being read (a dropped line doesn't count)
 
 
 func _ready():
@@ -643,6 +645,10 @@ func _start_line(line: Dictionary):
 	var show: Callable = line.show
 	if show.is_valid():
 		show.call(secs)
+	var v: Dictionary = line.v
+	if not v.is_empty():
+		verses_heard += 1
+		verse_heard.emit(v)
 
 
 # ---------------- Text-to-speech ----------------

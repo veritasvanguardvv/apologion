@@ -23,6 +23,13 @@ extends "res://Greed/scripts/greed_level.gd"
 #     type your name, the run goes in the local leaderboard (endless_scores.gd)
 # Your verses and items come along (no party companions); health starts full.
 # Falling into a pit ends the run even in Baby Mode (no soft respawn).
+# No clay pots in Endless (greed_level.gd builds them for the story level).
+# Two separate leaderboards (endless_scores.gd): the run's mode (Baby Mode or
+# typing) is locked when the run starts (run_mode) - switching Baby Mode in
+# Settings mid-run doesn't move the run to the other board; the next run
+# (Try again / Start Endless) goes on the new mode's board. Each run counts
+# verses_heard (Baby Mode reading a verse out loud) and verses_typed (a verse
+# typed or spoken that worked); the board shows its mode's count.
 
 const EndlessScores = preload("res://endless_scores.gd")
 const PARTS_FILE = "res://data/endless_parts.json"
@@ -72,6 +79,9 @@ var game_over = false
 var best = 0.0
 var rng = RandomNumberGenerator.new()
 var prepared = {}              # part index -> part definition with floating blocks fixed
+var run_mode = "typing"        # EndlessScores.MODE_TYPING / MODE_BABY, locked at run start
+var verses_heard = 0           # this run: verses Baby Mode read out loud
+var verses_typed = 0           # this run: verses typed / spoken that worked
 
 var hud_label: Label
 var exp_bar: ProgressBar
@@ -83,13 +93,15 @@ func _ready():
 	add_to_group("no_save")        # Endless never saves (save_manager.gd)
 	add_to_group("endless")
 	SaveManager.begin_endless()
+	run_mode = EndlessScores.MODE_BABY if BabyMode.is_on() else EndlessScores.MODE_TYPING
+	BabyMode.verse_heard.connect(_on_verse_heard)
 	rooms = []
 	use_camera_limits = false
 	super._ready()
 	var data = JSON.parse_string(FileAccess.get_file_as_string(PARTS_FILE))
 	part_defs = data.parts
 	part_width = float(data.part_width)
-	best = EndlessScores.best_distance()
+	best = EndlessScores.best_distance(run_mode)
 	_build_background()
 	_build_start()
 	_build_endless_hud()
@@ -107,6 +119,8 @@ func _start_run():
 		cam.limit_left = -1700
 		cam.limit_bottom = 900
 		cam.reset_smoothing()
+	if player.has_signal("verse_recited") and not player.verse_recited.is_connected(_on_verse_recited):
+		player.verse_recited.connect(_on_verse_recited)
 	player_start_x = _feet(player).x
 	player_max_x = player_start_x
 	to_spawn_new_part = part_width
@@ -117,6 +131,32 @@ func _start_run():
 func _feet(player) -> Vector2:
 	var cs = player.get_node("CollisionShape2D")
 	return cs.global_position + Vector2(0, cs.shape.size.y / 2.0 * cs.global_scale.y)
+
+
+# No pots in Endless (the story level's pots are greed_level.gd POTS)
+func _build_pots():
+	pass
+
+
+func _on_verse_heard(_v):
+	if started and not game_over:
+		verses_heard += 1
+		_update_hud()
+
+
+func _on_verse_recited(_v):
+	if started and not game_over:
+		verses_typed += 1
+		_update_hud()
+
+
+# The stat this run's board shows
+func run_verses() -> int:
+	return verses_heard if run_mode == EndlessScores.MODE_BABY else verses_typed
+
+
+func run_verses_text() -> String:
+	return (tr("Verses heard: %d") if run_mode == EndlessScores.MODE_BABY else tr("Verses typed: %d")) % run_verses()
 
 
 # Endless.Update()
@@ -779,7 +819,7 @@ func _build_endless_hud():
 	hud_label = Label.new()
 	hud_label.name = "Score"
 	hud_label.position = Vector2(1152 - 330, 8)
-	hud_label.size = Vector2(320, 60)
+	hud_label.size = Vector2(320, 80)
 	hud_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	hud_label.add_theme_font_size_override("font_size", 16)
 	hud_label.add_theme_color_override("font_outline_color", Color.BLACK)
@@ -787,7 +827,7 @@ func _build_endless_hud():
 	layer.add_child(hud_label)
 	exp_bar = ProgressBar.new()
 	exp_bar.name = "ExpBar"
-	exp_bar.position = Vector2(1152 - 170, 62)
+	exp_bar.position = Vector2(1152 - 170, 84)
 	exp_bar.size = Vector2(160, 10)
 	exp_bar.show_percentage = false
 	var fill = StyleBoxFlat.new()
@@ -803,7 +843,8 @@ func _update_hud():
 	hud_label.visible = not TurnManager.in_battle
 	exp_bar.visible = hud_label.visible
 	hud_label.text = tr("Distance: %s") % ("%.1f" % (dist / UNITS)) + "\n" \
-		+ tr("Level %d") % level + "   " + tr("Defeated: %d") % defeated + "   " + tr("Best: %s") % ("%.1f" % max(best, dist / UNITS))
+		+ tr("Level %d") % level + "   " + tr("Defeated: %d") % defeated + "   " + tr("Best: %s") % ("%.1f" % max(best, dist / UNITS)) \
+		+ "\n" + run_verses_text()
 	exp_bar.max_value = exp_to_level()
 	exp_bar.value = exp_points
 
@@ -842,8 +883,8 @@ func _game_over(reason: String):
 	over_layer.add_child(dim)
 	var panel = Panel.new()
 	panel.name = "Panel"
-	panel.size = Vector2(460, 260)
-	panel.position = Vector2((1152 - 460) / 2.0, (648 - 260) / 2.0)
+	panel.size = Vector2(460, 290)
+	panel.position = Vector2((1152 - 460) / 2.0, (648 - 290) / 2.0)
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0.08, 0.07, 0.12, 0.96)
 	style.border_color = Color(0.85, 0.7, 0.3)
@@ -854,13 +895,14 @@ func _game_over(reason: String):
 	var box = VBoxContainer.new()
 	box.name = "Box"
 	box.position = Vector2(24, 16)
-	box.size = Vector2(412, 230)
+	box.size = Vector2(412, 260)
 	box.add_theme_constant_override("separation", 8)
 	panel.add_child(box)
 	box.add_child(_label(tr("Game over"), 26, Color(1, 0.45, 0.4)))
 	box.add_child(_label(reason, 15, Color(0.85, 0.85, 0.9)))
 	box.add_child(_label(tr("Distance: %s") % ("%.1f" % distance) + "   " + tr("Level %d") % level + "   " + tr("Defeated: %d") % defeated, 17, Color.WHITE))
-	var rank = EndlessScores.rank_of(distance, level)
+	box.add_child(_label(run_verses_text() + "   (" + tr(EndlessScores.BOARD_TITLE[run_mode]) + ")", 15, Color(0.85, 0.85, 0.9)))
+	var rank = EndlessScores.rank_of(distance, level, run_mode)
 	var record = distance > best and distance > 0
 	box.add_child(_label(tr("New record!") if record else tr("Place %d in the high scores") % rank, 16, Color(1, 0.85, 0.3)))
 	var name_row = HBoxContainer.new()
@@ -898,7 +940,7 @@ func _game_over(reason: String):
 	buttons.add_child(menu)
 	box.add_child(buttons)
 	var submit = func():
-		var id = EndlessScores.add_score(name_edit.text, distance, level, defeated)
+		var id = EndlessScores.add_score(name_edit.text, distance, level, defeated, run_mode, run_verses())
 		panel.queue_free()
 		_show_board(id)
 	save.pressed.connect(submit)
@@ -908,7 +950,7 @@ func _game_over(reason: String):
 
 # The leaderboard with your run highlighted (Unity: the "me" marker)
 func _show_board(id: String):
-	var board = EndlessScores.build_board_panel(over_layer, id)
+	var board = EndlessScores.build_board_panel(over_layer, id, run_mode)
 	board.name = "Board"
 	var buttons = HBoxContainer.new()
 	buttons.add_theme_constant_override("separation", 12)

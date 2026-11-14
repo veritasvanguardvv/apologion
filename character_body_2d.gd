@@ -174,6 +174,7 @@ var facing = 1.0                      # 1 = right, -1 = left (last walking direc
 var ram_bar: ProgressBar
 var ram_needs_release = false         # after a dash, let go of the key before charging again
 signal rammed(collider)               # something was hit by a dash
+signal verse_recited(verse)           # a verse was typed or spoken and it worked (Endless "Verses typed")
 
 var base_scale_light = 1.2
 var base_scale_near = 0.6
@@ -591,6 +592,7 @@ func _on_verse_submitted(text):
 	
 	# Say it in a speech bubble (reference + the whole verse)
 	if typed_verse:
+		verse_recited.emit(typed_verse)
 		say_verse(typed_verse)
 	
 	if typed_verse and verse_interceptor.is_valid():
