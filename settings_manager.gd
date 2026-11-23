@@ -47,9 +47,14 @@ var touch_controls = true               # on-screen buttons on phones / tablets 
 var boss_battles_3d = true              # boss fights (SinDeath) shown in 3D (battle_3d.gd); off = the 2D fight
 # Baby Mode (baby_mode.gd): no typing or speaking verses - you defeat enemies
 # by running into them and a matching verse is read out loud.
-# Default ON for new installs / unset settings; an existing settings.cfg that
-# already saved baby_mode=false keeps it off (_load below).
+# Default ON for new / unset settings, except the itch Web (web_greed) edition
+# which defaults OFF. An explicitly saved value still wins (_load below).
 var baby_mode = true
+# True once the player has used the Settings toggle (set_baby_mode). Older
+# web_greed builds wrote baby_mode=true whenever any setting was saved, even
+# if the player never touched the toggle; without this marker those implicit
+# saves are treated as unset and fall back to the new default (off).
+var baby_mode_chosen = false
 signal baby_mode_changed(on)
 # Language picked in Settings / the main menu ("" = not picked yet). Saved here
 # so it survives restarts; SaveManager.set_language() applies it.
@@ -59,6 +64,33 @@ signal touch_controls_changed(on)
 var bindings = {}        # action -> physical keycode
 
 signal bindings_changed
+
+# save_manager.gd (static edition()); preloaded so this works in _init,
+# before the SaveManager autoload is ready (GameSettings is registered first).
+const _SaveManagerScript = preload("res://save_manager.gd")
+
+
+func default_baby_mode() -> bool:
+	return default_baby_mode_for(_SaveManagerScript.edition())
+
+
+static func default_baby_mode_for(edition: String) -> bool:
+	return edition != "web_greed"
+
+
+# saved: gameplay/baby_mode from the file, or null if the key wasn't there.
+# chosen: gameplay/baby_mode_chosen — the player used the Settings toggle.
+# web_greed: itch Web edition.
+static func resolve_baby_mode(saved, chosen: bool, web_greed: bool) -> bool:
+	if saved == null:
+		return not web_greed
+	if web_greed and not chosen:
+		return false
+	return bool(saved)
+
+
+func _init():
+	baby_mode = default_baby_mode()
 
 
 func _ready():
@@ -159,6 +191,7 @@ func set_baby_mode(on: bool):
 	if baby_mode == on:
 		return
 	baby_mode = on
+	baby_mode_chosen = true
 	_save()
 	baby_mode_changed.emit(on)
 
@@ -256,6 +289,7 @@ func _save():
 	c.set_value("controls", "touch_controls", touch_controls)
 	c.set_value("graphics", "boss_battles_3d", boss_battles_3d)
 	c.set_value("gameplay", "baby_mode", baby_mode)
+	c.set_value("gameplay", "baby_mode_chosen", baby_mode_chosen)
 	if language != "":
 		c.set_value("gameplay", "language", language)
 	for action in bindings:
@@ -265,14 +299,20 @@ func _save():
 
 func _load():
 	var c = ConfigFile.new()
-	if c.load(PATH) != OK:
+	var loaded = c.load(PATH) == OK
+	var web_greed = _SaveManagerScript.is_web_greed_edition()
+	if not loaded:
+		baby_mode = default_baby_mode_for(_SaveManagerScript.edition())
+		baby_mode_chosen = false
 		return
 	music_volume = float(c.get_value("audio", "music", music_volume))
 	sfx_volume = float(c.get_value("audio", "sfx", sfx_volume))
 	scroll_verses_with_arrows = bool(c.get_value("controls", "scroll_verses_with_arrows", scroll_verses_with_arrows))
 	touch_controls = bool(c.get_value("controls", "touch_controls", touch_controls))
 	boss_battles_3d = bool(c.get_value("graphics", "boss_battles_3d", boss_battles_3d))
-	baby_mode = bool(c.get_value("gameplay", "baby_mode", baby_mode))
+	baby_mode_chosen = bool(c.get_value("gameplay", "baby_mode_chosen", false))
+	var saved = c.get_value("gameplay", "baby_mode") if c.has_section_key("gameplay", "baby_mode") else null
+	baby_mode = resolve_baby_mode(saved, baby_mode_chosen, web_greed)
 	language = str(c.get_value("gameplay", "language", language))
 	for action in bindings.keys():
 		bindings[action] = int(c.get_value("keys", action, bindings[action]))
