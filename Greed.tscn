@@ -540,6 +540,9 @@ size = Vector2(89.877, 157.1482)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_checkpoint"]
 size = Vector2(320, 530)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_room1"]
+size = Vector2(80, 80)
+
 [node name="Greed" type="Node2D"]
 script = ExtResource("1_g")
 rooms = [{"name": "ENVIRO", "start": Vector2(9546.64, 143.992), "rect": Rect2(-1400, -1400, 13400, 1940)}, {"name": "ROOM1", "start": Vector2(15166.8, -7536.6944), "rect": Rect2(15042.9315, -8054.1464, 902.9798, 650.8675)}]
@@ -2347,13 +2350,13 @@ region_rect = Rect2(63, 9, 40, 64)
 
 [node name="Grid_Tilemap" type="TileMapLayer" parent="TileMaps"]
 position = Vector2(0, 59.2)
-scale = Vector2(4.0812, 4.0812)
+scale = Vector2(4, 4)
 tile_map_data = PackedByteArray(0, 0, 241, 255, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 242, 255, 3, 0, 0, 0, 15, 0, 1, 0, 0, 0, 243, 255, 3, 0, 0, 0, 17, 0, 1, 0, 0, 0, 244, 255, 3, 0, 0, 0, 19, 0, 1, 0, 0, 0, 245, 255, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 246, 255, 3, 0, 0, 0, 15, 0, 1, 0, 0, 0, 247, 255, 3, 0, 0, 0, 17, 0, 1, 0, 0, 0, 248, 255, 3, 0, 0, 0, 19, 0, 1, 0, 0, 0, 249, 255, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 250, 255, 3, 0, 0, 0, 15, 0, 1, 0, 0, 0, 251, 255, 3, 0, 0, 0, 17, 0, 1, 0, 0, 0, 252, 255, 3, 0, 0, 0, 19, 0, 1, 0, 0, 0, 253, 255, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 254, 255, 3, 0, 0, 0, 15, 0, 1, 0, 0, 0, 255, 255, 3, 0, 0, 0, 17, 0, 1, 0, 0, 0, 0, 0, 3, 0, 0, 0, 19, 0, 1, 0, 0, 0, 1, 0, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 2, 0, 3, 0, 0, 0, 15, 0, 1, 0, 0, 0, 3, 0, 3, 0, 0, 0, 17, 0, 1, 0, 0, 0, 4, 0, 3, 0, 0, 0, 19, 0, 1, 0, 0, 0, 5, 0, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 6, 0, 3, 0, 0, 0, 15, 0, 1, 0, 0, 0, 7, 0, 3, 0, 0, 0, 17, 0, 1, 0, 0, 0, 8, 0, 3, 0, 0, 0, 19, 0, 1, 0, 0, 0, 9, 0, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 10, 0, 3, 0, 0, 0, 15, 0, 1, 0, 0, 0, 11, 0, 3, 0, 0, 0, 17, 0, 1, 0, 0, 0, 12, 0, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 13, 0, 3, 0, 0, 0, 15, 0, 1, 0, 0, 0, 14, 0, 3, 0, 0, 0, 17, 0, 1, 0, 0, 0, 15, 0, 3, 0, 0, 0, 19, 0, 1, 0, 0, 0, 16, 0, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 17, 0, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 18, 0, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 19, 0, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 20, 0, 3, 0, 0, 0, 15, 0, 1, 0, 0, 0, 21, 0, 3, 0, 0, 0, 15, 0, 1, 0, 0, 0, 22, 0, 3, 0, 0, 0, 17, 0, 1, 0, 0, 0, 23, 0, 3, 0, 0, 0, 17, 0, 1, 0, 0, 0, 24, 0, 3, 0, 0, 0, 17, 0, 1, 0, 0, 0, 25, 0, 3, 0, 0, 0, 17, 0, 1, 0, 0, 0, 26, 0, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 27, 0, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 28, 0, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 29, 0, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 30, 0, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 31, 0, 3, 0, 0, 0, 15, 0, 1, 0, 0, 0, 32, 0, 3, 0, 0, 0, 15, 0, 1, 0, 0, 0, 33, 0, 3, 0, 0, 0, 15, 0, 1, 0, 0, 0, 34, 0, 3, 0, 0, 0, 13, 0, 1, 0, 0, 0, 35, 0, 3, 0, 0, 0, 7, 0, 1, 0, 0, 0, 36, 0, 3, 0, 0, 0, 7, 0, 1, 0, 0, 0, 37, 0, 3, 0, 0, 0, 7, 0, 1, 0, 0, 0, 38, 0, 3, 0, 0, 0, 7, 0, 1, 0, 0, 0, 39, 0, 3, 0, 0, 0, 19, 0, 1, 0, 0, 0, 40, 0, 3, 0, 0, 0, 15, 0, 3, 0, 0, 0, 41, 0, 3, 0, 0, 0, 13, 0, 5, 0, 0, 0, 42, 0, 3, 0, 0, 0, 15, 0, 3, 0, 0, 0, 43, 0, 3, 0, 0, 0, 13, 0, 5, 0, 0, 0, 44, 0, 3, 0, 0, 0, 13, 0, 5, 0, 0, 0, 45, 0, 3, 0, 0, 0, 15, 0, 3, 0, 0, 0, 46, 0, 3, 0, 0, 0, 15, 0, 3, 0, 0, 0, 47, 0, 3, 0, 0, 0, 13, 0, 5, 0, 0, 0, 48, 0, 3, 0, 0, 0, 19, 0, 3, 0, 0, 0, 49, 0, 3, 0, 0, 0, 19, 0, 1, 0, 0, 0, 50, 0, 3, 0, 0, 0, 3, 0, 5, 0, 0, 0, 51, 0, 3, 0, 0, 0, 3, 0, 5, 0, 0, 0, 52, 0, 3, 0, 0, 0, 3, 0, 5, 0, 0, 0, 53, 0, 3, 0, 0, 0, 3, 0, 5, 0, 0, 0, 54, 0, 3, 0, 0, 0, 3, 0, 5, 0, 0, 0, 55, 0, 3, 0, 0, 0, 3, 0, 5, 0, 0, 0, 56, 0, 3, 0, 0, 0, 3, 0, 5, 0, 0, 0, 57, 0, 3, 0, 0, 0, 3, 0, 5, 0, 0, 0, 241, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 242, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 243, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 244, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 245, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 246, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 247, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 248, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 249, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 250, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 251, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 252, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 253, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 254, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 255, 255, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 1, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 2, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 3, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 4, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 5, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 6, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 7, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 8, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 9, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 10, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 11, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 12, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 13, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 14, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 15, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 16, 0, 2, 0, 0, 0, 3, 0, 1, 0, 0, 0, 17, 0, 2, 0, 0, 0, 5, 0, 1, 0, 0, 0, 18, 0, 2, 0, 0, 0, 1, 0, 1, 0, 0, 0, 19, 0, 2, 0, 0, 0, 1, 0, 1, 0, 0, 0, 20, 0, 2, 0, 0, 0, 1, 0, 1, 0, 0, 0, 21, 0, 2, 0, 0, 0, 1, 0, 1, 0, 0, 0, 22, 0, 2, 0, 0, 0, 1, 0, 1, 0, 0, 0, 23, 0, 2, 0, 0, 0, 1, 0, 1, 0, 0, 0, 24, 0, 2, 0, 0, 0, 1, 0, 1, 0, 0, 0, 25, 0, 2, 0, 0, 0, 1, 0, 1, 0, 0, 0, 26, 0, 2, 0, 0, 0, 1, 0, 1, 0, 0, 0, 27, 0, 2, 0, 0, 0, 5, 0, 1, 0, 0, 0, 28, 0, 2, 0, 0, 0, 7, 0, 3, 0, 0, 0, 29, 0, 2, 0, 0, 0, 7, 0, 3, 0, 0, 0, 30, 0, 2, 0, 0, 0, 7, 0, 3, 0, 0, 0, 31, 0, 2, 0, 0, 0, 7, 0, 3, 0, 0, 0, 32, 0, 2, 0, 0, 0, 7, 0, 3, 0, 0, 0, 33, 0, 2, 0, 0, 0, 7, 0, 3, 0, 0, 0, 34, 0, 2, 0, 0, 0, 7, 0, 3, 0, 0, 0, 35, 0, 2, 0, 0, 0, 7, 0, 1, 0, 0, 0, 43, 0, 2, 0, 0, 0, 1, 0, 1, 0, 0, 0, 44, 0, 2, 0, 0, 0, 5, 0, 1, 0, 0, 0, 50, 0, 2, 0, 0, 0, 7, 0, 5, 0, 0, 0, 51, 0, 2, 0, 0, 0, 7, 0, 5, 0, 0, 0, 52, 0, 2, 0, 0, 0, 7, 0, 5, 0, 0, 0, 53, 0, 2, 0, 0, 0, 3, 0, 3, 0, 0, 0, 54, 0, 2, 0, 0, 0, 3, 0, 3, 0, 0, 0, 55, 0, 2, 0, 0, 0, 7, 0, 5, 0, 0, 0, 56, 0, 2, 0, 0, 0, 7, 0, 5, 0, 0, 0, 57, 0, 2, 0, 0, 0, 3, 0, 3, 0, 0, 0, 28, 0, 1, 0, 0, 0, 7, 0, 1, 0, 0, 0, 29, 0, 1, 0, 0, 0, 7, 0, 1, 0, 0, 0, 30, 0, 1, 0, 0, 0, 7, 0, 1, 0, 0, 0, 31, 0, 1, 0, 0, 0, 7, 0, 1, 0, 0, 0, 32, 0, 1, 0, 0, 0, 7, 0, 1, 0, 0, 0, 33, 0, 1, 0, 0, 0, 7, 0, 1, 0, 0, 0, 34, 0, 1, 0, 0, 0, 7, 0, 1, 0, 0, 0, 37, 0, 1, 0, 0, 0, 7, 0, 3, 0, 0, 0, 50, 0, 1, 0, 0, 0, 7, 0, 3, 0, 0, 0, 51, 0, 1, 0, 0, 0, 7, 0, 3, 0, 0, 0, 52, 0, 1, 0, 0, 0, 7, 0, 3, 0, 0, 0, 53, 0, 1, 0, 0, 0, 7, 0, 3, 0, 0, 0, 54, 0, 1, 0, 0, 0, 7, 0, 3, 0, 0, 0, 55, 0, 1, 0, 0, 0, 7, 0, 3, 0, 0, 0, 56, 0, 1, 0, 0, 0, 7, 0, 3, 0, 0, 0, 57, 0, 1, 0, 0, 0, 7, 0, 3, 0, 0, 0, 28, 0, 0, 0, 0, 0, 3, 0, 1, 0, 0, 0, 29, 0, 0, 0, 0, 0, 7, 0, 1, 0, 0, 0, 30, 0, 0, 0, 0, 0, 7, 0, 1, 0, 0, 0, 31, 0, 0, 0, 0, 0, 7, 0, 1, 0, 0, 0, 32, 0, 0, 0, 0, 0, 7, 0, 1, 0, 0, 0, 33, 0, 0, 0, 0, 0, 7, 0, 3, 0, 0, 0, 34, 0, 0, 0, 0, 0, 7, 0, 1, 0, 0, 0, 35, 0, 0, 0, 0, 0, 7, 0, 3, 0, 0, 0, 36, 0, 0, 0, 0, 0, 7, 0, 3, 0, 0, 0, 37, 0, 0, 0, 0, 0, 7, 0, 3, 0, 0, 0, 50, 0, 0, 0, 0, 0, 7, 0, 3, 0, 0, 0, 51, 0, 0, 0, 0, 0, 7, 0, 3, 0, 0, 0, 52, 0, 0, 0, 0, 0, 7, 0, 3, 0, 0, 0, 54, 0, 0, 0, 1, 0, 4, 0, 4, 0, 0, 0, 17, 0, 255, 255, 0, 0, 5, 0, 1, 0, 0, 0, 29, 0, 255, 255, 0, 0, 3, 0, 1, 0, 0, 0, 30, 0, 255, 255, 0, 0, 7, 0, 1, 0, 0, 0, 31, 0, 255, 255, 0, 0, 7, 0, 1, 0, 0, 0, 32, 0, 255, 255, 0, 0, 7, 0, 1, 0, 0, 0, 33, 0, 255, 255, 0, 0, 7, 0, 1, 0, 0, 0, 34, 0, 255, 255, 0, 0, 7, 0, 1, 0, 0, 0, 35, 0, 255, 255, 0, 0, 7, 0, 3, 0, 0, 0, 36, 0, 255, 255, 0, 0, 7, 0, 1, 0, 0, 0, 37, 0, 255, 255, 0, 0, 7, 0, 1, 0, 0, 0, 38, 0, 255, 255, 0, 0, 7, 0, 1, 0, 0, 0, 50, 0, 255, 255, 0, 0, 3, 0, 1, 0, 0, 0, 51, 0, 255, 255, 0, 0, 3, 0, 1, 0, 0, 0, 52, 0, 255, 255, 0, 0, 3, 0, 1, 0, 0, 0, 15, 0, 254, 255, 0, 0, 5, 0, 1, 0, 0, 0, 16, 0, 254, 255, 0, 0, 5, 0, 1, 0, 0, 0, 30, 0, 254, 255, 0, 0, 3, 0, 1, 0, 0, 0, 31, 0, 254, 255, 0, 0, 5, 0, 1, 0, 0, 0, 32, 0, 254, 255, 0, 0, 7, 0, 1, 0, 0, 0, 33, 0, 254, 255, 0, 0, 7, 0, 1, 0, 0, 0, 34, 0, 254, 255, 0, 0, 7, 0, 3, 0, 0, 0, 35, 0, 254, 255, 0, 0, 7, 0, 3, 0, 0, 0, 36, 0, 254, 255, 0, 0, 7, 0, 1, 0, 0, 0, 37, 0, 254, 255, 0, 0, 7, 0, 1, 0, 0, 0, 38, 0, 254, 255, 0, 0, 7, 0, 1, 0, 0, 0, 39, 0, 254, 255, 0, 0, 7, 0, 1, 0, 0, 0, 46, 0, 254, 255, 0, 0, 7, 0, 5, 0, 0, 0, 47, 0, 254, 255, 0, 0, 7, 0, 5, 0, 0, 0, 48, 0, 254, 255, 0, 0, 7, 0, 5, 0, 0, 0, 32, 0, 253, 255, 0, 0, 3, 0, 1, 0, 0, 0, 33, 0, 253, 255, 0, 0, 7, 0, 1, 0, 0, 0, 34, 0, 253, 255, 0, 0, 7, 0, 1, 0, 0, 0, 35, 0, 253, 255, 0, 0, 7, 0, 1, 0, 0, 0, 36, 0, 253, 255, 0, 0, 7, 0, 1, 0, 0, 0, 37, 0, 253, 255, 0, 0, 7, 0, 1, 0, 0, 0, 38, 0, 253, 255, 0, 0, 7, 0, 1, 0, 0, 0, 39, 0, 253, 255, 0, 0, 7, 0, 1, 0, 0, 0, 46, 0, 253, 255, 0, 0, 7, 0, 3, 0, 0, 0, 47, 0, 253, 255, 0, 0, 7, 0, 3, 0, 0, 0, 48, 0, 253, 255, 0, 0, 7, 0, 3, 0, 0, 0, 33, 0, 252, 255, 0, 0, 3, 0, 1, 0, 0, 0, 34, 0, 252, 255, 0, 0, 7, 0, 1, 0, 0, 0, 35, 0, 252, 255, 0, 0, 7, 0, 1, 0, 0, 0, 36, 0, 252, 255, 0, 0, 7, 0, 1, 0, 0, 0, 37, 0, 252, 255, 0, 0, 7, 0, 1, 0, 0, 0, 38, 0, 252, 255, 0, 0, 7, 0, 1, 0, 0, 0, 39, 0, 252, 255, 0, 0, 7, 0, 1, 0, 0, 0, 46, 0, 252, 255, 0, 0, 3, 0, 1, 0, 0, 0, 47, 0, 252, 255, 0, 0, 3, 0, 1, 0, 0, 0, 48, 0, 252, 255, 0, 0, 3, 0, 1, 0, 0, 0, 34, 0, 251, 255, 0, 0, 3, 0, 1, 0, 0, 0, 35, 0, 251, 255, 0, 0, 7, 0, 1, 0, 0, 0, 36, 0, 251, 255, 0, 0, 7, 0, 1, 0, 0, 0, 37, 0, 251, 255, 0, 0, 7, 0, 1, 0, 0, 0, 38, 0, 251, 255, 0, 0, 7, 0, 1, 0, 0, 0, 39, 0, 251, 255, 0, 0, 7, 0, 1, 0, 0, 0, 35, 0, 250, 255, 0, 0, 5, 0, 1, 0, 0, 0, 36, 0, 250, 255, 0, 0, 7, 0, 1, 0, 0, 0, 37, 0, 250, 255, 0, 0, 7, 0, 1, 0, 0, 0, 38, 0, 250, 255, 0, 0, 7, 0, 1, 0, 0, 0, 39, 0, 250, 255, 0, 0, 7, 0, 1, 0, 0, 0, 36, 0, 249, 255, 0, 0, 5, 0, 1, 0, 0, 0, 37, 0, 249, 255, 0, 0, 5, 0, 1, 0, 0, 0, 38, 0, 249, 255, 0, 0, 5, 0, 1, 0, 0, 0, 39, 0, 249, 255, 0, 0, 5, 0, 1, 0, 0, 0)
 tile_set = SubResource("TileSet_7")
 
 [node name="TreePlatform_Tilemap" type="TileMapLayer" parent="TileMaps"]
-position = Vector2(176.0, -202.0)
-scale = Vector2(4.0812, 4.0812)
+position = Vector2(-56, -60.8)
+scale = Vector2(4, 4)
 tile_map_data = PackedByteArray(0, 0, 42, 0, 252, 255, 0, 0, 7, 0, 5, 0, 0, 0, 43, 0, 252, 255, 0, 0, 7, 0, 5, 0, 0, 0, 44, 0, 252, 255, 0, 0, 7, 0, 5, 0, 0, 0, 42, 0, 251, 255, 0, 0, 7, 0, 3, 0, 0, 0, 43, 0, 251, 255, 0, 0, 7, 0, 3, 0, 0, 0, 44, 0, 251, 255, 0, 0, 7, 0, 3, 0, 0, 0, 42, 0, 250, 255, 0, 0, 3, 0, 1, 0, 0, 0, 43, 0, 250, 255, 0, 0, 3, 0, 1, 0, 0, 0, 44, 0, 250, 255, 0, 0, 3, 0, 1, 0, 0, 0)
 tile_set = SubResource("TileSet_7")
 
@@ -2362,6 +2365,295 @@ position = Vector2(12210.1976, -6004.0748)
 scale = Vector2(2.4414, 2.4414)
 tile_map_data = PackedByteArray(0, 0)
 tile_set = SubResource("TileSet_8")
+
+[node name="Room1Tiles" type="Node2D" parent="TileMaps"]
+
+[node name="room1_tile_110_60" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15039.0000, -7552.8800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_110_63" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15039.0000, -7629.6800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_110_66" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15039.0000, -7706.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_110_69" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15039.0000, -7783.2800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_110_72" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15039.0000, -7860.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_110_75" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15039.0000, -7936.8800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_110_78" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15039.0000, -8013.6800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_110_81" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15039.0000, -8090.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 32)
+
+[node name="room1_tile_111_57" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15064.6000, -7476.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 384, 32, 32)
+
+[node name="room1_tile_113_57" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15115.8000, -7476.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 384, 32, 32)
+
+[node name="room1_tile_113_81" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15115.8000, -8090.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 32)
+
+[node name="room1_tile_116_57" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15192.6000, -7476.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 384, 32, 32)
+
+[node name="room1_tile_116_81" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15192.6000, -8090.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 32)
+
+[node name="room1_tile_119_57" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15269.4000, -7476.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 384, 32, 32)
+
+[node name="room1_tile_119_81" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15269.4000, -8090.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 32)
+
+[node name="room1_tile_122_57" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15346.2000, -7476.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 384, 32, 32)
+
+[node name="room1_tile_122_81" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15346.2000, -8090.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 32)
+
+[node name="room1_tile_125_57" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15423.0000, -7476.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 384, 32, 32)
+
+[node name="room1_tile_125_81" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15423.0000, -8090.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 32)
+
+[node name="room1_tile_128_57" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15499.8000, -7476.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 384, 32, 32)
+
+[node name="room1_tile_128_81" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15499.8000, -8090.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 32)
+
+[node name="room1_tile_131_57" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15576.6000, -7476.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 384, 32, 32)
+
+[node name="room1_tile_131_81" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15576.6000, -8090.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 32)
+
+[node name="room1_tile_134_57" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15653.4000, -7476.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 384, 32, 32)
+
+[node name="room1_tile_134_81" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15653.4000, -8090.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 32)
+
+[node name="room1_tile_137_57" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15730.2000, -7476.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 384, 32, 32)
+
+[node name="room1_tile_137_81" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15730.2000, -8090.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 32)
+
+[node name="room1_tile_140_57" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15807.0000, -7476.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 384, 32, 32)
+
+[node name="room1_tile_140_81" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15807.0000, -8090.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 32)
+
+[node name="room1_tile_143_57" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15883.8000, -7476.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 384, 32, 32)
+
+[node name="room1_tile_143_81" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15883.8000, -8090.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 0, 32, 32)
+
+[node name="room1_tile_145_57" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15935.0000, -7476.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(32, 384, 32, 32)
+
+[node name="room1_tile_146_57" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15960.6000, -7476.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_146_60" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15960.6000, -7552.8800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_146_63" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15960.6000, -7629.6800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_146_66" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15960.6000, -7706.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_146_69" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15960.6000, -7783.2800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_146_72" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15960.6000, -7860.0800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_146_75" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15960.6000, -7936.8800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_146_78" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15960.6000, -8013.6800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(0, 320, 32, 32)
+
+[node name="room1_tile_146_81" type="Sprite2D" parent="TileMaps/Room1Tiles"]
+position = Vector2(15960.6000, -8090.4800)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("18_g")
+region_enabled = true
+region_rect = Rect2(64, 0, 32, 32)
 
 [node name="tile" type="Sprite2D" parent="TileMaps"]
 position = Vector2(26482.1976, -13364.0748)
@@ -2920,6 +3212,170 @@ shape = SubResource("RectangleShape2D_52")
 [node name="Square (8)_2" type="CollisionShape2D" parent="Floors"]
 position = Vector2(15960.8, -7783.12)
 shape = SubResource("RectangleShape2D_53")
+
+[node name="room1_tile_110_60" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15039.0000, -7552.8800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_110_63" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15039.0000, -7629.6800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_110_66" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15039.0000, -7706.4800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_110_69" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15039.0000, -7783.2800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_110_72" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15039.0000, -7860.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_110_75" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15039.0000, -7936.8800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_110_78" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15039.0000, -8013.6800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_110_81" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15039.0000, -8090.4800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_111_57" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15064.6000, -7476.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_113_57" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15115.8000, -7476.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_113_81" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15115.8000, -8090.4800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_116_57" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15192.6000, -7476.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_116_81" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15192.6000, -8090.4800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_119_57" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15269.4000, -7476.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_119_81" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15269.4000, -8090.4800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_122_57" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15346.2000, -7476.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_122_81" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15346.2000, -8090.4800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_125_57" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15423.0000, -7476.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_125_81" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15423.0000, -8090.4800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_128_57" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15499.8000, -7476.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_128_81" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15499.8000, -8090.4800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_131_57" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15576.6000, -7476.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_131_81" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15576.6000, -8090.4800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_134_57" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15653.4000, -7476.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_134_81" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15653.4000, -8090.4800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_137_57" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15730.2000, -7476.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_137_81" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15730.2000, -8090.4800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_140_57" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15807.0000, -7476.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_140_81" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15807.0000, -8090.4800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_143_57" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15883.8000, -7476.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_143_81" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15883.8000, -8090.4800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_145_57" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15935.0000, -7476.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_146_57" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15960.6000, -7476.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_146_60" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15960.6000, -7552.8800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_146_63" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15960.6000, -7629.6800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_146_66" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15960.6000, -7706.4800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_146_69" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15960.6000, -7783.2800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_146_72" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15960.6000, -7860.0800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_146_75" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15960.6000, -7936.8800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_146_78" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15960.6000, -8013.6800)
+shape = SubResource("RectangleShape2D_room1")
+
+[node name="room1_tile_146_81" type="CollisionShape2D" parent="Floors"]
+position = Vector2(15960.6000, -8090.4800)
+shape = SubResource("RectangleShape2D_room1")
 
 [node name="Pickups" type="Node2D" parent="."]
 
