@@ -43,7 +43,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6"]
-size = Vector2(151.2, 115.2)
+size = Vector2(132.5928, 91.1862)
 
 [node name="Greedog" type="CharacterBody2D"]
 script = ExtResource("1_e")
@@ -59,7 +59,7 @@ centered = false
 offset = Vector2(-27, -18)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 14.4)
+position = Vector2(-29.2967, 27.9832)
 shape = SubResource("RectangleShape2D_6")
 
 [node name="EnemyHP" type="ProgressBar" parent="."]

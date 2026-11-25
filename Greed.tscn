@@ -374,7 +374,7 @@ radius = 98.5617
 size = Vector2(74.735, 78.9958)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_82"]
-size = Vector2(1306.0423, 78.9958)
+size = Vector2(1394.4, 79)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_83"]
 size = Vector2(4194.0704, 78.9958)
@@ -1570,7 +1570,7 @@ region_enabled = true
 region_rect = Rect2(96, 32, 32, 32)
 
 [node name="Square (13)" type="Sprite2D" parent="Decor"]
-position = Vector2(5097.6, 387.6)
+position = Vector2(5073.6, 387.6)
 scale = Vector2(2.3495, 2.3495)
 z_index = 1
 centered = false
@@ -2769,7 +2769,7 @@ position = Vector2(2354.4, 59.2)
 shape = SubResource("RectangleShape2D_15")
 
 [node name="Square (13)" type="CollisionShape2D" parent="Floors"]
-position = Vector2(5097.6, 387.6)
+position = Vector2(5073.6, 387.6)
 shape = SubResource("RectangleShape2D_16")
 
 [node name="Square (14)" type="CollisionShape2D" parent="Floors"]
@@ -2901,9 +2901,9 @@ position = Vector2(8336.36, -358.133)
 shape = SubResource("RectangleShape2D_48")
 
 [node name="old-dark-castle-interior-tileset_2 (6)" type="CollisionShape2D" parent="Floors"]
-position = Vector2(10602.4081, 212.2554)
+position = Vector2(10670.3919, 189.3446)
 shape = SubResource("RectangleShape2D_49")
-rotation = -3.1416
+rotation = 0.0
 
 [node name="Square (4)_2" type="CollisionShape2D" parent="Floors"]
 position = Vector2(15853.6334, -7610.6614)
@@ -3231,7 +3231,7 @@ region_enabled = true
 region_rect = Rect2(49, 32, 15, 16)
 
 [node name="CollectMoney" type="Area2D" parent="Pickups"]
-position = Vector2(845, 100)
+position = Vector2(918.8, 97.6)
 script = ExtResource("30_g")
 kind = "money"
 value1 = 0
@@ -3277,7 +3277,7 @@ texture = ExtResource("40_g")
 
 
 [node name="CollectMoney (2)" type="Area2D" parent="Pickups"]
-position = Vector2(542.4, 62)
+position = Vector2(542.4, 46.8)
 script = ExtResource("30_g")
 kind = "money"
 value1 = 0
@@ -3300,7 +3300,7 @@ texture = ExtResource("40_g")
 
 
 [node name="CollectMoney (4)" type="Area2D" parent="Pickups"]
-position = Vector2(358, 102.8)
+position = Vector2(408, 67.6)
 script = ExtResource("30_g")
 kind = "money"
 value1 = 0
@@ -3323,7 +3323,7 @@ texture = ExtResource("40_g")
 
 
 [node name="CollectMoney (5)" type="Area2D" parent="Pickups"]
-position = Vector2(287.6, 54.4)
+position = Vector2(308.4, 30.4)
 script = ExtResource("30_g")
 kind = "money"
 value1 = 0
@@ -3369,7 +3369,7 @@ texture = ExtResource("40_g")
 
 
 [node name="CollectMoney (7)" type="Area2D" parent="Pickups"]
-position = Vector2(5818.8, -1253.2)
+position = Vector2(5642.8, -1016)
 script = ExtResource("30_g")
 kind = "money"
 value1 = 0
@@ -3415,7 +3415,7 @@ texture = ExtResource("40_g")
 
 
 [node name="CollectMoney (9)" type="Area2D" parent="Pickups"]
-position = Vector2(6209.6, -631.2)
+position = Vector2(6149.6, -631.2)
 script = ExtResource("30_g")
 kind = "money"
 value1 = 0
@@ -3533,7 +3533,7 @@ position = Vector2(0, 0)
 shape = SubResource("RectangleShape2D_81")
 
 [node name="DamageArea (1)" type="Area2D" parent="Triggers"]
-position = Vector2(5746.0211, 472)
+position = Vector2(5701.84, 472)
 script = ExtResource("48_g")
 damage = 1000
 hide_on_enter = false
@@ -3583,7 +3583,7 @@ teleport_to = Vector2(4712, -1292)
 use_teleport = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Triggers/Teleport"]
-position = Vector2(24.2, 0)
+position = Vector2(-28.0828, -0)
 shape = SubResource("RectangleShape2D_85")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="Triggers/Teleport"]
@@ -3741,7 +3741,7 @@ shape = SubResource("RectangleShape2D_116")
 [node name="Enemies" type="Node2D" parent="."]
 
 [node name="Greedog_GreedogWeak-" parent="Enemies" instance=ExtResource("51_g")]
-position = Vector2(1704, 250.4846)
+position = Vector2(1704, 242.48)
 display_name = "Greedog"
 max_hp = 39
 attack_damage = 2
@@ -3749,7 +3749,7 @@ defense = 0.5
 battle_speed = 5
 
 [node name="Greedog_GreedogWeak" parent="Enemies" instance=ExtResource("51_g")]
-position = Vector2(1900, 250.4846)
+position = Vector2(1976.4, -268)
 display_name = "Greedog"
 max_hp = 50
 attack_damage = 2
@@ -3765,7 +3765,7 @@ defense = 0.5
 battle_speed = 5
 
 [node name="Greedog_Greedog" parent="Enemies" instance=ExtResource("51_g")]
-position = Vector2(4718.4, 382.8)
+position = Vector2(4718.4, 370.8)
 display_name = "Greedog"
 max_hp = 69
 attack_damage = 2
@@ -3773,7 +3773,7 @@ defense = 0.5
 battle_speed = 5
 
 [node name="Greedog_GreedogWeak_2" parent="Enemies" instance=ExtResource("51_g")]
-position = Vector2(5722.4, 249.6)
+position = Vector2(5722.4, 245.6)
 display_name = "Greedog"
 max_hp = 50
 attack_damage = 2
@@ -3789,7 +3789,7 @@ defense = 0.5
 battle_speed = 5
 
 [node name="Greedwolf_Greedwolf" parent="Enemies" instance=ExtResource("52_g")]
-position = Vector2(10630, -25.6)
+position = Vector2(10698.8, -30.4)
 display_name = "Greedwolf"
 max_hp = 183
 attack_damage = 5
@@ -3805,7 +3805,7 @@ defense = 0.5
 battle_speed = 5
 
 [node name="Greedwolf_GreedwolfWeak_2" parent="Enemies" instance=ExtResource("52_g")]
-position = Vector2(10490, -25.6)
+position = Vector2(10552.8, -30.4)
 display_name = "Greedwolf"
 max_hp = 100
 attack_damage = 2
@@ -3829,7 +3829,7 @@ defense = 0.5
 battle_speed = 7
 
 [node name="Greedog_Greedog_2" parent="Enemies" instance=ExtResource("51_g")]
-position = Vector2(11275, 228)
+position = Vector2(11246.4, 213.6)
 display_name = "Greedog"
 max_hp = 69
 attack_damage = 2
@@ -3845,11 +3845,11 @@ defense = 0.5
 battle_speed = 5
 
 [node name="Umbrid" parent="Enemies" instance=ExtResource("53_umbrid")]
-position = Vector2(15613.2, -7619)
+position = Vector2(15613.2, -7611.6)
 display_name = "Umbrid"
 
 [node name="Umbrid_1" parent="Enemies" instance=ExtResource("53_umbrid")]
-position = Vector2(8337.6, -499)
+position = Vector2(8337.6, -491.2)
 display_name = "Umbrid"
 
 [node name="SinDeathScene" parent="." instance=ExtResource("54_g")]
